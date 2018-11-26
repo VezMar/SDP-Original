@@ -1,0 +1,52 @@
+{
+  "evento1" : {
+    "actividad" : "Supervision",
+    "idevent" : "evento1",
+    "observation" : {
+      "after" : {
+        "observ" : "Wgqjqnqn",
+        "status" : false
+      },
+      "before" : {
+        "observ" : "Wgqjqnqn",
+        "status" : true
+      },
+      "during" : {
+        "observ" : "Wgqjqnqn",
+        "status" : true
+      }
+    },
+    "trabajador" : "Arturo",
+    "uid" : "xOFNyr8Gs0RRGpSNWsXQgAHx1CA2"
+  },
+  "evento2" : {
+    "actividad" : "Revision",
+    "trabajador" : "Prueba",
+    "uid" : "cycraep3ztgPW1SDMgsiJxFl6mS2"
+  },
+  "evento3" : {
+    "actividad" : "Auditoria",
+    "trabajador" : "Arturo",
+    "uid" : "xOFNyr8Gs0RRGpSNWsXQgAHx1CA2"
+  },
+  "evento4" : {
+    "actividad" : "Supervision",
+    "idevent" : "evento4",
+    "observation" : {
+      "after" : {
+        "observ" : "cjcici",
+        "status" : true
+      },
+      "before" : {
+        "observ" : "uvu. y u uvvugubuvuvubui viví uvu yvu uvu y yvu yvuvuvu uvuvuvuvu u y uvuvuvujjbxkdndkdjdbdkfkfbfifkfieofjfoiejdbdidbdidbfjkdjdidbfibfidbdkfb",
+        "status" : true
+      },
+      "during" : {
+        "observ" : "durante",
+        "status" : true
+      }
+    },
+    "trabajador" : "Rodrigo",
+    "uid" : "dAUfFMYJjEae3X1c4IQwwVzJB1C3"
+  }
+}
