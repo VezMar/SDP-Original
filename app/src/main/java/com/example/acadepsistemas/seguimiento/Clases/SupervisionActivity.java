@@ -24,6 +24,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -37,6 +38,7 @@ import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -72,12 +74,13 @@ import java.io.FileOutputStream;
 import java.util.Random;
 import java.util.UUID;
 
+import dalvik.system.PathClassLoader;
+
 public class SupervisionActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
 
-
-    private static final String CARPETA_PRINCIPAL= "DCIM/";
+    private static final String CARPETA_PRINCIPAL = "DCIM/";
     private static final String CARPETA_IMAGEN = "Camera";
     private static final String DIRECTORIO_IMAGEN = CARPETA_PRINCIPAL + CARPETA_IMAGEN;
 
@@ -88,14 +91,13 @@ public class SupervisionActivity extends AppCompatActivity
     static File fileimagen5;
 
 
-   static Bitmap capturedCoolerBitmap;
-
+    static Bitmap capturedCoolerBitmap;
 
 
     private static final int REQUEST_PERM_WRITE_STORAGE = 102;
     private static final int CAPTURE_PHOTO = 104;
 
-//Varibales X
+    //Varibales X
     Button btnEnviar;
     private Button btnFoto;
     private Button btnFoto2;
@@ -104,11 +106,10 @@ public class SupervisionActivity extends AppCompatActivity
     private Button btnFoto5;
 
 
-
     ListView listView;
 
 
-    static int conteo= 0;
+    static int conteo = 0;
     static int descision;
 
     static String idevent;
@@ -119,10 +120,10 @@ public class SupervisionActivity extends AppCompatActivity
 
 
     public String rolesUser;
-    static String estado= "before";
+    static String estado = "before";
     static String actividad;
 
-//Variables Fotos
+    //Variables Fotos
     private Uri filePath;
     private static ImageView imageView;
     private static ImageView imageView2;
@@ -138,7 +139,12 @@ public class SupervisionActivity extends AppCompatActivity
     Button btnBorrar4;
     Button btnBorrar5;
 
+//Subir archivo
 
+    Button btnArchivo;
+    Uri pdfUri;
+
+    ProgressDialog progressDialog;
 
     static ImageView[] valores = new ImageView[]{imageView, imageView2, imageView3, imageView4, imageView5};
     //FIREBASE
@@ -149,12 +155,13 @@ public class SupervisionActivity extends AppCompatActivity
     DatabaseReference mDatabase;
     DatabaseReference ref;
 
+    FirebaseDatabase dbRef;
+
     StorageReference storageReference;
 
     //FIRESTORE
     private FirebaseFirestore mFireStore;
     private Query mQuery;
-
 
 
     private BottomNavigationView bottomNavigationView;
@@ -179,6 +186,8 @@ public class SupervisionActivity extends AppCompatActivity
         edObserv = (EditText) findViewById(R.id.edObserv);
         btnEnviar = (Button) findViewById(R.id.btnEnviar);
 
+        btnArchivo = (Button) findViewById(R.id.btnArchivo);
+
         btnFoto = (Button) findViewById(R.id.btnFoto);
         btnFoto2 = (Button) findViewById(R.id.btnFoto2);
         btnFoto3 = (Button) findViewById(R.id.btnFoto3);
@@ -198,33 +207,47 @@ public class SupervisionActivity extends AppCompatActivity
         imageView4 = (ImageView) findViewById(R.id.imgView4);
         imageView5 = (ImageView) findViewById(R.id.imgView5);
 
-        noImage=imageView5;
+        noImage = imageView5;
 
         //Firebase Inicializacion
         mDatabase = FirebaseDatabase.getInstance().getReference();
+        dbRef = FirebaseDatabase.getInstance();
         ref = FirebaseDatabase.getInstance().getReference().child("Eventos").child(idevent).child("observation");
-            //Instancias
-            mAuth = FirebaseAuth.getInstance();
-            storage = FirebaseStorage.getInstance();
-            //Fin Instancias
+        //Instancias
+        mAuth = FirebaseAuth.getInstance();
+        storage = FirebaseStorage.getInstance();
+        //Fin Instancias
         storageReference = storage.getReference();
         //Fin Firebase Inicializacion
 
         // FireStore
         mFireStore = FirebaseFirestore.getInstance();
+
         // FireStore
 
 
         //Botones
 
 
+        btnArchivo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (ContextCompat.checkSelfPermission(SupervisionActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                    selectPDF();
+                } else {
+                    ActivityCompat.requestPermissions(SupervisionActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 9);
+                }
+            }
+        });
+
+
         btnBorrar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 imageView.setImageDrawable(Drawable.createFromPath("@drawable/empty_image"));
-                fileimagen=null;
-                Toast.makeText(getApplicationContext(),"Borrada con exito", Toast.LENGTH_SHORT).show();
-
+                fileimagen = null;
+                Toast.makeText(getApplicationContext(), "Borrada con exito", Toast.LENGTH_SHORT).show();
 
 
             }
@@ -234,8 +257,8 @@ public class SupervisionActivity extends AppCompatActivity
             @Override
             public void onClick(View v) {
                 imageView2.setImageDrawable(Drawable.createFromPath("@drawable/empty_image"));
-                fileimagen2=null;
-                Toast.makeText(getApplicationContext(),"Borrada con exito", Toast.LENGTH_SHORT).show();
+                fileimagen2 = null;
+                Toast.makeText(getApplicationContext(), "Borrada con exito", Toast.LENGTH_SHORT).show();
 
             }
         });
@@ -244,8 +267,8 @@ public class SupervisionActivity extends AppCompatActivity
             @Override
             public void onClick(View v) {
                 imageView3.setImageDrawable(Drawable.createFromPath("@drawable/empty_image"));
-                fileimagen3=null;
-                Toast.makeText(getApplicationContext(),"Borrada con exito", Toast.LENGTH_SHORT).show();
+                fileimagen3 = null;
+                Toast.makeText(getApplicationContext(), "Borrada con exito", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -256,8 +279,8 @@ public class SupervisionActivity extends AppCompatActivity
                 //imageView4.setImageURI(Uri.parse("@drawable/empty_image"));
                 //imageView4.findViewById(R.id.imgView4);
 
-                fileimagen4=null;
-                Toast.makeText(getApplicationContext(),"Borrada con exito", Toast.LENGTH_SHORT).show();
+                fileimagen4 = null;
+                Toast.makeText(getApplicationContext(), "Borrada con exito", Toast.LENGTH_SHORT).show();
 
 
             }
@@ -267,8 +290,8 @@ public class SupervisionActivity extends AppCompatActivity
             @Override
             public void onClick(View v) {
                 imageView5.setImageDrawable(Drawable.createFromPath("@drawable/empty_image"));
-                fileimagen5=null;
-                Toast.makeText(getApplicationContext(),"Borrada con exito", Toast.LENGTH_SHORT).show();
+                fileimagen5 = null;
+                Toast.makeText(getApplicationContext(), "Borrada con exito", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -282,12 +305,12 @@ public class SupervisionActivity extends AppCompatActivity
                 }
 
                 if (ActivityCompat.checkSelfPermission(getApplicationContext(),
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
 
                     ActivityCompat.requestPermissions(SupervisionActivity.this,
                             new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_PERM_WRITE_STORAGE);
                 } else {
-                    descision=0;
+                    descision = 0;
                     takePhoto();
                 }
             }
@@ -303,12 +326,12 @@ public class SupervisionActivity extends AppCompatActivity
                 }
 
                 if (ActivityCompat.checkSelfPermission(getApplicationContext(),
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
 
                     ActivityCompat.requestPermissions(SupervisionActivity.this,
                             new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_PERM_WRITE_STORAGE);
                 } else {
-                    descision=1;
+                    descision = 1;
                     takePhoto();
                 }
             }
@@ -324,12 +347,12 @@ public class SupervisionActivity extends AppCompatActivity
                 }
 
                 if (ActivityCompat.checkSelfPermission(getApplicationContext(),
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
 
                     ActivityCompat.requestPermissions(SupervisionActivity.this,
                             new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_PERM_WRITE_STORAGE);
                 } else {
-                    descision=2;
+                    descision = 2;
                     takePhoto();
                 }
             }
@@ -345,12 +368,12 @@ public class SupervisionActivity extends AppCompatActivity
                 }
 
                 if (ActivityCompat.checkSelfPermission(getApplicationContext(),
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
 
                     ActivityCompat.requestPermissions(SupervisionActivity.this,
                             new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_PERM_WRITE_STORAGE);
                 } else {
-                    descision=3;
+                    descision = 3;
                     takePhoto();
                 }
             }
@@ -366,19 +389,16 @@ public class SupervisionActivity extends AppCompatActivity
                 }
 
                 if (ActivityCompat.checkSelfPermission(getApplicationContext(),
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
 
                     ActivityCompat.requestPermissions(SupervisionActivity.this,
                             new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_PERM_WRITE_STORAGE);
                 } else {
-                    descision=4;
+                    descision = 4;
                     takePhoto();
                 }
             }
         });
-
-
-
 
 
         btnEnviar.setOnClickListener(new View.OnClickListener() {
@@ -387,18 +407,17 @@ public class SupervisionActivity extends AppCompatActivity
                 String Observation = edObserv.getText().toString();
                 boolean statuss = true;
 
-                Data data = new Data(Observation,statuss);
+                Data data = new Data(Observation, statuss);
 
 
-                if((estado).equals("before")) {
-                    if ((mDatabase.child("Eventos").child(idevent).child("observation").child("before").child("status")).equals(null))
-                    {
+                if ((estado).equals("before")) {
+                    if ((mDatabase.child("Eventos").child(idevent).child("observation").child("before").child("status")).equals(null)) {
 
-                        Toast.makeText(getApplicationContext(),"Ya realizaste esta actividad", Toast.LENGTH_SHORT).show();
-                    }else{
-                       // String k = mDatabase.child("Eventos").child(idevent).child("observation").child("before").child("status").;
+                        Toast.makeText(getApplicationContext(), "Ya realizaste esta actividad", Toast.LENGTH_SHORT).show();
+                    } else {
+                        // String k = mDatabase.child("Eventos").child(idevent).child("observation").child("before").child("status").;
                         mDatabase.child("Eventos").child(idevent).child("observation").child("before").setValue(data);
-                        Toast.makeText(getApplicationContext(), "Datos ingresados" , Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "Datos ingresados", Toast.LENGTH_SHORT).show();
                         edObserv.setText("");
                         uploadImage1();
                         uploadImage2();
@@ -406,14 +425,17 @@ public class SupervisionActivity extends AppCompatActivity
                         uploadImage4();
                         uploadImage5();
 
+                        if (pdfUri != null) {
+                            uploadfile(pdfUri);
+                        }
+
                         BorrarImagenes();
                     }
                 }
-                if ((estado).equals("during")){
-                    if (mDatabase.child("Eventos").child(idevent).child("observation").child("during").child("status").equals("true"))
-                    {
-                        Toast.makeText(getApplicationContext(),"Ya realizaste esta actividad", Toast.LENGTH_SHORT).show();
-                    }else {
+                if ((estado).equals("during")) {
+                    if (mDatabase.child("Eventos").child(idevent).child("observation").child("during").child("status").equals("true")) {
+                        Toast.makeText(getApplicationContext(), "Ya realizaste esta actividad", Toast.LENGTH_SHORT).show();
+                    } else {
                         mDatabase.child("Eventos").child(idevent).child("observation").child("during").setValue(data);
                         Toast.makeText(getApplicationContext(), "Datos ingresados", Toast.LENGTH_SHORT).show();
                         edObserv.setText("");
@@ -423,14 +445,17 @@ public class SupervisionActivity extends AppCompatActivity
                         uploadImage4();
                         uploadImage5();
 
+                        if (pdfUri != null) {
+                            uploadfile(pdfUri);
+                        }
+
                         BorrarImagenes();
                     }
                 }
-                if ((estado).equals("after")){
-                    if (mDatabase.child("Eventos").child(idevent).child("observation").child("after").child("status").equals("true"))
-                    {
-                        Toast.makeText(getApplicationContext(),"Ya realizaste esta actividad", Toast.LENGTH_SHORT).show();
-                    }else {
+                if ((estado).equals("after")) {
+                    if (mDatabase.child("Eventos").child(idevent).child("observation").child("after").child("status").equals("true")) {
+                        Toast.makeText(getApplicationContext(), "Ya realizaste esta actividad", Toast.LENGTH_SHORT).show();
+                    } else {
                         mDatabase.child("Eventos").child(idevent).child("observation").child("after").setValue(data);
                         Toast.makeText(getApplicationContext(), "Datos ingresados", Toast.LENGTH_SHORT).show();
                         edObserv.setText("");
@@ -439,6 +464,10 @@ public class SupervisionActivity extends AppCompatActivity
                         uploadImage3();
                         uploadImage4();
                         uploadImage5();
+
+                        if (pdfUri != null) {
+                            uploadfile(pdfUri);
+                        }
 
                         BorrarImagenes();
                     }
@@ -463,8 +492,6 @@ public class SupervisionActivity extends AppCompatActivity
         });
 
 
-
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout2);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -475,21 +502,22 @@ public class SupervisionActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
     }
 
+
     private void BorrarImagenes() {
         imageView.setImageDrawable(Drawable.createFromPath("@drawable/empty_image"));
-        fileimagen=null;
+        fileimagen = null;
 
         imageView2.setImageDrawable(Drawable.createFromPath("@drawable/empty_image"));
-        fileimagen2=null;
+        fileimagen2 = null;
 
         imageView3.setImageDrawable(Drawable.createFromPath("@drawable/empty_image"));
-        fileimagen3=null;
+        fileimagen3 = null;
 
         imageView4.setImageDrawable(Drawable.createFromPath("@drawable/empty_image"));
-        fileimagen5=null;
+        fileimagen5 = null;
 
         imageView5.setImageDrawable(Drawable.createFromPath("@drawable/empty_image"));
-        fileimagen5=null;
+        fileimagen5 = null;
     }
 
     public void takePhoto() {
@@ -498,19 +526,19 @@ public class SupervisionActivity extends AppCompatActivity
     }
 
     private void uploadImage1() {
-        if(fileimagen!=null){
+        if (fileimagen != null) {
             final ProgressDialog progressDialog = new ProgressDialog(this);
             progressDialog.setTitle("Subiendo....");
 
-            StorageReference ref = storageReference.child("images").child(idevent).child(estado).child("Img"+UUID.randomUUID().toString());
-           // StorageReference ref = storageReference.child("images/"+UUID.randomUUID().toString());
+            StorageReference ref = storageReference.child("images").child(idevent).child(estado).child("Img" + UUID.randomUUID().toString());
+            // StorageReference ref = storageReference.child("images/"+UUID.randomUUID().toString());
 
             ref.putFile(Uri.fromFile(fileimagen))
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                             progressDialog.dismiss();
-                           // Toast.makeText(getApplicationContext(), "Exito al Subirse", Toast.LENGTH_SHORT).show();
+                            // Toast.makeText(getApplicationContext(), "Exito al Subirse", Toast.LENGTH_SHORT).show();
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {
@@ -523,19 +551,19 @@ public class SupervisionActivity extends AppCompatActivity
                     .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                            double progress = (100.0*taskSnapshot.getBytesTransferred()/taskSnapshot.getTotalByteCount());
-                            progressDialog.setMessage("Subido " + (int)progress+"%");
+                            double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot.getTotalByteCount());
+                            progressDialog.setMessage("Subido " + (int) progress + "%");
                         }
                     });
         }
     }
 
     private void uploadImage2() {
-        if(fileimagen2!=null){
+        if (fileimagen2 != null) {
             final ProgressDialog progressDialog = new ProgressDialog(this);
             progressDialog.setTitle("Subiendo....");
 
-            StorageReference ref = storageReference.child("images").child(idevent).child(estado).child("Img"+UUID.randomUUID().toString());
+            StorageReference ref = storageReference.child("images").child(idevent).child(estado).child("Img" + UUID.randomUUID().toString());
             // StorageReference ref = storageReference.child("images/"+UUID.randomUUID().toString());
 
             ref.putFile(Uri.fromFile(fileimagen2))
@@ -556,19 +584,19 @@ public class SupervisionActivity extends AppCompatActivity
                     .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                            double progress = (100.0*taskSnapshot.getBytesTransferred()/taskSnapshot.getTotalByteCount());
-                            progressDialog.setMessage("Subido " + (int)progress+"%");
+                            double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot.getTotalByteCount());
+                            progressDialog.setMessage("Subido " + (int) progress + "%");
                         }
                     });
         }
     }
 
     private void uploadImage3() {
-        if(fileimagen3!=null){
+        if (fileimagen3 != null) {
             final ProgressDialog progressDialog = new ProgressDialog(this);
             progressDialog.setTitle("Subiendo....");
 
-            StorageReference ref = storageReference.child("images").child(idevent).child(estado).child("Img"+UUID.randomUUID().toString());
+            StorageReference ref = storageReference.child("images").child(idevent).child(estado).child("Img" + UUID.randomUUID().toString());
             // StorageReference ref = storageReference.child("images/"+UUID.randomUUID().toString());
 
             ref.putFile(Uri.fromFile(fileimagen3))
@@ -589,19 +617,19 @@ public class SupervisionActivity extends AppCompatActivity
                     .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                            double progress = (100.0*taskSnapshot.getBytesTransferred()/taskSnapshot.getTotalByteCount());
-                            progressDialog.setMessage("Subido " + (int)progress+"%");
+                            double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot.getTotalByteCount());
+                            progressDialog.setMessage("Subido " + (int) progress + "%");
                         }
                     });
         }
     }
 
     private void uploadImage4() {
-        if(fileimagen4!=null){
+        if (fileimagen4 != null) {
             final ProgressDialog progressDialog = new ProgressDialog(this);
             progressDialog.setTitle("Subiendo....");
 
-            StorageReference ref = storageReference.child("images").child(idevent).child(estado).child("Img"+UUID.randomUUID().toString());
+            StorageReference ref = storageReference.child("images").child(idevent).child(estado).child("Img" + UUID.randomUUID().toString());
             // StorageReference ref = storageReference.child("images/"+UUID.randomUUID().toString());
 
             ref.putFile(Uri.fromFile(fileimagen4))
@@ -622,8 +650,8 @@ public class SupervisionActivity extends AppCompatActivity
                     .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                            double progress = (100.0*taskSnapshot.getBytesTransferred()/taskSnapshot.getTotalByteCount());
-                            progressDialog.setMessage("Subido " + (int)progress+"%");
+                            double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot.getTotalByteCount());
+                            progressDialog.setMessage("Subido " + (int) progress + "%");
                         }
                     });
         }
@@ -631,11 +659,11 @@ public class SupervisionActivity extends AppCompatActivity
 
 
     private void uploadImage5() {
-        if(fileimagen5!=null){
+        if (fileimagen5 != null) {
             final ProgressDialog progressDialog = new ProgressDialog(this);
             progressDialog.setTitle("Subiendo....");
 
-            StorageReference ref = storageReference.child("images").child(idevent).child(estado).child("Img"+UUID.randomUUID().toString());
+            StorageReference ref = storageReference.child("images").child(idevent).child(estado).child("Img" + UUID.randomUUID().toString());
             // StorageReference ref = storageReference.child("images/"+UUID.randomUUID().toString());
 
             ref.putFile(Uri.fromFile(fileimagen5))
@@ -643,6 +671,7 @@ public class SupervisionActivity extends AppCompatActivity
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                             progressDialog.dismiss();
+
                             // Toast.makeText(getApplicationContext(), "Exito al Subirse", Toast.LENGTH_SHORT).show();
                         }
                     })
@@ -656,40 +685,91 @@ public class SupervisionActivity extends AppCompatActivity
                     .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                            double progress = (100.0*taskSnapshot.getBytesTransferred()/taskSnapshot.getTotalByteCount());
-                            progressDialog.setMessage("Subido " + (int)progress+"%");
+                            double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot.getTotalByteCount());
+                            progressDialog.setMessage("Subido " + (int) progress + "%");
                         }
                     });
         }
+    }
+
+
+    private void uploadfile(Uri pdfUri) {
+        progressDialog= new ProgressDialog(this);
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        progressDialog.setTitle("Subiendo archivo...");
+        progressDialog.setProgress(0);
+        progressDialog.show();
+
+        final String fileName= "PDF" + UUID.randomUUID().toString();
+        StorageReference srtreference = storage.getReference();
+        srtreference.child("Documents").child(idevent).child(estado).child(fileName).putFile(pdfUri)
+                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        String url = taskSnapshot.getUploadSessionUri().toString();
+                        DatabaseReference refDB = dbRef.getReference();
+
+                        refDB.child(fileName).setValue(url).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (task.isSuccessful()){
+                                    Toast.makeText(getApplicationContext(),"Archivo Subido...",Toast.LENGTH_SHORT).show();
+                                }else{
+                                    Toast.makeText(getApplicationContext(),"¡Fallo al subirse!",Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(getApplicationContext(),"¡Fallo al subirse!",Toast.LENGTH_SHORT).show();
+            }
+        }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                int currenProgress = (int) (100*taskSnapshot.getBytesTransferred()/taskSnapshot.getTotalByteCount());
+                progressDialog.setProgress(currenProgress);
+
+            }
+        });
+
+
+
+    }
+
+
+    private void selectPDF() {
+        Intent intent = new Intent();
+        intent.setType("application/pdf");
+        intent.setAction(intent.ACTION_GET_CONTENT);
+        startActivityForResult(intent, 86);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+
+        if(requestCode==9 && grantResults[0]==PackageManager.PERMISSION_GRANTED){
+            selectPDF();
+        }else{
+            Toast.makeText(getApplicationContext(),"Porfavor otorgue los permisos...",Toast.LENGTH_SHORT).show();
+        }
+
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-/*
-        MediaScannerConnection.scanFile(getApplicationContext(), new String[]{path}, null, new MediaScannerConnection.OnScanCompletedListener() {
-            @Override
-            public void onScanCompleted(String path, Uri uri) {
-                Log.i("Path", ""+path);
-            }
-        });
+        if (requestCode==86 && resultCode==RESULT_OK && data!=null) {
+            pdfUri=data.getData();
+        }else{
+            Toast.makeText(getApplicationContext(),"Porfavor elija un archivo",Toast.LENGTH_SHORT).show();
 
-        bitmap = BitmapFactory.decodeFile(path);
-        imageView.setImageBitmap(bitmap);*/
+        }
 
-/*           Bitmap bitmap = (Bitmap) data.getExtras().get("data");
-            //Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(),filePath);
-            imageView.setImageBitmap(bitmap);
-            //filePath = data.getData();
-
-       // Toast.makeText(getApplicationContext(), "Uri " + fileimagen, Toast.LENGTH_SHORT).show();
-*/
-        //----------------------------Magical Camera
-
-
-        if (resultCode == RESULT_OK){
-            switch (requestCode){
+        if (requestCode==104 && resultCode == RESULT_OK) {
+            switch (requestCode) {
 
                 case CAPTURE_PHOTO:
 
@@ -701,23 +781,23 @@ public class SupervisionActivity extends AppCompatActivity
                     //Bitmap resizeImage = Bitmap.createScaledBitmap(capturedCoolerBitmap,CamWidth,CamHegith,false);
                     Bitmap Bitnew = redimensionarImagenMaximo(capturedCoolerBitmap, 1200, 800);
 
-                    if(descision==0) {
+                    if (descision == 0) {
                         imageView.setImageBitmap(Bitnew);
                         saveImageToGallery(Bitnew);
 
-                    } else if (descision==1){
+                    } else if (descision == 1) {
                         imageView2.setImageBitmap(Bitnew);
                         saveImageToGallery(Bitnew);
 
-                    } else if (descision==2){
+                    } else if (descision == 2) {
                         imageView3.setImageBitmap(Bitnew);
                         saveImageToGallery(Bitnew);
 
-                    } else if (descision==3){
+                    } else if (descision == 3) {
                         imageView4.setImageBitmap(Bitnew);
                         saveImageToGallery(Bitnew);
 
-                    } else if (descision==4){
+                    } else if (descision == 4) {
                         imageView5.setImageBitmap(Bitnew);
                         saveImageToGallery(Bitnew);
 
@@ -727,10 +807,11 @@ public class SupervisionActivity extends AppCompatActivity
                     break;
 
                 default:
-                    Toast.makeText(getApplicationContext(),"Error" , Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Error", Toast.LENGTH_SHORT).show();
                     break;
             }
         }
+
 
 
 
