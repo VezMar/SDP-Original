@@ -3,13 +3,18 @@ package com.example.acadepsistemas.seguimiento.model;
 public class Data {
     String observ;
     boolean status;
+    double Lat;
+    double Lng;
 
-    public Data() {
+    public Data(String observation, boolean statuss, double longitude) {
     }
 
-    public Data(String observ, boolean status) {
+
+    public Data(String observ, boolean status, double lat, double lng) {
         this.observ = observ;
         this.status = status;
+        this.Lat = lat;
+        this.Lng = lng;
     }
 
     public String getObserv() {

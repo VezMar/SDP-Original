@@ -3,25 +3,27 @@ package com.example.acadepsistemas.seguimiento.Clases;
 import android.Manifest;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
-import android.graphics.Path;
 import android.graphics.drawable.Drawable;
-import android.media.MediaScannerConnection;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.location.LocationProvider;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.bottomappbar.BottomAppBarTopEdgeTreatment;
 import android.support.design.widget.BottomNavigationView;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -35,23 +37,21 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.acadepsistemas.seguimiento.Fragmentos.EventosFragment;
-import com.example.acadepsistemas.seguimiento.Fragmentos.SupervisionFragment;
 //import com.example.acadepsistemas.seguimiento.Manifest;
 import com.example.acadepsistemas.seguimiento.R;
 import com.example.acadepsistemas.seguimiento.model.Data;
-import com.example.acadepsistemas.seguimiento.model.Evento;
-import com.frosquivel.magicalcamera.MagicalCamera;
 import com.github.chrisbanes.photoview.PhotoView;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.SettingsClient;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -67,14 +67,21 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 
-import org.w3c.dom.Text;
-
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.text.DateFormat;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 import java.util.Random;
 import java.util.UUID;
 
-import dalvik.system.PathClassLoader;
+
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationSettingsRequest;
 
 public class SupervisionActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -93,6 +100,39 @@ public class SupervisionActivity extends AppCompatActivity
 
     static Bitmap capturedCoolerBitmap;
 
+
+    // GPS LOCATION
+    private FusedLocationProviderClient mFusedLocationClient;
+    private SettingsClient mSettingsClient;
+    private LocationRequest mLocationRequest;
+    private LocationSettingsRequest mLocationSettingsRequest;
+    private LocationCallback mLocationCallback;
+    private Location mCurrentLocation;
+
+
+    private String mLastUpdateTime;
+
+    TextView txtLocationResult;
+
+    private Boolean mRequestingLocationUpdates;
+
+
+    static TextView mensaje1, mensaje2;
+
+    // location updates interval - 10sec
+    private static final long UPDATE_INTERVAL_IN_MILLISECONDS = 10000;
+
+    // fastest updates interval - 5 sec
+    // location updates will be received if another app is requesting the locations
+    // than your app can handle
+    private static final long FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS = 5000;
+
+    //TextView txtUpdatedOn;
+
+
+    static double Lat;
+    static double Lng;
+    // GPS LOCATION
 
     private static final int REQUEST_PERM_WRITE_STORAGE = 102;
     private static final int CAPTURE_PHOTO = 104;
@@ -139,6 +179,9 @@ public class SupervisionActivity extends AppCompatActivity
     Button btnBorrar4;
     Button btnBorrar5;
 
+
+
+
 //Subir archivo
 
     Button btnArchivo;
@@ -173,6 +216,9 @@ public class SupervisionActivity extends AppCompatActivity
         setContentView(R.layout.activity_supervision);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        //init();
+
 
         recibirDatos();
         //Inicializacion de varibales
@@ -209,6 +255,16 @@ public class SupervisionActivity extends AppCompatActivity
 
         noImage = imageView5;
 
+        // GPSSSSSSSSSSSSSSSSSSSSS
+
+        mensaje1  = (TextView) findViewById(R.id.txtLat);
+        mensaje2  = (TextView) findViewById(R.id.txtLng);
+
+        mensaje1.setVisibility(View.INVISIBLE);
+        mensaje2.setVisibility(View.INVISIBLE);
+
+        // GPSSSSSSSSSSSSSSSSSSSSS
+
         //Firebase Inicializacion
         mDatabase = FirebaseDatabase.getInstance().getReference();
         dbRef = FirebaseDatabase.getInstance();
@@ -227,6 +283,12 @@ public class SupervisionActivity extends AppCompatActivity
 
 
         //Botones
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION,}, 1000);
+        } else {
+            locationStart();
+        }
 
 
         btnArchivo.setOnClickListener(new View.OnClickListener() {
@@ -407,7 +469,7 @@ public class SupervisionActivity extends AppCompatActivity
                 String Observation = edObserv.getText().toString();
                 boolean statuss = true;
 
-                Data data = new Data(Observation, statuss);
+                Data data = new Data(Observation, statuss, Lat, Lng);
 
 
                 if ((estado).equals("before")) {
@@ -502,6 +564,152 @@ public class SupervisionActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
     }
 
+    private void locationStart() {
+        LocationManager mlocManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        Localizacion Local = new Localizacion();
+        Local.setMainActivity(this);
+        final boolean gpsEnabled = mlocManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        if (!gpsEnabled) {
+            Intent settingsIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+            startActivity(settingsIntent);
+        }
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION,}, 1000);
+            return;
+        }
+        mlocManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, (LocationListener) Local);
+        mlocManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, (LocationListener) Local);
+        mensaje1.setText("Localización agregada");
+        mensaje2.setText("");
+    }
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if(requestCode==9 && grantResults[0]==PackageManager.PERMISSION_GRANTED){
+            selectPDF();
+        }else{
+            Toast.makeText(getApplicationContext(),"Porfavor otorgue los permisos...",Toast.LENGTH_SHORT).show();
+        }
+
+        if (requestCode == 1000) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                locationStart();
+                return;
+            }
+        }
+    }
+    public void setLocation(Location loc) {
+        //Obtener la direccion de la calle a partir de la latitud y la longitud
+        if (loc.getLatitude() != 0.0 && loc.getLongitude() != 0.0) {
+            try {
+                Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+                List<Address> list = geocoder.getFromLocation(
+                        loc.getLatitude(), loc.getLongitude(), 1);
+                if (!list.isEmpty()) {
+                    Address DirCalle = list.get(0);
+                    mensaje2.setText("Mi direccion es: \n"
+                            + DirCalle.getAddressLine(0));
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    /* Aqui empieza la Clase Localizacion */
+    public class Localizacion implements LocationListener {
+        SupervisionActivity mainActivity3;
+        public SupervisionActivity getMainActivity() {
+            return mainActivity3;
+        }
+        public void setMainActivity(SupervisionActivity mainActivity) {
+            this.mainActivity3 = mainActivity;
+        }
+        @Override
+        public void onLocationChanged(Location loc) {
+            // Este metodo se ejecuta cada vez que el GPS recibe nuevas coordenadas
+            // debido a la deteccion de un cambio de ubicacion
+            loc.getLatitude();
+            loc.getLongitude();
+            String Text = "Mi ubicacion actual es: " + "\n Lat = "
+                    + loc.getLatitude() + "\n Long = " + loc.getLongitude();
+
+            //----------------------------------------------------------------------------------------------------------------------------------------------------------
+            Lat=loc.getLatitude();
+            Lng=loc.getLongitude();
+
+            mensaje1.setText(Text);
+            this.mainActivity3.setLocation(loc);
+        }
+        @Override
+        public void onProviderDisabled(String provider) {
+            // Este metodo se ejecuta cuando el GPS es desactivado
+            mensaje1.setText("GPS Desactivado");
+        }
+        @Override
+        public void onProviderEnabled(String provider) {
+            // Este metodo se ejecuta cuando el GPS es activado
+            mensaje1.setText("GPS Activado");
+        }
+        @Override
+        public void onStatusChanged(String provider, int status, Bundle extras) {
+            switch (status) {
+                case LocationProvider.AVAILABLE:
+                    Log.d("debug", "LocationProvider.AVAILABLE");
+                    break;
+                case LocationProvider.OUT_OF_SERVICE:
+                    Log.d("debug", "LocationProvider.OUT_OF_SERVICE");
+                    break;
+                case LocationProvider.TEMPORARILY_UNAVAILABLE:
+                    Log.d("debug", "LocationProvider.TEMPORARILY_UNAVAILABLE");
+                    break;
+            }
+        }
+    }
+
+
+    private void init() {
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        mSettingsClient = LocationServices.getSettingsClient(this);
+
+        mLocationCallback = new LocationCallback() {
+            @Override
+            public void onLocationResult(LocationResult locationResult) {
+                super.onLocationResult(locationResult);
+                // location is received
+                mCurrentLocation = locationResult.getLastLocation();
+                mLastUpdateTime = DateFormat.getTimeInstance().format(new Date());
+
+                updateLocationUI();
+            }
+        };
+
+        mRequestingLocationUpdates = true;
+
+        mLocationRequest = new LocationRequest();
+        mLocationRequest.setInterval(UPDATE_INTERVAL_IN_MILLISECONDS);
+        mLocationRequest.setFastestInterval(FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS);
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+
+        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder();
+        builder.addLocationRequest(mLocationRequest);
+        mLocationSettingsRequest = builder.build();
+    }
+
+    private void updateLocationUI() {
+                if (mCurrentLocation != null) {
+                    txtLocationResult.setText(
+                            "Lat: " + mCurrentLocation.getLatitude() + ", " +
+                                    "Lng: " + mCurrentLocation.getLongitude()
+                    );
+
+                    // giving a blink animation on TextView
+                    txtLocationResult.setAlpha(0);
+                    txtLocationResult.animate().alpha(1).setDuration(300);
+
+                    // location last updated time
+                    //txtUpdatedOn.setText("Last updated on: " + mLastUpdateTime);
+                }
+
+               // toggleButtons();
+            }
 
     private void BorrarImagenes() {
         imageView.setImageDrawable(Drawable.createFromPath("@drawable/empty_image"));
@@ -527,7 +735,7 @@ public class SupervisionActivity extends AppCompatActivity
 
     private void uploadImage1() {
         if (fileimagen != null) {
-            final ProgressDialog progressDialog = new ProgressDialog(this);
+            final ProgressDialog progressDialog = new ProgressDialog(SupervisionActivity.this);
             progressDialog.setTitle("Subiendo....");
 
             StorageReference ref = storageReference.child("images").child(idevent).child(estado).child("Img" + UUID.randomUUID().toString());
@@ -560,7 +768,7 @@ public class SupervisionActivity extends AppCompatActivity
 
     private void uploadImage2() {
         if (fileimagen2 != null) {
-            final ProgressDialog progressDialog = new ProgressDialog(this);
+            final ProgressDialog progressDialog = new ProgressDialog(SupervisionActivity.this);
             progressDialog.setTitle("Subiendo....");
 
             StorageReference ref = storageReference.child("images").child(idevent).child(estado).child("Img" + UUID.randomUUID().toString());
@@ -593,7 +801,7 @@ public class SupervisionActivity extends AppCompatActivity
 
     private void uploadImage3() {
         if (fileimagen3 != null) {
-            final ProgressDialog progressDialog = new ProgressDialog(this);
+            final ProgressDialog progressDialog = new ProgressDialog(SupervisionActivity.this);
             progressDialog.setTitle("Subiendo....");
 
             StorageReference ref = storageReference.child("images").child(idevent).child(estado).child("Img" + UUID.randomUUID().toString());
@@ -626,7 +834,7 @@ public class SupervisionActivity extends AppCompatActivity
 
     private void uploadImage4() {
         if (fileimagen4 != null) {
-            final ProgressDialog progressDialog = new ProgressDialog(this);
+            final ProgressDialog progressDialog = new ProgressDialog(SupervisionActivity.this);
             progressDialog.setTitle("Subiendo....");
 
             StorageReference ref = storageReference.child("images").child(idevent).child(estado).child("Img" + UUID.randomUUID().toString());
@@ -660,7 +868,7 @@ public class SupervisionActivity extends AppCompatActivity
 
     private void uploadImage5() {
         if (fileimagen5 != null) {
-            final ProgressDialog progressDialog = new ProgressDialog(this);
+            final ProgressDialog progressDialog = new ProgressDialog(SupervisionActivity.this);
             progressDialog.setTitle("Subiendo....");
 
             StorageReference ref = storageReference.child("images").child(idevent).child(estado).child("Img" + UUID.randomUUID().toString());
@@ -694,7 +902,7 @@ public class SupervisionActivity extends AppCompatActivity
 
 
     private void uploadfile(Uri pdfUri) {
-        progressDialog= new ProgressDialog(this);
+        progressDialog= new ProgressDialog(SupervisionActivity.this);
         progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
         progressDialog.setTitle("Subiendo archivo...");
         progressDialog.setProgress(0);
@@ -746,16 +954,6 @@ public class SupervisionActivity extends AppCompatActivity
         startActivityForResult(intent, 86);
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-
-        if(requestCode==9 && grantResults[0]==PackageManager.PERMISSION_GRANTED){
-            selectPDF();
-        }else{
-            Toast.makeText(getApplicationContext(),"Porfavor otorgue los permisos...",Toast.LENGTH_SHORT).show();
-        }
-
-    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -763,6 +961,7 @@ public class SupervisionActivity extends AppCompatActivity
 
         if (requestCode==86 && resultCode==RESULT_OK && data!=null) {
             pdfUri=data.getData();
+            Toast.makeText(getApplicationContext(),"Tu archivo se ha guardado exitosamente",Toast.LENGTH_SHORT).show();
         }else{
             Toast.makeText(getApplicationContext(),"Porfavor elija un archivo",Toast.LENGTH_SHORT).show();
 
@@ -841,6 +1040,7 @@ public class SupervisionActivity extends AppCompatActivity
         n = generator.nextInt(n);
         String imageName = "Image-" + n + ".jpg";
         File file = new File (myDir, imageName);
+
 
         if(descision==0) {
             fileimagen = file;
@@ -996,3 +1196,4 @@ public class SupervisionActivity extends AppCompatActivity
 
     }
 }
+
