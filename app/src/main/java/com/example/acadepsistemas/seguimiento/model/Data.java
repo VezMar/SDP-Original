@@ -6,7 +6,7 @@ public class Data {
     double Lat;
     double Lng;
 
-    public Data(String observation, boolean statuss, double longitude) {
+    public Data() {
     }
 
 

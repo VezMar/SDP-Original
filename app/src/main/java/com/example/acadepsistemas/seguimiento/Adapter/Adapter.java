@@ -47,9 +47,11 @@ public class Adapter extends RecyclerView.Adapter<Adapter.EventoviewHolder> impl
     public void onBindViewHolder(@NonNull EventoviewHolder holder, int position) {
 
        holder.txtview_actividad.setText(evento.get(position).getActividad());
-        holder.txtview_uid.setText(evento.get(position).getUid());
+       // holder.txtview_uid.setText(evento.get(position).getUid());
         holder.txtview_trabajador.setText(evento.get(position).getTrabajador());
-
+        holder.txtview_start.setText(evento.get(position).getStart());
+        holder.txtview_end.setText(evento.get(position).getEnd());
+        holder.txtview_name.setText(evento.get(position).getName());
 
 
     }
@@ -75,6 +77,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.EventoviewHolder> impl
     public class EventoviewHolder extends RecyclerView.ViewHolder{
 
         TextView txtview_actividad, txtview_trabajador,txtview_uid;
+        TextView txtview_name, txtview_start, txtview_end, txtview_active;
         Button btnRealizar;
 
         public EventoviewHolder(@NonNull View itemView) {
@@ -82,7 +85,12 @@ public class Adapter extends RecyclerView.Adapter<Adapter.EventoviewHolder> impl
 
             txtview_actividad = (TextView) itemView.findViewById(R.id.txtview_actividad);
             txtview_trabajador = (TextView) itemView.findViewById(R.id.txtview_trabajador);
-            txtview_uid = (TextView) itemView.findViewById(R.id.txtview_uid);
+            txtview_name = (TextView) itemView.findViewById(R.id.txtview_name);
+            txtview_start = (TextView) itemView.findViewById(R.id.txtview_start);
+            txtview_end = (TextView) itemView.findViewById(R.id.txtview_end);
+
+           //txtview_active = (TextView) itemView.findViewById(R.id.txtview_active);
+           // txtview_uid = (TextView) itemView.findViewById(R.id.txtview_uid);
             //btnRealizar = (Button) itemView.findViewById(R.id.btnRealizar);
 
         }

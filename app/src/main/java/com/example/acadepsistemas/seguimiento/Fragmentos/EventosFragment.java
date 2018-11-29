@@ -34,6 +34,7 @@ public class EventosFragment extends Fragment {
 
     public String uidUserGlobal;
     public String uid;
+    static boolean activeStatus;
     FirebaseAuth mAuth;
     DatabaseReference mDatabase;
 
@@ -82,8 +83,11 @@ public class EventosFragment extends Fragment {
 
                     Evento p = dataSnapshot1.getValue(Evento.class);
                     uid = p.getUid();
+                    activeStatus = p.getActive();
 
-                    if((uidUserGlobal).equals(uid)) {
+                    if((uidUserGlobal).equals(uid) && activeStatus==true) {
+                   // if((uidUserGlobal).equals(uid)) {
+
                         list.add(p);
                    }
                     c++;

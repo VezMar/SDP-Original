@@ -1189,10 +1189,33 @@ public class SupervisionActivity extends AppCompatActivity
     }
 
     private void ocultarItems(){
+
         txtEstado.setVisibility(View.INVISIBLE);
         bottomNavigationView.setVisibility(View.INVISIBLE);
         edObserv.setVisibility(View.INVISIBLE);
         btnEnviar.setVisibility(View.INVISIBLE);
+
+        btnFoto.setVisibility(View.INVISIBLE);
+        btnFoto2.setVisibility(View.INVISIBLE);
+        btnFoto3.setVisibility(View.INVISIBLE);
+        btnFoto4.setVisibility(View.INVISIBLE);
+        btnFoto5.setVisibility(View.INVISIBLE);
+
+        btnBorrar.setVisibility(View.INVISIBLE);
+        btnBorrar2.setVisibility(View.INVISIBLE);
+        btnBorrar3.setVisibility(View.INVISIBLE);
+        btnBorrar4.setVisibility(View.INVISIBLE);
+        btnBorrar5.setVisibility(View.INVISIBLE);
+
+
+        imageView.setVisibility(View.INVISIBLE);
+        imageView2.setVisibility(View.INVISIBLE);
+        imageView3.setVisibility(View.INVISIBLE);
+        imageView4.setVisibility(View.INVISIBLE);
+        imageView5.setVisibility(View.INVISIBLE);
+
+        btnArchivo.setVisibility(View.INVISIBLE);
+
 
     }
 }
