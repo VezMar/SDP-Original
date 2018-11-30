@@ -85,8 +85,14 @@ import com.google.android.gms.location.LocationSettingsRequest;
 
 import ru.dimorinny.floatingtextbutton.FloatingTextButton;
 
-public class SupervisionActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+public class ExtraActivity extends AppCompatActivity {
+
+    static String idevent;
+    static String nameEvent;
+
+    TextView txtname, txtidevent;
+
+
 
 
     private static final String CARPETA_PRINCIPAL = "DCIM/";
@@ -101,45 +107,22 @@ public class SupervisionActivity extends AppCompatActivity
 
 
     static Bitmap capturedCoolerBitmap;
+    //Variables xxxxxx
 
 
-    // GPS LOCATION
-    private FusedLocationProviderClient mFusedLocationClient;
-    private SettingsClient mSettingsClient;
-    private LocationRequest mLocationRequest;
-    private LocationSettingsRequest mLocationSettingsRequest;
-    private LocationCallback mLocationCallback;
-    private Location mCurrentLocation;
+    static int descision;
 
-
-    private String mLastUpdateTime;
-
-    TextView txtLocationResult;
-
-    private Boolean mRequestingLocationUpdates;
-
+    //Variables xxxxxx
 
     static TextView mensaje1, mensaje2;
 
-    // location updates interval - 10sec
-    private static final long UPDATE_INTERVAL_IN_MILLISECONDS = 10000;
-
-    // fastest updates interval - 5 sec
-    // location updates will be received if another app is requesting the locations
-    // than your app can handle
-    private static final long FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS = 5000;
-
-    //TextView txtUpdatedOn;
-
-
     static double Lat;
     static double Lng;
+
+
     // GPS LOCATION
 
-    private static final int REQUEST_PERM_WRITE_STORAGE = 102;
-    private static final int CAPTURE_PHOTO = 104;
 
-    //Varibales X
     FloatingTextButton btnEnviar;
     private FloatingTextButton btnFoto;
     private FloatingTextButton btnFoto2;
@@ -147,26 +130,12 @@ public class SupervisionActivity extends AppCompatActivity
     private FloatingTextButton btnFoto4;
     private FloatingTextButton btnFoto5;
 
-
-    ListView listView;
-
-
-    static int conteo = 0;
-    static int descision;
-
-    static String idevent;
-    static String nameEvent;
-    EditText edObserv;
-    static TextView txtEstado;
-
-    boolean statusChange;
-
-
-    public String rolesUser;
-    static String estado = "before";
-    static String actividad;
-
     //Variables Fotos
+
+    private static final int REQUEST_PERM_WRITE_STORAGE = 102;
+    private static final int CAPTURE_PHOTO = 104;
+
+
     private Uri filePath;
     private static ImageView imageView;
     private static ImageView imageView2;
@@ -182,17 +151,14 @@ public class SupervisionActivity extends AppCompatActivity
     FloatingTextButton btnBorrar4;
     FloatingTextButton btnBorrar5;
 
-
-
-
-//Subir archivo
+    //Subir archivo
 
     FloatingTextButton btnArchivo;
     Uri pdfUri;
 
     ProgressDialog progressDialog;
+    EditText edObserv;
 
-    static ImageView[] valores = new ImageView[]{imageView, imageView2, imageView3, imageView4, imageView5};
     //FIREBASE
 
     FirebaseAuth mAuth;
@@ -209,28 +175,18 @@ public class SupervisionActivity extends AppCompatActivity
     private FirebaseFirestore mFireStore;
     private Query mQuery;
 
-
-    private BottomNavigationView bottomNavigationView;
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_supervision);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        //init();
-
+        setContentView(R.layout.activity_extra);
 
         recibirDatos();
-        //Inicializacion de varibales
-        bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottomNavigationView);
-        bottomNavigationView.setOnNavigationItemSelectedListener(navListener);
-        txtEstado = (TextView) findViewById(R.id.txtEstado);
 
-        txtEstado.setText("Antes de la Actividad");
+        txtname = (TextView) findViewById(R.id.txtname);
+        txtidevent = (TextView) findViewById(R.id.txtidevent);
 
+        txtname.setText("Evento: "+nameEvent);
+        txtidevent.setText("ID: "+idevent);
 
         edObserv = (EditText) findViewById(R.id.edObserv);
         btnEnviar = (FloatingTextButton) findViewById(R.id.btnEnviar);
@@ -256,17 +212,12 @@ public class SupervisionActivity extends AppCompatActivity
         imageView4 = (ImageView) findViewById(R.id.imgView4);
         imageView5 = (ImageView) findViewById(R.id.imgView5);
 
-        noImage = imageView5;
-
-        // GPSSSSSSSSSSSSSSSSSSSSS
-
         mensaje1  = (TextView) findViewById(R.id.txtLat);
         mensaje2  = (TextView) findViewById(R.id.txtLng);
 
         mensaje1.setVisibility(View.INVISIBLE);
         mensaje2.setVisibility(View.INVISIBLE);
 
-        // GPSSSSSSSSSSSSSSSSSSSSS
 
         //Firebase Inicializacion
         mDatabase = FirebaseDatabase.getInstance().getReference();
@@ -285,23 +236,14 @@ public class SupervisionActivity extends AppCompatActivity
         // FireStore
 
 
-        //Botones
-
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION,}, 1000);
-        } else {
-            locationStart();
-        }
-
-
         btnArchivo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                if (ContextCompat.checkSelfPermission(SupervisionActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                if (ContextCompat.checkSelfPermission(ExtraActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
                     selectPDF();
                 } else {
-                    ActivityCompat.requestPermissions(SupervisionActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 9);
+                    ActivityCompat.requestPermissions(ExtraActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 9);
                 }
             }
         });
@@ -365,14 +307,14 @@ public class SupervisionActivity extends AppCompatActivity
             public void onClick(View v) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     if (checkSelfPermission(String.valueOf(Manifest.permission.CAMERA)) != PackageManager.PERMISSION_DENIED) {
-                        ActivityCompat.requestPermissions(SupervisionActivity.this, new String[]{Manifest.permission.CAMERA}, 1);
+                        ActivityCompat.requestPermissions(ExtraActivity.this, new String[]{Manifest.permission.CAMERA}, 1);
                     }
                 }
 
                 if (ActivityCompat.checkSelfPermission(getApplicationContext(),
                         Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
 
-                    ActivityCompat.requestPermissions(SupervisionActivity.this,
+                    ActivityCompat.requestPermissions(ExtraActivity.this,
                             new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_PERM_WRITE_STORAGE);
                 } else {
                     descision = 0;
@@ -386,14 +328,14 @@ public class SupervisionActivity extends AppCompatActivity
             public void onClick(View v) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     if (checkSelfPermission(String.valueOf(Manifest.permission.CAMERA)) != PackageManager.PERMISSION_DENIED) {
-                        ActivityCompat.requestPermissions(SupervisionActivity.this, new String[]{Manifest.permission.CAMERA}, 1);
+                        ActivityCompat.requestPermissions(ExtraActivity.this, new String[]{Manifest.permission.CAMERA}, 1);
                     }
                 }
 
                 if (ActivityCompat.checkSelfPermission(getApplicationContext(),
                         Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
 
-                    ActivityCompat.requestPermissions(SupervisionActivity.this,
+                    ActivityCompat.requestPermissions(ExtraActivity.this,
                             new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_PERM_WRITE_STORAGE);
                 } else {
                     descision = 1;
@@ -407,14 +349,14 @@ public class SupervisionActivity extends AppCompatActivity
             public void onClick(View v) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     if (checkSelfPermission(String.valueOf(Manifest.permission.CAMERA)) != PackageManager.PERMISSION_DENIED) {
-                        ActivityCompat.requestPermissions(SupervisionActivity.this, new String[]{Manifest.permission.CAMERA}, 1);
+                        ActivityCompat.requestPermissions(ExtraActivity.this, new String[]{Manifest.permission.CAMERA}, 1);
                     }
                 }
 
                 if (ActivityCompat.checkSelfPermission(getApplicationContext(),
                         Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
 
-                    ActivityCompat.requestPermissions(SupervisionActivity.this,
+                    ActivityCompat.requestPermissions(ExtraActivity.this,
                             new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_PERM_WRITE_STORAGE);
                 } else {
                     descision = 2;
@@ -428,14 +370,14 @@ public class SupervisionActivity extends AppCompatActivity
             public void onClick(View v) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     if (checkSelfPermission(String.valueOf(Manifest.permission.CAMERA)) != PackageManager.PERMISSION_DENIED) {
-                        ActivityCompat.requestPermissions(SupervisionActivity.this, new String[]{Manifest.permission.CAMERA}, 1);
+                        ActivityCompat.requestPermissions(ExtraActivity.this, new String[]{Manifest.permission.CAMERA}, 1);
                     }
                 }
 
                 if (ActivityCompat.checkSelfPermission(getApplicationContext(),
                         Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
 
-                    ActivityCompat.requestPermissions(SupervisionActivity.this,
+                    ActivityCompat.requestPermissions(ExtraActivity.this,
                             new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_PERM_WRITE_STORAGE);
                 } else {
                     descision = 3;
@@ -449,14 +391,14 @@ public class SupervisionActivity extends AppCompatActivity
             public void onClick(View v) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     if (checkSelfPermission(String.valueOf(Manifest.permission.CAMERA)) != PackageManager.PERMISSION_DENIED) {
-                        ActivityCompat.requestPermissions(SupervisionActivity.this, new String[]{Manifest.permission.CAMERA}, 1);
+                        ActivityCompat.requestPermissions(ExtraActivity.this, new String[]{Manifest.permission.CAMERA}, 1);
                     }
                 }
 
                 if (ActivityCompat.checkSelfPermission(getApplicationContext(),
                         Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
 
-                    ActivityCompat.requestPermissions(SupervisionActivity.this,
+                    ActivityCompat.requestPermissions(ExtraActivity.this,
                             new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_PERM_WRITE_STORAGE);
                 } else {
                     descision = 4;
@@ -475,244 +417,28 @@ public class SupervisionActivity extends AppCompatActivity
                 Data data = new Data(Observation, statuss, Lat, Lng);
 
 
-                if ((estado).equals("before")) {
-                    if ((mDatabase.child("Eventos").child(idevent).child("observation").child("before").child("status")).equals(null)) {
 
-                        Toast.makeText(getApplicationContext(), "Ya realizaste esta actividad", Toast.LENGTH_SHORT).show();
-                    } else {
-                        // String k = mDatabase.child("Eventos").child(idevent).child("observation").child("before").child("status").;
-                        mDatabase.child("Eventos").child(idevent).child("observation").child("before").setValue(data);
-                        Toast.makeText(getApplicationContext(), "Datos ingresados", Toast.LENGTH_SHORT).show();
-                        edObserv.setText("");
-                        uploadImage1();
-                        uploadImage2();
-                        uploadImage3();
-                        uploadImage4();
-                        uploadImage5();
+                mDatabase.child("Eventos").child(idevent).child("extraordinario").setValue(data);
+                Toast.makeText(getApplicationContext(), "Datos ingresados", Toast.LENGTH_SHORT).show();
+                edObserv.setText("");
+                uploadImage1();
+                uploadImage2();
+                uploadImage3();
+                uploadImage4();
+                uploadImage5();
 
-                        if (pdfUri != null) {
-                            uploadfile(pdfUri);
-                        }
-
-                        BorrarImagenes();
-                    }
+                if (pdfUri != null) {
+                    uploadfile(pdfUri);
                 }
-                if ((estado).equals("during")) {
-                    if (mDatabase.child("Eventos").child(idevent).child("observation").child("during").child("status").equals("true")) {
-                        Toast.makeText(getApplicationContext(), "Ya realizaste esta actividad", Toast.LENGTH_SHORT).show();
-                    } else {
-                        mDatabase.child("Eventos").child(idevent).child("observation").child("during").setValue(data);
-                        Toast.makeText(getApplicationContext(), "Datos ingresados", Toast.LENGTH_SHORT).show();
-                        edObserv.setText("");
-                        uploadImage1();
-                        uploadImage2();
-                        uploadImage3();
-                        uploadImage4();
-                        uploadImage5();
 
-                        if (pdfUri != null) {
-                            uploadfile(pdfUri);
-                        }
+                BorrarImagenes();
 
-                        BorrarImagenes();
-                    }
-                }
-                if ((estado).equals("after")) {
-                    if (mDatabase.child("Eventos").child(idevent).child("observation").child("after").child("status").equals("true")) {
-                        Toast.makeText(getApplicationContext(), "Ya realizaste esta actividad", Toast.LENGTH_SHORT).show();
-                    } else {
-                        mDatabase.child("Eventos").child(idevent).child("observation").child("after").setValue(data);
-                        Toast.makeText(getApplicationContext(), "Datos ingresados", Toast.LENGTH_SHORT).show();
-                        edObserv.setText("");
-                        uploadImage1();
-                        uploadImage2();
-                        uploadImage3();
-                        uploadImage4();
-                        uploadImage5();
-
-                        if (pdfUri != null) {
-                            uploadfile(pdfUri);
-                        }
-
-                        BorrarImagenes();
-                    }
-
-                }
 
             }
+
+
         });
-
-        // -------------------Image view --------------------- Zoom ---------------------
-       /* imageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                AlertDialog.Builder mBuilder = new AlertDialog.Builder(SupervisionActivity.this);
-                View mView = getLayoutInflater().inflate(R.layout.dialog_custom_layout, null);
-                PhotoView photoView = mView.findViewById(R.id.imageView);
-                photoView.setImageURI(Uri.fromFile(fileimagen));
-                mBuilder.setView(mView);
-                AlertDialog mDialog = mBuilder.create();
-                mDialog.show();
-            }
-        });*/
-
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout2);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
-
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
     }
-
-    private void locationStart() {
-        LocationManager mlocManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        Localizacion Local = new Localizacion();
-        Local.setMainActivity(this);
-        final boolean gpsEnabled = mlocManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-        if (!gpsEnabled) {
-            Intent settingsIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-            startActivity(settingsIntent);
-        }
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION,}, 1000);
-            return;
-        }
-        mlocManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, (LocationListener) Local);
-        mlocManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, (LocationListener) Local);
-        mensaje1.setText("Localización agregada");
-        mensaje2.setText("");
-    }
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if(requestCode==9 && grantResults[0]==PackageManager.PERMISSION_GRANTED){
-            selectPDF();
-        }else{
-            Toast.makeText(getApplicationContext(),"Porfavor otorgue los permisos...",Toast.LENGTH_SHORT).show();
-        }
-
-        if (requestCode == 1000) {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                locationStart();
-                return;
-            }
-        }
-    }
-    public void setLocation(Location loc) {
-        //Obtener la direccion de la calle a partir de la latitud y la longitud
-        if (loc.getLatitude() != 0.0 && loc.getLongitude() != 0.0) {
-            try {
-                Geocoder geocoder = new Geocoder(this, Locale.getDefault());
-                List<Address> list = geocoder.getFromLocation(
-                        loc.getLatitude(), loc.getLongitude(), 1);
-                if (!list.isEmpty()) {
-                    Address DirCalle = list.get(0);
-                    mensaje2.setText("Mi direccion es: \n"
-                            + DirCalle.getAddressLine(0));
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-    /* Aqui empieza la Clase Localizacion */
-    public static class Localizacion implements LocationListener {
-        SupervisionActivity mainActivity3;
-        public SupervisionActivity getMainActivity() {
-            return mainActivity3;
-        }
-        public void setMainActivity(SupervisionActivity mainActivity) {
-            this.mainActivity3 = mainActivity;
-        }
-        @Override
-        public void onLocationChanged(Location loc) {
-            // Este metodo se ejecuta cada vez que el GPS recibe nuevas coordenadas
-            // debido a la deteccion de un cambio de ubicacion
-            loc.getLatitude();
-            loc.getLongitude();
-            String Text = "Mi ubicacion actual es: " + "\n Lat = "
-                    + loc.getLatitude() + "\n Long = " + loc.getLongitude();
-
-            //----------------------------------------------------------------------------------------------------------------------------------------------------------
-            Lat=loc.getLatitude();
-            Lng=loc.getLongitude();
-
-            mensaje1.setText(Text);
-            this.mainActivity3.setLocation(loc);
-        }
-        @Override
-        public void onProviderDisabled(String provider) {
-            // Este metodo se ejecuta cuando el GPS es desactivado
-            mensaje1.setText("GPS Desactivado");
-        }
-        @Override
-        public void onProviderEnabled(String provider) {
-            // Este metodo se ejecuta cuando el GPS es activado
-            mensaje1.setText("GPS Activado");
-        }
-        @Override
-        public void onStatusChanged(String provider, int status, Bundle extras) {
-            switch (status) {
-                case LocationProvider.AVAILABLE:
-                    Log.d("debug", "LocationProvider.AVAILABLE");
-                    break;
-                case LocationProvider.OUT_OF_SERVICE:
-                    Log.d("debug", "LocationProvider.OUT_OF_SERVICE");
-                    break;
-                case LocationProvider.TEMPORARILY_UNAVAILABLE:
-                    Log.d("debug", "LocationProvider.TEMPORARILY_UNAVAILABLE");
-                    break;
-            }
-        }
-    }
-
-
-    private void init() {
-        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-        mSettingsClient = LocationServices.getSettingsClient(this);
-
-        mLocationCallback = new LocationCallback() {
-            @Override
-            public void onLocationResult(LocationResult locationResult) {
-                super.onLocationResult(locationResult);
-                // location is received
-                mCurrentLocation = locationResult.getLastLocation();
-                mLastUpdateTime = DateFormat.getTimeInstance().format(new Date());
-
-                updateLocationUI();
-            }
-        };
-
-        mRequestingLocationUpdates = true;
-
-        mLocationRequest = new LocationRequest();
-        mLocationRequest.setInterval(UPDATE_INTERVAL_IN_MILLISECONDS);
-        mLocationRequest.setFastestInterval(FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS);
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-
-        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder();
-        builder.addLocationRequest(mLocationRequest);
-        mLocationSettingsRequest = builder.build();
-    }
-
-    private void updateLocationUI() {
-                if (mCurrentLocation != null) {
-                    txtLocationResult.setText(
-                            "Lat: " + mCurrentLocation.getLatitude() + ", " +
-                                    "Lng: " + mCurrentLocation.getLongitude()
-                    );
-
-                    // giving a blink animation on TextView
-                    txtLocationResult.setAlpha(0);
-                    txtLocationResult.animate().alpha(1).setDuration(300);
-
-                    // location last updated time
-                    //txtUpdatedOn.setText("Last updated on: " + mLastUpdateTime);
-                }
-
-               // toggleButtons();
-            }
 
     private void BorrarImagenes() {
         imageView.setImageDrawable(Drawable.createFromPath("@drawable/empty_image"));
@@ -738,10 +464,10 @@ public class SupervisionActivity extends AppCompatActivity
 
     private void uploadImage1() {
         if (fileimagen != null) {
-            final ProgressDialog progressDialog = new ProgressDialog(SupervisionActivity.this);
+            final ProgressDialog progressDialog = new ProgressDialog(ExtraActivity.this);
             progressDialog.setTitle("Subiendo....");
 
-            StorageReference ref = storageReference.child("images").child(idevent).child(estado).child("Img" + UUID.randomUUID().toString());
+            StorageReference ref = storageReference.child("images").child(idevent).child("extraordinario").child("Img" + UUID.randomUUID().toString());
             // StorageReference ref = storageReference.child("images/"+UUID.randomUUID().toString());
 
             ref.putFile(Uri.fromFile(fileimagen))
@@ -771,10 +497,10 @@ public class SupervisionActivity extends AppCompatActivity
 
     private void uploadImage2() {
         if (fileimagen2 != null) {
-            final ProgressDialog progressDialog = new ProgressDialog(SupervisionActivity.this);
+            final ProgressDialog progressDialog = new ProgressDialog(ExtraActivity.this);
             progressDialog.setTitle("Subiendo....");
 
-            StorageReference ref = storageReference.child("images").child(idevent).child(estado).child("Img" + UUID.randomUUID().toString());
+            StorageReference ref = storageReference.child("images").child(idevent).child("extraordinario").child("Img" + UUID.randomUUID().toString());
             // StorageReference ref = storageReference.child("images/"+UUID.randomUUID().toString());
 
             ref.putFile(Uri.fromFile(fileimagen2))
@@ -804,10 +530,10 @@ public class SupervisionActivity extends AppCompatActivity
 
     private void uploadImage3() {
         if (fileimagen3 != null) {
-            final ProgressDialog progressDialog = new ProgressDialog(SupervisionActivity.this);
+            final ProgressDialog progressDialog = new ProgressDialog(ExtraActivity.this);
             progressDialog.setTitle("Subiendo....");
 
-            StorageReference ref = storageReference.child("images").child(idevent).child(estado).child("Img" + UUID.randomUUID().toString());
+            StorageReference ref = storageReference.child("images").child(idevent).child("extraordinario").child("Img" + UUID.randomUUID().toString());
             // StorageReference ref = storageReference.child("images/"+UUID.randomUUID().toString());
 
             ref.putFile(Uri.fromFile(fileimagen3))
@@ -837,10 +563,10 @@ public class SupervisionActivity extends AppCompatActivity
 
     private void uploadImage4() {
         if (fileimagen4 != null) {
-            final ProgressDialog progressDialog = new ProgressDialog(SupervisionActivity.this);
+            final ProgressDialog progressDialog = new ProgressDialog(ExtraActivity.this);
             progressDialog.setTitle("Subiendo....");
 
-            StorageReference ref = storageReference.child("images").child(idevent).child(estado).child("Img" + UUID.randomUUID().toString());
+            StorageReference ref = storageReference.child("images").child(idevent).child("extraordinario").child("Img" + UUID.randomUUID().toString());
             // StorageReference ref = storageReference.child("images/"+UUID.randomUUID().toString());
 
             ref.putFile(Uri.fromFile(fileimagen4))
@@ -871,10 +597,10 @@ public class SupervisionActivity extends AppCompatActivity
 
     private void uploadImage5() {
         if (fileimagen5 != null) {
-            final ProgressDialog progressDialog = new ProgressDialog(SupervisionActivity.this);
+            final ProgressDialog progressDialog = new ProgressDialog(ExtraActivity.this);
             progressDialog.setTitle("Subiendo....");
 
-            StorageReference ref = storageReference.child("images").child(idevent).child(estado).child("Img" + UUID.randomUUID().toString());
+            StorageReference ref = storageReference.child("images").child(idevent).child("extraordinario").child("Img" + UUID.randomUUID().toString());
             // StorageReference ref = storageReference.child("images/"+UUID.randomUUID().toString());
 
             ref.putFile(Uri.fromFile(fileimagen5))
@@ -903,9 +629,8 @@ public class SupervisionActivity extends AppCompatActivity
         }
     }
 
-
     private void uploadfile(Uri pdfUri) {
-        progressDialog= new ProgressDialog(SupervisionActivity.this);
+        progressDialog= new ProgressDialog(ExtraActivity.this);
         progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
         progressDialog.setTitle("Subiendo archivo...");
         progressDialog.setProgress(0);
@@ -913,7 +638,7 @@ public class SupervisionActivity extends AppCompatActivity
 
         final String fileName= "PDF" + UUID.randomUUID().toString();
         StorageReference srtreference = storage.getReference();
-        srtreference.child("Documents").child(idevent).child(estado).child(fileName).putFile(pdfUri)
+        srtreference.child("Documents").child(idevent).child("extraordinario").child(fileName).putFile(pdfUri)
                 .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
@@ -962,15 +687,15 @@ public class SupervisionActivity extends AppCompatActivity
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode==86 && resultCode==RESULT_OK && data!=null) {
-            pdfUri=data.getData();
-            Toast.makeText(getApplicationContext(),"Tu archivo se ha guardado exitosamente",Toast.LENGTH_SHORT).show();
-        }else{
-            Toast.makeText(getApplicationContext(),"Porfavor elija un archivo",Toast.LENGTH_SHORT).show();
+        if (requestCode == 86 && resultCode == RESULT_OK && data != null) {
+            pdfUri = data.getData();
+            Toast.makeText(getApplicationContext(), "Tu archivo se ha guardado exitosamente", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(getApplicationContext(), "Porfavor elija un archivo", Toast.LENGTH_SHORT).show();
 
         }
 
-        if (requestCode==104 && resultCode == RESULT_OK) {
+        if (requestCode == 104 && resultCode == RESULT_OK) {
             switch (requestCode) {
 
                 case CAPTURE_PHOTO:
@@ -1013,25 +738,6 @@ public class SupervisionActivity extends AppCompatActivity
                     break;
             }
         }
-
-
-
-
-
-    }
-
-    public Bitmap redimensionarImagenMaximo(Bitmap mBitmap, float newWidth, float newHeigth){
-        //Redimensionamos
-        int width = mBitmap.getWidth();
-        int height = mBitmap.getHeight();
-        float scaleWidth = ((float) newWidth) / width;
-        float scaleHeight = ((float) newHeigth) / height;
-        // create a matrix for the manipulation
-        Matrix matrix = new Matrix();
-        // resize the bit map
-        matrix.postScale(scaleWidth, scaleHeight);
-        // recreate the new Bitmap
-        return Bitmap.createBitmap(mBitmap, 0, 0, width, height, matrix, false);
     }
 
     private void saveImageToGallery(Bitmap finalBitmap) {
@@ -1072,159 +778,28 @@ public class SupervisionActivity extends AppCompatActivity
         }
     }
 
+    public Bitmap redimensionarImagenMaximo(Bitmap mBitmap, float newWidth, float newHeigth){
+        //Redimensionamos
+        int width = mBitmap.getWidth();
+        int height = mBitmap.getHeight();
+        float scaleWidth = ((float) newWidth) / width;
+        float scaleHeight = ((float) newHeigth) / height;
+        // create a matrix for the manipulation
+        Matrix matrix = new Matrix();
+        // resize the bit map
+        matrix.postScale(scaleWidth, scaleHeight);
+        // recreate the new Bitmap
+        return Bitmap.createBitmap(mBitmap, 0, 0, width, height, matrix, false);
+    }
 
-    private BottomNavigationView.OnNavigationItemSelectedListener navListener =
-            new BottomNavigationView.OnNavigationItemSelectedListener() {
-                @Override
-                public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
 
-                    switch (menuItem.getItemId()){
-                        case R.id.itemAntes:
-                            estado="before";
-                            txtEstado.setText("Antes de la Actividad");
-                            //Toast.makeText(getApplicationContext(),"Estado = " +estado, Toast.LENGTH_SHORT).show();
-                            break;
-                        case R.id.itemDurante:
-                            estado="during";
-                            txtEstado.setText("Durante la Actividad");
-                           // Toast.makeText(getApplicationContext(),"Estado = " +estado, Toast.LENGTH_SHORT).show();
-                        break;
-
-                        case R.id.itemDespues:
-                            estado="after";
-                            txtEstado.setText("Después de la Actividad");
-                            //Toast.makeText(getApplicationContext(),"Estado = " +estado, Toast.LENGTH_SHORT).show();
-                            break;
-                    }
-
-                    return true;
-                }
-            };
 
     private void recibirDatos() {
         Bundle extras = getIntent().getExtras();
         idevent = extras.getString("idEvento");
         nameEvent = extras.getString("nameEvent");
-        actividad = extras.getString("actividad");
-    }
-
-    @Override
-    public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout2);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.supervision, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    @SuppressWarnings("StatementWithEmptyBody")
-    @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
-        int id = item.getItemId();
-
-        Fragment mifragment = null;
-        Boolean FragmentoSeleccionado=false;
-
-        if (id == R.id.nav_acty) {
-            Toast.makeText(getApplicationContext(),"Aún en proceso",Toast.LENGTH_SHORT).show();
-        } else if (id == R.id.nav_event) {
-            mifragment = new EventosFragment();
-            FragmentoSeleccionado=true;
-
-           /*Intent intent= new Intent (Main2Activity.this, EventosActivity.class);
-            startActivity(intent);]*/
-            //finish();
-
-        } else if (id == R.id.nav_ext) {
-            Intent intent= new Intent (this, ExtraActivity.class);
-            intent.putExtra("idEvento",idevent);
-            intent.putExtra("nameEvent",nameEvent);
-            intent.putExtra("Lat",Lat);
-            intent.putExtra("Lng",Lng);
-            startActivity(intent);
-
-        } else if (id == R.id.nav_signOut) {
-            cerrarSesion();
-        }
-
-
-        if(FragmentoSeleccionado==true){
-            ocultarItems();
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.content_supervision, mifragment)
-                    .commit();
-
-            item.setChecked(true);
-            getSupportActionBar().setTitle(item.getTitle());
-
-        }
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout2);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
-    }
-
-    private void cerrarSesion(){
-
-
-        mAuth.signOut();
-        Intent i= new Intent(this, Login.class);
-        startActivity(i);
-        finish();
-    }
-
-    private void ocultarItems(){
-
-        txtEstado.setVisibility(View.INVISIBLE);
-        bottomNavigationView.setVisibility(View.INVISIBLE);
-        edObserv.setVisibility(View.INVISIBLE);
-        btnEnviar.setVisibility(View.INVISIBLE);
-
-        btnFoto.setVisibility(View.INVISIBLE);
-        btnFoto2.setVisibility(View.INVISIBLE);
-        btnFoto3.setVisibility(View.INVISIBLE);
-        btnFoto4.setVisibility(View.INVISIBLE);
-        btnFoto5.setVisibility(View.INVISIBLE);
-
-        btnBorrar.setVisibility(View.INVISIBLE);
-        btnBorrar2.setVisibility(View.INVISIBLE);
-        btnBorrar3.setVisibility(View.INVISIBLE);
-        btnBorrar4.setVisibility(View.INVISIBLE);
-        btnBorrar5.setVisibility(View.INVISIBLE);
-
-
-        imageView.setVisibility(View.INVISIBLE);
-        imageView2.setVisibility(View.INVISIBLE);
-        imageView3.setVisibility(View.INVISIBLE);
-        imageView4.setVisibility(View.INVISIBLE);
-        imageView5.setVisibility(View.INVISIBLE);
-
-        btnArchivo.setVisibility(View.INVISIBLE);
-
+        Lat = extras.getDouble("Lat");
+        Lng = extras.getDouble("Lng");
 
     }
 }
-

@@ -35,6 +35,7 @@ public class EventosFragment extends Fragment {
     public String uidUserGlobal;
     public String uid;
     static boolean activeStatus;
+    static String nameEvent;
     FirebaseAuth mAuth;
     DatabaseReference mDatabase;
 
@@ -85,6 +86,7 @@ public class EventosFragment extends Fragment {
                     uid = p.getUid();
                     activeStatus = p.getActive();
 
+
                     if((uidUserGlobal).equals(uid) && activeStatus==true) {
                    // if((uidUserGlobal).equals(uid)) {
 
@@ -112,10 +114,12 @@ public class EventosFragment extends Fragment {
                             //mifragment = new SupervisionFragment();
 
                             String idEvento = list.get(rv.getChildAdapterPosition(v)).getIdevent();
+                            String nameEvent = list.get(rv.getChildAdapterPosition(v)).getName();
 
                             Intent intent= new Intent (getActivity(), SupervisionActivity.class);
                             intent.putExtra("idEvento",idEvento);
                             intent.putExtra("actividad",actividad);
+                            intent.putExtra("nameEvent",nameEvent);
 
                             startActivity(intent);
                            Toast.makeText(getContext(), "Supervision", Toast.LENGTH_SHORT).show();

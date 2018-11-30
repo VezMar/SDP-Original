@@ -18,10 +18,7 @@
     <item android:title="Cuenta">
 
         <menu>
-            <item
-                android:id="@+id/nav_ext"
-                android:icon="@drawable/ic_error_outline_black_36dp"
-                android:title="Extraordinario" />
+
             <item
                 android:id="@+id/nav_signOut"
                 android:icon="@drawable/ic_exit_to_app_black_36dp"
