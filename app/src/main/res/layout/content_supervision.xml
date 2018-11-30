@@ -87,20 +87,24 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        android:layout_marginTop="10dp">
 
-                        <ImageView
+                        <com.beardedhen.androidbootstrap.BootstrapCircleThumbnail
                             android:id="@+id/imgView"
                             android:layout_width="100dp"
                             android:layout_height="100dp"
-                            android:alpha=".3"
-                            android:src="@drawable/empty_image" />
+                            android:src="@drawable/empty_image"
+                            app:bootstrapBrand="primary"
+                            app:hasBorder="true"
+
+                            />
 
                         <ru.dimorinny.floatingtextbutton.FloatingTextButton
                             android:id="@+id/btnBorrar"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="20dp"
+                            android:layout_marginTop="25dp"
                             app:floating_background_color="#be4747"
                             app:floating_left_icon="@drawable/ic_delete_black_24dp"
                             app:floating_title="Borrar"
@@ -110,7 +114,7 @@
                             android:id="@+id/btnFoto"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="20dp"
+                            android:layout_marginTop="25dp"
                             app:floating_background_color="@color/colorPrimary"
                             app:floating_left_icon="@drawable/ic_add_a_photo_black_24dp"
                             app:floating_title="Añadir"
@@ -123,20 +127,24 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        android:layout_marginTop="10dp">
 
-                        <ImageView
+                        <com.beardedhen.androidbootstrap.BootstrapCircleThumbnail
                             android:id="@+id/imgView2"
                             android:layout_width="100dp"
                             android:layout_height="100dp"
-                            android:alpha=".3"
-                            android:src="@drawable/empty_image" />
+                            android:src="@drawable/empty_image"
+                            app:bootstrapBrand="primary"
+                            app:hasBorder="true"
+
+                            />
 
                         <ru.dimorinny.floatingtextbutton.FloatingTextButton
                             android:id="@+id/btnBorrar2"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="20sp"
+                            android:layout_marginTop="25sp"
                             app:floating_background_color="#be4747"
                             app:floating_left_icon="@drawable/ic_delete_black_24dp"
                             app:floating_title="Borrar"
@@ -146,7 +154,7 @@
                             android:id="@+id/btnFoto2"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="20dp"
+                            android:layout_marginTop="25dp"
                             app:floating_background_color="@color/colorPrimary"
                             app:floating_left_icon="@drawable/ic_add_a_photo_black_24dp"
                             app:floating_title="Añadir"
@@ -156,20 +164,24 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        android:layout_marginTop="10dp">
 
-                        <ImageView
+                        <com.beardedhen.androidbootstrap.BootstrapCircleThumbnail
                             android:id="@+id/imgView3"
                             android:layout_width="100dp"
                             android:layout_height="100dp"
-                            android:alpha=".3"
-                            android:src="@drawable/empty_image" />
+                            android:src="@drawable/empty_image"
+                            app:bootstrapBrand="primary"
+                            app:hasBorder="true"
+
+                            />
 
                         <ru.dimorinny.floatingtextbutton.FloatingTextButton
                             android:id="@+id/btnBorrar3"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="20dp"
+                            android:layout_marginTop="25dp"
                             app:floating_background_color="#be4747"
                             app:floating_left_icon="@drawable/ic_delete_black_24dp"
                             app:floating_title="Borrar"
@@ -179,7 +191,7 @@
                             android:id="@+id/btnFoto3"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="20dp"
+                            android:layout_marginTop="25dp"
                             app:floating_background_color="@color/colorPrimary"
                             app:floating_left_icon="@drawable/ic_add_a_photo_black_24dp"
                             app:floating_title="Añadir"
@@ -189,20 +201,22 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        android:layout_marginTop="10dp">
 
-                        <ImageView
+                        <com.beardedhen.androidbootstrap.BootstrapCircleThumbnail
                             android:id="@+id/imgView4"
                             android:layout_width="100dp"
                             android:layout_height="100dp"
-                            android:alpha=".3"
-                            android:src="@drawable/empty_image" />
+                            android:src="@drawable/empty_image"
+                            app:bootstrapBrand="primary"
+                            app:hasBorder="true"/>
 
                         <ru.dimorinny.floatingtextbutton.FloatingTextButton
                             android:id="@+id/btnBorrar4"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="20dp"
+                            android:layout_marginTop="25dp"
                             app:floating_background_color="#be4747"
                             app:floating_left_icon="@drawable/ic_delete_black_24dp"
                             app:floating_title="Borrar"
@@ -212,7 +226,7 @@
                             android:id="@+id/btnFoto4"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="20dp"
+                            android:layout_marginTop="25dp"
                             app:floating_background_color="@color/colorPrimary"
                             app:floating_left_icon="@drawable/ic_add_a_photo_black_24dp"
                             app:floating_title="Añadir"
@@ -222,20 +236,22 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        android:layout_marginTop="10dp">
 
-                        <ImageView
+                        <com.beardedhen.androidbootstrap.BootstrapCircleThumbnail
                             android:id="@+id/imgView5"
                             android:layout_width="100dp"
                             android:layout_height="100dp"
-                            android:alpha=".3"
-                            android:src="@drawable/empty_image" />
+                            android:src="@drawable/empty_image"
+                            app:bootstrapBrand="primary"
+                            app:hasBorder="true"/>
 
                         <ru.dimorinny.floatingtextbutton.FloatingTextButton
                             android:id="@+id/btnBorrar5"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="20dp"
+                            android:layout_marginTop="25dp"
                             app:floating_background_color="#be4747"
                             app:floating_left_icon="@drawable/ic_delete_black_24dp"
                             app:floating_title="Borrar"
@@ -245,7 +261,7 @@
                             android:id="@+id/btnFoto5"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="20dp"
+                            android:layout_marginTop="25dp"
                             app:floating_background_color="@color/colorPrimary"
                             app:floating_left_icon="@drawable/ic_add_a_photo_black_24dp"
                             app:floating_title="Añadir"
@@ -255,7 +271,8 @@
 
                     <LinearLayout
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp">
 
                         <EditText
                             android:id="@+id/edObserv"
@@ -275,7 +292,8 @@
                         <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:orientation="vertical">
+                            android:orientation="vertical"
+                            android:layout_marginTop="10dp">
 
                             <ru.dimorinny.floatingtextbutton.FloatingTextButton
                                 android:id="@+id/btnArchivo"
