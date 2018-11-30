@@ -48,6 +48,9 @@ import com.example.acadepsistemas.seguimiento.Fragmentos.EventosFragment;
 //import com.example.acadepsistemas.seguimiento.Manifest;
 import com.example.acadepsistemas.seguimiento.R;
 import com.example.acadepsistemas.seguimiento.model.Data;
+import com.example.acadepsistemas.seguimiento.model.Data2;
+import com.example.acadepsistemas.seguimiento.model.Data3;
+import com.example.acadepsistemas.seguimiento.model.Evento;
 import com.github.chrisbanes.photoview.PhotoView;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationRequest;
@@ -57,9 +60,12 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
@@ -140,6 +146,10 @@ public class SupervisionActivity extends AppCompatActivity
     private static final int CAPTURE_PHOTO = 104;
 
     //Varibales X
+    static int cont1=0;
+    static int cont2=0;
+    static int cont3=0;
+
     FloatingTextButton btnEnviar;
     private FloatingTextButton btnFoto;
     private FloatingTextButton btnFoto2;
@@ -156,6 +166,16 @@ public class SupervisionActivity extends AppCompatActivity
 
     static String idevent;
     static String nameEvent;
+    static String uid;
+    static String actividad;
+    static String trabajador;
+    static String name;
+    static String start;
+    static String end;
+    static String idactivity;
+    static String description;
+    static boolean active;
+
     EditText edObserv;
     static TextView txtEstado;
 
@@ -164,7 +184,7 @@ public class SupervisionActivity extends AppCompatActivity
 
     public String rolesUser;
     static String estado = "before";
-    static String actividad;
+
 
     //Variables Fotos
     private Uri filePath;
@@ -200,6 +220,13 @@ public class SupervisionActivity extends AppCompatActivity
 
     DatabaseReference mDatabase;
     DatabaseReference ref;
+    DatabaseReference query;
+
+
+    DatabaseReference refBefore;
+    DatabaseReference refDuring;
+    DatabaseReference refAfter;
+
 
     FirebaseDatabase dbRef;
 
@@ -221,7 +248,9 @@ public class SupervisionActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
 
         //init();
-
+        cont1=0;
+        cont2=0;
+        cont3=0;
 
         recibirDatos();
         //Inicializacion de varibales
@@ -272,6 +301,13 @@ public class SupervisionActivity extends AppCompatActivity
         mDatabase = FirebaseDatabase.getInstance().getReference();
         dbRef = FirebaseDatabase.getInstance();
         ref = FirebaseDatabase.getInstance().getReference().child("Eventos").child(idevent).child("observation");
+
+        refBefore = FirebaseDatabase.getInstance().getReference().child("Eventos").child(idevent).child("observation").child("before");
+        refDuring = FirebaseDatabase.getInstance().getReference().child("Eventos").child(idevent).child("observation").child("during");
+        refAfter = FirebaseDatabase.getInstance().getReference().child("Eventos").child(idevent).child("observation").child("after");
+
+
+
         //Instancias
         mAuth = FirebaseAuth.getInstance();
         storage = FirebaseStorage.getInstance();
@@ -284,6 +320,8 @@ public class SupervisionActivity extends AppCompatActivity
 
         // FireStore
 
+       // query = FirebaseDatabase.getInstance().getReference().child("Eventos").child(idevent).child("observation").child();
+
 
         //Botones
 
@@ -292,6 +330,10 @@ public class SupervisionActivity extends AppCompatActivity
         } else {
             locationStart();
         }
+
+
+
+        /**/
 
 
         btnArchivo.setOnClickListener(new View.OnClickListener() {
@@ -465,21 +507,26 @@ public class SupervisionActivity extends AppCompatActivity
             }
         });
 
+        chequeoDevariables();
 
         btnEnviar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String Observation = edObserv.getText().toString();
-                boolean statuss = true;
 
-                Data data = new Data(Observation, statuss, Lat, Lng);
+
+
 
 
                 if ((estado).equals("before")) {
-                    if ((mDatabase.child("Eventos").child(idevent).child("observation").child("before").child("status")).equals(null)) {
+
+                    if (cont1>0) {
 
                         Toast.makeText(getApplicationContext(), "Ya realizaste esta actividad", Toast.LENGTH_SHORT).show();
                     } else {
+                        cont1++;
+                        boolean before = true;
+                        Data data = new Data(Observation, before, Lat, Lng);
                         // String k = mDatabase.child("Eventos").child(idevent).child("observation").child("before").child("status").;
                         mDatabase.child("Eventos").child(idevent).child("observation").child("before").setValue(data);
                         Toast.makeText(getApplicationContext(), "Datos ingresados", Toast.LENGTH_SHORT).show();
@@ -496,12 +543,23 @@ public class SupervisionActivity extends AppCompatActivity
 
                         BorrarImagenes();
                     }
+
+                    if(cont1>0 && cont2 >0 && cont3>0){
+
+                        mDatabase.child("Eventos").child(idevent).child("active").setValue(false);
+                        Toast.makeText(getApplicationContext(),"Evento terminado",Toast.LENGTH_SHORT).show();
+                    }
                 }
+
                 if ((estado).equals("during")) {
-                    if (mDatabase.child("Eventos").child(idevent).child("observation").child("during").child("status").equals("true")) {
+
+                    if (cont2>0) {
                         Toast.makeText(getApplicationContext(), "Ya realizaste esta actividad", Toast.LENGTH_SHORT).show();
                     } else {
-                        mDatabase.child("Eventos").child(idevent).child("observation").child("during").setValue(data);
+                        cont2++;
+                        boolean during = true;
+                        Data2 data2 = new Data2(Observation, during, Lat, Lng);
+                        mDatabase.child("Eventos").child(idevent).child("observation").child("during").setValue(data2);
                         Toast.makeText(getApplicationContext(), "Datos ingresados", Toast.LENGTH_SHORT).show();
                         edObserv.setText("");
                         uploadImage1();
@@ -516,12 +574,22 @@ public class SupervisionActivity extends AppCompatActivity
 
                         BorrarImagenes();
                     }
+
+                    if(cont1>0 && cont2 >0 && cont3>0){
+
+                        mDatabase.child("Eventos").child(idevent).child("active").setValue(false);
+                        Toast.makeText(getApplicationContext(),"Evento terminado",Toast.LENGTH_SHORT).show();
+                    }
                 }
+
                 if ((estado).equals("after")) {
-                    if (mDatabase.child("Eventos").child(idevent).child("observation").child("after").child("status").equals("true")) {
+                    if (cont3>0) {
                         Toast.makeText(getApplicationContext(), "Ya realizaste esta actividad", Toast.LENGTH_SHORT).show();
                     } else {
-                        mDatabase.child("Eventos").child(idevent).child("observation").child("after").setValue(data);
+                        cont3++;
+                        boolean after = true;
+                        Data3 data3 = new Data3(Observation, after, Lat, Lng);
+                        mDatabase.child("Eventos").child(idevent).child("observation").child("after").setValue(data3);
                         Toast.makeText(getApplicationContext(), "Datos ingresados", Toast.LENGTH_SHORT).show();
                         edObserv.setText("");
                         uploadImage1();
@@ -534,10 +602,22 @@ public class SupervisionActivity extends AppCompatActivity
                             uploadfile(pdfUri);
                         }
 
+
+
+
                         BorrarImagenes();
                     }
 
+                    if(cont1>0 && cont2 >0 && cont3>0){
+
+                        mDatabase.child("Eventos").child(idevent).child("active").setValue(false);
+                        Toast.makeText(getApplicationContext(),"Evento terminado",Toast.LENGTH_SHORT).show();
+                    }
+
                 }
+
+
+
 
             }
         });
@@ -565,6 +645,72 @@ public class SupervisionActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+    }
+
+    private void chequeoDevariables() {
+
+        Query ok = ref.orderByChild("before").equalTo(true);
+        //(mDatabase.child("Eventos").child(idevent).child("observation").child("before").child("observ").equalTo(""));
+        ok.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                for(DataSnapshot datasnapshot: dataSnapshot.getChildren()){
+                    cont1++;
+                    //Toast.makeText(getApplicationContext(),"he: "+cont1,Toast.LENGTH_SHORT).show();
+                }
+            }
+
+
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+        Query ok1 = ref.orderByChild("during").equalTo(true);
+        //(mDatabase.child("Eventos").child(idevent).child("observation").child("before").child("observ").equalTo(""));
+        ok1.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                for(DataSnapshot datasnapshot: dataSnapshot.getChildren()){
+                    cont2++;
+                    //Toast.makeText(getApplicationContext(),"he: "+cont2,Toast.LENGTH_SHORT).show();
+                }
+            }
+
+
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+        Query ok3 = ref.orderByChild("after").equalTo(true);
+        //(mDatabase.child("Eventos").child(idevent).child("observation").child("before").child("observ").equalTo(""));
+        ok3.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                for(DataSnapshot datasnapshot: dataSnapshot.getChildren()){
+                    cont3++;
+                    // Toast.makeText(getApplicationContext(),"he: "+cont1,Toast.LENGTH_SHORT).show();
+                }
+            }
+
+
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+
+
     }
 
     private void locationStart() {
@@ -1106,6 +1252,16 @@ public class SupervisionActivity extends AppCompatActivity
         idevent = extras.getString("idEvento");
         nameEvent = extras.getString("nameEvent");
         actividad = extras.getString("actividad");
+        uid = extras.getString("uid");
+        actividad= extras.getString("actividad");
+        trabajador= extras.getString("trabajador");
+        start= extras.getString("start");
+        end= extras.getString("end");
+        idactivity= extras.getString("idactivity");
+        description= extras.getString("description");
+        active=false;
+
+
     }
 
     @Override
@@ -1161,8 +1317,8 @@ public class SupervisionActivity extends AppCompatActivity
             Intent intent= new Intent (this, ExtraActivity.class);
             intent.putExtra("idEvento",idevent);
             intent.putExtra("nameEvent",nameEvent);
-            intent.putExtra("Lat",Lat);
-            intent.putExtra("Lng",Lng);
+            //intent.putExtra("Lat",Lat);
+            //intent.putExtra("Lng",Lng);
             startActivity(intent);
 
         } else if (id == R.id.nav_signOut) {

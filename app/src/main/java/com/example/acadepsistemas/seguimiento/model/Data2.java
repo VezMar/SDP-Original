@@ -1,18 +1,18 @@
 package com.example.acadepsistemas.seguimiento.model;
 
-public class Data {
+public class Data2 {
     String observ;
-    boolean before;
+    boolean during;
     double Lat;
     double Lng;
 
-    public Data() {
+    public Data2() {
     }
 
 
-    public Data(String observ, boolean before, double lat, double lng) {
+    public Data2(String observ, boolean during, double lat, double lng) {
         this.observ = observ;
-        this.before = before;
+        this.during = during;
         this.Lat = lat;
         this.Lng = lng;
     }
@@ -41,11 +41,11 @@ public class Data {
         this.observ = observ;
     }
 
-    public boolean isBefore() {
-        return before;
+    public boolean isDuring() {
+        return during;
     }
 
-    public void setBefore(boolean before) {
-        this.before = before;
+    public void setDuring(boolean during) {
+        this.during = during;
     }
 }

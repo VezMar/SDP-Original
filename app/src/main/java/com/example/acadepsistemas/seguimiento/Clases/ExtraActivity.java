@@ -798,8 +798,8 @@ public class ExtraActivity extends AppCompatActivity {
         Bundle extras = getIntent().getExtras();
         idevent = extras.getString("idEvento");
         nameEvent = extras.getString("nameEvent");
-        Lat = extras.getDouble("Lat");
-        Lng = extras.getDouble("Lng");
+       // Lat = extras.getDouble("Lat");
+        //Lng = extras.getDouble("Lng");
 
     }
 }

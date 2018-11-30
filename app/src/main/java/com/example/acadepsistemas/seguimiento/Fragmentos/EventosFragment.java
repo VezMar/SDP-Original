@@ -68,7 +68,7 @@ public class EventosFragment extends Fragment {
         FirebaseUser user = mAuth.getCurrentUser();
         uidUserGlobal = user.getUid();
 
-
+        chequeoDevariables();
         mDatabase = FirebaseDatabase.getInstance().getReference().child("Eventos");
 
 
@@ -112,14 +112,27 @@ public class EventosFragment extends Fragment {
 
                         if((list.get(rv.getChildAdapterPosition(v)).getActividad()).equals("Supervision")){
                             //mifragment = new SupervisionFragment();
-
+                            String uid = list.get(rv.getChildAdapterPosition(v)).getUid();
+                            String trabajador = list.get(rv.getChildAdapterPosition(v)).getTrabajador();
+                            String start= list.get(rv.getChildAdapterPosition(v)).getStart();
+                            String end= list.get(rv.getChildAdapterPosition(v)).getEnd();
+                            String idactivity= list.get(rv.getChildAdapterPosition(v)).getIdactivity();
+                            String description= list.get(rv.getChildAdapterPosition(v)).getDescription();
                             String idEvento = list.get(rv.getChildAdapterPosition(v)).getIdevent();
                             String nameEvent = list.get(rv.getChildAdapterPosition(v)).getName();
+
 
                             Intent intent= new Intent (getActivity(), SupervisionActivity.class);
                             intent.putExtra("idEvento",idEvento);
                             intent.putExtra("actividad",actividad);
                             intent.putExtra("nameEvent",nameEvent);
+                            intent.putExtra("uid",uid);
+                            intent.putExtra("trabajador",trabajador);
+                            intent.putExtra("start",start);
+                            intent.putExtra("end",end);
+                            intent.putExtra("idactivity",idactivity);
+                            intent.putExtra("description",description);
+
 
                             startActivity(intent);
                            Toast.makeText(getContext(), "Supervision", Toast.LENGTH_SHORT).show();
@@ -183,6 +196,9 @@ public class EventosFragment extends Fragment {
 
 
 
+    }
+
+    private void chequeoDevariables() {
     }
 
 }
