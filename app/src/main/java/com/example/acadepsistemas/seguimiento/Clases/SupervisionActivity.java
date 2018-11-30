@@ -83,6 +83,8 @@ import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationSettingsRequest;
 
+import ru.dimorinny.floatingtextbutton.FloatingTextButton;
+
 public class SupervisionActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -138,12 +140,12 @@ public class SupervisionActivity extends AppCompatActivity
     private static final int CAPTURE_PHOTO = 104;
 
     //Varibales X
-    Button btnEnviar;
-    private Button btnFoto;
-    private Button btnFoto2;
-    private Button btnFoto3;
-    private Button btnFoto4;
-    private Button btnFoto5;
+    FloatingTextButton btnEnviar;
+    private FloatingTextButton btnFoto;
+    private FloatingTextButton btnFoto2;
+    private FloatingTextButton btnFoto3;
+    private FloatingTextButton btnFoto4;
+    private FloatingTextButton btnFoto5;
 
 
     ListView listView;
@@ -173,18 +175,18 @@ public class SupervisionActivity extends AppCompatActivity
 
     private static ImageView noImage;
 
-    Button btnBorrar;
-    Button btnBorrar2;
-    Button btnBorrar3;
-    Button btnBorrar4;
-    Button btnBorrar5;
+    FloatingTextButton btnBorrar;
+    FloatingTextButton btnBorrar2;
+    FloatingTextButton btnBorrar3;
+    FloatingTextButton btnBorrar4;
+    FloatingTextButton btnBorrar5;
 
 
 
 
 //Subir archivo
 
-    Button btnArchivo;
+    FloatingTextButton btnArchivo;
     Uri pdfUri;
 
     ProgressDialog progressDialog;
@@ -230,21 +232,21 @@ public class SupervisionActivity extends AppCompatActivity
 
 
         edObserv = (EditText) findViewById(R.id.edObserv);
-        btnEnviar = (Button) findViewById(R.id.btnEnviar);
+        btnEnviar = (FloatingTextButton) findViewById(R.id.btnEnviar);
 
-        btnArchivo = (Button) findViewById(R.id.btnArchivo);
+        btnArchivo = (FloatingTextButton) findViewById(R.id.btnArchivo);
 
-        btnFoto = (Button) findViewById(R.id.btnFoto);
-        btnFoto2 = (Button) findViewById(R.id.btnFoto2);
-        btnFoto3 = (Button) findViewById(R.id.btnFoto3);
-        btnFoto4 = (Button) findViewById(R.id.btnFoto4);
-        btnFoto5 = (Button) findViewById(R.id.btnFoto5);
+        btnFoto = (FloatingTextButton) findViewById(R.id.btnFoto);
+        btnFoto2 = (FloatingTextButton) findViewById(R.id.btnFoto2);
+        btnFoto3 = (FloatingTextButton) findViewById(R.id.btnFoto3);
+        btnFoto4 = (FloatingTextButton) findViewById(R.id.btnFoto4);
+        btnFoto5 = (FloatingTextButton) findViewById(R.id.btnFoto5);
 
-        btnBorrar = (Button) findViewById(R.id.btnBorrar);
-        btnBorrar2 = (Button) findViewById(R.id.btnBorrar2);
-        btnBorrar3 = (Button) findViewById(R.id.btnBorrar3);
-        btnBorrar4 = (Button) findViewById(R.id.btnBorrar4);
-        btnBorrar5 = (Button) findViewById(R.id.btnBorrar5);
+        btnBorrar = (FloatingTextButton) findViewById(R.id.btnBorrar);
+        btnBorrar2 = (FloatingTextButton) findViewById(R.id.btnBorrar2);
+        btnBorrar3 = (FloatingTextButton) findViewById(R.id.btnBorrar3);
+        btnBorrar4 = (FloatingTextButton) findViewById(R.id.btnBorrar4);
+        btnBorrar5 = (FloatingTextButton) findViewById(R.id.btnBorrar5);
 
 
         imageView = (ImageView) findViewById(R.id.imgView);

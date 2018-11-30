@@ -49,7 +49,11 @@ dependencies {
     implementation 'com.google.android.gms:play-services-location:15.0.1'
 
     implementation 'com.jakewharton:butterknife:8.8.1'
+    implementation 'com.github.dimorinny:floating-text-button:0.0.4'
+    
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
+
+
 
 }
 apply plugin: 'com.google.gms.google-services'
