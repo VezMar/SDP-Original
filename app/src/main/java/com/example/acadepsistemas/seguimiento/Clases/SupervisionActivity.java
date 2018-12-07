@@ -66,6 +66,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
@@ -226,6 +227,9 @@ public class SupervisionActivity extends AppCompatActivity
     DatabaseReference refBefore;
     DatabaseReference refDuring;
     DatabaseReference refAfter;
+
+    FirebaseFirestore BDFireStore= FirebaseFirestore.getInstance();
+    CollectionReference fireStoreReference;
 
 
     FirebaseDatabase dbRef;
@@ -553,16 +557,20 @@ public class SupervisionActivity extends AppCompatActivity
 
                 if ((estado).equals("during")) {
 
-                    if (cont2>0) {
-                        Toast.makeText(getApplicationContext(), "Ya realizaste esta actividad", Toast.LENGTH_SHORT).show();
-                    } else {
+                    //if (cont2>0) {
+                        //Toast.makeText(getApplicationContext(), "Ya realizaste esta actividad", Toast.LENGTH_SHORT).show();
+                   // } else {
                         cont2++;
                         boolean during = true;
                         Data2 data2 = new Data2(Observation, during, Lat, Lng);
-                        mDatabase.child("Eventos").child(idevent).child("observation").child("during").setValue(data2);
+                        //mDatabase.child("Eventos").child(idevent).child("observation").child("during").setValue(data2);
+
+
+
+                        BDFireStore.collection("events").document(idevent).collection("observation").document("during").set(data2);
                         Toast.makeText(getApplicationContext(), "Datos ingresados", Toast.LENGTH_SHORT).show();
                         edObserv.setText("");
-                        uploadImage1();
+                       /* uploadImage1();
                         uploadImage2();
                         uploadImage3();
                         uploadImage4();
@@ -572,8 +580,8 @@ public class SupervisionActivity extends AppCompatActivity
                             uploadfile(pdfUri);
                         }
 
-                        BorrarImagenes();
-                    }
+                        BorrarImagenes();*/
+                    //}
 
                     if(cont1>0 && cont2 >0 && cont3>0){
 

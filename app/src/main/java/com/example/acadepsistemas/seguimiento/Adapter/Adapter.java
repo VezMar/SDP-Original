@@ -8,9 +8,12 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+
 import com.example.acadepsistemas.seguimiento.Fragmentos.EventosFragment;
 import com.example.acadepsistemas.seguimiento.R;
 import com.example.acadepsistemas.seguimiento.model.Evento;
+import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 
@@ -32,6 +35,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.EventoviewHolder> impl
         }
 
 
+
     @NonNull
     @Override
     public EventoviewHolder onCreateViewHolder(@NonNull ViewGroup parent, int i) {
@@ -48,7 +52,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.EventoviewHolder> impl
 
        holder.txtview_actividad.setText(evento.get(position).getActividad());
        // holder.txtview_uid.setText(evento.get(position).getUid());
-        holder.txtview_trabajador.setText(evento.get(position).getTrabajador());
+        //holder.txtview_trabajador.setText(evento.get(position).getTrabajador());
         holder.txtview_start.setText(evento.get(position).getStart());
         holder.txtview_end.setText(evento.get(position).getEnd());
         holder.txtview_name.setText(evento.get(position).getName());
@@ -84,7 +88,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.EventoviewHolder> impl
             super(itemView);
 
             txtview_actividad = (TextView) itemView.findViewById(R.id.txtview_actividad);
-            txtview_trabajador = (TextView) itemView.findViewById(R.id.txtview_trabajador);
+            //txtview_trabajador = (TextView) itemView.findViewById(R.id.txtview_trabajador);
             txtview_name = (TextView) itemView.findViewById(R.id.txtview_name);
             txtview_start = (TextView) itemView.findViewById(R.id.txtview_start);
             txtview_end = (TextView) itemView.findViewById(R.id.txtview_end);
