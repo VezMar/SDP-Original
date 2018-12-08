@@ -45,6 +45,7 @@ public class Main2Activity extends AppCompatActivity
 
     TextView txtBienvenida;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

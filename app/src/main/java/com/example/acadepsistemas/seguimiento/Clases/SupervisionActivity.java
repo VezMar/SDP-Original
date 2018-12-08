@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -213,7 +214,19 @@ public class SupervisionActivity extends AppCompatActivity
 //Subir archivo
 
     FloatingTextButton btnArchivo;
-    Uri pdfUri;
+    static Uri ArchivoUri;
+    static Uri ArchivoUri2;
+    static Uri ArchivoUri3;
+    static Uri ArchivoUri4;
+    static Uri ArchivoUri5;
+    static Uri ArchivoUri6;
+    static Uri ArchivoUri7;
+    static Uri ArchivoUri8;
+    static Uri ArchivoUri9;
+    static Uri ArchivoUri10;
+
+    static int contUris=0;
+    static int restUris=9;
 
     ProgressDialog progressDialog;
 
@@ -348,8 +361,11 @@ public class SupervisionActivity extends AppCompatActivity
             @Override
             public void onClick(View v) {
 
+
+
+
                 if (ContextCompat.checkSelfPermission(SupervisionActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-                    selectPDF();
+                    mostrarDialogoOpciones();
                 } else {
                     ActivityCompat.requestPermissions(SupervisionActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 9);
                 }
@@ -547,9 +563,72 @@ public class SupervisionActivity extends AppCompatActivity
                         uploadImage4();
                         uploadImage5();
 
-                        if (pdfUri != null) {
-                            uploadfile(pdfUri);
-                        }
+                       if (ArchivoUri != null && contUris==0) {
+                           uploadfile(ArchivoUri);
+                       }else if(ArchivoUri2 != null && contUris==1) {
+                           uploadfile(ArchivoUri);
+                           uploadfile(ArchivoUri2);
+                       }else if(ArchivoUri3 != null && contUris==2) {
+                           uploadfile(ArchivoUri);
+                           uploadfile(ArchivoUri2);
+                           uploadfile(ArchivoUri3);
+                       }else if(ArchivoUri4 != null && contUris==3) {
+                           uploadfile(ArchivoUri);
+                           uploadfile(ArchivoUri2);
+                           uploadfile(ArchivoUri3);
+                           uploadfile(ArchivoUri4);
+                       }else if(ArchivoUri5 != null && contUris==4) {
+                           uploadfile(ArchivoUri);
+                           uploadfile(ArchivoUri2);
+                           uploadfile(ArchivoUri3);
+                           uploadfile(ArchivoUri4);
+                           uploadfile(ArchivoUri5);
+                       }else if(ArchivoUri6 != null && contUris==5) {
+                           uploadfile(ArchivoUri);
+                           uploadfile(ArchivoUri2);
+                           uploadfile(ArchivoUri3);
+                           uploadfile(ArchivoUri4);
+                           uploadfile(ArchivoUri5);
+                           uploadfile(ArchivoUri6);
+                       }else if(ArchivoUri7 != null && contUris==6) {
+                           uploadfile(ArchivoUri);
+                           uploadfile(ArchivoUri2);
+                           uploadfile(ArchivoUri3);
+                           uploadfile(ArchivoUri4);
+                           uploadfile(ArchivoUri5);
+                           uploadfile(ArchivoUri6);
+                           uploadfile(ArchivoUri7);
+                       }else if(ArchivoUri8 != null && contUris==7) {
+                           uploadfile(ArchivoUri);
+                           uploadfile(ArchivoUri2);
+                           uploadfile(ArchivoUri3);
+                           uploadfile(ArchivoUri4);
+                           uploadfile(ArchivoUri5);
+                           uploadfile(ArchivoUri6);
+                           uploadfile(ArchivoUri7);
+                           uploadfile(ArchivoUri8);
+                       }else if(ArchivoUri9 != null && contUris==8) {
+                           uploadfile(ArchivoUri);
+                           uploadfile(ArchivoUri2);
+                           uploadfile(ArchivoUri3);
+                           uploadfile(ArchivoUri4);
+                           uploadfile(ArchivoUri5);
+                           uploadfile(ArchivoUri6);
+                           uploadfile(ArchivoUri7);
+                           uploadfile(ArchivoUri8);
+                           uploadfile(ArchivoUri9);
+                       }else if(ArchivoUri10 != null && contUris==9) {
+                           uploadfile(ArchivoUri);
+                           uploadfile(ArchivoUri2);
+                           uploadfile(ArchivoUri3);
+                           uploadfile(ArchivoUri4);
+                           uploadfile(ArchivoUri5);
+                           uploadfile(ArchivoUri6);
+                           uploadfile(ArchivoUri7);
+                           uploadfile(ArchivoUri8);
+                           uploadfile(ArchivoUri9);
+                           uploadfile(ArchivoUri10);
+                       }
 
                         BorrarImagenes();
                     }
@@ -564,7 +643,7 @@ public class SupervisionActivity extends AppCompatActivity
                 if ((estado).equals("during")) {
 
                     if (cont2>0) {
-                        //Toast.makeText(getApplicationContext(), "Ya realizaste esta actividad", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "Ya realizaste esta actividad", Toast.LENGTH_SHORT).show();
                     } else {
                         cont2++;
                         boolean during = true;
@@ -582,8 +661,26 @@ public class SupervisionActivity extends AppCompatActivity
                         uploadImage4();
                         uploadImage5();
 
-                        if (pdfUri != null) {
-                            uploadfile(pdfUri);
+                        if (ArchivoUri != null && contUris==0) {
+                            uploadfile(ArchivoUri);
+                        }else if(ArchivoUri2 != null && contUris==1) {
+                            uploadfile(ArchivoUri2);
+                        }else if(ArchivoUri3 != null && contUris==2) {
+                            uploadfile(ArchivoUri3);
+                        }else if(ArchivoUri4 != null && contUris==3) {
+                            uploadfile(ArchivoUri4);
+                        }else if(ArchivoUri5 != null && contUris==4) {
+                            uploadfile(ArchivoUri5);
+                        }else if(ArchivoUri6 != null && contUris==5) {
+                            uploadfile(ArchivoUri6);
+                        }else if(ArchivoUri7 != null && contUris==6) {
+                            uploadfile(ArchivoUri7);
+                        }else if(ArchivoUri8 != null && contUris==7) {
+                            uploadfile(ArchivoUri8);
+                        }else if(ArchivoUri9 != null && contUris==8) {
+                            uploadfile(ArchivoUri9);
+                        }else if(ArchivoUri10 != null && contUris==9) {
+                            uploadfile(ArchivoUri10);
                         }
 
                         BorrarImagenes();
@@ -614,8 +711,26 @@ public class SupervisionActivity extends AppCompatActivity
                         uploadImage4();
                         uploadImage5();
 
-                        if (pdfUri != null) {
-                            uploadfile(pdfUri);
+                        if (ArchivoUri != null && contUris==0) {
+                            uploadfile(ArchivoUri);
+                        }else if(ArchivoUri2 != null && contUris==1) {
+                            uploadfile(ArchivoUri2);
+                        }else if(ArchivoUri3 != null && contUris==2) {
+                            uploadfile(ArchivoUri3);
+                        }else if(ArchivoUri4 != null && contUris==3) {
+                            uploadfile(ArchivoUri4);
+                        }else if(ArchivoUri5 != null && contUris==4) {
+                            uploadfile(ArchivoUri5);
+                        }else if(ArchivoUri6 != null && contUris==5) {
+                            uploadfile(ArchivoUri6);
+                        }else if(ArchivoUri7 != null && contUris==6) {
+                            uploadfile(ArchivoUri7);
+                        }else if(ArchivoUri8 != null && contUris==7) {
+                            uploadfile(ArchivoUri8);
+                        }else if(ArchivoUri9 != null && contUris==8) {
+                            uploadfile(ArchivoUri9);
+                        }else if(ArchivoUri10 != null && contUris==9) {
+                            uploadfile(ArchivoUri10);
                         }
 
 
@@ -661,6 +776,61 @@ public class SupervisionActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+    }
+
+    private void mostrarDialogoOpciones() {
+
+
+        final CharSequence [] opciones ={"Elegir PDF", "Elegir Docx", "Elegir Video", "Elegir Audio","Cancelar"};
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        if(contUris==0){
+            Toast.makeText(getApplicationContext(),"Solo puede añadir 10 archivos diferentes \nUna vez agregado un archivo este no puede ser eliminado",Toast.LENGTH_LONG).show();
+        }
+
+        builder.setTitle("Elige un Archivo");
+        builder.setItems(opciones, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                if(opciones[i].equals("Elegir PDF")){
+                    selectPDF();
+                }else if(opciones[i].equals("Elegir Docx")){
+                    selectDocx();
+                }else if(opciones[i].equals("Elegir Video")){
+                    selectVideo();
+                }else if(opciones[i].equals("Elegir Audio")){
+                    selectAudio();
+                }else{
+                        dialogInterface.dismiss();
+                    }
+            }
+        });
+        builder.show();
+
+       // Toast.makeText(getApplicationContext(),"Mostrar dialogo opciones", Toast.LENGTH_SHORT).show();
+
+       /* final CharSequence [] opciones={"Elegir PDF", "Elegir Docx", "Elegir Video", "Elegir Audio","Cancelar"};
+        final AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
+
+        builder.setTitle("Elige una Opcion");
+        builder.setItems(opciones, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int i) {
+                if(opciones[i].equals("Elegir PDF")){
+                    selectPDF();
+                    }else if(opciones[i].equals("Elegir Docx")){
+                        selectDocx();
+                     }else if(opciones[i].equals("Elegir Video")){
+                         selectVideo();
+                        }else if(opciones[i].equals("Elegir Audio")){
+                            selectAudio();
+                            }else{
+                                dialog.dismiss();
+                            }
+            }
+        });
+        builder.show();*/
+
     }
 
     private void chequeoDevariables() {
@@ -1073,7 +1243,7 @@ public class SupervisionActivity extends AppCompatActivity
                     });
         }
     }
-    
+
     private void uploadImage5() {
         if (fileimagen5 != null) {
             final ProgressDialog progressDialog = new ProgressDialog(SupervisionActivity.this);
@@ -1109,16 +1279,16 @@ public class SupervisionActivity extends AppCompatActivity
     }
 
 
-    private void uploadfile(Uri pdfUri) {
+    private void uploadfile(Uri ArchivoUri) {
         progressDialog= new ProgressDialog(SupervisionActivity.this);
         progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
         progressDialog.setTitle("Subiendo archivo...");
         progressDialog.setProgress(0);
         progressDialog.show();
 
-        final String fileName= "PDF" + UUID.randomUUID().toString();
+        final String fileName= "Archivo" + UUID.randomUUID().toString();
         StorageReference srtreference = storage.getReference();
-        srtreference.child("Documents").child(idevent).child(estado).child(fileName).putFile(pdfUri)
+        srtreference.child("Archivos").child(idevent).child(estado).child(fileName).putFile(ArchivoUri)
                 .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
@@ -1162,17 +1332,51 @@ public class SupervisionActivity extends AppCompatActivity
         startActivityForResult(intent, 86);
     }
 
+    private void selectVideo() {
+        Intent intent = new Intent();
+        intent.setType("video/*");
+        intent.setAction(intent.ACTION_GET_CONTENT);
+        startActivityForResult(intent, 87);
+    }
+
+    private void selectAudio() {
+        Intent intent = new Intent();
+        intent.setType("audio/*");
+        intent.setAction(intent.ACTION_GET_CONTENT);
+        startActivityForResult(intent, 88);
+    }
+
+    private void selectDocx() {
+        Intent intent = new Intent();
+        intent.setType("docx/*");
+        intent.setAction(intent.ACTION_GET_CONTENT);
+        startActivityForResult(intent, 89);
+    }
+
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode==86 && resultCode==RESULT_OK && data!=null) {
-            pdfUri=data.getData();
-            Toast.makeText(getApplicationContext(),"Tu archivo se ha guardado exitosamente",Toast.LENGTH_SHORT).show();
-        }else{
-            Toast.makeText(getApplicationContext(),"Porfavor elija un archivo",Toast.LENGTH_SHORT).show();
 
+        if (requestCode==86 && resultCode==RESULT_OK && data!=null) {
+            SelecUri(data);
+            contUris++;
+            //Toast.makeText(getApplicationContext(),"Tu archivo se ha guardado exitosamente",Toast.LENGTH_SHORT).show();
+        }else if (requestCode==87 && resultCode==RESULT_OK && data!=null) {
+            SelecUri(data);
+            contUris++;
+            //Toast.makeText(getApplicationContext(),"Tu archivo se ha guardado exitosamente",Toast.LENGTH_SHORT).show();
+        } if (requestCode==88 && resultCode==RESULT_OK && data!=null) {
+            SelecUri(data);
+            contUris++;
+            //Toast.makeText(getApplicationContext(),"Tu archivo se ha guardado exitosamente",Toast.LENGTH_SHORT).show();
+        }
+        if (requestCode==89 && resultCode==RESULT_OK && data!=null) {
+            SelecUri(data);
+            contUris++;
+           // Toast.makeText(getApplicationContext(),"Tu archivo se ha guardado exitosamente",Toast.LENGTH_SHORT).show();
         }
 
         if (requestCode==104 && resultCode == RESULT_OK) {
@@ -1223,6 +1427,43 @@ public class SupervisionActivity extends AppCompatActivity
 
 
 
+    }
+
+    private void SelecUri(Intent data) {
+
+        if(contUris==0){
+            ArchivoUri=data.getData();
+            Toast.makeText(getApplicationContext(),"Archivo agregado con exito \nPuede subir " + (restUris-contUris) + " más",Toast.LENGTH_SHORT).show();
+        }else if(contUris==1){
+            ArchivoUri2=data.getData();
+            Toast.makeText(getApplicationContext(),"Archivo agregado con exito \nPuede subir " + (restUris-contUris) + " más",Toast.LENGTH_SHORT).show();
+        }else if(contUris==2){
+            ArchivoUri3=data.getData();
+            Toast.makeText(getApplicationContext(),"Archivo agregado con exito /nPuede subir " + (restUris-contUris) + " más",Toast.LENGTH_SHORT).show();
+        }else if(contUris==3){
+            ArchivoUri4=data.getData();
+            Toast.makeText(getApplicationContext(),"Archivo agregado con exito /nPuede subir " + (restUris-contUris) + " más",Toast.LENGTH_SHORT).show();
+        }else if(contUris==4){
+            ArchivoUri5=data.getData();
+            Toast.makeText(getApplicationContext(),"Archivo agregado con exito /nPuede subir " + (restUris-contUris) + " más",Toast.LENGTH_SHORT).show();
+        }else if(contUris==5){
+            ArchivoUri6=data.getData();
+            Toast.makeText(getApplicationContext(),"Archivo agregado con exito /nPuede subir " + (restUris-contUris) + " más",Toast.LENGTH_SHORT).show();
+        }else if(contUris==6){
+            ArchivoUri7=data.getData();
+            Toast.makeText(getApplicationContext(),"Archivo agregado con exito /nPuede subir " + (restUris-contUris) + " más",Toast.LENGTH_SHORT).show();
+        }else if(contUris==7){
+            ArchivoUri8=data.getData();
+            Toast.makeText(getApplicationContext(),"Archivo agregado con exito /nPuede subir " + (restUris-contUris) + " más",Toast.LENGTH_SHORT).show();
+        }else if(contUris==8){
+            ArchivoUri9=data.getData();
+            Toast.makeText(getApplicationContext(),"Archivo agregado con exito /nPuede subir " + (restUris-contUris) + " más",Toast.LENGTH_SHORT).show();
+        }else if(contUris==10){
+            ArchivoUri10=data.getData();
+            Toast.makeText(getApplicationContext(),"Archivo agregado con exito /nPuede subir " + (restUris-contUris) + " más",Toast.LENGTH_SHORT).show();
+        }else{
+            Toast.makeText(getApplicationContext(),"Ya no puede subir ningun archivo",Toast.LENGTH_SHORT).show();
+        }
     }
 
     public Bitmap redimensionarImagenMaximo(Bitmap mBitmap, float newWidth, float newHeigth){
