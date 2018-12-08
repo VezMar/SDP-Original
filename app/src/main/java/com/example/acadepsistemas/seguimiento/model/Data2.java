@@ -48,4 +48,6 @@ public class Data2 {
     public void setDuring(boolean during) {
         this.during = during;
     }
+
+
 }

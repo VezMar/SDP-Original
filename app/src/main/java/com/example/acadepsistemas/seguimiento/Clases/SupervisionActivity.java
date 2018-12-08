@@ -67,7 +67,11 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
@@ -524,7 +528,7 @@ public class SupervisionActivity extends AppCompatActivity
 
                 if ((estado).equals("before")) {
 
-                    if (cont1>0) {
+                   if (cont1>0) {
 
                         Toast.makeText(getApplicationContext(), "Ya realizaste esta actividad", Toast.LENGTH_SHORT).show();
                     } else {
@@ -532,7 +536,9 @@ public class SupervisionActivity extends AppCompatActivity
                         boolean before = true;
                         Data data = new Data(Observation, before, Lat, Lng);
                         // String k = mDatabase.child("Eventos").child(idevent).child("observation").child("before").child("status").;
-                        mDatabase.child("Eventos").child(idevent).child("observation").child("before").setValue(data);
+                        //mDatabase.child("Eventos").child(idevent).child("observation").child("before").setValue(data);
+
+                        BDFireStore.collection("events").document(idevent).collection("observation").document("before").set(data);
                         Toast.makeText(getApplicationContext(), "Datos ingresados", Toast.LENGTH_SHORT).show();
                         edObserv.setText("");
                         uploadImage1();
@@ -557,9 +563,9 @@ public class SupervisionActivity extends AppCompatActivity
 
                 if ((estado).equals("during")) {
 
-                    //if (cont2>0) {
+                    if (cont2>0) {
                         //Toast.makeText(getApplicationContext(), "Ya realizaste esta actividad", Toast.LENGTH_SHORT).show();
-                   // } else {
+                    } else {
                         cont2++;
                         boolean during = true;
                         Data2 data2 = new Data2(Observation, during, Lat, Lng);
@@ -570,7 +576,7 @@ public class SupervisionActivity extends AppCompatActivity
                         BDFireStore.collection("events").document(idevent).collection("observation").document("during").set(data2);
                         Toast.makeText(getApplicationContext(), "Datos ingresados", Toast.LENGTH_SHORT).show();
                         edObserv.setText("");
-                       /* uploadImage1();
+                        uploadImage1();
                         uploadImage2();
                         uploadImage3();
                         uploadImage4();
@@ -580,8 +586,8 @@ public class SupervisionActivity extends AppCompatActivity
                             uploadfile(pdfUri);
                         }
 
-                        BorrarImagenes();*/
-                    //}
+                        BorrarImagenes();
+                    }
 
                     if(cont1>0 && cont2 >0 && cont3>0){
 
@@ -591,13 +597,15 @@ public class SupervisionActivity extends AppCompatActivity
                 }
 
                 if ((estado).equals("after")) {
+
                     if (cont3>0) {
                         Toast.makeText(getApplicationContext(), "Ya realizaste esta actividad", Toast.LENGTH_SHORT).show();
                     } else {
                         cont3++;
                         boolean after = true;
                         Data3 data3 = new Data3(Observation, after, Lat, Lng);
-                        mDatabase.child("Eventos").child(idevent).child("observation").child("after").setValue(data3);
+                        //mDatabase.child("Eventos").child(idevent).child("observation").child("after").setValue(data3);
+                        BDFireStore.collection("events").document(idevent).collection("observation").document("after").set(data3);
                         Toast.makeText(getApplicationContext(), "Datos ingresados", Toast.LENGTH_SHORT).show();
                         edObserv.setText("");
                         uploadImage1();
@@ -657,7 +665,51 @@ public class SupervisionActivity extends AppCompatActivity
 
     private void chequeoDevariables() {
 
-        Query ok = ref.orderByChild("before").equalTo(true);
+       /* CollectionReference refEvents = BDFireStore.collection("events");
+        CollectionReference refObservation = BDFireStore.collection("Observation");
+
+        DocumentReference refIDEvent = BDFireStore.document(idevent);
+        DocumentReference refBefore = BDFireStore.document("before");
+        DocumentReference refduring = BDFireStore.document("during");
+        DocumentReference refafter = BDFireStore.document("after");*/
+
+
+
+
+
+
+        BDFireStore.collection("events")
+                .document(idevent)
+                .collection("observation")
+                .get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                                                @Override
+                                                public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+
+                                                    for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots){
+
+                                                        Data check = documentSnapshot.toObject(Data.class);
+                                                        Data2 check2 = documentSnapshot.toObject(Data2.class);
+                                                        Data3 check3 = documentSnapshot.toObject(Data3.class);
+
+                                                        if(check.isBefore()==true) {
+                                                            cont1++;
+                                                        }
+
+                                                        if(check2.isDuring()==true) {
+                                                            cont2++;
+                                                        }
+
+                                                        if(check3.isAfter()==true) {
+                                                            cont3++;
+                                                        }
+
+                                                    }
+
+                                                }
+                                            });
+
+
+        /* Query ok = ref.orderByChild("before").equalTo(true);
         //(mDatabase.child("Eventos").child(idevent).child("observation").child("before").child("observ").equalTo(""));
         ok.addValueEventListener(new ValueEventListener() {
             @Override
@@ -715,7 +767,7 @@ public class SupervisionActivity extends AppCompatActivity
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
-        });
+        });*/
 
 
 
@@ -1021,8 +1073,7 @@ public class SupervisionActivity extends AppCompatActivity
                     });
         }
     }
-
-
+    
     private void uploadImage5() {
         if (fileimagen5 != null) {
             final ProgressDialog progressDialog = new ProgressDialog(SupervisionActivity.this);

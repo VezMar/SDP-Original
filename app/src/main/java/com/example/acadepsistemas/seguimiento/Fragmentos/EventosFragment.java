@@ -103,7 +103,8 @@ public class EventosFragment extends Fragment {
     private void setUpRecyclerView() {
         //com.google.firebase.firestore.Query query = eventsReference.orderBy("end", com.google.firebase.firestore.Query.Direction.DESCENDING);
 
-        com.google.firebase.firestore.Query query = BDFireStore.collection("events").whereEqualTo("uid",  mAuth.getUid());
+        com.google.firebase.firestore.Query query = BDFireStore.collection("events").whereEqualTo("uid",mAuth.getUid());
+        //com.google.firebase.firestore.Query query = BDFireStore.collection("events").whereEqualTo("uid",  mAuth.getUid());
 
 
 
