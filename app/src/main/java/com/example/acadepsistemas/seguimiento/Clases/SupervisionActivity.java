@@ -94,6 +94,7 @@ import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationSettingsRequest;
+import com.muddzdev.styleabletoast.StyleableToast;
 
 import ru.dimorinny.floatingtextbutton.FloatingTextButton;
 
@@ -559,8 +560,8 @@ public class SupervisionActivity extends AppCompatActivity
                 if ((estado).equals("before")) {
 
                    if (cont1>0) {
-
-                        Toast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT).show();
+                       StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_LONG, R.style.warningToast).show();
+                       // Toast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT).show();
                     } else {
                         cont1++;
                         boolean before = true;
@@ -569,7 +570,10 @@ public class SupervisionActivity extends AppCompatActivity
                         //mDatabase.child("Eventos").child(idevent).child("observation").child("before").setValue(data);
 
                         BDFireStore.collection("events").document(idevent).collection("observation").document("before").set(data);
-                        Toast.makeText(getApplicationContext(), "Datos ingresados", Toast.LENGTH_SHORT).show();
+
+                       StyleableToast.makeText(getApplicationContext(), "Datos ingresados", Toast.LENGTH_LONG, R.style.sucessToast).show();
+                        //Toast.makeText(getApplicationContext(), "Datos ingresados", Toast.LENGTH_SHORT).show();
+
                         edObserv.setText("");
                         uploadImage1();
                         uploadImage2();
@@ -587,14 +591,18 @@ public class SupervisionActivity extends AppCompatActivity
 
                         //mDatabase.child("Eventos").child(idevent).child("active").setValue(false);
                         BDFireStore.collection("events").document(idevent).set(nEvent);
-                        Toast.makeText(getApplicationContext(),"Evento terminado",Toast.LENGTH_SHORT).show();
+
+                        StyleableToast.makeText(getApplicationContext(), "Evento terminado", Toast.LENGTH_LONG, R.style.doneToast).show();
+                        //Toast.makeText(getApplicationContext(),"Evento terminado",Toast.LENGTH_SHORT).show();
+
                     }
                 }
 
                 if ((estado).equals("during")) {
 
                     if (cont2>0) {
-                        Toast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT).show();
+                        StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_LONG, R.style.warningToast).show();
+                        //Toast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT).show();
                     } else {
                         cont2++;
                         boolean during = true;
@@ -604,7 +612,10 @@ public class SupervisionActivity extends AppCompatActivity
 
 
                         BDFireStore.collection("events").document(idevent).collection("observation").document("during").set(data2);
-                        Toast.makeText(getApplicationContext(), "Datos ingresados", Toast.LENGTH_SHORT).show();
+
+                        StyleableToast.makeText(getApplicationContext(), "Datos ingresados", Toast.LENGTH_LONG, R.style.sucessToast).show();
+                        //Toast.makeText(getApplicationContext(), "Datos ingresados", Toast.LENGTH_SHORT).show();
+
                         edObserv.setText("");
                         uploadImage1();
                         uploadImage2();
@@ -621,21 +632,26 @@ public class SupervisionActivity extends AppCompatActivity
 
                         //mDatabase.child("Eventos").child(idevent).child("active").setValue(false);
                         BDFireStore.collection("events").document(idevent).set(nEvent);
-                        Toast.makeText(getApplicationContext(),"Evento terminado",Toast.LENGTH_SHORT).show();
+                        StyleableToast.makeText(getApplicationContext(), "Evento terminado", Toast.LENGTH_LONG, R.style.doneToast).show();
+                        //Toast.makeText(getApplicationContext(),"Evento terminado",Toast.LENGTH_SHORT).show();
                     }
                 }
 
                 if ((estado).equals("after")) {
 
                     if (cont3>0) {
-                        Toast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT).show();
+                        StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_LONG, R.style.warningToast).show();
+                        //Toast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT).show();
                     } else {
                         cont3++;
                         boolean after = true;
                         Data3 data3 = new Data3(Observation, after, Lat, Lng);
                         //mDatabase.child("Eventos").child(idevent).child("observation").child("after").setValue(data3);
                         BDFireStore.collection("events").document(idevent).collection("observation").document("after").set(data3);
-                        Toast.makeText(getApplicationContext(), "Datos ingresados", Toast.LENGTH_SHORT).show();
+
+                        StyleableToast.makeText(getApplicationContext(), "Datos ingresados", Toast.LENGTH_LONG, R.style.sucessToast).show();
+                       // Toast.makeText(getApplicationContext(), "Datos ingresados", Toast.LENGTH_SHORT).show();
+
                         edObserv.setText("");
                         uploadImage1();
                         uploadImage2();
@@ -652,7 +668,8 @@ public class SupervisionActivity extends AppCompatActivity
 
                         //mDatabase.child("Eventos").child(idevent).child("active").setValue(false);
                         BDFireStore.collection("events").document(idevent).set(nEvent);
-                        Toast.makeText(getApplicationContext(),"Evento terminado",Toast.LENGTH_SHORT).show();
+                        StyleableToast.makeText(getApplicationContext(), "Evento terminado", Toast.LENGTH_LONG, R.style.doneToast).show();
+                        //Toast.makeText(getApplicationContext(),"Evento terminado",Toast.LENGTH_SHORT).show();
                     }
 
                 }
@@ -764,7 +781,8 @@ public class SupervisionActivity extends AppCompatActivity
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
         if(contUris==0){
-            Toast.makeText(getApplicationContext(),"Solo puede añadir 10 archivos diferentes \nUna vez agregado un archivo este no puede ser eliminado",Toast.LENGTH_LONG).show();
+            StyleableToast.makeText(getApplicationContext(), "Solo puede añadir 10 archivos diferentes \nUna vez agregado un archivo este no puede ser eliminado", Toast.LENGTH_LONG, R.style.dangerToast).show();
+            //Toast.makeText(getApplicationContext(),"Solo puede añadir 10 archivos diferentes \nUna vez agregado un archivo este no puede ser eliminado",Toast.LENGTH_LONG).show();
         }
 
         builder.setTitle("Elige un Archivo");
@@ -944,7 +962,8 @@ public class SupervisionActivity extends AppCompatActivity
         if(requestCode==9 && grantResults[0]==PackageManager.PERMISSION_GRANTED){
             selectPDF();
         }else{
-            Toast.makeText(getApplicationContext(),"Porfavor otorgue los permisos...",Toast.LENGTH_SHORT).show();
+            StyleableToast.makeText(getApplicationContext(), "Porfavor otorgue los permisos...", Toast.LENGTH_LONG, R.style.warningToast).show();
+            //Toast.makeText(getApplicationContext(),"Porfavor otorgue los permisos...",Toast.LENGTH_SHORT).show();
         }
 
         if (requestCode == 1000) {
@@ -1111,7 +1130,8 @@ public class SupervisionActivity extends AppCompatActivity
                         @Override
                         public void onFailure(@NonNull Exception e) {
                             progressDialog.dismiss();
-                            Toast.makeText(getApplicationContext(), "Fallo al Subir", Toast.LENGTH_SHORT).show();
+                            StyleableToast.makeText(getApplicationContext(), "Fallo al Subir", Toast.LENGTH_LONG, R.style.dangerToast).show();
+                           // Toast.makeText(getApplicationContext(), "Fallo al Subir", Toast.LENGTH_SHORT).show();
                         }
                     })
                     .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
@@ -1144,7 +1164,8 @@ public class SupervisionActivity extends AppCompatActivity
                         @Override
                         public void onFailure(@NonNull Exception e) {
                             progressDialog.dismiss();
-                            Toast.makeText(getApplicationContext(), "Fallo al Subir", Toast.LENGTH_SHORT).show();
+                            StyleableToast.makeText(getApplicationContext(), "Fallo al Subir", Toast.LENGTH_LONG, R.style.dangerToast).show();
+                            //Toast.makeText(getApplicationContext(), "Fallo al Subir", Toast.LENGTH_SHORT).show();
                         }
                     })
                     .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
@@ -1177,7 +1198,8 @@ public class SupervisionActivity extends AppCompatActivity
                         @Override
                         public void onFailure(@NonNull Exception e) {
                             progressDialog.dismiss();
-                            Toast.makeText(getApplicationContext(), "Fallo al Subir", Toast.LENGTH_SHORT).show();
+                            StyleableToast.makeText(getApplicationContext(), "Fallo al Subir", Toast.LENGTH_LONG, R.style.dangerToast).show();
+                            //Toast.makeText(getApplicationContext(), "Fallo al Subir", Toast.LENGTH_SHORT).show();
                         }
                     })
                     .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
@@ -1210,7 +1232,8 @@ public class SupervisionActivity extends AppCompatActivity
                         @Override
                         public void onFailure(@NonNull Exception e) {
                             progressDialog.dismiss();
-                            Toast.makeText(getApplicationContext(), "Fallo al Subir", Toast.LENGTH_SHORT).show();
+                            StyleableToast.makeText(getApplicationContext(), "Fallo al Subir", Toast.LENGTH_LONG, R.style.dangerToast).show();
+                            //Toast.makeText(getApplicationContext(), "Fallo al Subir", Toast.LENGTH_SHORT).show();
                         }
                     })
                     .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
@@ -1244,7 +1267,8 @@ public class SupervisionActivity extends AppCompatActivity
                         @Override
                         public void onFailure(@NonNull Exception e) {
                             progressDialog.dismiss();
-                            Toast.makeText(getApplicationContext(), "Fallo al Subir", Toast.LENGTH_SHORT).show();
+                            StyleableToast.makeText(getApplicationContext(), "Fallo al Subir", Toast.LENGTH_LONG, R.style.dangerToast).show();
+                            //Toast.makeText(getApplicationContext(), "Fallo al Subir", Toast.LENGTH_SHORT).show();
                         }
                     })
                     .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
@@ -1278,9 +1302,11 @@ public class SupervisionActivity extends AppCompatActivity
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
                                 if (task.isSuccessful()){
-                                    Toast.makeText(getApplicationContext(),"Archivo Subido...",Toast.LENGTH_SHORT).show();
+                                    StyleableToast.makeText(getApplicationContext(), "Archivo Subido...", Toast.LENGTH_LONG, R.style.doneToast).show();
+                                    //Toast.makeText(getApplicationContext(),"Archivo Subido...",Toast.LENGTH_SHORT).show();
                                 }else{
-                                    Toast.makeText(getApplicationContext(),"¡Fallo al subirse!",Toast.LENGTH_SHORT).show();
+                                    StyleableToast.makeText(getApplicationContext(), "¡Fallo al subirse!", Toast.LENGTH_LONG, R.style.dangerToast).show();
+                                    //Toast.makeText(getApplicationContext(),"¡Fallo al subirse!",Toast.LENGTH_SHORT).show();
                                 }
                             }
                         });
@@ -1288,7 +1314,8 @@ public class SupervisionActivity extends AppCompatActivity
                 }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Toast.makeText(getApplicationContext(),"¡Fallo al subirse!",Toast.LENGTH_SHORT).show();
+                StyleableToast.makeText(getApplicationContext(), "¡Fallo al subirse!", Toast.LENGTH_LONG, R.style.dangerToast).show();
+                //Toast.makeText(getApplicationContext(),"¡Fallo al subirse!",Toast.LENGTH_SHORT).show();
             }
         }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
             @Override
@@ -1412,36 +1439,48 @@ public class SupervisionActivity extends AppCompatActivity
 
         if(contUris==0){
             ArchivoUri=data.getData();
-            Toast.makeText(getApplicationContext(),"Archivo agregado con exito \nPuede subir " + (restUris-contUris) + " más",Toast.LENGTH_SHORT).show();
+
+            StyleableToast.makeText(getApplicationContext(), "Archivo agregado con exito \nPuede subir " + (restUris-contUris) + " más", Toast.LENGTH_LONG, R.style.sucessToast).show();
+           // Toast.makeText(getApplicationContext(),"Archivo agregado con exito \nPuede subir " + (restUris-contUris) + " más",Toast.LENGTH_SHORT).show();
         }else if(contUris==1){
             ArchivoUri2=data.getData();
-            Toast.makeText(getApplicationContext(),"Archivo agregado con exito \nPuede subir " + (restUris-contUris) + " más",Toast.LENGTH_SHORT).show();
+            StyleableToast.makeText(getApplicationContext(), "Archivo agregado con exito \nPuede subir " + (restUris-contUris) + " más", Toast.LENGTH_LONG, R.style.sucessToast).show();
+            //Toast.makeText(getApplicationContext(),"Archivo agregado con exito \nPuede subir " + (restUris-contUris) + " más",Toast.LENGTH_SHORT).show();
         }else if(contUris==2){
             ArchivoUri3=data.getData();
-            Toast.makeText(getApplicationContext(),"Archivo agregado con exito /nPuede subir " + (restUris-contUris) + " más",Toast.LENGTH_SHORT).show();
+            StyleableToast.makeText(getApplicationContext(), "Archivo agregado con exito \nPuede subir " + (restUris-contUris) + " más", Toast.LENGTH_LONG, R.style.sucessToast).show();
+            //Toast.makeText(getApplicationContext(),"Archivo agregado con exito /nPuede subir " + (restUris-contUris) + " más",Toast.LENGTH_SHORT).show();
         }else if(contUris==3){
             ArchivoUri4=data.getData();
-            Toast.makeText(getApplicationContext(),"Archivo agregado con exito /nPuede subir " + (restUris-contUris) + " más",Toast.LENGTH_SHORT).show();
+            StyleableToast.makeText(getApplicationContext(), "Archivo agregado con exito \nPuede subir " + (restUris-contUris) + " más", Toast.LENGTH_LONG, R.style.sucessToast).show();
+            //Toast.makeText(getApplicationContext(),"Archivo agregado con exito /nPuede subir " + (restUris-contUris) + " más",Toast.LENGTH_SHORT).show();
         }else if(contUris==4){
             ArchivoUri5=data.getData();
-            Toast.makeText(getApplicationContext(),"Archivo agregado con exito /nPuede subir " + (restUris-contUris) + " más",Toast.LENGTH_SHORT).show();
+            StyleableToast.makeText(getApplicationContext(), "Archivo agregado con exito \nPuede subir " + (restUris-contUris) + " más", Toast.LENGTH_LONG, R.style.sucessToast).show();
+            //Toast.makeText(getApplicationContext(),"Archivo agregado con exito /nPuede subir " + (restUris-contUris) + " más",Toast.LENGTH_SHORT).show();
         }else if(contUris==5){
             ArchivoUri6=data.getData();
-            Toast.makeText(getApplicationContext(),"Archivo agregado con exito /nPuede subir " + (restUris-contUris) + " más",Toast.LENGTH_SHORT).show();
+            StyleableToast.makeText(getApplicationContext(), "Archivo agregado con exito \nPuede subir " + (restUris-contUris) + " más", Toast.LENGTH_LONG, R.style.sucessToast).show();
+            //Toast.makeText(getApplicationContext(),"Archivo agregado con exito /nPuede subir " + (restUris-contUris) + " más",Toast.LENGTH_SHORT).show();
         }else if(contUris==6){
             ArchivoUri7=data.getData();
-            Toast.makeText(getApplicationContext(),"Archivo agregado con exito /nPuede subir " + (restUris-contUris) + " más",Toast.LENGTH_SHORT).show();
+            StyleableToast.makeText(getApplicationContext(), "Archivo agregado con exito \nPuede subir " + (restUris-contUris) + " más", Toast.LENGTH_LONG, R.style.sucessToast).show();
+            //Toast.makeText(getApplicationContext(),"Archivo agregado con exito /nPuede subir " + (restUris-contUris) + " más",Toast.LENGTH_SHORT).show();
         }else if(contUris==7){
             ArchivoUri8=data.getData();
-            Toast.makeText(getApplicationContext(),"Archivo agregado con exito /nPuede subir " + (restUris-contUris) + " más",Toast.LENGTH_SHORT).show();
+            StyleableToast.makeText(getApplicationContext(), "Archivo agregado con exito \nPuede subir " + (restUris-contUris) + " más", Toast.LENGTH_LONG, R.style.sucessToast).show();
+            //Toast.makeText(getApplicationContext(),"Archivo agregado con exito /nPuede subir " + (restUris-contUris) + " más",Toast.LENGTH_SHORT).show();
         }else if(contUris==8){
             ArchivoUri9=data.getData();
-            Toast.makeText(getApplicationContext(),"Archivo agregado con exito /nPuede subir " + (restUris-contUris) + " más",Toast.LENGTH_SHORT).show();
+            StyleableToast.makeText(getApplicationContext(), "Archivo agregado con exito \nPuede subir " + (restUris-contUris) + " más", Toast.LENGTH_LONG, R.style.sucessToast).show();
+            //Toast.makeText(getApplicationContext(),"Archivo agregado con exito /nPuede subir " + (restUris-contUris) + " más",Toast.LENGTH_SHORT).show();
         }else if(contUris==10){
             ArchivoUri10=data.getData();
-            Toast.makeText(getApplicationContext(),"Archivo agregado con exito /nPuede subir " + (restUris-contUris) + " más",Toast.LENGTH_SHORT).show();
+            StyleableToast.makeText(getApplicationContext(), "Archivo agregado con exito \nPuede subir " + (restUris-contUris) + " más", Toast.LENGTH_LONG, R.style.sucessToast).show();
+            //Toast.makeText(getApplicationContext(),"Archivo agregado con exito /nPuede subir " + (restUris-contUris) + " más",Toast.LENGTH_SHORT).show();
         }else{
-            Toast.makeText(getApplicationContext(),"Ya no puede subir ningun archivo",Toast.LENGTH_SHORT).show();
+            StyleableToast.makeText(getApplicationContext(), "Ya no puede subir ningun archivo", Toast.LENGTH_LONG, R.style.warningToast).show();
+            //Toast.makeText(getApplicationContext(),"Ya no puede subir ningun archivo",Toast.LENGTH_SHORT).show();
         }
     }
 
