@@ -103,20 +103,14 @@ public class EventosFragment extends Fragment {
     private void setUpRecyclerView() {
         //com.google.firebase.firestore.Query query = eventsReference.orderBy("end", com.google.firebase.firestore.Query.Direction.DESCENDING);
 
-        com.google.firebase.firestore.Query query = BDFireStore.collection("events").whereEqualTo("uid",mAuth.getUid());
+        com.google.firebase.firestore.Query query = BDFireStore.collection("events").whereEqualTo("uid", mAuth.getUid()).whereEqualTo("active",true);
         //com.google.firebase.firestore.Query query = BDFireStore.collection("events").whereEqualTo("uid",  mAuth.getUid());
 
 
-
-        FirestoreRecyclerOptions<Evento> options =  new FirestoreRecyclerOptions.Builder<Evento>()
+        FirestoreRecyclerOptions<Evento> options = new FirestoreRecyclerOptions.Builder<Evento>()
                 .setQuery(query, Evento.class).build();
 
         EventAdapter = new EventoAdapter(options);
-
-
-        rv.setHasFixedSize(true);
-        rv.setLayoutManager(new LinearLayoutManager(getContext()));
-        rv.setAdapter(EventAdapter);
 
 
         EventAdapter.setOnItemClickListener(new EventoAdapter.OnItemClickListener() {
@@ -133,6 +127,7 @@ public class EventosFragment extends Fragment {
                 String description = evento.getDescription();
                 String idEvento = evento.getIdevent();
                 String nameEvent = evento.getName();
+                activeStatus = evento.isActive();
 
                 Intent intent= new Intent (getActivity(), SupervisionActivity.class);
                 intent.putExtra("idEvento",idEvento);
@@ -148,21 +143,13 @@ public class EventosFragment extends Fragment {
                 if(evento.getActividad().equals("Supervision")){
                     //mifragment = new SupervisionFragment();
 
-
-
-
-
-
-
                     startActivity(intent);
                     Toast.makeText(getContext(), "Supervision", Toast.LENGTH_SHORT).show();
-
 
                 }
 
                 if(evento.getActividad().equals("Revision")){
                     // mifragment = new RevisionFragment();
-
 
                     startActivity(intent);
                     Toast.makeText(getContext(), "Revision", Toast.LENGTH_SHORT).show();
@@ -182,6 +169,14 @@ public class EventosFragment extends Fragment {
 
             }
         });
+
+
+
+                rv.setHasFixedSize(true);
+                rv.setLayoutManager(new LinearLayoutManager(getContext()));
+                rv.setAdapter(EventAdapter);
+
+
 
     }
 

@@ -268,18 +268,35 @@ public class SupervisionActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+
+
         //init();
+
+
         cont1=0;
         cont2=0;
         cont3=0;
 
         recibirDatos();
+
+        final Evento nEvent = new Evento();
+
+        nEvent.setActive(false);
+        nEvent.setActividad(actividad);
+        nEvent.setName(nameEvent);
+        nEvent.setEnd(end);
+        nEvent.setIdactivity(idactivity);
+        nEvent.setIdevent(idevent);
+        nEvent.setStart(start);
+        nEvent.setUid(uid);
+        nEvent.setTrabajador(trabajador);
+
         //Inicializacion de varibales
         bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottomNavigationView);
         bottomNavigationView.setOnNavigationItemSelectedListener(navListener);
         txtEstado = (TextView) findViewById(R.id.txtEstado);
 
-        txtEstado.setText("Antes de la Actividad");
+        txtEstado.setText("Antes del Evento");
 
 
         edObserv = (EditText) findViewById(R.id.edObserv);
@@ -360,9 +377,6 @@ public class SupervisionActivity extends AppCompatActivity
         btnArchivo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-
-
 
                 if (ContextCompat.checkSelfPermission(SupervisionActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
                     mostrarDialogoOpciones();
@@ -546,7 +560,7 @@ public class SupervisionActivity extends AppCompatActivity
 
                    if (cont1>0) {
 
-                        Toast.makeText(getApplicationContext(), "Ya realizaste esta actividad", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT).show();
                     } else {
                         cont1++;
                         boolean before = true;
@@ -563,79 +577,16 @@ public class SupervisionActivity extends AppCompatActivity
                         uploadImage4();
                         uploadImage5();
 
-                       if (ArchivoUri != null && contUris==0) {
-                           uploadfile(ArchivoUri);
-                       }else if(ArchivoUri2 != null && contUris==1) {
-                           uploadfile(ArchivoUri);
-                           uploadfile(ArchivoUri2);
-                       }else if(ArchivoUri3 != null && contUris==2) {
-                           uploadfile(ArchivoUri);
-                           uploadfile(ArchivoUri2);
-                           uploadfile(ArchivoUri3);
-                       }else if(ArchivoUri4 != null && contUris==3) {
-                           uploadfile(ArchivoUri);
-                           uploadfile(ArchivoUri2);
-                           uploadfile(ArchivoUri3);
-                           uploadfile(ArchivoUri4);
-                       }else if(ArchivoUri5 != null && contUris==4) {
-                           uploadfile(ArchivoUri);
-                           uploadfile(ArchivoUri2);
-                           uploadfile(ArchivoUri3);
-                           uploadfile(ArchivoUri4);
-                           uploadfile(ArchivoUri5);
-                       }else if(ArchivoUri6 != null && contUris==5) {
-                           uploadfile(ArchivoUri);
-                           uploadfile(ArchivoUri2);
-                           uploadfile(ArchivoUri3);
-                           uploadfile(ArchivoUri4);
-                           uploadfile(ArchivoUri5);
-                           uploadfile(ArchivoUri6);
-                       }else if(ArchivoUri7 != null && contUris==6) {
-                           uploadfile(ArchivoUri);
-                           uploadfile(ArchivoUri2);
-                           uploadfile(ArchivoUri3);
-                           uploadfile(ArchivoUri4);
-                           uploadfile(ArchivoUri5);
-                           uploadfile(ArchivoUri6);
-                           uploadfile(ArchivoUri7);
-                       }else if(ArchivoUri8 != null && contUris==7) {
-                           uploadfile(ArchivoUri);
-                           uploadfile(ArchivoUri2);
-                           uploadfile(ArchivoUri3);
-                           uploadfile(ArchivoUri4);
-                           uploadfile(ArchivoUri5);
-                           uploadfile(ArchivoUri6);
-                           uploadfile(ArchivoUri7);
-                           uploadfile(ArchivoUri8);
-                       }else if(ArchivoUri9 != null && contUris==8) {
-                           uploadfile(ArchivoUri);
-                           uploadfile(ArchivoUri2);
-                           uploadfile(ArchivoUri3);
-                           uploadfile(ArchivoUri4);
-                           uploadfile(ArchivoUri5);
-                           uploadfile(ArchivoUri6);
-                           uploadfile(ArchivoUri7);
-                           uploadfile(ArchivoUri8);
-                           uploadfile(ArchivoUri9);
-                       }else if(ArchivoUri10 != null && contUris==9) {
-                           uploadfile(ArchivoUri);
-                           uploadfile(ArchivoUri2);
-                           uploadfile(ArchivoUri3);
-                           uploadfile(ArchivoUri4);
-                           uploadfile(ArchivoUri5);
-                           uploadfile(ArchivoUri6);
-                           uploadfile(ArchivoUri7);
-                           uploadfile(ArchivoUri8);
-                           uploadfile(ArchivoUri9);
-                           uploadfile(ArchivoUri10);
-                       }
+                        uploadAllFiles();
 
                         BorrarImagenes();
                     }
 
                     if(cont1>0 && cont2 >0 && cont3>0){
 
-                        mDatabase.child("Eventos").child(idevent).child("active").setValue(false);
+
+                        //mDatabase.child("Eventos").child(idevent).child("active").setValue(false);
+                        BDFireStore.collection("events").document(idevent).set(nEvent);
                         Toast.makeText(getApplicationContext(),"Evento terminado",Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -643,7 +594,7 @@ public class SupervisionActivity extends AppCompatActivity
                 if ((estado).equals("during")) {
 
                     if (cont2>0) {
-                        Toast.makeText(getApplicationContext(), "Ya realizaste esta actividad", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT).show();
                     } else {
                         cont2++;
                         boolean during = true;
@@ -661,34 +612,15 @@ public class SupervisionActivity extends AppCompatActivity
                         uploadImage4();
                         uploadImage5();
 
-                        if (ArchivoUri != null && contUris==0) {
-                            uploadfile(ArchivoUri);
-                        }else if(ArchivoUri2 != null && contUris==1) {
-                            uploadfile(ArchivoUri2);
-                        }else if(ArchivoUri3 != null && contUris==2) {
-                            uploadfile(ArchivoUri3);
-                        }else if(ArchivoUri4 != null && contUris==3) {
-                            uploadfile(ArchivoUri4);
-                        }else if(ArchivoUri5 != null && contUris==4) {
-                            uploadfile(ArchivoUri5);
-                        }else if(ArchivoUri6 != null && contUris==5) {
-                            uploadfile(ArchivoUri6);
-                        }else if(ArchivoUri7 != null && contUris==6) {
-                            uploadfile(ArchivoUri7);
-                        }else if(ArchivoUri8 != null && contUris==7) {
-                            uploadfile(ArchivoUri8);
-                        }else if(ArchivoUri9 != null && contUris==8) {
-                            uploadfile(ArchivoUri9);
-                        }else if(ArchivoUri10 != null && contUris==9) {
-                            uploadfile(ArchivoUri10);
-                        }
+                        uploadAllFiles();
 
                         BorrarImagenes();
                     }
 
                     if(cont1>0 && cont2 >0 && cont3>0){
 
-                        mDatabase.child("Eventos").child(idevent).child("active").setValue(false);
+                        //mDatabase.child("Eventos").child(idevent).child("active").setValue(false);
+                        BDFireStore.collection("events").document(idevent).set(nEvent);
                         Toast.makeText(getApplicationContext(),"Evento terminado",Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -696,7 +628,7 @@ public class SupervisionActivity extends AppCompatActivity
                 if ((estado).equals("after")) {
 
                     if (cont3>0) {
-                        Toast.makeText(getApplicationContext(), "Ya realizaste esta actividad", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT).show();
                     } else {
                         cont3++;
                         boolean after = true;
@@ -711,37 +643,15 @@ public class SupervisionActivity extends AppCompatActivity
                         uploadImage4();
                         uploadImage5();
 
-                        if (ArchivoUri != null && contUris==0) {
-                            uploadfile(ArchivoUri);
-                        }else if(ArchivoUri2 != null && contUris==1) {
-                            uploadfile(ArchivoUri2);
-                        }else if(ArchivoUri3 != null && contUris==2) {
-                            uploadfile(ArchivoUri3);
-                        }else if(ArchivoUri4 != null && contUris==3) {
-                            uploadfile(ArchivoUri4);
-                        }else if(ArchivoUri5 != null && contUris==4) {
-                            uploadfile(ArchivoUri5);
-                        }else if(ArchivoUri6 != null && contUris==5) {
-                            uploadfile(ArchivoUri6);
-                        }else if(ArchivoUri7 != null && contUris==6) {
-                            uploadfile(ArchivoUri7);
-                        }else if(ArchivoUri8 != null && contUris==7) {
-                            uploadfile(ArchivoUri8);
-                        }else if(ArchivoUri9 != null && contUris==8) {
-                            uploadfile(ArchivoUri9);
-                        }else if(ArchivoUri10 != null && contUris==9) {
-                            uploadfile(ArchivoUri10);
-                        }
-
-
-
+                        uploadAllFiles();
 
                         BorrarImagenes();
                     }
 
                     if(cont1>0 && cont2 >0 && cont3>0){
 
-                        mDatabase.child("Eventos").child(idevent).child("active").setValue(false);
+                        //mDatabase.child("Eventos").child(idevent).child("active").setValue(false);
+                        BDFireStore.collection("events").document(idevent).set(nEvent);
                         Toast.makeText(getApplicationContext(),"Evento terminado",Toast.LENGTH_SHORT).show();
                     }
 
@@ -776,6 +686,75 @@ public class SupervisionActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+    }
+
+    private void uploadAllFiles() {
+        if (ArchivoUri != null && contUris==0) {
+            uploadfile(ArchivoUri);
+        }else if(ArchivoUri2 != null && contUris==1) {
+            uploadfile(ArchivoUri);
+            uploadfile(ArchivoUri2);
+        }else if(ArchivoUri3 != null && contUris==2) {
+            uploadfile(ArchivoUri);
+            uploadfile(ArchivoUri2);
+            uploadfile(ArchivoUri3);
+        }else if(ArchivoUri4 != null && contUris==3) {
+            uploadfile(ArchivoUri);
+            uploadfile(ArchivoUri2);
+            uploadfile(ArchivoUri3);
+            uploadfile(ArchivoUri4);
+        }else if(ArchivoUri5 != null && contUris==4) {
+            uploadfile(ArchivoUri);
+            uploadfile(ArchivoUri2);
+            uploadfile(ArchivoUri3);
+            uploadfile(ArchivoUri4);
+            uploadfile(ArchivoUri5);
+        }else if(ArchivoUri6 != null && contUris==5) {
+            uploadfile(ArchivoUri);
+            uploadfile(ArchivoUri2);
+            uploadfile(ArchivoUri3);
+            uploadfile(ArchivoUri4);
+            uploadfile(ArchivoUri5);
+            uploadfile(ArchivoUri6);
+        }else if(ArchivoUri7 != null && contUris==6) {
+            uploadfile(ArchivoUri);
+            uploadfile(ArchivoUri2);
+            uploadfile(ArchivoUri3);
+            uploadfile(ArchivoUri4);
+            uploadfile(ArchivoUri5);
+            uploadfile(ArchivoUri6);
+            uploadfile(ArchivoUri7);
+        }else if(ArchivoUri8 != null && contUris==7) {
+            uploadfile(ArchivoUri);
+            uploadfile(ArchivoUri2);
+            uploadfile(ArchivoUri3);
+            uploadfile(ArchivoUri4);
+            uploadfile(ArchivoUri5);
+            uploadfile(ArchivoUri6);
+            uploadfile(ArchivoUri7);
+            uploadfile(ArchivoUri8);
+        }else if(ArchivoUri9 != null && contUris==8) {
+            uploadfile(ArchivoUri);
+            uploadfile(ArchivoUri2);
+            uploadfile(ArchivoUri3);
+            uploadfile(ArchivoUri4);
+            uploadfile(ArchivoUri5);
+            uploadfile(ArchivoUri6);
+            uploadfile(ArchivoUri7);
+            uploadfile(ArchivoUri8);
+            uploadfile(ArchivoUri9);
+        }else if(ArchivoUri10 != null && contUris==9) {
+            uploadfile(ArchivoUri);
+            uploadfile(ArchivoUri2);
+            uploadfile(ArchivoUri3);
+            uploadfile(ArchivoUri4);
+            uploadfile(ArchivoUri5);
+            uploadfile(ArchivoUri6);
+            uploadfile(ArchivoUri7);
+            uploadfile(ArchivoUri8);
+            uploadfile(ArchivoUri9);
+            uploadfile(ArchivoUri10);
+        }
     }
 
     private void mostrarDialogoOpciones() {
@@ -1527,18 +1506,18 @@ public class SupervisionActivity extends AppCompatActivity
                     switch (menuItem.getItemId()){
                         case R.id.itemAntes:
                             estado="before";
-                            txtEstado.setText("Antes de la Actividad");
+                            txtEstado.setText("Antes del Evento");
                             //Toast.makeText(getApplicationContext(),"Estado = " +estado, Toast.LENGTH_SHORT).show();
                             break;
                         case R.id.itemDurante:
                             estado="during";
-                            txtEstado.setText("Durante la Actividad");
+                            txtEstado.setText("Durante el Evento");
                            // Toast.makeText(getApplicationContext(),"Estado = " +estado, Toast.LENGTH_SHORT).show();
                         break;
 
                         case R.id.itemDespues:
                             estado="after";
-                            txtEstado.setText("Después de la Actividad");
+                            txtEstado.setText("Después del Evento");
                             //Toast.makeText(getApplicationContext(),"Estado = " +estado, Toast.LENGTH_SHORT).show();
                             break;
                     }
@@ -1553,13 +1532,13 @@ public class SupervisionActivity extends AppCompatActivity
         nameEvent = extras.getString("nameEvent");
         actividad = extras.getString("actividad");
         uid = extras.getString("uid");
-        actividad= extras.getString("actividad");
         trabajador= extras.getString("trabajador");
         start= extras.getString("start");
         end= extras.getString("end");
         idactivity= extras.getString("idactivity");
         description= extras.getString("description");
-        active=false;
+        //active=false;
+
 
 
     }

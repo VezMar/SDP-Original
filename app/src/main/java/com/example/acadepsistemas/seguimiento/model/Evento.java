@@ -30,6 +30,7 @@ public class Evento {
         this.active = active;
     }
 
+
     public String getIdactivity() {
         return idactivity;
     }
@@ -103,7 +104,7 @@ public class Evento {
         this.description = description;
     }
 
-    public boolean getActive() {
+    public boolean isActive() {
         return active;
     }
 

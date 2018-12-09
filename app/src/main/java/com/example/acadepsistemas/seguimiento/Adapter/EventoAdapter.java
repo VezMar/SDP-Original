@@ -20,8 +20,6 @@ public class EventoAdapter extends FirestoreRecyclerAdapter<Evento, EventoAdapte
     private OnItemClickListener listener;
 
 
-
-
     /**
      * Create a new RecyclerView adapter that listens to a Firestore Query.  See {@link
      * FirestoreRecyclerOptions} for configuration options.
