@@ -1,7 +1,7 @@
 package com.example.acadepsistemas.seguimiento.model;
 
 public class Evento {
-    String user_id;
+    String uid;
     String actividad;
     String trabajador;
     String idevent;
@@ -17,8 +17,8 @@ public class Evento {
     }
 
 
-    public Evento(String user_id, String actividad, String trabajador, String idevent, String name, String start, String end, String idactivity, String description, boolean active) {
-        this.user_id = user_id;
+    public Evento(String uid, String actividad, String trabajador, String idevent, String name, String start, String end, String idactivity, String description, boolean active) {
+        this.uid = uid;
         this.actividad = actividad;
         this.trabajador = trabajador;
         this.idevent = idevent;
@@ -63,12 +63,13 @@ public class Evento {
         this.end = end;
     }
 
-    public String getUser_id() {
-        return user_id;
+
+    public String getUid() {
+        return uid;
     }
 
-    public void setUser_id(String user_id) {
-        this.user_id = user_id;
+    public void setUid(String uid) {
+        this.uid = uid;
     }
 
     public String getActividad() {

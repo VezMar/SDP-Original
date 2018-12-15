@@ -50,7 +50,7 @@
         <item name="stColorBackground">#00c8ff</item>
         <item name="stSolidBackground">true</item>
         <item name="stStrokeWidth">3dp</item>
-        <item name="stStrokeColor">#00c8ff</item>
+        <item name="stStrokeColor">#000000</item>
         <item name="stIconStart">@drawable/ic_check_circle_black_24dp</item>
         <item name="stLength">LONG</item> LONG or SHORT
         <item name="stGravity">top</item> top or center
@@ -64,7 +64,7 @@
         <item name="stColorBackground">#7fff5c</item>
         <item name="stSolidBackground">true</item>
         <item name="stStrokeWidth">3dp</item>
-        <item name="stStrokeColor">#7fff5c</item>
+        <item name="stStrokeColor">#000000</item>
         <item name="stIconStart">@drawable/ic_check_circle_black_24dp</item>
         <item name="stLength">LONG</item> LONG or SHORT
         <item name="stGravity">top</item> top or center

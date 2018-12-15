@@ -173,7 +173,7 @@ public class SupervisionActivity extends AppCompatActivity
 
     static String idevent;
     static String nameEvent;
-    static String user_id;
+    static String uid;
     static String actividad;
     static String trabajador;
     static String name;
@@ -208,8 +208,6 @@ public class SupervisionActivity extends AppCompatActivity
     FloatingTextButton btnBorrar3;
     FloatingTextButton btnBorrar4;
     FloatingTextButton btnBorrar5;
-
-    FloatingTextButton btnBorrarArchivo;
 
 
 
@@ -291,19 +289,15 @@ public class SupervisionActivity extends AppCompatActivity
         nEvent.setIdactivity(idactivity);
         nEvent.setIdevent(idevent);
         nEvent.setStart(start);
-        nEvent.setUser_id(user_id);
+        nEvent.setUid(uid);
         nEvent.setTrabajador(trabajador);
 
         //Inicializacion de varibales
         bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottomNavigationView);
         bottomNavigationView.setOnNavigationItemSelectedListener(navListener);
-
-
-
         txtEstado = (TextView) findViewById(R.id.txtEstado);
 
         txtEstado.setText("Antes del Evento");
-        estado = "before";
 
 
         edObserv = (EditText) findViewById(R.id.edObserv);
@@ -322,8 +316,6 @@ public class SupervisionActivity extends AppCompatActivity
         btnBorrar3 = (FloatingTextButton) findViewById(R.id.btnBorrar3);
         btnBorrar4 = (FloatingTextButton) findViewById(R.id.btnBorrar4);
         btnBorrar5 = (FloatingTextButton) findViewById(R.id.btnBorrar5);
-
-        btnBorrarArchivo = (FloatingTextButton) findViewById(R.id.btnBorrarArchivo);
 
 
         imageView = (ImageView) findViewById(R.id.imgView);
@@ -378,34 +370,28 @@ public class SupervisionActivity extends AppCompatActivity
             locationStart();
         }
 
-        chequeoDevariables();
+
 
         /**/
 
-
-
-
+    if (estado.equals("before") && cont1>0){
+        StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_LONG, R.style.warningToast).show();
+    }else if (estado.equals("during") && cont2>0){
+        StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_LONG, R.style.warningToast).show();
+    }else if(estado.equals("after") && cont3>0){
+            StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_LONG, R.style.warningToast).show();
+        }else{
 
 
         btnArchivo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (estado.equals("before") && cont1<1 || estado.equals("during") && cont2<1 || estado.equals("after") && cont3<1) {
-                    if (ContextCompat.checkSelfPermission(SupervisionActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-                        mostrarDialogoOpciones();
-                    } else {
-                        ActivityCompat.requestPermissions(SupervisionActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 9);
-                    }
-                }else{
-                    StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT, R.style.warningToast).show();
-                }
-            }
-        });
 
-        btnBorrarArchivo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                MostrarOpciones();
+                if (ContextCompat.checkSelfPermission(SupervisionActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                    mostrarDialogoOpciones();
+                } else {
+                    ActivityCompat.requestPermissions(SupervisionActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 9);
+                }
             }
         });
 
@@ -413,24 +399,9 @@ public class SupervisionActivity extends AppCompatActivity
         btnBorrar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                if (estado.equals("before") && cont1>0){
-                    StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT, R.style.warningToast).show();
-                }else{
-                    imageView.setImageDrawable(Drawable.createFromPath("@drawable/empty_image"));
-                    fileimagen = null;
-                    StyleableToast.makeText(getApplicationContext(), "Borrada con exito", Toast.LENGTH_SHORT, R.style.doneToast).show();
-
-                }
-
-                if (estado.equals("during") && cont2>0){
-                    StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT, R.style.warningToast).show();
-                }else{
-                    imageView.setImageDrawable(Drawable.createFromPath("@drawable/empty_image"));
-                    fileimagen = null;
-                    StyleableToast.makeText(getApplicationContext(), "Borrada con exito", Toast.LENGTH_SHORT, R.style.doneToast).show();
-                }
-
+                imageView.setImageDrawable(Drawable.createFromPath("@drawable/empty_image"));
+                fileimagen = null;
+                Toast.makeText(getApplicationContext(), "Borrada con exito", Toast.LENGTH_SHORT).show();
 
 
             }
@@ -439,14 +410,9 @@ public class SupervisionActivity extends AppCompatActivity
         btnBorrar2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (estado.equals("before") && cont1<1 || estado.equals("during") && cont2<1 || estado.equals("after") && cont3<1) {
-
-                    imageView2.setImageDrawable(Drawable.createFromPath("@drawable/empty_image"));
-                    fileimagen2 = null;
-                    Toast.makeText(getApplicationContext(), "Borrada con exito", Toast.LENGTH_SHORT).show();
-                }else{
-                    StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT, R.style.warningToast).show();
-                }
+                imageView2.setImageDrawable(Drawable.createFromPath("@drawable/empty_image"));
+                fileimagen2 = null;
+                Toast.makeText(getApplicationContext(), "Borrada con exito", Toast.LENGTH_SHORT).show();
 
             }
         });
@@ -454,30 +420,21 @@ public class SupervisionActivity extends AppCompatActivity
         btnBorrar3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (estado.equals("before") && cont1<1 || estado.equals("during") && cont2<1 || estado.equals("after") && cont3<1) {
-                    imageView3.setImageDrawable(Drawable.createFromPath("@drawable/empty_image"));
-                    fileimagen3 = null;
-                    StyleableToast.makeText(getApplicationContext(), "Borrada con exito", Toast.LENGTH_SHORT, R.style.doneToast).show();
-                }else{
-                    StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT, R.style.warningToast).show();
-                }
+                imageView3.setImageDrawable(Drawable.createFromPath("@drawable/empty_image"));
+                fileimagen3 = null;
+                Toast.makeText(getApplicationContext(), "Borrada con exito", Toast.LENGTH_SHORT).show();
             }
         });
 
         btnBorrar4.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                imageView4.setImageDrawable(Drawable.createFromPath("@drawable/empty_image"));
+                //imageView4.setImageURI(Uri.parse("@drawable/empty_image"));
+                //imageView4.findViewById(R.id.imgView4);
 
-                if (estado.equals("before") && cont1<1 || estado.equals("during") && cont2<1 || estado.equals("after") && cont3<1) {
-                    imageView4.setImageDrawable(Drawable.createFromPath("@drawable/empty_image"));
-                    //imageView4.setImageURI(Uri.parse("@drawable/empty_image"));
-                    //imageView4.findViewById(R.id.imgView4);
-
-                    fileimagen4 = null;
-                    StyleableToast.makeText(getApplicationContext(), "Borrada con exito", Toast.LENGTH_SHORT, R.style.doneToast).show();
-                }else{
-                    StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT, R.style.warningToast).show();
-                }
+                fileimagen4 = null;
+                Toast.makeText(getApplicationContext(), "Borrada con exito", Toast.LENGTH_SHORT).show();
 
 
             }
@@ -486,37 +443,29 @@ public class SupervisionActivity extends AppCompatActivity
         btnBorrar5.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (estado.equals("before") && cont1<1 || estado.equals("during") && cont2<1 || estado.equals("after") && cont3<1) {
-                    imageView5.setImageDrawable(Drawable.createFromPath("@drawable/empty_image"));
-                    fileimagen5 = null;
-                    StyleableToast.makeText(getApplicationContext(), "Borrada con exito", Toast.LENGTH_SHORT, R.style.doneToast).show();
-                }else{
-                    StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT, R.style.warningToast).show();
-                }
+                imageView5.setImageDrawable(Drawable.createFromPath("@drawable/empty_image"));
+                fileimagen5 = null;
+                Toast.makeText(getApplicationContext(), "Borrada con exito", Toast.LENGTH_SHORT).show();
             }
         });
 
         btnFoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (estado.equals("before") && cont1<1 || estado.equals("during") && cont2<1 || estado.equals("after") && cont3<1) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                        if (checkSelfPermission(String.valueOf(Manifest.permission.CAMERA)) != PackageManager.PERMISSION_DENIED) {
-                            ActivityCompat.requestPermissions(SupervisionActivity.this, new String[]{Manifest.permission.CAMERA}, 1);
-                        }
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    if (checkSelfPermission(String.valueOf(Manifest.permission.CAMERA)) != PackageManager.PERMISSION_DENIED) {
+                        ActivityCompat.requestPermissions(SupervisionActivity.this, new String[]{Manifest.permission.CAMERA}, 1);
                     }
+                }
 
-                    if (ActivityCompat.checkSelfPermission(getApplicationContext(),
-                            Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                if (ActivityCompat.checkSelfPermission(getApplicationContext(),
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
 
-                        ActivityCompat.requestPermissions(SupervisionActivity.this,
-                                new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_PERM_WRITE_STORAGE);
-                    } else {
-                        descision = 0;
-                        takePhoto();
-                    }
-                }else{
-                    StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT, R.style.warningToast).show();
+                    ActivityCompat.requestPermissions(SupervisionActivity.this,
+                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_PERM_WRITE_STORAGE);
+                } else {
+                    descision = 0;
+                    takePhoto();
                 }
             }
         });
@@ -524,50 +473,41 @@ public class SupervisionActivity extends AppCompatActivity
         btnFoto2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (estado.equals("before") && cont1<1 || estado.equals("during") && cont2<1 || estado.equals("after") && cont3<1) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                        if (checkSelfPermission(String.valueOf(Manifest.permission.CAMERA)) != PackageManager.PERMISSION_DENIED) {
-                            ActivityCompat.requestPermissions(SupervisionActivity.this, new String[]{Manifest.permission.CAMERA}, 1);
-                        }
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    if (checkSelfPermission(String.valueOf(Manifest.permission.CAMERA)) != PackageManager.PERMISSION_DENIED) {
+                        ActivityCompat.requestPermissions(SupervisionActivity.this, new String[]{Manifest.permission.CAMERA}, 1);
                     }
-
-                    if (ActivityCompat.checkSelfPermission(getApplicationContext(),
-                            Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-
-                        ActivityCompat.requestPermissions(SupervisionActivity.this,
-                                new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_PERM_WRITE_STORAGE);
-                    } else {
-                        descision = 1;
-                        takePhoto();
-                    }
-                }else{
-                    StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT, R.style.warningToast).show();
                 }
 
+                if (ActivityCompat.checkSelfPermission(getApplicationContext(),
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+
+                    ActivityCompat.requestPermissions(SupervisionActivity.this,
+                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_PERM_WRITE_STORAGE);
+                } else {
+                    descision = 1;
+                    takePhoto();
+                }
             }
         });
 
         btnFoto3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (estado.equals("before") && cont1<1 || estado.equals("during") && cont2<1 || estado.equals("after") && cont3<1) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                        if (checkSelfPermission(String.valueOf(Manifest.permission.CAMERA)) != PackageManager.PERMISSION_DENIED) {
-                            ActivityCompat.requestPermissions(SupervisionActivity.this, new String[]{Manifest.permission.CAMERA}, 1);
-                        }
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    if (checkSelfPermission(String.valueOf(Manifest.permission.CAMERA)) != PackageManager.PERMISSION_DENIED) {
+                        ActivityCompat.requestPermissions(SupervisionActivity.this, new String[]{Manifest.permission.CAMERA}, 1);
                     }
+                }
 
-                    if (ActivityCompat.checkSelfPermission(getApplicationContext(),
-                            Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                if (ActivityCompat.checkSelfPermission(getApplicationContext(),
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
 
-                        ActivityCompat.requestPermissions(SupervisionActivity.this,
-                                new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_PERM_WRITE_STORAGE);
-                    } else {
-                        descision = 2;
-                        takePhoto();
-                    }
-                }else{
-                    StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT, R.style.warningToast).show();
+                    ActivityCompat.requestPermissions(SupervisionActivity.this,
+                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_PERM_WRITE_STORAGE);
+                } else {
+                    descision = 2;
+                    takePhoto();
                 }
             }
         });
@@ -575,203 +515,174 @@ public class SupervisionActivity extends AppCompatActivity
         btnFoto4.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                        if (checkSelfPermission(String.valueOf(Manifest.permission.CAMERA)) != PackageManager.PERMISSION_DENIED) {
-                            ActivityCompat.requestPermissions(SupervisionActivity.this, new String[]{Manifest.permission.CAMERA}, 1);
-                        }
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    if (checkSelfPermission(String.valueOf(Manifest.permission.CAMERA)) != PackageManager.PERMISSION_DENIED) {
+                        ActivityCompat.requestPermissions(SupervisionActivity.this, new String[]{Manifest.permission.CAMERA}, 1);
                     }
+                }
 
-                    if (ActivityCompat.checkSelfPermission(getApplicationContext(),
-                            Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                if (ActivityCompat.checkSelfPermission(getApplicationContext(),
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
 
-                        ActivityCompat.requestPermissions(SupervisionActivity.this,
-                                new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_PERM_WRITE_STORAGE);
-                    } else {
-                        descision = 3;
-                        takePhoto();
-                    }
-
+                    ActivityCompat.requestPermissions(SupervisionActivity.this,
+                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_PERM_WRITE_STORAGE);
+                } else {
+                    descision = 3;
+                    takePhoto();
+                }
             }
         });
 
         btnFoto5.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                        if (checkSelfPermission(String.valueOf(Manifest.permission.CAMERA)) != PackageManager.PERMISSION_DENIED) {
-                            ActivityCompat.requestPermissions(SupervisionActivity.this, new String[]{Manifest.permission.CAMERA}, 1);
-                        }
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    if (checkSelfPermission(String.valueOf(Manifest.permission.CAMERA)) != PackageManager.PERMISSION_DENIED) {
+                        ActivityCompat.requestPermissions(SupervisionActivity.this, new String[]{Manifest.permission.CAMERA}, 1);
                     }
+                }
 
-                    if (ActivityCompat.checkSelfPermission(getApplicationContext(),
-                            Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                if (ActivityCompat.checkSelfPermission(getApplicationContext(),
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
 
-                        ActivityCompat.requestPermissions(SupervisionActivity.this,
-                                new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_PERM_WRITE_STORAGE);
-                    } else {
-                        descision = 4;
-                        takePhoto();
-
+                    ActivityCompat.requestPermissions(SupervisionActivity.this,
+                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_PERM_WRITE_STORAGE);
+                } else {
+                    descision = 4;
+                    takePhoto();
                 }
             }
         });
 
-
+        chequeoDevariables();
 
         btnEnviar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                String Observation = edObserv.getText().toString();
 
 
-                if((estado).equals("before") && cont1>0){
-                    StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT, R.style.warningToast).show();
-                }else if ((estado).equals("during") && cont2>0){
-                    StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT, R.style.warningToast).show();
-                }else if ((estado).equals("after") && cont3>0){
-                    StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT, R.style.warningToast).show();
-                }else {
-
-                    AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
-                    builder.setTitle("Confirmación");
-                    builder.setMessage("¿Está seguro?");
-                    StyleableToast.makeText(getApplicationContext(), "Una vez hecho, esta accion no se puede revertir", Toast.LENGTH_SHORT, R.style.warningToast).show();
-                    // builder.setCancelable(false);
-                    builder.setPositiveButton("Si", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            String Observation = edObserv.getText().toString();
-
-                            if ((estado).equals("before")) {
-
-                                if (cont1 > 0) {
-                                    StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT, R.style.warningToast).show();
-
-                                } else {
-                                    cont1++;
-                                    boolean before = true;
-                                    Data data = new Data(Observation, before, Lat, Lng);
-                                    // String k = mDatabase.child("Eventos").child(idevent).child("observation").child("before").child("status").;
-                                    //mDatabase.child("Eventos").child(idevent).child("observation").child("before").setValue(data);
-
-                                    BDFireStore.collection("events").document(idevent).collection("observation").document("before").set(data);
-
-                                    StyleableToast.makeText(getApplicationContext(), "Datos ingresados", Toast.LENGTH_SHORT, R.style.sucessToast).show();
 
 
-                                    edObserv.setText("");
-                                    uploadImage1();
-                                    uploadImage2();
-                                    uploadImage3();
-                                    uploadImage4();
-                                    uploadImage5();
+
+                if ((estado).equals("before")) {
+
+                   if (cont1>0) {
+                       StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_LONG, R.style.warningToast).show();
+                       // Toast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT).show();
+                    } else {
+                        cont1++;
+                        boolean before = true;
+                        Data data = new Data(Observation, before, Lat, Lng);
+                        // String k = mDatabase.child("Eventos").child(idevent).child("observation").child("before").child("status").;
+                        //mDatabase.child("Eventos").child(idevent).child("observation").child("before").setValue(data);
+
+                        BDFireStore.collection("events").document(idevent).collection("observation").document("before").set(data);
+
+                       StyleableToast.makeText(getApplicationContext(), "Datos ingresados", Toast.LENGTH_LONG, R.style.sucessToast).show();
+                        //Toast.makeText(getApplicationContext(), "Datos ingresados", Toast.LENGTH_SHORT).show();
+
+                        edObserv.setText("");
+                        uploadImage1();
+                        uploadImage2();
+                        uploadImage3();
+                        uploadImage4();
+                        uploadImage5();
 
 
-                                    uploadAllFiles();
 
-                                    BorrarImagenes();
-                                }
+                       uploadAllFiles();
 
-                                if (cont1 > 0 && cont2 > 0 && cont3 > 0) {
+                        BorrarImagenes();
+                    }
 
-
-                                    //mDatabase.child("Eventos").child(idevent).child("active").setValue(false);
-                                    BDFireStore.collection("events").document(idevent).set(nEvent);
-
-                                    StyleableToast.makeText(getApplicationContext(), "Evento terminado", Toast.LENGTH_SHORT, R.style.doneToast).show();
+                    if(cont1>0 && cont2 >0 && cont3>0){
 
 
-                                }
-                            }
+                        //mDatabase.child("Eventos").child(idevent).child("active").setValue(false);
+                        BDFireStore.collection("events").document(idevent).set(nEvent);
 
-                            if ((estado).equals("during")) {
+                        StyleableToast.makeText(getApplicationContext(), "Evento terminado", Toast.LENGTH_LONG, R.style.doneToast).show();
+                        //Toast.makeText(getApplicationContext(),"Evento terminado",Toast.LENGTH_SHORT).show();
 
-                                if (cont2 > 0) {
-                                    StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT, R.style.warningToast).show();
-
-                                } else {
-                                    cont2++;
-                                    boolean during = true;
-                                    Data2 data2 = new Data2(Observation, during, Lat, Lng);
-                                    //mDatabase.child("Eventos").child(idevent).child("observation").child("during").setValue(data2);
-
-
-                                    BDFireStore.collection("events").document(idevent).collection("observation").document("during").set(data2);
-
-                                    StyleableToast.makeText(getApplicationContext(), "Datos ingresados", Toast.LENGTH_SHORT, R.style.sucessToast).show();
-
-
-                                    edObserv.setText("");
-                                    uploadImage1();
-                                    uploadImage2();
-                                    uploadImage3();
-                                    uploadImage4();
-                                    uploadImage5();
-
-                                    uploadAllFiles();
-
-                                    BorrarImagenes();
-                                }
-
-                                if (cont1 > 0 && cont2 > 0 && cont3 > 0) {
-
-                                    //mDatabase.child("Eventos").child(idevent).child("active").setValue(false);
-                                    BDFireStore.collection("events").document(idevent).set(nEvent);
-                                    StyleableToast.makeText(getApplicationContext(), "Evento terminado", Toast.LENGTH_SHORT, R.style.doneToast).show();
-
-                                }
-                            }
-
-                            if ((estado).equals("after")) {
-
-                                if (cont3 > 0) {
-                                    StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT, R.style.warningToast).show();
-
-                                } else {
-                                    cont3++;
-                                    boolean after = true;
-                                    Data3 data3 = new Data3(Observation, after, Lat, Lng);
-                                    //mDatabase.child("Eventos").child(idevent).child("observation").child("after").setValue(data3);
-                                    BDFireStore.collection("events").document(idevent).collection("observation").document("after").set(data3);
-
-                                    StyleableToast.makeText(getApplicationContext(), "Datos ingresados", Toast.LENGTH_SHORT, R.style.sucessToast).show();
-
-
-                                    edObserv.setText("");
-                                    uploadImage1();
-                                    uploadImage2();
-                                    uploadImage3();
-                                    uploadImage4();
-                                    uploadImage5();
-
-                                    uploadAllFiles();
-
-                                    BorrarImagenes();
-                                }
-
-                                if (cont1 > 0 && cont2 > 0 && cont3 > 0) {
-
-                                    //mDatabase.child("Eventos").child(idevent).child("active").setValue(false);
-                                    BDFireStore.collection("events").document(idevent).set(nEvent);
-                                    StyleableToast.makeText(getApplicationContext(), "Evento terminado", Toast.LENGTH_SHORT, R.style.doneToast).show();
-
-                                }
-
-                            }
-                        }
-                    });
-                    builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-
-                        }
-                    });
-                    builder.create().show();
+                    }
                 }
 
-/*
-               */
+                if ((estado).equals("during")) {
+
+                    if (cont2>0) {
+                        StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_LONG, R.style.warningToast).show();
+                        //Toast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT).show();
+                    } else {
+                        cont2++;
+                        boolean during = true;
+                        Data2 data2 = new Data2(Observation, during, Lat, Lng);
+                        //mDatabase.child("Eventos").child(idevent).child("observation").child("during").setValue(data2);
+
+
+
+                        BDFireStore.collection("events").document(idevent).collection("observation").document("during").set(data2);
+
+                        StyleableToast.makeText(getApplicationContext(), "Datos ingresados", Toast.LENGTH_LONG, R.style.sucessToast).show();
+                        //Toast.makeText(getApplicationContext(), "Datos ingresados", Toast.LENGTH_SHORT).show();
+
+                        edObserv.setText("");
+                        uploadImage1();
+                        uploadImage2();
+                        uploadImage3();
+                        uploadImage4();
+                        uploadImage5();
+
+                        uploadAllFiles();
+
+                        BorrarImagenes();
+                    }
+
+                    if(cont1>0 && cont2 >0 && cont3>0){
+
+                        //mDatabase.child("Eventos").child(idevent).child("active").setValue(false);
+                        BDFireStore.collection("events").document(idevent).set(nEvent);
+                        StyleableToast.makeText(getApplicationContext(), "Evento terminado", Toast.LENGTH_LONG, R.style.doneToast).show();
+                        //Toast.makeText(getApplicationContext(),"Evento terminado",Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                if ((estado).equals("after")) {
+
+                    if (cont3>0) {
+                        StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_LONG, R.style.warningToast).show();
+                        //Toast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT).show();
+                    } else {
+                        cont3++;
+                        boolean after = true;
+                        Data3 data3 = new Data3(Observation, after, Lat, Lng);
+                        //mDatabase.child("Eventos").child(idevent).child("observation").child("after").setValue(data3);
+                        BDFireStore.collection("events").document(idevent).collection("observation").document("after").set(data3);
+
+                        StyleableToast.makeText(getApplicationContext(), "Datos ingresados", Toast.LENGTH_LONG, R.style.sucessToast).show();
+                       // Toast.makeText(getApplicationContext(), "Datos ingresados", Toast.LENGTH_SHORT).show();
+
+                        edObserv.setText("");
+                        uploadImage1();
+                        uploadImage2();
+                        uploadImage3();
+                        uploadImage4();
+                        uploadImage5();
+
+                        uploadAllFiles();
+
+                        BorrarImagenes();
+                    }
+
+                    if(cont1>0 && cont2 >0 && cont3>0){
+
+                        //mDatabase.child("Eventos").child(idevent).child("active").setValue(false);
+                        BDFireStore.collection("events").document(idevent).set(nEvent);
+                        StyleableToast.makeText(getApplicationContext(), "Evento terminado", Toast.LENGTH_LONG, R.style.doneToast).show();
+                        //Toast.makeText(getApplicationContext(),"Evento terminado",Toast.LENGTH_SHORT).show();
+                    }
+
+                }
 
 
 
@@ -779,7 +690,7 @@ public class SupervisionActivity extends AppCompatActivity
             }
         });
 
-
+    }
 
         // -------------------Image view --------------------- Zoom ---------------------
        /* imageView.setOnClickListener(new View.OnClickListener() {
@@ -804,78 +715,6 @@ public class SupervisionActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-    }
-
-    private void MostrarOpciones() {
-        /////////////////////////////
-
-        if((estado).equals("before") && cont1>0){
-            StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT, R.style.warningToast).show();
-        }else if ((estado).equals("during") && cont2>0){
-            StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT, R.style.warningToast).show();
-        }else if ((estado).equals("after") && cont3>0){
-            StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT, R.style.warningToast).show();
-        }else {
-            final CharSequence[] opciones = {"Borrar archivo anterior", "Cancelar"};
-            final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-
-
-            builder.setTitle("Borrar archivos");
-            builder.setItems(opciones, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    if (opciones[i].equals("Borrar archivo anterior")) {
-                        if (contUris == 0) {
-                            StyleableToast.makeText(getApplicationContext(), "No hay ningún archivo para borrar", Toast.LENGTH_SHORT, R.style.warningToast).show();
-                        } else if (ArchivoUri != null && contUris == 1) {
-                            ArchivoUri = null;
-                            contUris--;
-                            StyleableToast.makeText(getApplicationContext(), "¡Archivo Borrado con exito!", Toast.LENGTH_SHORT, R.style.doneToast).show();
-                        } else if (ArchivoUri2 != null && contUris == 2) {
-                            ArchivoUri2 = null;
-                            contUris--;
-                            StyleableToast.makeText(getApplicationContext(), "¡Archivo Borrado con exito!", Toast.LENGTH_SHORT, R.style.doneToast).show();
-                        } else if (ArchivoUri3 != null && contUris == 3) {
-                            ArchivoUri3 = null;
-                            contUris--;
-                            StyleableToast.makeText(getApplicationContext(), "¡Archivo Borrado con exito!", Toast.LENGTH_SHORT, R.style.doneToast).show();
-                        } else if (ArchivoUri4 != null && contUris == 4) {
-                            ArchivoUri4 = null;
-                            contUris--;
-                            StyleableToast.makeText(getApplicationContext(), "¡Archivo Borrado con exito!", Toast.LENGTH_SHORT, R.style.doneToast).show();
-                        } else if (ArchivoUri5 != null && contUris == 5) {
-                            ArchivoUri5 = null;
-                            contUris--;
-                            StyleableToast.makeText(getApplicationContext(), "¡Archivo Borrado con exito!", Toast.LENGTH_SHORT, R.style.doneToast).show();
-                        } else if (ArchivoUri6 != null && contUris == 6) {
-                            ArchivoUri6 = null;
-                            contUris--;
-                            StyleableToast.makeText(getApplicationContext(), "¡Archivo Borrado con exito!", Toast.LENGTH_SHORT, R.style.doneToast).show();
-                        } else if (ArchivoUri7 != null && contUris == 7) {
-                            ArchivoUri7 = null;
-                            contUris--;
-                            StyleableToast.makeText(getApplicationContext(), "¡Archivo Borrado con exito!", Toast.LENGTH_SHORT, R.style.doneToast).show();
-                        } else if (ArchivoUri8 != null && contUris == 8) {
-                            ArchivoUri8 = null;
-                            contUris--;
-                            StyleableToast.makeText(getApplicationContext(), "¡Archivo Borrado con exito!", Toast.LENGTH_SHORT, R.style.doneToast).show();
-                        } else if (ArchivoUri9 != null && contUris == 9) {
-                            ArchivoUri9 = null;
-                            contUris--;
-                            StyleableToast.makeText(getApplicationContext(), "¡Archivo Borrado con exito!", Toast.LENGTH_SHORT, R.style.doneToast).show();
-                        } else if (ArchivoUri10 != null && contUris == 10) {
-                            ArchivoUri10 = null;
-                            contUris--;
-                            StyleableToast.makeText(getApplicationContext(), "¡Archivo Borrado con exito!", Toast.LENGTH_SHORT, R.style.doneToast).show();
-                        }
-                    } else {
-                        dialogInterface.dismiss();
-                    }
-                }
-
-            });
-            builder.show();
-        }
     }
 
     private void uploadAllFiles() {
@@ -1026,42 +865,35 @@ public class SupervisionActivity extends AppCompatActivity
 
     private void mostrarDialogoOpciones() {
 
-        if((estado).equals("before") && cont1>0){
-            StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT, R.style.warningToast).show();
-        }else if ((estado).equals("during") && cont2>0){
-            StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT, R.style.warningToast).show();
-        }else if ((estado).equals("after") && cont3>0){
-            StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT, R.style.warningToast).show();
-        }else {
-            final CharSequence[] opciones = {"Elegir PDF", "Elegir Docx", "Elegir Video", "Elegir Audio", "Cancelar"};
-            final AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
-            if (contUris == 0) {
-                StyleableToast.makeText(getApplicationContext(), "Solo puede añadir 10 archivos diferentes", Toast.LENGTH_SHORT, R.style.warningToast).show();
-                //Toast.makeText(getApplicationContext(),"Solo puede añadir 10 archivos diferentes \nUna vez agregado un archivo este no puede ser eliminado",Toast.LENGTH_SHORT).show();
-            }
+        final CharSequence [] opciones ={"Elegir PDF", "Elegir Docx", "Elegir Video", "Elegir Audio","Cancelar"};
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
-            builder.setTitle("Elige un Archivo");
-            builder.setItems(opciones, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    if (opciones[i].equals("Elegir PDF")) {
-                        selectPDF();
-                    } else if (opciones[i].equals("Elegir Docx")) {
-                        selectDocx();
-                    } else if (opciones[i].equals("Elegir Video")) {
-                        selectVideo();
-                    } else if (opciones[i].equals("Elegir Audio")) {
-                        selectAudio();
-                    } else {
-                        dialogInterface.dismiss();
-                    }
-                }
-            });
-            builder.show();
+        if(contUris==0){
+            StyleableToast.makeText(getApplicationContext(), "Solo puede añadir 10 archivos diferentes \nUna vez agregado un archivo este no puede ser eliminado", Toast.LENGTH_LONG, R.style.dangerToast).show();
+            //Toast.makeText(getApplicationContext(),"Solo puede añadir 10 archivos diferentes \nUna vez agregado un archivo este no puede ser eliminado",Toast.LENGTH_LONG).show();
         }
 
+        builder.setTitle("Elige un Archivo");
+        builder.setItems(opciones, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                if(opciones[i].equals("Elegir PDF")){
+                    selectPDF();
+                }else if(opciones[i].equals("Elegir Docx")){
+                    selectDocx();
+                }else if(opciones[i].equals("Elegir Video")){
+                    selectVideo();
+                }else if(opciones[i].equals("Elegir Audio")){
+                    selectAudio();
+                }else{
+                        dialogInterface.dismiss();
+                    }
+            }
+        });
+        builder.show();
 
+       // Toast.makeText(getApplicationContext(),"Mostrar dialogo opciones", Toast.LENGTH_SHORT).show();
 
        /* final CharSequence [] opciones={"Elegir PDF", "Elegir Docx", "Elegir Video", "Elegir Audio","Cancelar"};
         final AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
@@ -1117,29 +949,14 @@ public class SupervisionActivity extends AppCompatActivity
 
                                                         if(check.isBefore()==true) {
                                                             cont1++;
-                                                            bottomNavigationView.getSelectedItemId();
-                                                            bottomNavigationView.setEnabled(false);
-                                                            bottomNavigationView.setSelectedItemId(R.id.itemDurante);
-                                                            estado = "during";
-                                                            txtEstado.setText("Durante el Evento");
                                                         }
 
                                                         if(check2.isDuring()==true) {
                                                             cont2++;
-                                                            bottomNavigationView.getSelectedItemId();
-                                                            bottomNavigationView.setEnabled(false);
-                                                            bottomNavigationView.setSelectedItemId(R.id.itemDespues);
-                                                            estado = "after";
-                                                            txtEstado.setText("Después del Evento");
                                                         }
 
                                                         if(check3.isAfter()==true) {
                                                             cont3++;
-                                                            ocultarItems();
-                                                            Intent intent= new Intent (getApplicationContext(), Main2Activity.class);
-                                                            startActivity(intent);
-                                                            StyleableToast.makeText(getApplicationContext(), "Evento terminado", Toast.LENGTH_SHORT, R.style.doneToast).show();
-
                                                         }
 
                                                     }
@@ -1234,7 +1051,7 @@ public class SupervisionActivity extends AppCompatActivity
         if(requestCode==9 && grantResults[0]==PackageManager.PERMISSION_GRANTED){
             selectPDF();
         }else{
-            StyleableToast.makeText(getApplicationContext(), "Porfavor otorgue los permisos...", Toast.LENGTH_SHORT, R.style.warningToast).show();
+            StyleableToast.makeText(getApplicationContext(), "Porfavor otorgue los permisos...", Toast.LENGTH_LONG, R.style.warningToast).show();
             //Toast.makeText(getApplicationContext(),"Porfavor otorgue los permisos...",Toast.LENGTH_SHORT).show();
         }
 
@@ -1378,16 +1195,8 @@ public class SupervisionActivity extends AppCompatActivity
     }
 
     public void takePhoto() {
-        if((estado).equals("before") && cont1>0){
-            StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT, R.style.warningToast).show();
-        }else if ((estado).equals("during") && cont2>0){
-            StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT, R.style.warningToast).show();
-        }else if ((estado).equals("after") && cont3>0){
-            StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT, R.style.warningToast).show();
-        }else {
-            Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            startActivityForResult(cameraIntent, CAPTURE_PHOTO);
-        }
+        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        startActivityForResult(cameraIntent, CAPTURE_PHOTO);
     }
 
     private void uploadImage1() {
@@ -1410,7 +1219,7 @@ public class SupervisionActivity extends AppCompatActivity
                         @Override
                         public void onFailure(@NonNull Exception e) {
                             progressDialog.dismiss();
-                            StyleableToast.makeText(getApplicationContext(), "Fallo al Subir", Toast.LENGTH_SHORT, R.style.dangerToast).show();
+                            StyleableToast.makeText(getApplicationContext(), "Fallo al Subir", Toast.LENGTH_LONG, R.style.dangerToast).show();
                            // Toast.makeText(getApplicationContext(), "Fallo al Subir", Toast.LENGTH_SHORT).show();
                         }
                     })
@@ -1444,7 +1253,7 @@ public class SupervisionActivity extends AppCompatActivity
                         @Override
                         public void onFailure(@NonNull Exception e) {
                             progressDialog.dismiss();
-                            StyleableToast.makeText(getApplicationContext(), "Fallo al Subir", Toast.LENGTH_SHORT, R.style.dangerToast).show();
+                            StyleableToast.makeText(getApplicationContext(), "Fallo al Subir", Toast.LENGTH_LONG, R.style.dangerToast).show();
                             //Toast.makeText(getApplicationContext(), "Fallo al Subir", Toast.LENGTH_SHORT).show();
                         }
                     })
@@ -1478,7 +1287,7 @@ public class SupervisionActivity extends AppCompatActivity
                         @Override
                         public void onFailure(@NonNull Exception e) {
                             progressDialog.dismiss();
-                            StyleableToast.makeText(getApplicationContext(), "Fallo al Subir", Toast.LENGTH_SHORT, R.style.dangerToast).show();
+                            StyleableToast.makeText(getApplicationContext(), "Fallo al Subir", Toast.LENGTH_LONG, R.style.dangerToast).show();
                             //Toast.makeText(getApplicationContext(), "Fallo al Subir", Toast.LENGTH_SHORT).show();
                         }
                     })
@@ -1512,7 +1321,7 @@ public class SupervisionActivity extends AppCompatActivity
                         @Override
                         public void onFailure(@NonNull Exception e) {
                             progressDialog.dismiss();
-                            StyleableToast.makeText(getApplicationContext(), "Fallo al Subir", Toast.LENGTH_SHORT, R.style.dangerToast).show();
+                            StyleableToast.makeText(getApplicationContext(), "Fallo al Subir", Toast.LENGTH_LONG, R.style.dangerToast).show();
                             //Toast.makeText(getApplicationContext(), "Fallo al Subir", Toast.LENGTH_SHORT).show();
                         }
                     })
@@ -1547,7 +1356,7 @@ public class SupervisionActivity extends AppCompatActivity
                         @Override
                         public void onFailure(@NonNull Exception e) {
                             progressDialog.dismiss();
-                            StyleableToast.makeText(getApplicationContext(), "Fallo al Subir", Toast.LENGTH_SHORT, R.style.dangerToast).show();
+                            StyleableToast.makeText(getApplicationContext(), "Fallo al Subir", Toast.LENGTH_LONG, R.style.dangerToast).show();
                             //Toast.makeText(getApplicationContext(), "Fallo al Subir", Toast.LENGTH_SHORT).show();
                         }
                     })
@@ -2100,7 +1909,7 @@ public class SupervisionActivity extends AppCompatActivity
 
         if (requestCode==86 && resultCode==RESULT_OK && data!=null) {
             if(contUris>9){
-                StyleableToast.makeText(getApplicationContext(), "Limite de archivos alcanzado", Toast.LENGTH_SHORT, R.style.warningToast).show();
+                StyleableToast.makeText(getApplicationContext(), "Limite de archivos alcanzado", Toast.LENGTH_LONG, R.style.warningToast).show();
             }else {
                 SelecUri(data);
                 contUris++;
@@ -2108,7 +1917,7 @@ public class SupervisionActivity extends AppCompatActivity
             //Toast.makeText(getApplicationContext(),"Tu archivo se ha guardado exitosamente",Toast.LENGTH_SHORT).show();
         }else if (requestCode==87 && resultCode==RESULT_OK && data!=null) {
             if(contUris>9){
-                StyleableToast.makeText(getApplicationContext(), "Limite de archivos alcanzado", Toast.LENGTH_SHORT, R.style.warningToast).show();
+                StyleableToast.makeText(getApplicationContext(), "Limite de archivos alcanzado", Toast.LENGTH_LONG, R.style.warningToast).show();
             }else {
                 SelecUri(data);
                 contUris++;
@@ -2116,7 +1925,7 @@ public class SupervisionActivity extends AppCompatActivity
             //Toast.makeText(getApplicationContext(),"Tu archivo se ha guardado exitosamente",Toast.LENGTH_SHORT).show();
         } if (requestCode==88 && resultCode==RESULT_OK && data!=null) {
             if(contUris>9){
-                StyleableToast.makeText(getApplicationContext(), "Limite de archivos alcanzado", Toast.LENGTH_SHORT, R.style.warningToast).show();
+                StyleableToast.makeText(getApplicationContext(), "Limite de archivos alcanzado", Toast.LENGTH_LONG, R.style.warningToast).show();
             }else {
                 SelecUri(data);
                 contUris++;
@@ -2125,7 +1934,7 @@ public class SupervisionActivity extends AppCompatActivity
         }
         if (requestCode==89 && resultCode==RESULT_OK && data!=null) {
             if(contUris>9){
-                StyleableToast.makeText(getApplicationContext(), "Limite de archivos alcanzado", Toast.LENGTH_SHORT, R.style.warningToast).show();
+                StyleableToast.makeText(getApplicationContext(), "Limite de archivos alcanzado", Toast.LENGTH_LONG, R.style.warningToast).show();
             }else {
                 SelecUri(data);
                 contUris++;
@@ -2187,46 +1996,46 @@ public class SupervisionActivity extends AppCompatActivity
 
         if(contUris==0){
             ArchivoUri=data.getData();
-            StyleableToast.makeText(getApplicationContext(), "Archivo agregado con exito \nPuede subir " + (restUris-contUris) + " más", Toast.LENGTH_SHORT, R.style.sucessToast).show();
+            StyleableToast.makeText(getApplicationContext(), "Archivo agregado con exito \nPuede subir " + (restUris-contUris) + " más", Toast.LENGTH_LONG, R.style.sucessToast).show();
            // Toast.makeText(getApplicationContext(),"Archivo agregado con exito \nPuede subir " + (restUris-contUris) + " más",Toast.LENGTH_SHORT).show();
         }else if(contUris==1){
             ArchivoUri2=data.getData();
-            StyleableToast.makeText(getApplicationContext(), "Archivo agregado con exito \nPuede subir " + (restUris-contUris) + " más", Toast.LENGTH_SHORT, R.style.sucessToast).show();
+            StyleableToast.makeText(getApplicationContext(), "Archivo agregado con exito \nPuede subir " + (restUris-contUris) + " más", Toast.LENGTH_LONG, R.style.sucessToast).show();
             //Toast.makeText(getApplicationContext(),"Archivo agregado con exito \nPuede subir " + (restUris-contUris) + " más",Toast.LENGTH_SHORT).show();
         }else if(contUris==2){
             ArchivoUri3=data.getData();
-            StyleableToast.makeText(getApplicationContext(), "Archivo agregado con exito \nPuede subir " + (restUris-contUris) + " más", Toast.LENGTH_SHORT, R.style.sucessToast).show();
+            StyleableToast.makeText(getApplicationContext(), "Archivo agregado con exito \nPuede subir " + (restUris-contUris) + " más", Toast.LENGTH_LONG, R.style.sucessToast).show();
             //Toast.makeText(getApplicationContext(),"Archivo agregado con exito /nPuede subir " + (restUris-contUris) + " más",Toast.LENGTH_SHORT).show();
         }else if(contUris==3){
             ArchivoUri4=data.getData();
-            StyleableToast.makeText(getApplicationContext(), "Archivo agregado con exito \nPuede subir " + (restUris-contUris) + " más", Toast.LENGTH_SHORT, R.style.sucessToast).show();
+            StyleableToast.makeText(getApplicationContext(), "Archivo agregado con exito \nPuede subir " + (restUris-contUris) + " más", Toast.LENGTH_LONG, R.style.sucessToast).show();
             //Toast.makeText(getApplicationContext(),"Archivo agregado con exito /nPuede subir " + (restUris-contUris) + " más",Toast.LENGTH_SHORT).show();
         }else if(contUris==4){
             ArchivoUri5=data.getData();
-            StyleableToast.makeText(getApplicationContext(), "Archivo agregado con exito \nPuede subir " + (restUris-contUris) + " más", Toast.LENGTH_SHORT, R.style.sucessToast).show();
+            StyleableToast.makeText(getApplicationContext(), "Archivo agregado con exito \nPuede subir " + (restUris-contUris) + " más", Toast.LENGTH_LONG, R.style.sucessToast).show();
             //Toast.makeText(getApplicationContext(),"Archivo agregado con exito /nPuede subir " + (restUris-contUris) + " más",Toast.LENGTH_SHORT).show();
         }else if(contUris==5){
             ArchivoUri6=data.getData();
-            StyleableToast.makeText(getApplicationContext(), "Archivo agregado con exito \nPuede subir " + (restUris-contUris) + " más", Toast.LENGTH_SHORT, R.style.sucessToast).show();
+            StyleableToast.makeText(getApplicationContext(), "Archivo agregado con exito \nPuede subir " + (restUris-contUris) + " más", Toast.LENGTH_LONG, R.style.sucessToast).show();
             //Toast.makeText(getApplicationContext(),"Archivo agregado con exito /nPuede subir " + (restUris-contUris) + " más",Toast.LENGTH_SHORT).show();
         }else if(contUris==6){
             ArchivoUri7=data.getData();
-            StyleableToast.makeText(getApplicationContext(), "Archivo agregado con exito \nPuede subir " + (restUris-contUris) + " más", Toast.LENGTH_SHORT, R.style.sucessToast).show();
+            StyleableToast.makeText(getApplicationContext(), "Archivo agregado con exito \nPuede subir " + (restUris-contUris) + " más", Toast.LENGTH_LONG, R.style.sucessToast).show();
             //Toast.makeText(getApplicationContext(),"Archivo agregado con exito /nPuede subir " + (restUris-contUris) + " más",Toast.LENGTH_SHORT).show();
         }else if(contUris==7){
             ArchivoUri8=data.getData();
-            StyleableToast.makeText(getApplicationContext(), "Archivo agregado con exito \nPuede subir " + (restUris-contUris) + " más", Toast.LENGTH_SHORT, R.style.sucessToast).show();
+            StyleableToast.makeText(getApplicationContext(), "Archivo agregado con exito \nPuede subir " + (restUris-contUris) + " más", Toast.LENGTH_LONG, R.style.sucessToast).show();
             //Toast.makeText(getApplicationContext(),"Archivo agregado con exito /nPuede subir " + (restUris-contUris) + " más",Toast.LENGTH_SHORT).show();
         }else if(contUris==8){
             ArchivoUri9=data.getData();
-            StyleableToast.makeText(getApplicationContext(), "Archivo agregado con exito \nPuede subir " + (restUris-contUris) + " más", Toast.LENGTH_SHORT, R.style.sucessToast).show();
+            StyleableToast.makeText(getApplicationContext(), "Archivo agregado con exito \nPuede subir " + (restUris-contUris) + " más", Toast.LENGTH_LONG, R.style.sucessToast).show();
             //Toast.makeText(getApplicationContext(),"Archivo agregado con exito /nPuede subir " + (restUris-contUris) + " más",Toast.LENGTH_SHORT).show();
         }else if(contUris==9){
             ArchivoUri10=data.getData();
-            StyleableToast.makeText(getApplicationContext(), "Archivo agregado con exito \nYa no puede subir más", Toast.LENGTH_SHORT, R.style.sucessToast).show();
+            StyleableToast.makeText(getApplicationContext(), "Archivo agregado con exito \nYa no puede subir más", Toast.LENGTH_LONG, R.style.sucessToast).show();
             //Toast.makeText(getApplicationContext(),"Archivo agregado con exito /nPuede subir " + (restUris-contUris) + " más",Toast.LENGTH_SHORT).show();
         }else{
-            StyleableToast.makeText(getApplicationContext(), "Limite de archivos alcanzado", Toast.LENGTH_SHORT, R.style.warningToast).show();
+            StyleableToast.makeText(getApplicationContext(), "Limite de archivos alcanzado", Toast.LENGTH_LONG, R.style.warningToast).show();
             //Toast.makeText(getApplicationContext(),"Ya no puede subir ningun archivo",Toast.LENGTH_SHORT).show();
         }
     }
@@ -2275,15 +2084,13 @@ public class SupervisionActivity extends AppCompatActivity
             String resizeCoolerImagePath = file.getAbsolutePath();
             out.flush();
             out.close();
-            
-            StyleableToast.makeText(getApplicationContext(), "Tu foto se ha guardado exitosamente", Toast.LENGTH_SHORT, R.style.doneToast).show();
+
+            Toast.makeText(getApplicationContext(),"Tu foto se ha guardado exitosamente",Toast.LENGTH_SHORT).show();
         }catch (Exception e){
             e.printStackTrace();
-            StyleableToast.makeText(getApplicationContext(), "Hubo un error", Toast.LENGTH_SHORT, R.style.dangerToast).show();
+            Toast.makeText(getApplicationContext(),"Hubo un error",Toast.LENGTH_SHORT).show();
         }
     }
-
-
 
 
     private BottomNavigationView.OnNavigationItemSelectedListener navListener =
@@ -2291,97 +2098,26 @@ public class SupervisionActivity extends AppCompatActivity
                 @Override
                 public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
 
-                    boolean opcion = true;
-
-                    if (menuItem.getItemId()==R.id.itemAntes) {
-                        if (cont1 > 0) {
-                            StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT, R.style.warningToast).show();
-                            opcion = false;
-                            menuItem.setEnabled(false);
-                        } else {
-
-                            StyleableToast.makeText(getApplicationContext(), "Seccion disponible", Toast.LENGTH_SHORT, R.style.doneToast).show();
-                            estado = "before";
-                            txtEstado.setText("Antes del Evento");
-
-                        }
-                    }
-
-                    if (menuItem.getItemId()==R.id.itemDurante){
-                        if(cont2>0) {
-                            StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT, R.style.warningToast).show();
-                            opcion = false;
-                            menuItem.setEnabled(false);
-                        }else {
-                            if (cont1>0) {
-
-                                StyleableToast.makeText(getApplicationContext(), "Seccion disponible", Toast.LENGTH_SHORT, R.style.doneToast).show();
-                                estado = "during";
-                                txtEstado.setText("Durante el Evento");
-                            }else{
-                                opcion = false;
-                                StyleableToast.makeText(getApplicationContext(), "Te faltan secciones por realizar", Toast.LENGTH_SHORT, R.style.warningToast).show();
-                            }
-
-                        }
-                    }
-
-                    if (menuItem.getItemId()==R.id.itemDespues){
-                        if(cont3>0) {
-                            StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT, R.style.warningToast).show();
-                            opcion = false;
-                        }else {
-                            if (cont1>0 && cont2>0) {
-
-                                StyleableToast.makeText(getApplicationContext(), "Seccion disponible", Toast.LENGTH_SHORT, R.style.doneToast).show();
-                                estado = "after";
-                                txtEstado.setText("Después del Evento");
-                            }else{
-                                opcion = false;
-                                StyleableToast.makeText(getApplicationContext(), "Te faltan secciones por realizar", Toast.LENGTH_SHORT, R.style.warningToast).show();
-                            }
-                        }
-                    }
-
-                   /*
                     switch (menuItem.getItemId()){
                         case R.id.itemAntes:
-                            if(cont1>0) {
-                                StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT, R.style.warningToast).show();
-                                opcion = false;
-                            }else{
-                                StyleableToast.makeText(getApplicationContext(), "Seccion disponible", Toast.LENGTH_SHORT, R.style.doneToast).show();
-                                estado = "before";
-                                txtEstado.setText("Antes del Evento");
-                                //Toast.makeText(getApplicationContext(),"Estado = " +estado, Toast.LENGTH_SHORT).show();
-                            }
+                            estado="before";
+                            txtEstado.setText("Antes del Evento");
+                            //Toast.makeText(getApplicationContext(),"Estado = " +estado, Toast.LENGTH_SHORT).show();
                             break;
                         case R.id.itemDurante:
-                            if(cont2>0) {
-                                StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT, R.style.warningToast).show();
-                                opcion = false;
-                            }else {
-                                StyleableToast.makeText(getApplicationContext(), "Seccion disponible", Toast.LENGTH_SHORT, R.style.doneToast).show();
-                                estado = "during";
-                                txtEstado.setText("Durante el Evento");
-                            }
+                            estado="during";
+                            txtEstado.setText("Durante el Evento");
                            // Toast.makeText(getApplicationContext(),"Estado = " +estado, Toast.LENGTH_SHORT).show();
                         break;
 
                         case R.id.itemDespues:
-                            if(cont3>0) {
-                                StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT, R.style.warningToast).show();
-                                opcion = false;
-                            }else {
-                                StyleableToast.makeText(getApplicationContext(), "Seccion disponible", Toast.LENGTH_SHORT, R.style.doneToast).show();
-                                estado = "after";
-                                txtEstado.setText("Después del Evento");
-                            }
+                            estado="after";
+                            txtEstado.setText("Después del Evento");
                             //Toast.makeText(getApplicationContext(),"Estado = " +estado, Toast.LENGTH_SHORT).show();
                             break;
-                    }*/
+                    }
 
-                    return opcion;
+                    return true;
                 }
             };
 
@@ -2390,7 +2126,7 @@ public class SupervisionActivity extends AppCompatActivity
         idevent = extras.getString("idEvento");
         nameEvent = extras.getString("nameEvent");
         actividad = extras.getString("actividad");
-        user_id = extras.getString("user_id");
+        uid = extras.getString("uid");
         trabajador= extras.getString("trabajador");
         start= extras.getString("start");
         end= extras.getString("end");
@@ -2442,8 +2178,7 @@ public class SupervisionActivity extends AppCompatActivity
         Boolean FragmentoSeleccionado=false;
 
         if (id == R.id.nav_acty) {
-
-            StyleableToast.makeText(getApplicationContext(), "Aún en proceso", Toast.LENGTH_SHORT, R.style.warningToast).show();
+            Toast.makeText(getApplicationContext(),"Aún en proceso",Toast.LENGTH_SHORT).show();
         } else if (id == R.id.nav_event) {
             mifragment = new EventosFragment();
             FragmentoSeleccionado=true;
@@ -2509,8 +2244,6 @@ public class SupervisionActivity extends AppCompatActivity
         btnBorrar3.setVisibility(View.INVISIBLE);
         btnBorrar4.setVisibility(View.INVISIBLE);
         btnBorrar5.setVisibility(View.INVISIBLE);
-
-        btnBorrarArchivo.setVisibility(View.INVISIBLE);
 
 
         imageView.setVisibility(View.INVISIBLE);

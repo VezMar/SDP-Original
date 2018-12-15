@@ -30,7 +30,6 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.muddzdev.styleabletoast.StyleableToast;
 
 import java.util.ArrayList;
 
@@ -104,7 +103,7 @@ public class EventosFragment extends Fragment {
     private void setUpRecyclerView() {
         //com.google.firebase.firestore.Query query = eventsReference.orderBy("end", com.google.firebase.firestore.Query.Direction.DESCENDING);
 
-        com.google.firebase.firestore.Query query = BDFireStore.collection("events").whereEqualTo("user_id", mAuth.getUid()).whereEqualTo("active",true).orderBy("end", com.google.firebase.firestore.Query.Direction.ASCENDING);
+        com.google.firebase.firestore.Query query = BDFireStore.collection("events").whereEqualTo("uid", mAuth.getUid()).whereEqualTo("active",true);
         //com.google.firebase.firestore.Query query = BDFireStore.collection("events").whereEqualTo("uid",  mAuth.getUid());
 
 
@@ -120,7 +119,7 @@ public class EventosFragment extends Fragment {
                 Evento evento = documentSnapshot.toObject(Evento.class);
 
                 String actividad = evento.getActividad();
-                String user_id = evento.getUser_id();
+                String uid = evento.getUid();
                 String trabajador = evento.getTrabajador();
                 String start= evento.getStart();
                 String end= evento.getEnd();
@@ -134,7 +133,7 @@ public class EventosFragment extends Fragment {
                 intent.putExtra("idEvento",idEvento);
                 intent.putExtra("actividad",actividad);
                 intent.putExtra("nameEvent",nameEvent);
-                intent.putExtra("user_id",user_id);
+                intent.putExtra("uid",uid);
                 intent.putExtra("trabajador",trabajador);
                 intent.putExtra("start",start);
                 intent.putExtra("end",end);
@@ -145,7 +144,7 @@ public class EventosFragment extends Fragment {
                     //mifragment = new SupervisionFragment();
 
                     startActivity(intent);
-                    StyleableToast.makeText(getContext(), "Supervision", Toast.LENGTH_SHORT, R.style.sucessToast).show();
+                    Toast.makeText(getContext(), "Supervision", Toast.LENGTH_SHORT).show();
 
                 }
 
@@ -153,8 +152,7 @@ public class EventosFragment extends Fragment {
                     // mifragment = new RevisionFragment();
 
                     startActivity(intent);
-                    StyleableToast.makeText(getContext(), "Revision", Toast.LENGTH_SHORT, R.style.sucessToast).show();
-
+                    Toast.makeText(getContext(), "Revision", Toast.LENGTH_SHORT).show();
 
                 }
 
@@ -163,7 +161,7 @@ public class EventosFragment extends Fragment {
 
 
                     startActivity(intent);
-                    StyleableToast.makeText(getContext(), "Auditoria", Toast.LENGTH_SHORT, R.style.sucessToast).show();
+                    Toast.makeText(getContext(), "Auditoria", Toast.LENGTH_SHORT).show();
 
 
                 }
