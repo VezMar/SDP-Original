@@ -97,8 +97,20 @@
                             android:src="@drawable/empty_image"
                             app:bootstrapBrand="primary"
                             app:hasBorder="true"
-
                             />
+
+
+
+                        <ru.dimorinny.floatingtextbutton.FloatingTextButton
+                            android:id="@+id/btnFoto"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="25dp"
+                            app:floating_background_color="@color/colorPrimary"
+                            app:floating_left_icon="@drawable/ic_add_a_photo_black_24dp"
+                            app:floating_title="Añadir"
+                            app:floating_title_color="@android:color/white"/>
+
 
                         <ru.dimorinny.floatingtextbutton.FloatingTextButton
                             android:id="@+id/btnBorrar"
@@ -109,17 +121,6 @@
                             app:floating_left_icon="@drawable/ic_delete_black_24dp"
                             app:floating_title="Borrar"
                             app:floating_title_color="@android:color/white" />
-
-                        <ru.dimorinny.floatingtextbutton.FloatingTextButton
-                            android:id="@+id/btnFoto"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="25dp"
-                            app:floating_background_color="@color/colorPrimary"
-                            app:floating_left_icon="@drawable/ic_add_a_photo_black_24dp"
-                            app:floating_title="Añadir"
-                            app:floating_title_color="@android:color/white"
-
 
                             />
                     </LinearLayout>
@@ -140,15 +141,7 @@
 
                             />
 
-                        <ru.dimorinny.floatingtextbutton.FloatingTextButton
-                            android:id="@+id/btnBorrar2"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="25sp"
-                            app:floating_background_color="#be4747"
-                            app:floating_left_icon="@drawable/ic_delete_black_24dp"
-                            app:floating_title="Borrar"
-                            app:floating_title_color="@android:color/white" />
+
 
                         <ru.dimorinny.floatingtextbutton.FloatingTextButton
                             android:id="@+id/btnFoto2"
@@ -158,6 +151,16 @@
                             app:floating_background_color="@color/colorPrimary"
                             app:floating_left_icon="@drawable/ic_add_a_photo_black_24dp"
                             app:floating_title="Añadir"
+                            app:floating_title_color="@android:color/white" />
+
+                        <ru.dimorinny.floatingtextbutton.FloatingTextButton
+                            android:id="@+id/btnBorrar2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="25sp"
+                            app:floating_background_color="#be4747"
+                            app:floating_left_icon="@drawable/ic_delete_black_24dp"
+                            app:floating_title="Borrar"
                             app:floating_title_color="@android:color/white" />
                     </LinearLayout>
 
@@ -177,15 +180,6 @@
 
                             />
 
-                        <ru.dimorinny.floatingtextbutton.FloatingTextButton
-                            android:id="@+id/btnBorrar3"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="25dp"
-                            app:floating_background_color="#be4747"
-                            app:floating_left_icon="@drawable/ic_delete_black_24dp"
-                            app:floating_title="Borrar"
-                            app:floating_title_color="@android:color/white" />
 
                         <ru.dimorinny.floatingtextbutton.FloatingTextButton
                             android:id="@+id/btnFoto3"
@@ -196,6 +190,17 @@
                             app:floating_left_icon="@drawable/ic_add_a_photo_black_24dp"
                             app:floating_title="Añadir"
                             app:floating_title_color="@android:color/white" />
+
+                        <ru.dimorinny.floatingtextbutton.FloatingTextButton
+                            android:id="@+id/btnBorrar3"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="25dp"
+                            app:floating_background_color="#be4747"
+                            app:floating_left_icon="@drawable/ic_delete_black_24dp"
+                            app:floating_title="Borrar"
+                            app:floating_title_color="@android:color/white" />
+
                     </LinearLayout>
 
                     <LinearLayout
@@ -212,15 +217,7 @@
                             app:bootstrapBrand="primary"
                             app:hasBorder="true"/>
 
-                        <ru.dimorinny.floatingtextbutton.FloatingTextButton
-                            android:id="@+id/btnBorrar4"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="25dp"
-                            app:floating_background_color="#be4747"
-                            app:floating_left_icon="@drawable/ic_delete_black_24dp"
-                            app:floating_title="Borrar"
-                            app:floating_title_color="@android:color/white" />
+
 
                         <ru.dimorinny.floatingtextbutton.FloatingTextButton
                             android:id="@+id/btnFoto4"
@@ -230,6 +227,16 @@
                             app:floating_background_color="@color/colorPrimary"
                             app:floating_left_icon="@drawable/ic_add_a_photo_black_24dp"
                             app:floating_title="Añadir"
+                            app:floating_title_color="@android:color/white" />
+
+                        <ru.dimorinny.floatingtextbutton.FloatingTextButton
+                            android:id="@+id/btnBorrar4"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="25dp"
+                            app:floating_background_color="#be4747"
+                            app:floating_left_icon="@drawable/ic_delete_black_24dp"
+                            app:floating_title="Borrar"
                             app:floating_title_color="@android:color/white" />
                     </LinearLayout>
 
@@ -247,15 +254,7 @@
                             app:bootstrapBrand="primary"
                             app:hasBorder="true"/>
 
-                        <ru.dimorinny.floatingtextbutton.FloatingTextButton
-                            android:id="@+id/btnBorrar5"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="25dp"
-                            app:floating_background_color="#be4747"
-                            app:floating_left_icon="@drawable/ic_delete_black_24dp"
-                            app:floating_title="Borrar"
-                            app:floating_title_color="@android:color/white" />
+
 
                         <ru.dimorinny.floatingtextbutton.FloatingTextButton
                             android:id="@+id/btnFoto5"
@@ -266,6 +265,18 @@
                             app:floating_left_icon="@drawable/ic_add_a_photo_black_24dp"
                             app:floating_title="Añadir"
                             app:floating_title_color="@android:color/white" />
+
+                        <ru.dimorinny.floatingtextbutton.FloatingTextButton
+                            android:id="@+id/btnBorrar5"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="25dp"
+                            app:floating_background_color="#be4747"
+                            app:floating_left_icon="@drawable/ic_delete_black_24dp"
+                            app:floating_title="Borrar"
+                            app:floating_title_color="@android:color/white" />
+
+
                     </LinearLayout>
 
 
@@ -276,7 +287,7 @@
 
                         <EditText
                             android:id="@+id/edObserv"
-                            android:layout_width="200dp"
+                            android:layout_width="500dp"
                             android:layout_height="wrap_content"
                             android:ems="10"
                             android:gravity="top|left"
@@ -289,35 +300,44 @@
                             android:scrollHorizontally="false"
                             android:textColorHint="@android:color/darker_gray" />
 
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical"
-                            android:layout_marginTop="10dp">
 
-                            <ru.dimorinny.floatingtextbutton.FloatingTextButton
-                                android:id="@+id/btnArchivo"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Archivo"
-                                app:floating_background_color="#898987"
-                                app:floating_left_icon="@drawable/ic_insert_drive_file_black_24dp"
-                                app:floating_title="Archivo"
-                                app:floating_title_color="@android:color/white" />
-
-                            <ru.dimorinny.floatingtextbutton.FloatingTextButton
-                                android:id="@+id/btnEnviar"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-
-                                android:layout_toEndOf="@+id/edObserv"
-                                app:floating_background_color="#1c8915"
-                                app:floating_left_icon="@drawable/ic_file_upload_black_24dp"
-                                app:floating_title="Enviar"
-                                app:floating_title_color="@android:color/white" />
-                        </LinearLayout>
                     </LinearLayout>
 
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp">
+
+                        <ru.dimorinny.floatingtextbutton.FloatingTextButton
+                            android:id="@+id/btnArchivo"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Archivo"
+                            app:floating_background_color="#898987"
+                            app:floating_left_icon="@drawable/ic_insert_drive_file_black_24dp"
+                            app:floating_title="Archivo"
+                            app:floating_title_color="@android:color/white" />
+
+                        <ru.dimorinny.floatingtextbutton.FloatingTextButton
+                            android:id="@+id/btnBorrarArchivo"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_toEndOf="@+id/edObserv"
+                            app:floating_background_color="#c71d0d"
+                            app:floating_left_icon="@drawable/ic_delete_black_24dp"
+                            app:floating_title_color="@android:color/white" />
+
+                        <ru.dimorinny.floatingtextbutton.FloatingTextButton
+                            android:id="@+id/btnEnviar"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="30sp"
+                            android:layout_toEndOf="@+id/edObserv"
+                            app:floating_background_color="#1c8915"
+                            app:floating_left_icon="@drawable/ic_file_upload_black_24dp"
+                            app:floating_title="Enviar"
+                            app:floating_title_color="@android:color/white" />
+                    </LinearLayout>
 
                 </LinearLayout>
 

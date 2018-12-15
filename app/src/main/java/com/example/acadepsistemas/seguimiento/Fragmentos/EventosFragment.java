@@ -39,7 +39,7 @@ import java.util.ArrayList;
 public class EventosFragment extends Fragment {
 
     public String uidUserGlobal;
-    public String uid;
+    public String user_id;
     static boolean activeStatus;
     static String nameEvent;
     FirebaseAuth mAuth;
@@ -103,7 +103,7 @@ public class EventosFragment extends Fragment {
     private void setUpRecyclerView() {
         //com.google.firebase.firestore.Query query = eventsReference.orderBy("end", com.google.firebase.firestore.Query.Direction.DESCENDING);
 
-        com.google.firebase.firestore.Query query = BDFireStore.collection("events").whereEqualTo("uid", mAuth.getUid()).whereEqualTo("active",true);
+        com.google.firebase.firestore.Query query = BDFireStore.collection("events").whereEqualTo("user_id", mAuth.getUid()).whereEqualTo("active",true);
         //com.google.firebase.firestore.Query query = BDFireStore.collection("events").whereEqualTo("uid",  mAuth.getUid());
 
 
@@ -119,7 +119,7 @@ public class EventosFragment extends Fragment {
                 Evento evento = documentSnapshot.toObject(Evento.class);
 
                 String actividad = evento.getActividad();
-                String uid = evento.getUid();
+                String user_id = evento.getUser_id();
                 String trabajador = evento.getTrabajador();
                 String start= evento.getStart();
                 String end= evento.getEnd();
@@ -133,7 +133,7 @@ public class EventosFragment extends Fragment {
                 intent.putExtra("idEvento",idEvento);
                 intent.putExtra("actividad",actividad);
                 intent.putExtra("nameEvent",nameEvent);
-                intent.putExtra("uid",uid);
+                intent.putExtra("user_id",user_id);
                 intent.putExtra("trabajador",trabajador);
                 intent.putExtra("start",start);
                 intent.putExtra("end",end);

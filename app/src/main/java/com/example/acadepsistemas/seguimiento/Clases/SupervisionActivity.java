@@ -173,7 +173,7 @@ public class SupervisionActivity extends AppCompatActivity
 
     static String idevent;
     static String nameEvent;
-    static String uid;
+    static String user_id;
     static String actividad;
     static String trabajador;
     static String name;
@@ -209,6 +209,7 @@ public class SupervisionActivity extends AppCompatActivity
     FloatingTextButton btnBorrar4;
     FloatingTextButton btnBorrar5;
 
+    FloatingTextButton btnBorrarArchivo;
 
 
 
@@ -289,7 +290,7 @@ public class SupervisionActivity extends AppCompatActivity
         nEvent.setIdactivity(idactivity);
         nEvent.setIdevent(idevent);
         nEvent.setStart(start);
-        nEvent.setUid(uid);
+        nEvent.setUser_id(user_id);
         nEvent.setTrabajador(trabajador);
 
         //Inicializacion de varibales
@@ -298,7 +299,7 @@ public class SupervisionActivity extends AppCompatActivity
         txtEstado = (TextView) findViewById(R.id.txtEstado);
 
         txtEstado.setText("Antes del Evento");
-
+        estado = "before";
 
         edObserv = (EditText) findViewById(R.id.edObserv);
         btnEnviar = (FloatingTextButton) findViewById(R.id.btnEnviar);
@@ -316,6 +317,8 @@ public class SupervisionActivity extends AppCompatActivity
         btnBorrar3 = (FloatingTextButton) findViewById(R.id.btnBorrar3);
         btnBorrar4 = (FloatingTextButton) findViewById(R.id.btnBorrar4);
         btnBorrar5 = (FloatingTextButton) findViewById(R.id.btnBorrar5);
+
+        btnBorrarArchivo = (FloatingTextButton) findViewById(R.id.btnBorrarArchivo);
 
 
         imageView = (ImageView) findViewById(R.id.imgView);
@@ -371,29 +374,33 @@ public class SupervisionActivity extends AppCompatActivity
         }
 
 
-
+        chequeoDevariables();
         /**/
 
-    if (estado.equals("before") && cont1>0){
-        StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_LONG, R.style.warningToast).show();
-    }else if (estado.equals("during") && cont2>0){
-        StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_LONG, R.style.warningToast).show();
-    }else if(estado.equals("after") && cont3>0){
-            StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_LONG, R.style.warningToast).show();
-        }else{
+
 
 
         btnArchivo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                if (ContextCompat.checkSelfPermission(SupervisionActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-                    mostrarDialogoOpciones();
-                } else {
-                    ActivityCompat.requestPermissions(SupervisionActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 9);
+                if (estado.equals("before") && cont1<1 || estado.equals("during") && cont2<1 || estado.equals("after") && cont3<1) {
+                    if (ContextCompat.checkSelfPermission(SupervisionActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                        mostrarDialogoOpciones();
+                    } else {
+                        ActivityCompat.requestPermissions(SupervisionActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 9);
+                    }
+                }else{
+                    StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT, R.style.warningToast).show();
                 }
             }
         });
+
+        btnBorrarArchivo.setOnClickListener(new View.OnClickListener() {
+                                                @Override
+                                                public void onClick(View v) {
+                                                    MostrarOpciones();
+                                                }
+                                            });
 
 
         btnBorrar.setOnClickListener(new View.OnClickListener() {
@@ -554,7 +561,7 @@ public class SupervisionActivity extends AppCompatActivity
             }
         });
 
-        chequeoDevariables();
+
 
         btnEnviar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -690,7 +697,7 @@ public class SupervisionActivity extends AppCompatActivity
             }
         });
 
-    }
+
 
         // -------------------Image view --------------------- Zoom ---------------------
        /* imageView.setOnClickListener(new View.OnClickListener() {
@@ -715,6 +722,77 @@ public class SupervisionActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+    }
+
+    private void MostrarOpciones() {
+
+        if((estado).equals("before") && cont1>0){
+            StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT, R.style.warningToast).show();
+        }else if ((estado).equals("during") && cont2>0){
+            StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT, R.style.warningToast).show();
+        }else if ((estado).equals("after") && cont3>0){
+            StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT, R.style.warningToast).show();
+        }else {
+            final CharSequence[] opciones = {"Borrar archivo anterior", "Cancelar"};
+            final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+
+            builder.setTitle("Borrar archivos");
+            builder.setItems(opciones, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    if (opciones[i].equals("Borrar archivo anterior")) {
+                        if (contUris == 0) {
+                            StyleableToast.makeText(getApplicationContext(), "No hay ningún archivo para borrar", Toast.LENGTH_SHORT, R.style.warningToast).show();
+                        } else if (ArchivoUri != null && contUris == 1) {
+                            ArchivoUri = null;
+                            contUris--;
+                            StyleableToast.makeText(getApplicationContext(), "¡Archivo Borrado con exito!", Toast.LENGTH_SHORT, R.style.doneToast).show();
+                        } else if (ArchivoUri2 != null && contUris == 2) {
+                            ArchivoUri2 = null;
+                            contUris--;
+                            StyleableToast.makeText(getApplicationContext(), "¡Archivo Borrado con exito!", Toast.LENGTH_SHORT, R.style.doneToast).show();
+                        } else if (ArchivoUri3 != null && contUris == 3) {
+                            ArchivoUri3 = null;
+                            contUris--;
+                            StyleableToast.makeText(getApplicationContext(), "¡Archivo Borrado con exito!", Toast.LENGTH_SHORT, R.style.doneToast).show();
+                        } else if (ArchivoUri4 != null && contUris == 4) {
+                            ArchivoUri4 = null;
+                            contUris--;
+                            StyleableToast.makeText(getApplicationContext(), "¡Archivo Borrado con exito!", Toast.LENGTH_SHORT, R.style.doneToast).show();
+                        } else if (ArchivoUri5 != null && contUris == 5) {
+                            ArchivoUri5 = null;
+                            contUris--;
+                            StyleableToast.makeText(getApplicationContext(), "¡Archivo Borrado con exito!", Toast.LENGTH_SHORT, R.style.doneToast).show();
+                        } else if (ArchivoUri6 != null && contUris == 6) {
+                            ArchivoUri6 = null;
+                            contUris--;
+                            StyleableToast.makeText(getApplicationContext(), "¡Archivo Borrado con exito!", Toast.LENGTH_SHORT, R.style.doneToast).show();
+                        } else if (ArchivoUri7 != null && contUris == 7) {
+                            ArchivoUri7 = null;
+                            contUris--;
+                            StyleableToast.makeText(getApplicationContext(), "¡Archivo Borrado con exito!", Toast.LENGTH_SHORT, R.style.doneToast).show();
+                        } else if (ArchivoUri8 != null && contUris == 8) {
+                            ArchivoUri8 = null;
+                            contUris--;
+                            StyleableToast.makeText(getApplicationContext(), "¡Archivo Borrado con exito!", Toast.LENGTH_SHORT, R.style.doneToast).show();
+                        } else if (ArchivoUri9 != null && contUris == 9) {
+                            ArchivoUri9 = null;
+                            contUris--;
+                            StyleableToast.makeText(getApplicationContext(), "¡Archivo Borrado con exito!", Toast.LENGTH_SHORT, R.style.doneToast).show();
+                        } else if (ArchivoUri10 != null && contUris == 10) {
+                            ArchivoUri10 = null;
+                            contUris--;
+                            StyleableToast.makeText(getApplicationContext(), "¡Archivo Borrado con exito!", Toast.LENGTH_SHORT, R.style.doneToast).show();
+                        }
+                    } else {
+                        dialogInterface.dismiss();
+                    }
+                }
+
+            });
+            builder.show();
+        }
     }
 
     private void uploadAllFiles() {
@@ -921,7 +999,7 @@ public class SupervisionActivity extends AppCompatActivity
 
     private void chequeoDevariables() {
 
-       /* CollectionReference refEvents = BDFireStore.collection("events");
+        /*CollectionReference refEvents = BDFireStore.collection("events");
         CollectionReference refObservation = BDFireStore.collection("Observation");
 
         DocumentReference refIDEvent = BDFireStore.document(idevent);
@@ -934,7 +1012,7 @@ public class SupervisionActivity extends AppCompatActivity
 
 
 
-        BDFireStore.collection("events")
+       /* BDFireStore.collection("events")
                 .document(idevent)
                 .collection("observation")
                 .get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
@@ -962,7 +1040,7 @@ public class SupervisionActivity extends AppCompatActivity
                                                     }
 
                                                 }
-                                            });
+                                            });*/
 
 
         /* Query ok = ref.orderByChild("before").equalTo(true);
@@ -2126,7 +2204,7 @@ public class SupervisionActivity extends AppCompatActivity
         idevent = extras.getString("idEvento");
         nameEvent = extras.getString("nameEvent");
         actividad = extras.getString("actividad");
-        uid = extras.getString("uid");
+        user_id = extras.getString("user_id");
         trabajador= extras.getString("trabajador");
         start= extras.getString("start");
         end= extras.getString("end");
@@ -2178,7 +2256,7 @@ public class SupervisionActivity extends AppCompatActivity
         Boolean FragmentoSeleccionado=false;
 
         if (id == R.id.nav_acty) {
-            Toast.makeText(getApplicationContext(),"Aún en proceso",Toast.LENGTH_SHORT).show();
+            StyleableToast.makeText(getApplicationContext(), "Aún en proceso", Toast.LENGTH_SHORT, R.style.warningToast).show();
         } else if (id == R.id.nav_event) {
             mifragment = new EventosFragment();
             FragmentoSeleccionado=true;
@@ -2245,6 +2323,7 @@ public class SupervisionActivity extends AppCompatActivity
         btnBorrar4.setVisibility(View.INVISIBLE);
         btnBorrar5.setVisibility(View.INVISIBLE);
 
+        btnBorrarArchivo.setVisibility(View.INVISIBLE);
 
         imageView.setVisibility(View.INVISIBLE);
         imageView2.setVisibility(View.INVISIBLE);
