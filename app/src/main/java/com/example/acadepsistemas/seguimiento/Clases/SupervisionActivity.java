@@ -597,23 +597,23 @@ public class SupervisionActivity extends AppCompatActivity
                                         // String k = mDatabase.child("Eventos").child(idevent).child("observation").child("before").child("status").;
                                         //mDatabase.child("Eventos").child(idevent).child("observation").child("before").setValue(data);
 
+                                        //BDFireStore.collection("events").document("asdawd").set(data);
                                         BDFireStore.collection("events").document(idevent).collection("observation").document("before").set(data);
-                                        //BDFireStore.collection("events").document(idevent).collection("observation").document("before").set(data);
 
                                         StyleableToast.makeText(getApplicationContext(), "Datos ingresados", Toast.LENGTH_LONG, R.style.sucessToast).show();
                                         //Toast.makeText(getApplicationContext(), "Datos ingresados", Toast.LENGTH_SHORT).show();
 
                                         edObserv.setText("");
-                                        //uploadImage1();
-                                        //uploadImage2();
-                                       // uploadImage3();
-                                        //uploadImage4();
-                                        //uploadImage5();
+                                        uploadImage1();
+                                        uploadImage2();
+                                        uploadImage3();
+                                        uploadImage4();
+                                        uploadImage5();
 
 
-                                        //uploadAllFiles();
+                                        uploadAllFiles();
 
-                                        //BorrarImagenes();
+                                        BorrarImagenes();
                                     }
 
                                     if (cont1 > 0 && cont2 > 0 && cont3 > 0) {
@@ -1226,6 +1226,7 @@ public class SupervisionActivity extends AppCompatActivity
             Lat=loc.getLatitude();
             Lng=loc.getLongitude();
 
+            //mensaje1.setText(Text);
             mensaje1.setText(Text);
             this.mainActivity3.setLocation(loc);
         }

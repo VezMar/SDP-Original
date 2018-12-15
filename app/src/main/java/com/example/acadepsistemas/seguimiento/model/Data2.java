@@ -3,8 +3,8 @@ package com.example.acadepsistemas.seguimiento.model;
 public class Data2 {
     String observ;
     boolean during;
-    double Lat;
-    double Lng;
+    private double Lat;
+    private double Lng;
 
     public Data2() {
     }
