@@ -406,9 +406,14 @@ public class SupervisionActivity extends AppCompatActivity
         btnBorrar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                imageView.setImageDrawable(Drawable.createFromPath("@drawable/empty_image"));
-                fileimagen = null;
-                Toast.makeText(getApplicationContext(), "Borrada con exito", Toast.LENGTH_SHORT).show();
+                if (estado.equals("before") && cont1<1 || estado.equals("during") && cont2<1 || estado.equals("after") && cont3<1) {
+
+                    imageView.setImageDrawable(Drawable.createFromPath("@drawable/empty_image"));
+                    fileimagen = null;
+                    Toast.makeText(getApplicationContext(), "Borrada con exito", Toast.LENGTH_SHORT).show();
+                }else{
+                    StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT, R.style.warningToast).show();
+                }
 
 
             }
@@ -417,9 +422,14 @@ public class SupervisionActivity extends AppCompatActivity
         btnBorrar2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                imageView2.setImageDrawable(Drawable.createFromPath("@drawable/empty_image"));
-                fileimagen2 = null;
-                Toast.makeText(getApplicationContext(), "Borrada con exito", Toast.LENGTH_SHORT).show();
+                if (estado.equals("before") && cont1<1 || estado.equals("during") && cont2<1 || estado.equals("after") && cont3<1) {
+
+                    imageView2.setImageDrawable(Drawable.createFromPath("@drawable/empty_image"));
+                    fileimagen2 = null;
+                    Toast.makeText(getApplicationContext(), "Borrada con exito", Toast.LENGTH_SHORT).show();
+                }else{
+                    StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT, R.style.warningToast).show();
+                }
 
             }
         });
@@ -427,21 +437,29 @@ public class SupervisionActivity extends AppCompatActivity
         btnBorrar3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                imageView3.setImageDrawable(Drawable.createFromPath("@drawable/empty_image"));
-                fileimagen3 = null;
-                Toast.makeText(getApplicationContext(), "Borrada con exito", Toast.LENGTH_SHORT).show();
+                if (estado.equals("before") && cont1<1 || estado.equals("during") && cont2<1 || estado.equals("after") && cont3<1) {
+                    imageView3.setImageDrawable(Drawable.createFromPath("@drawable/empty_image"));
+                    fileimagen3 = null;
+                    StyleableToast.makeText(getApplicationContext(), "Borrada con exito", Toast.LENGTH_SHORT, R.style.doneToast).show();
+                }else{
+                    StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT, R.style.warningToast).show();
+                }
             }
         });
 
         btnBorrar4.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                imageView4.setImageDrawable(Drawable.createFromPath("@drawable/empty_image"));
-                //imageView4.setImageURI(Uri.parse("@drawable/empty_image"));
-                //imageView4.findViewById(R.id.imgView4);
+                if (estado.equals("before") && cont1<1 || estado.equals("during") && cont2<1 || estado.equals("after") && cont3<1) {
+                    imageView4.setImageDrawable(Drawable.createFromPath("@drawable/empty_image"));
+                    //imageView4.setImageURI(Uri.parse("@drawable/empty_image"));
+                    //imageView4.findViewById(R.id.imgView4);
 
-                fileimagen4 = null;
-                Toast.makeText(getApplicationContext(), "Borrada con exito", Toast.LENGTH_SHORT).show();
+                    fileimagen4 = null;
+                    StyleableToast.makeText(getApplicationContext(), "Borrada con exito", Toast.LENGTH_SHORT, R.style.doneToast).show();
+                }else{
+                    StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT, R.style.warningToast).show();
+                }
 
 
             }
@@ -450,9 +468,13 @@ public class SupervisionActivity extends AppCompatActivity
         btnBorrar5.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                imageView5.setImageDrawable(Drawable.createFromPath("@drawable/empty_image"));
-                fileimagen5 = null;
-                Toast.makeText(getApplicationContext(), "Borrada con exito", Toast.LENGTH_SHORT).show();
+                if (estado.equals("before") && cont1<1 || estado.equals("during") && cont2<1 || estado.equals("after") && cont3<1) {
+                    imageView5.setImageDrawable(Drawable.createFromPath("@drawable/empty_image"));
+                    fileimagen5 = null;
+                    StyleableToast.makeText(getApplicationContext(), "Borrada con exito", Toast.LENGTH_SHORT, R.style.doneToast).show();
+                }else{
+                    StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT, R.style.warningToast).show();
+                }
             }
         });
 
@@ -567,7 +589,7 @@ public class SupervisionActivity extends AppCompatActivity
             @Override
             public void onClick(View v) {
 
-               /* if((estado).equals("before") && cont1>0){
+                if((estado).equals("before") && cont1>0){
                     StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT, R.style.warningToast).show();
                 }else if ((estado).equals("during") && cont2>0){
                     StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT, R.style.warningToast).show();
@@ -582,7 +604,7 @@ public class SupervisionActivity extends AppCompatActivity
                         // builder.setCancelable(false);
                         builder.setPositiveButton("Si", new DialogInterface.OnClickListener() {
                             @Override
-                            public void onClick(DialogInterface dialog, int which) {*/
+                            public void onClick(DialogInterface dialog, int which) {
                                 String Observation = edObserv.getText().toString();
 
                                 if ((estado).equals("before")) {
@@ -697,11 +719,14 @@ public class SupervisionActivity extends AppCompatActivity
 
                                         //mDatabase.child("Eventos").child(idevent).child("active").setValue(false);
                                         BDFireStore.collection("events").document(idevent).set(nEvent);
-                                        StyleableToast.makeText(getApplicationContext(), "Evento terminado", Toast.LENGTH_LONG, R.style.doneToast).show();
+                                        //Intent intent= new Intent (getApplicationContext(), Main2Activity.class);
+                                        //startActivity(intent);
+                                        StyleableToast.makeText(getApplicationContext(), "Evento terminado", Toast.LENGTH_SHORT, R.style.doneToast).show();
+                                        //StyleableToast.makeText(getApplicationContext(), "Evento terminado", Toast.LENGTH_LONG, R.style.doneToast).show();
                                         //Toast.makeText(getApplicationContext(),"Evento terminado",Toast.LENGTH_SHORT).show();
                                     }
 
-                               /* }
+                                }
                             }
                         });
 
@@ -711,7 +736,7 @@ public class SupervisionActivity extends AppCompatActivity
 
                             }
                         });
-                        builder.create().show();*/
+                        builder.create().show();
                     }
 
 
@@ -1321,8 +1346,16 @@ public class SupervisionActivity extends AppCompatActivity
     }
 
     public void takePhoto() {
-        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        startActivityForResult(cameraIntent, CAPTURE_PHOTO);
+        if((estado).equals("before") && cont1>0){
+            StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT, R.style.warningToast).show();
+        }else if ((estado).equals("during") && cont2>0){
+            StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT, R.style.warningToast).show();
+        }else if ((estado).equals("after") && cont3>0){
+            StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT, R.style.warningToast).show();
+        }else {
+            Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            startActivityForResult(cameraIntent, CAPTURE_PHOTO);
+        }
     }
 
     private void uploadImage1() {
