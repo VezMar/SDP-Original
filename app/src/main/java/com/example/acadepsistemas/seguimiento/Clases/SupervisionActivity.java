@@ -396,11 +396,11 @@ public class SupervisionActivity extends AppCompatActivity
         });
 
         btnBorrarArchivo.setOnClickListener(new View.OnClickListener() {
-                                                @Override
-                                                public void onClick(View v) {
-                                                    MostrarOpciones();
-                                                }
-                                            });
+            @Override
+            public void onClick(View v) {
+                MostrarOpciones();
+            }
+        });
 
 
         btnBorrar.setOnClickListener(new View.OnClickListener() {
@@ -943,33 +943,40 @@ public class SupervisionActivity extends AppCompatActivity
 
     private void mostrarDialogoOpciones() {
 
+        if((estado).equals("before") && cont1>0){
+            StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT, R.style.warningToast).show();
+        }else if ((estado).equals("during") && cont2>0){
+            StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT, R.style.warningToast).show();
+        }else if ((estado).equals("after") && cont3>0){
+            StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT, R.style.warningToast).show();
+        }else {
+            final CharSequence[] opciones = {"Elegir PDF", "Elegir Docx", "Elegir Video", "Elegir Audio", "Cancelar"};
+            final AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
-        final CharSequence [] opciones ={"Elegir PDF", "Elegir Docx", "Elegir Video", "Elegir Audio","Cancelar"};
-        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            if (contUris == 0) {
+                StyleableToast.makeText(getApplicationContext(), "Solo puede añadir 10 archivos diferentes \nUna vez agregado un archivo este no puede ser eliminado", Toast.LENGTH_LONG, R.style.dangerToast).show();
+                //Toast.makeText(getApplicationContext(),"Solo puede añadir 10 archivos diferentes \nUna vez agregado un archivo este no puede ser eliminado",Toast.LENGTH_LONG).show();
+            }
 
-        if(contUris==0){
-            StyleableToast.makeText(getApplicationContext(), "Solo puede añadir 10 archivos diferentes \nUna vez agregado un archivo este no puede ser eliminado", Toast.LENGTH_LONG, R.style.dangerToast).show();
-            //Toast.makeText(getApplicationContext(),"Solo puede añadir 10 archivos diferentes \nUna vez agregado un archivo este no puede ser eliminado",Toast.LENGTH_LONG).show();
-        }
-
-        builder.setTitle("Elige un Archivo");
-        builder.setItems(opciones, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                if(opciones[i].equals("Elegir PDF")){
-                    selectPDF();
-                }else if(opciones[i].equals("Elegir Docx")){
-                    selectDocx();
-                }else if(opciones[i].equals("Elegir Video")){
-                    selectVideo();
-                }else if(opciones[i].equals("Elegir Audio")){
-                    selectAudio();
-                }else{
+            builder.setTitle("Elige un Archivo");
+            builder.setItems(opciones, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    if (opciones[i].equals("Elegir PDF")) {
+                        selectPDF();
+                    } else if (opciones[i].equals("Elegir Docx")) {
+                        selectDocx();
+                    } else if (opciones[i].equals("Elegir Video")) {
+                        selectVideo();
+                    } else if (opciones[i].equals("Elegir Audio")) {
+                        selectAudio();
+                    } else {
                         dialogInterface.dismiss();
                     }
-            }
-        });
-        builder.show();
+                }
+            });
+            builder.show();
+        }
 
        // Toast.makeText(getApplicationContext(),"Mostrar dialogo opciones", Toast.LENGTH_SHORT).show();
 
@@ -1012,7 +1019,7 @@ public class SupervisionActivity extends AppCompatActivity
 
 
 
-       /* BDFireStore.collection("events")
+        BDFireStore.collection("events")
                 .document(idevent)
                 .collection("observation")
                 .get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
@@ -1027,20 +1034,34 @@ public class SupervisionActivity extends AppCompatActivity
 
                                                         if(check.isBefore()==true) {
                                                             cont1++;
+                                                            bottomNavigationView.getSelectedItemId();
+                                                            bottomNavigationView.setEnabled(false);
+                                                            bottomNavigationView.setSelectedItemId(R.id.itemDurante);
+                                                            estado = "during";
+                                                            txtEstado.setText("Durante el Evento");
                                                         }
 
                                                         if(check2.isDuring()==true) {
                                                             cont2++;
+                                                            bottomNavigationView.getSelectedItemId();
+                                                            bottomNavigationView.setEnabled(false);
+                                                            bottomNavigationView.setSelectedItemId(R.id.itemDespues);
+                                                            estado = "after";
+                                                            txtEstado.setText("Después del Evento");
                                                         }
 
                                                         if(check3.isAfter()==true) {
                                                             cont3++;
+                                                            ocultarItems();
+                                                            Intent intent= new Intent (getApplicationContext(), Main2Activity.class);
+                                                            startActivity(intent);
+                                                            StyleableToast.makeText(getApplicationContext(), "Evento terminado", Toast.LENGTH_SHORT, R.style.doneToast).show();
                                                         }
 
                                                     }
 
                                                 }
-                                            });*/
+                                            });
 
 
         /* Query ok = ref.orderByChild("before").equalTo(true);
