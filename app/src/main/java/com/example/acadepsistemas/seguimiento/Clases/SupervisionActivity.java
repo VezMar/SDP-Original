@@ -301,6 +301,11 @@ public class SupervisionActivity extends AppCompatActivity
         txtEstado.setText("Antes del Evento");
         estado = "before";
 
+        if(nEvent.getActividad().equals("Auditoria")){
+            estado = "before";
+            bottomNavigationView.setVisibility(View.INVISIBLE);
+        }
+
         edObserv = (EditText) findViewById(R.id.edObserv);
         btnEnviar = (FloatingTextButton) findViewById(R.id.btnEnviar);
 
