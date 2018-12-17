@@ -39,6 +39,7 @@ public class EventoAdapter extends FirestoreRecyclerAdapter<Evento, EventoAdapte
         holder.txtview_start.setText(evento.getStart());
         holder.txtview_end.setText(evento.getEnd());
         holder.txtview_name.setText(evento.getName());
+        holder.txtDescripcion.setText(evento.getDescription());
     }
 
     @NonNull
@@ -54,6 +55,7 @@ public class EventoAdapter extends FirestoreRecyclerAdapter<Evento, EventoAdapte
 
         TextView txtview_actividad, txtview_trabajador,txtview_uid;
         TextView txtview_name, txtview_start, txtview_end, txtview_active;
+        TextView txtDescripcion;
 
         public EventoHolder(@NonNull View itemView) {
             super(itemView);
@@ -64,6 +66,7 @@ public class EventoAdapter extends FirestoreRecyclerAdapter<Evento, EventoAdapte
             txtview_start = (TextView) itemView.findViewById(R.id.txtview_start);
             txtview_end = (TextView) itemView.findViewById(R.id.txtview_end);
 
+            txtDescripcion = (TextView) itemView.findViewById(R.id.txtDescripcion);
             //txtview_active = (TextView) itemView.findViewById(R.id.txtview_active);
             // txtview_uid = (TextView) itemView.findViewById(R.id.txtview_uid);
             //btnRealizar = (Button) itemView.findViewById(R.id.btnRealizar);
