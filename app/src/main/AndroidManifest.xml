@@ -29,6 +29,7 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".Clases.EventosActivity" />
         <activity
+            android:screenOrientation="portrait"
             android:name=".Clases.SupervisionActivity"
             android:label="Reporte"
             android:theme="@style/AppTheme.NoActionBar" />

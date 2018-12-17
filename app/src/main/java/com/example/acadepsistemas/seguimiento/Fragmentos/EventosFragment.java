@@ -25,6 +25,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.CollectionReference;
@@ -32,6 +33,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -127,7 +129,12 @@ public class EventosFragment extends Fragment {
                 String description = evento.getDescription();
                 String idEvento = evento.getIdevent();
                 String nameEvent = evento.getName();
+                //String tools [] = evento.getTools();
+
+                //boolean deleted = evento.isDeleted();
                 activeStatus = evento.isActive();
+
+
 
                 Intent intent= new Intent (getActivity(), SupervisionActivity.class);
                 intent.putExtra("idEvento",idEvento);
@@ -140,7 +147,7 @@ public class EventosFragment extends Fragment {
                 intent.putExtra("idactivity",idactivity);
                 intent.putExtra("description",description);
 
-                if(evento.getActividad().equals("Supervision")){
+               if(evento.getActividad().equals("Supervision")){
                     //mifragment = new SupervisionFragment();
 
                     startActivity(intent);
