@@ -3,6 +3,7 @@ package com.example.acadepsistemas.seguimiento.Fragmentos;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -129,9 +130,8 @@ public class EventosFragment extends Fragment {
                 String description = evento.getDescription();
                 String idEvento = evento.getIdevent();
                 String nameEvent = evento.getName();
-                //String tools [] = evento.getTools();
-
-                //boolean deleted = evento.isDeleted();
+                List<String> tools = evento.getTools();
+                boolean deleted = evento.isDeleted();
                 activeStatus = evento.isActive();
 
 
@@ -146,6 +146,8 @@ public class EventosFragment extends Fragment {
                 intent.putExtra("end",end);
                 intent.putExtra("idactivity",idactivity);
                 intent.putExtra("description",description);
+                intent.putStringArrayListExtra("tools", (ArrayList<String>) tools);
+                intent.putExtra("deleted", deleted);
 
                if(evento.getActividad().equals("Supervision")){
                     //mifragment = new SupervisionFragment();

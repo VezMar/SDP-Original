@@ -86,6 +86,7 @@ import java.text.DateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
 
@@ -181,6 +182,9 @@ public class SupervisionActivity extends AppCompatActivity
     static String end;
     static String idactivity;
     static String description;
+    static  List<String> tools;
+
+    static boolean deleted;
     static boolean active;
 
     EditText edObserv;
@@ -292,6 +296,8 @@ public class SupervisionActivity extends AppCompatActivity
         nEvent.setStart(start);
         nEvent.setUser_id(user_id);
         nEvent.setTrabajador(trabajador);
+        nEvent.setDeleted(deleted);
+        nEvent.setTools(tools);
 
         //Inicializacion de varibales
         bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottomNavigationView);
@@ -723,7 +729,7 @@ public class SupervisionActivity extends AppCompatActivity
                                     if (cont1 > 0 && cont2 > 0 && cont3 > 0) {
 
                                         //mDatabase.child("Eventos").child(idevent).child("active").setValue(false);
-                                        BDFireStore.collection("events").document(idevent).set(nEvent);
+                                        BDFireStore.collection("events").document(idevent).update("active", false);
                                         //Intent intent= new Intent (getApplicationContext(), Main2Activity.class);
                                         //startActivity(intent);
                                         StyleableToast.makeText(getApplicationContext(), "Evento terminado", Toast.LENGTH_SHORT, R.style.doneToast).show();
@@ -2346,6 +2352,8 @@ public class SupervisionActivity extends AppCompatActivity
         end= extras.getString("end");
         idactivity= extras.getString("idactivity");
         description= extras.getString("description");
+        tools = extras.getStringArrayList("tools");
+        deleted = extras.getBoolean("deleted");
         //active=false;
 
 
