@@ -32,6 +32,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.muddzdev.styleabletoast.StyleableToast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -124,8 +125,8 @@ public class EventosFragment extends Fragment {
                 String actividad = evento.getActividad();
                 String user_id = evento.getUser_id();
                 String trabajador = evento.getTrabajador();
-                String start= evento.getStart();
-                String end= evento.getEnd();
+                String start = evento.getStart();
+                String end = evento.getEnd();
                 String idactivity = evento.getIdactivity();
                 String description = evento.getDescription();
                 String idEvento = evento.getIdevent();
@@ -135,42 +136,52 @@ public class EventosFragment extends Fragment {
                 activeStatus = evento.isActive();
 
 
-
-                Intent intent= new Intent (getActivity(), SupervisionActivity.class);
-                intent.putExtra("idEvento",idEvento);
-                intent.putExtra("actividad",actividad);
-                intent.putExtra("nameEvent",nameEvent);
-                intent.putExtra("user_id",user_id);
-                intent.putExtra("trabajador",trabajador);
-                intent.putExtra("start",start);
-                intent.putExtra("end",end);
-                intent.putExtra("idactivity",idactivity);
-                intent.putExtra("description",description);
+                Intent intent = new Intent(getActivity(), SupervisionActivity.class);
+                intent.putExtra("idEvento", idEvento);
+                intent.putExtra("actividad", actividad);
+                intent.putExtra("nameEvent", nameEvent);
+                intent.putExtra("user_id", user_id);
+                intent.putExtra("trabajador", trabajador);
+                intent.putExtra("start", start);
+                intent.putExtra("end", end);
+                intent.putExtra("idactivity", idactivity);
+                intent.putExtra("description", description);
                 intent.putStringArrayListExtra("tools", (ArrayList<String>) tools);
                 intent.putExtra("deleted", deleted);
 
-               if(evento.getActividad().equals("Supervision")){
+                if (evento.getActividad().equals("supervision")) {
                     //mifragment = new SupervisionFragment();
 
                     startActivity(intent);
-                    Toast.makeText(getContext(), "Supervision", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getContext(), "Supervision", Toast.LENGTH_SHORT).show();
+                    StyleableToast.makeText(getContext(), "Supervision", Toast.LENGTH_SHORT, R.style.sucessToast).show();
 
                 }
 
-                if(evento.getActividad().equals("Revision")){
+                if(evento.getActividad().equals("servicio")){
+                    //mifragment = new SupervisionFragment();
+
+                    startActivity(intent);
+                    //Toast.makeText(getContext(), "Servicio", Toast.LENGTH_SHORT).show();
+                    StyleableToast.makeText(getContext(), "Servicio", Toast.LENGTH_SHORT, R.style.sucessToast).show();
+
+                }
+
+                if(evento.getActividad().equals("revision")){
                     // mifragment = new RevisionFragment();
 
                     startActivity(intent);
-                    Toast.makeText(getContext(), "Revision", Toast.LENGTH_SHORT).show();
-
+                    //Toast.makeText(getContext(), "Revision", Toast.LENGTH_SHORT).show();
+                    StyleableToast.makeText(getContext(), "Revision", Toast.LENGTH_SHORT, R.style.sucessToast).show();
                 }
 
-                if(evento.getActividad().equals("Auditoria")){
+                if(evento.getActividad().equals("auditoria")){
                     // mifragment = new AuditoriaFragment();
 
 
                     startActivity(intent);
-                    Toast.makeText(getContext(), "Auditoria", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getContext(), "Auditoria", Toast.LENGTH_SHORT).show();
+                    StyleableToast.makeText(getContext(), "Auditoria", Toast.LENGTH_SHORT, R.style.sucessToast).show();
 
 
                 }

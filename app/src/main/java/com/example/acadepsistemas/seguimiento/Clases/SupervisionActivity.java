@@ -307,7 +307,7 @@ public class SupervisionActivity extends AppCompatActivity
         txtEstado.setText("Antes del Evento");
         estado = "before";
 
-        if(nEvent.getActividad().equals("Auditoria")){
+        if(nEvent.getActividad().equals("auditoria")){
             estado = "before";
             bottomNavigationView.setVisibility(View.INVISIBLE);
         }
