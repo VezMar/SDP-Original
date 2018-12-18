@@ -10,7 +10,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:958208857248:android:58343a17c4b79984",
         "android_client_info": {
-          "package_name": "com.example.acadepsistemas.seguimiento"
+          "package_name": "com.acadep.acadepsistemas.seguimiento"
         }
       },
       "oauth_client": [
@@ -18,7 +18,7 @@
           "client_id": "958208857248-63ctnffab03stfq1j08v7r6hmbs6trj6.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.example.acadepsistemas.seguimiento",
+            "package_name": "com.acadep.acadepsistemas.seguimiento",
             "certificate_hash": "d9b2bab302a007950922697b85167043460d6832"
           }
         },
