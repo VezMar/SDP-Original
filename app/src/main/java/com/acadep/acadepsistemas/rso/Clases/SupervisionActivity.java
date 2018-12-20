@@ -28,6 +28,7 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.text.format.Time;
 import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -75,7 +76,9 @@ import com.google.firebase.storage.UploadTask;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -207,6 +210,16 @@ public class SupervisionActivity extends AppCompatActivity
 
     FloatingTextButton btnBorrarArchivo;
 
+    static Time today = new Time(Time.getCurrentTimezone());
+    static String Fecha;
+
+
+    static List<String> Foto =  new ArrayList<>();
+    static List<String> Foto2 =  new ArrayList<>();
+    static List<String> Foto3 =  new ArrayList<>();
+    static List<String> Foto4 =  new ArrayList<>();
+    static List<String> Foto5 =  new ArrayList<>();
+
 
 
 //Subir archivo
@@ -267,6 +280,7 @@ public class SupervisionActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
 
 
+        today.setToNow();
 
         //init();
 
@@ -274,6 +288,10 @@ public class SupervisionActivity extends AppCompatActivity
         cont1=0;
         cont2=0;
         cont3=0;
+
+
+
+
 
         recibirDatos();
 
@@ -496,8 +514,15 @@ public class SupervisionActivity extends AppCompatActivity
                     ActivityCompat.requestPermissions(SupervisionActivity.this,
                             new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_PERM_WRITE_STORAGE);
                 } else {
+                    locationStart();
                     descision = 0;
                     takePhoto();
+
+                    Fecha =  today.monthDay + "/" + today.month + "/" + today.year + "T" + today.hour + ":" + today.minute;
+
+                    Foto.add(Fecha);
+                    Foto.add(""+Lng);
+                    Foto.add(""+Lat);
                 }
             }
         });
@@ -519,6 +544,12 @@ public class SupervisionActivity extends AppCompatActivity
                 } else {
                     descision = 1;
                     takePhoto();
+
+                    locationStart();
+                    Fecha =  today.monthDay + "/" + today.month + "/" + today.year + "T" + today.hour + ":" + today.minute;
+                    Foto2.add(""+Fecha);
+                    Foto2.add(""+Lng);
+                    Foto2.add(""+Lat);
                 }
             }
         });
@@ -540,6 +571,13 @@ public class SupervisionActivity extends AppCompatActivity
                 } else {
                     descision = 2;
                     takePhoto();
+
+                    locationStart();
+                    Fecha =  today.monthDay + "/" + today.month + "/" + today.year + "T" + today.hour + ":" + today.minute;
+                    Foto3.add(Fecha);
+                    Foto3.add(""+Lng);
+                    Foto3.add(""+Lat);
+
                 }
             }
         });
@@ -561,6 +599,13 @@ public class SupervisionActivity extends AppCompatActivity
                 } else {
                     descision = 3;
                     takePhoto();
+
+                    locationStart();
+                    Fecha =  today.monthDay + "/" + today.month + "/" + today.year + "T" + today.hour;
+                    Foto4.add(Fecha);
+                    Foto4.add(""+Lng);
+                    Foto4.add(""+Lat);
+
                 }
             }
         });
@@ -582,6 +627,12 @@ public class SupervisionActivity extends AppCompatActivity
                 } else {
                     descision = 4;
                     takePhoto();
+
+                    locationStart();
+                    Fecha =  today.monthDay + "/" + today.month + "/" + today.year + "T" + today.hour;
+                    Foto5.add(Fecha);
+                    Foto5.add(""+Lng);
+                    Foto5.add(""+Lat);
                 }
             }
         });
@@ -618,7 +669,9 @@ public class SupervisionActivity extends AppCompatActivity
                                     } else {
                                         cont1++;
                                         boolean before = true;
-                                        Data data = new Data(Observation, before, Lat, Lng);
+
+
+                                        Data data = new Data(Observation, before, Lat, Lng, Foto, Foto2, Foto3, Foto4, Foto5);
                                         // String k = mDatabase.child("Eventos").child(idevent).child("observation").child("before").child("status").;
                                         //mDatabase.child("Eventos").child(idevent).child("observation").child("before").setValue(data);
 
@@ -661,7 +714,7 @@ public class SupervisionActivity extends AppCompatActivity
                                     } else {
                                         cont2++;
                                         boolean during = true;
-                                        Data2 data2 = new Data2(Observation, during, Lat, Lng);
+                                        Data2 data2 = new Data2(Observation, during, Lat, Lng, Foto, Foto2, Foto3, Foto4, Foto5);
                                         //mDatabase.child("Eventos").child(idevent).child("observation").child("during").setValue(data2);
 
 
@@ -699,7 +752,7 @@ public class SupervisionActivity extends AppCompatActivity
                                     } else {
                                         cont3++;
                                         boolean after = true;
-                                        Data3 data3 = new Data3(Observation, after, Lat, Lng);
+                                        Data3 data3 = new Data3(Observation, after, Lat, Lng, Foto, Foto2, Foto3, Foto4, Foto5);
                                         //mDatabase.child("Eventos").child(idevent).child("observation").child("after").setValue(data3);
                                         BDFireStore.collection("events").document(idevent).collection("observation").document("after").set(data3);
 
@@ -2111,6 +2164,7 @@ public class SupervisionActivity extends AppCompatActivity
 
                     capturedCoolerBitmap = (Bitmap) data.getExtras().get("data");
 
+
                     int CamWidth = 1200;
                     int CamHegith = 800;
 
@@ -2118,12 +2172,19 @@ public class SupervisionActivity extends AppCompatActivity
                     Bitmap Bitnew = redimensionarImagenMaximo(capturedCoolerBitmap, 1200, 800);
 
                     if (descision == 0) {
+
                         imageView.setImageBitmap(Bitnew);
                         saveImageToGallery(Bitnew);
+
+
+
+
+
 
                     } else if (descision == 1) {
                         imageView2.setImageBitmap(Bitnew);
                         saveImageToGallery(Bitnew);
+
 
                     } else if (descision == 2) {
                         imageView3.setImageBitmap(Bitnew);
@@ -2136,6 +2197,7 @@ public class SupervisionActivity extends AppCompatActivity
                     } else if (descision == 4) {
                         imageView5.setImageBitmap(Bitnew);
                         saveImageToGallery(Bitnew);
+
 
                     }
 

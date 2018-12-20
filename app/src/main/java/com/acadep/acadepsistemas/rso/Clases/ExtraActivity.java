@@ -378,11 +378,11 @@ public class ExtraActivity extends AppCompatActivity {
                 String Observation = edObserv.getText().toString();
                 boolean statuss = true;
 
-                Data data = new Data(Observation, statuss, Lat, Lng);
+                //Data data = new Data(Observation, statuss, Lat, Lng);
 
 
 
-                mDatabase.child("Eventos").child(idevent).child("extraordinario").setValue(data);
+                //mDatabase.child("Eventos").child(idevent).child("extraordinario").setValue(data);
                 Toast.makeText(getApplicationContext(), "Datos ingresados", Toast.LENGTH_SHORT).show();
                 edObserv.setText("");
                 uploadImage1();
