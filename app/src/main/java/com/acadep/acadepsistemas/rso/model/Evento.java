@@ -7,9 +7,9 @@ import java.util.List;
 @IgnoreExtraProperties
 public class Evento {
     String user_id;
-    String actividad;
+    String type_activity;
     String trabajador;
-    String idevent;
+    String id;
     String name;
     String start;
     String end;
@@ -50,11 +50,11 @@ public class Evento {
         this.deleted = deleted;
     }*/
 
-    public Evento(String user_id, String actividad, String trabajador, String idevent, String name, String start, String end, String idactivity, String description, List<String> tools, boolean active, boolean deleted) {
+    public Evento(String user_id, String type_activity, String trabajador, String id, String name, String start, String end, String idactivity, String description, List<String> tools, boolean active, boolean deleted) {
         this.user_id = user_id;
-        this.actividad = actividad;
+        this.type_activity = type_activity;
         this.trabajador = trabajador;
-        this.idevent = idevent;
+        this.id = id;
         this.name = name;
         this.start = start;
         this.end = end;
@@ -113,12 +113,12 @@ public class Evento {
         this.user_id = user_id;
     }
 
-    public String getActividad() {
-        return actividad;
+    public String getType_activity() {
+        return type_activity;
     }
 
-    public void setActividad(String actividad) {
-        this.actividad = actividad;
+    public void setType_activity(String type_activity) {
+        this.type_activity = type_activity;
     }
 
     public String getTrabajador() {
@@ -129,12 +129,12 @@ public class Evento {
         this.trabajador = trabajador;
     }
 
-    public String getIdevent() {
-        return idevent;
+    public String getId() {
+        return id;
     }
 
-    public void setIdevent(String idevent) {
-        this.idevent = idevent;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getDescription() {

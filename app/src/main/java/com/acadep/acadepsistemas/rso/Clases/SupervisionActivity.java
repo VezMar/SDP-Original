@@ -298,11 +298,11 @@ public class SupervisionActivity extends AppCompatActivity
         final Evento nEvent = new Evento();
 
         nEvent.setActive(false);
-        nEvent.setActividad(actividad);
+        nEvent.setType_activity(actividad);
         nEvent.setName(nameEvent);
         nEvent.setEnd(end);
         nEvent.setIdactivity(idactivity);
-        nEvent.setIdevent(idevent);
+        nEvent.setId(idevent);
         nEvent.setStart(start);
         nEvent.setUser_id(user_id);
         nEvent.setTrabajador(trabajador);
@@ -317,7 +317,7 @@ public class SupervisionActivity extends AppCompatActivity
         txtEstado.setText("Antes del Evento");
         estado = "before";
 
-        if(nEvent.getActividad().equals("auditoria")){
+        if(nEvent.getType_activity().equals("auditoria")){
             estado = "before";
             bottomNavigationView.setVisibility(View.INVISIBLE);
         }
@@ -676,6 +676,7 @@ public class SupervisionActivity extends AppCompatActivity
                                         //mDatabase.child("Eventos").child(idevent).child("observation").child("before").setValue(data);
 
                                         //BDFireStore.collection("events").document("asdawd").set(data);
+                                        //BDFireStore.collection("events").document(idevent).update("Observation", data);
                                         BDFireStore.collection("events").document(idevent).collection("observation").document("before").set(data);
 
                                         StyleableToast.makeText(getApplicationContext(), "Datos ingresados", Toast.LENGTH_LONG, R.style.sucessToast).show();

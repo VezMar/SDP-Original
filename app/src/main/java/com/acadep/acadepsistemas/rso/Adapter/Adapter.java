@@ -48,7 +48,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.EventoviewHolder> impl
     @Override
     public void onBindViewHolder(@NonNull EventoviewHolder holder, int position) {
 
-       holder.txtview_actividad.setText(evento.get(position).getActividad());
+       holder.txtview_actividad.setText(evento.get(position).getType_activity());
        // holder.txtview_uid.setText(evento.get(position).getUid());
         //holder.txtview_trabajador.setText(evento.get(position).getTrabajador());
         holder.txtview_start.setText(evento.get(position).getStart());

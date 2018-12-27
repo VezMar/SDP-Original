@@ -43,7 +43,7 @@ public class MiFirebaseMessagingService extends FirebaseMessagingService {
     private void mostrarNotificacion(Map<String,String> data) {
         String title = data.get("title").toString();
         String body = data.get("body").toString();
- 
+
         Uri soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
 
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);

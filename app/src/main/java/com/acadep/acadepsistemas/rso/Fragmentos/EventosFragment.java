@@ -114,14 +114,14 @@ public class EventosFragment extends Fragment {
             public void onItemClick(DocumentSnapshot documentSnapshot, int position) {
                 Evento evento = documentSnapshot.toObject(Evento.class);
 
-                String actividad = evento.getActividad();
+                String actividad = evento.getType_activity();
                 String user_id = evento.getUser_id();
                 String trabajador = evento.getTrabajador();
                 String start = evento.getStart();
                 String end = evento.getEnd();
                 String idactivity = evento.getIdactivity();
                 String description = evento.getDescription();
-                String idEvento = evento.getIdevent();
+                String idEvento = evento.getId();
                 String nameEvent = evento.getName();
                 List<String> tools = evento.getTools();
                 boolean deleted = evento.isDeleted();
@@ -141,7 +141,7 @@ public class EventosFragment extends Fragment {
                 intent.putStringArrayListExtra("tools", (ArrayList<String>) tools);
                 intent.putExtra("deleted", deleted);
 
-                if (evento.getActividad().equals("supervision")) {
+                if (evento.getType_activity().equals("supervision")) {
                     //mifragment = new SupervisionFragment();
 
                     startActivity(intent);
@@ -150,7 +150,7 @@ public class EventosFragment extends Fragment {
 
                 }
 
-                if(evento.getActividad().equals("servicio")){
+                if(evento.getType_activity().equals("servicio")){
                     //mifragment = new SupervisionFragment();
 
                     startActivity(intent);
@@ -159,7 +159,7 @@ public class EventosFragment extends Fragment {
 
                 }
 
-                if(evento.getActividad().equals("revision")){
+                if(evento.getType_activity().equals("revision")){
                     // mifragment = new RevisionFragment();
 
                     startActivity(intent);
@@ -167,7 +167,7 @@ public class EventosFragment extends Fragment {
                     StyleableToast.makeText(getContext(), "Revision", Toast.LENGTH_SHORT, R.style.sucessToast).show();
                 }
 
-                if(evento.getActividad().equals("auditoria")){
+                if(evento.getType_activity().equals("auditoria")){
                     // mifragment = new AuditoriaFragment();
 
 

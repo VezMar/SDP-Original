@@ -95,7 +95,7 @@
                                 <PersistentState>
                                   <option name="values">
                                     <map>
-                                      <entry key="url" value="jar:file:/C:/Android/plugins/android/lib/android.jar!/images/material_design_icons/action/ic_check_circle_black_24dp.xml" />
+                                      <entry key="url" value="jar:file:/C:/Android/plugins/android/lib/android.jar!/images/material_design_icons/communication/ic_email_black_24dp.xml" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -106,7 +106,7 @@
                         <option name="values">
                           <map>
                             <entry key="color" value="ffffff" />
-                            <entry key="outputName" value="ic_check_circle_black_24dp" />
+                            <entry key="outputName" value="ic_email_black_24dp" />
                             <entry key="sourceFile" value="C:\Users\Acadep Sistemas" />
                           </map>
                         </option>

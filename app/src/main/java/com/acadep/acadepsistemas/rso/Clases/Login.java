@@ -23,7 +23,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 public class Login extends AppCompatActivity {
 
-    TextView txtPsd, txtUser;
+    TextView txtPsd, txtUser, txtForgotPsw;
     Button btnLogin,btnRegistrar,btnMostrar;
     ProgressBar prgsBar;
 
@@ -48,6 +48,9 @@ public class Login extends AppCompatActivity {
         prgsBar.setVisibility(View.INVISIBLE);
         txtPsd = (TextView) findViewById(R.id.txtPsd);
         txtUser = (TextView) findViewById(R.id.txtUser);
+
+        txtForgotPsw = (TextView) findViewById(R.id.txtForgotPsw);
+
         btnLogin = (Button) findViewById(R.id.btnLogin);
         //btnRegistrar = (Button) findViewById(R.id.btnRegistrar);
         //btnMostrar = (Button) findViewById(R.id.btnMostrar);
@@ -151,6 +154,14 @@ public class Login extends AppCompatActivity {
 
 
 
+        txtForgotPsw.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i= new Intent(getApplicationContext(), RecuperacionContrasena.class);
+                startActivity(i);
+                finish();
+            }
+        });
 
        /* btnRegistrar.setOnClickListener(new View.OnClickListener() {
             @Override
