@@ -31,10 +31,13 @@ public class EventoAdapter extends FirestoreRecyclerAdapter<Evento, EventoAdapte
     @Override
     protected void onBindViewHolder(@NonNull EventoHolder holder, int position, @NonNull Evento evento) {
         holder.txtview_actividad.setText(evento.getType_activity());
-        // holder.txtview_uid.setText(evento.get(position).getUid());
+         //holder.txtview_uid.setText(evento.get(position).getUid());
         //holder.txtview_trabajador.setText(evento.get(position).getTrabajador());
-        holder.txtview_start.setText(evento.getStart());
-        holder.txtview_end.setText(evento.getEnd());
+
+        //holder.txtview_start.setText(evento.getStart());
+        //holder.txtview_end.setText(evento.getEnd());
+        holder.txtview_start.setText(evento.getStart().getDate());
+        holder.txtview_end.setText(evento.getEnd().getDate());
         holder.txtview_name.setText(evento.getName());
         holder.txtDescripcion.setText(evento.getDescription());
     }

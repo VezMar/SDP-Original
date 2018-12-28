@@ -16,6 +16,7 @@ import com.acadep.acadepsistemas.rso.Adapter.EventoAdapter;
 import com.acadep.acadepsistemas.rso.Clases.SupervisionActivity;
 import com.acadep.acadepsistemas.rso.R;
 import com.acadep.acadepsistemas.rso.model.Evento;
+import com.acadep.acadepsistemas.rso.model.Recursos;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -117,13 +118,13 @@ public class EventosFragment extends Fragment {
                 String actividad = evento.getType_activity();
                 String user_id = evento.getUser_id();
                 String trabajador = evento.getTrabajador();
-                String start = evento.getStart();
-                String end = evento.getEnd();
+                //String start = evento.getStart();
+                //String end = evento.getEnd();
                 String idactivity = evento.getIdactivity();
                 String description = evento.getDescription();
                 String idEvento = evento.getId();
                 String nameEvent = evento.getName();
-                List<String> tools = evento.getTools();
+                List<Recursos> tools = evento.getTools();
                 boolean deleted = evento.isDeleted();
                 activeStatus = evento.isActive();
 
@@ -134,11 +135,11 @@ public class EventosFragment extends Fragment {
                 intent.putExtra("nameEvent", nameEvent);
                 intent.putExtra("user_id", user_id);
                 intent.putExtra("trabajador", trabajador);
-                intent.putExtra("start", start);
-                intent.putExtra("end", end);
+                //intent.putExtra("start", start);
+                //intent.putExtra("end", end);
                 intent.putExtra("idactivity", idactivity);
                 intent.putExtra("description", description);
-                intent.putStringArrayListExtra("tools", (ArrayList<String>) tools);
+                //intent.putStringArrayListExtra("tools", (ArrayList<Recursos>) tools);
                 intent.putExtra("deleted", deleted);
 
                 if (evento.getType_activity().equals("supervision")) {

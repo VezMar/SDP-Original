@@ -1,76 +1,121 @@
 package com.acadep.acadepsistemas.rso.model;
 
+import android.provider.ContactsContract;
+
 import com.google.firebase.firestore.IgnoreExtraProperties;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @IgnoreExtraProperties
 public class Evento {
+
     String user_id;
     String type_activity;
     String trabajador;
     String id;
     String name;
-    String start;
-    String end;
+//    String start;
+//    String end;
     String idactivity;
     String description;
-    List<String> tools;
+    private Fecha end = new Fecha();
+    private Fecha start = new Fecha();
+
+    //  List<String> tools;
+
+    List<Recursos> tools;
+    List<Recursos> staff;
+
     boolean active;
     boolean deleted;
 
     public Evento(){}
 
 
-    /*public Evento(String user_id, String actividad, String trabajador, String idevent, String name, String start, String end, String idactivity, String description, boolean active) {
-        this.user_id = user_id;
-        this.actividad = actividad;
-        this.trabajador = trabajador;
-        this.idevent = idevent;
-        this.name = name;
-        this.start = start;
-        this.end = end;
-        this.idactivity = idactivity;
-        this.description = description;
-        this.active = active;
-    }*/
+
+//    public Evento(String user_id, String type_activity, String trabajador, String id, String name, String start, String end, String idactivity, String description, List<Recursos> tools, List<Recursos> staff, boolean active, boolean deleted) {
+//        this.user_id = user_id;
+//        this.type_activity = type_activity;
+//        this.trabajador = trabajador;
+//        this.id = id;
+//        this.name = name;
+//        this.start = start;
+//        this.end = end;
+//        this.idactivity = idactivity;
+//        this.description = description;
+//        this.tools = tools;
+//        this.staff = staff;
+//        this.active = active;
+//        this.deleted = deleted;
+//    }
+//
+//    public String getStart() {
+//        return start;
+//    }
+//
+//    public void setStart(String start) {
+//        this.start = start;
+//    }
+//
+//    public String getEnd() {
+//        return end;
+//    }
+//
+//    public void setEnd(String end) {
+//        this.end = end;
+//    }
 
 
-   /* public Evento(String user_id, String actividad, String trabajador, String idevent, String name, String start, String end, String idactivity, String description, boolean active, boolean deleted) {
-        this.user_id = user_id;
-        this.actividad = actividad;
-        this.trabajador = trabajador;
-        this.idevent = idevent;
-        this.name = name;
-        this.start = start;
-        this.end = end;
-        this.idactivity = idactivity;
-        this.description = description;
-        this.active = active;
-        this.deleted = deleted;
-    }*/
-
-    public Evento(String user_id, String type_activity, String trabajador, String id, String name, String start, String end, String idactivity, String description, List<String> tools, boolean active, boolean deleted) {
+    public Evento(String user_id, String type_activity, String trabajador, String id, String name, String idactivity, String description, Fecha end, Fecha start, List<Recursos> tools, List<Recursos> staff, boolean active, boolean deleted) {
         this.user_id = user_id;
         this.type_activity = type_activity;
         this.trabajador = trabajador;
         this.id = id;
         this.name = name;
-        this.start = start;
-        this.end = end;
         this.idactivity = idactivity;
         this.description = description;
+        this.end = end;
+        this.start = start;
         this.tools = tools;
+        this.staff = staff;
         this.active = active;
         this.deleted = deleted;
     }
 
-    public List<String> getTools() {
+    public Fecha getEnd() {
+        return end;
+    }
+
+    public void setEnd(Fecha end) {
+        this.end = end;
+    }
+
+    public Fecha getStart() {
+        return start;
+    }
+
+    public void setStart(Fecha start) {
+        this.start = start;
+    }
+
+
+
+    public List<Recursos> getTools() {
         return tools;
     }
 
-    public void setTools(List<String> tools) {
+    public void setTools(List<Recursos> tools) {
         this.tools = tools;
+    }
+
+    public List<Recursos> getStaff() {
+        return staff;
+    }
+
+    public void setStaff(List<Recursos> staff) {
+        this.staff = staff;
     }
 
     public String getIdactivity() {
@@ -89,21 +134,7 @@ public class Evento {
         this.name = name;
     }
 
-    public String getStart() {
-        return start;
-    }
 
-    public void setStart(String start) {
-        this.start = start;
-    }
-
-    public String getEnd() {
-        return end;
-    }
-
-    public void setEnd(String end) {
-        this.end = end;
-    }
 
     public String getUser_id() {
         return user_id;

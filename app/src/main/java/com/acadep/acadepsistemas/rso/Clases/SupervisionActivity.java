@@ -300,14 +300,14 @@ public class SupervisionActivity extends AppCompatActivity
         nEvent.setActive(false);
         nEvent.setType_activity(actividad);
         nEvent.setName(nameEvent);
-        nEvent.setEnd(end);
+        //nEvent.setEnd(end);
         nEvent.setIdactivity(idactivity);
         nEvent.setId(idevent);
-        nEvent.setStart(start);
+        //nEvent.setStart(start);
         nEvent.setUser_id(user_id);
         nEvent.setTrabajador(trabajador);
         nEvent.setDeleted(deleted);
-        nEvent.setTools(tools);
+       // nEvent.setTools(tools);
 
         //Inicializacion de varibales
         bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottomNavigationView);

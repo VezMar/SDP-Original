@@ -51,8 +51,8 @@ public class Adapter extends RecyclerView.Adapter<Adapter.EventoviewHolder> impl
        holder.txtview_actividad.setText(evento.get(position).getType_activity());
        // holder.txtview_uid.setText(evento.get(position).getUid());
         //holder.txtview_trabajador.setText(evento.get(position).getTrabajador());
-        holder.txtview_start.setText(evento.get(position).getStart());
-        holder.txtview_end.setText(evento.get(position).getEnd());
+        //holder.txtview_start.setText(evento.get(position).getStart());
+       // holder.txtview_end.setText(evento.get(position).getEnd());
         holder.txtview_name.setText(evento.get(position).getName());
 
 
