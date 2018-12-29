@@ -159,7 +159,6 @@ public class Login extends AppCompatActivity {
             public void onClick(View v) {
                 Intent i= new Intent(getApplicationContext(), RecuperacionContrasena.class);
                 startActivity(i);
-                finish();
             }
         });
 
