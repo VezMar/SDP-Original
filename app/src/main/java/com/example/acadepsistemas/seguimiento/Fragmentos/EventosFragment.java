@@ -39,6 +39,7 @@ public class EventosFragment extends Fragment {
     FirebaseAuth mAuth;
     DatabaseReference mDatabase;
 
+    static int c=0;
     RecyclerView rv;
 
     ArrayList<Evento> list;
@@ -52,7 +53,7 @@ public class EventosFragment extends Fragment {
     public View onCreateView(final LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-
+        c=0;
         final View view = inflater.inflate(R.layout.fragment_eventos, container, false);
         rv = (RecyclerView) view.findViewById(R.id.recycler);
 
@@ -77,7 +78,7 @@ public class EventosFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 list = new ArrayList<Evento>();
-                int c=0;
+
 
                 for(DataSnapshot dataSnapshot1: dataSnapshot.getChildren()) {
 
