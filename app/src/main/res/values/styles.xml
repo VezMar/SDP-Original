@@ -7,9 +7,9 @@
         <!--<item name="colorPrimaryDark">@color/colorPrimaryDark</item>-->
         <!--<item name="colorAccent">@color/colorAccent</item>-->
 
-        <item name="colorPrimary">#5472d3</item>
-        <item name="colorPrimaryDark">#1A237E</item>
-        <item name="colorAccent">#000051</item>
+        <item name="colorPrimary">#1565c0</item>
+        <item name="colorPrimaryDark">#003c8f</item>
+        <item name="colorAccent">#5e92f3</item>
     </style>
 
     <style name="AppTheme.NoActionBar">
@@ -21,7 +21,7 @@
         <item name="stTextBold">true</item>
         <item name="stTextColor">#ffffff</item>
         <item name="stTextSize">14sp</item>
-        <item name="stColorBackground">#ff0000</item>
+        <item name="stColorBackground">#f55145</item>
         <item name="stSolidBackground">true</item>
         <item name="stStrokeWidth">3dp</item>
         <item name="stStrokeColor">#ff0000</item>
@@ -36,10 +36,10 @@
         <item name="stTextBold">true</item>
         <item name="stTextColor">#ffffff</item>
         <item name="stTextSize">14sp</item>
-        <item name="stColorBackground">#ffdc16</item>
+        <item name="stColorBackground">#ff9e0f</item>
         <item name="stSolidBackground">true</item>
         <item name="stStrokeWidth">3dp</item>
-        <item name="stStrokeColor">#ffdc16</item>
+        <item name="stStrokeColor">#ff9e0f</item>
         <item name="stIconStart">@drawable/ic_error_outline_black_24dp</item>
         <item name="stIconEnd">@drawable/ic_error_outline_black_24dp</item>
         <item name="stLength">LONG</item> LONG or SHORT
@@ -51,10 +51,10 @@
         <item name="stTextBold">true</item>
         <item name="stTextColor">#ffffff</item>
         <item name="stTextSize">14sp</item>
-        <item name="stColorBackground">#00c8ff</item>
+        <item name="stColorBackground">#00cae3</item>
         <item name="stSolidBackground">true</item>
         <item name="stStrokeWidth">3dp</item>
-        <item name="stStrokeColor">#00c8ff</item>
+        <item name="stStrokeColor">#00cae3</item>
         <item name="stIconStart">@drawable/ic_check_circle_black_24dp</item>
         <item name="stLength">LONG</item> LONG or SHORT
         <item name="stGravity">top</item> top or center

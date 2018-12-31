@@ -58,7 +58,7 @@
         android:layout_below="@+id/txtPsd"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
-        android:background="#1A237E"
+        android:background="#004ba0"
         android:text="Iniciar Sesión"
         android:textColor="@android:color/white" />
 

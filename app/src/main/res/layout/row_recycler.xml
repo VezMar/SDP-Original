@@ -21,70 +21,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:orientation="vertical">
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/ic_supervisor_account_black_24dp"
-                    android:padding="20sp"
-                    android:background="@drawable/circlebackgroundblue"/>
-
-                <TextView
-                    android:id="@+id/txtview_name"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Nombre de evento"
-                    android:textAllCaps="true"
-                    android:textColor="#4e4c4c"
-                    android:textSize="30sp"
-                    android:textStyle="bold" />
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="5dp"
-                        android:background="@drawable/circlebackgroundblue"
-                        android:padding="10dp"/>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:gravity="center">
-
-            <TextView
-                android:id="@+id/txtDescripcion"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAllCaps="true"
-                android:textColor="#4e4c4c"
-                android:textSize="15dp"
-                android:textStyle="bold"
-                android:text="Descripcion de la app"/>
-
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="5dp"
-                android:background="@drawable/circlebackgroundblue"
-                android:padding="10dp"/>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
             android:orientation="horizontal">
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Actividad: "
-                android:textAllCaps="true"
-                android:textColor="#504e4e"
-                android:textSize="20sp"
-                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/txtview_actividad"
@@ -93,14 +31,62 @@
                 android:text="@string/text_actividad"
                 android:textAllCaps="true"
                 android:textColor="#504e4e"
-                android:textSize="20sp"
-                android:textStyle="bold" />
+                android:textSize="30sp"
+                android:textStyle="bold"
+                android:layout_marginLeft="5dp"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                    android:id="@+id/txtview_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Nombre de evento"
+                    android:textAllCaps="true"
+                    android:textColor="#4e4c4c"
+                    android:textSize="15dp"
+                    android:textStyle="bold" />
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center">
+
+            <EditText
+                android:id="@+id/txtDescripcion"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:gravity="top|left"
+                android:hint="Descripcion"
+                android:inputType="textMultiLine"
+                android:lines="3"
+                android:overScrollMode="always"
+                android:scrollbarStyle="insideInset"
+                android:scrollbars="vertical"
+                android:scrollHorizontally="false"
+                android:enabled="false"
+                android:textColorHint="@android:color/darker_gray" />
+
+
 
         </LinearLayout>
 
 
+
+
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="left"
             android:orientation="horizontal">
@@ -115,6 +101,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Inicio: "
+                android:paddingStart="5dp"
                 android:textSize="20sp"
                 android:textStyle="italic" />
             <TextView
@@ -129,7 +116,7 @@
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="left"
             android:orientation="horizontal">
@@ -137,8 +124,8 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Fin: "
-                android:paddingStart="20sp"
+                android:text="Termina: "
+                android:paddingStart="5dp"
                 android:textSize="20sp"
                 android:textStyle="italic" />
             <TextView
@@ -148,6 +135,27 @@
                 android:text="Fecha final"
                 android:textSize="18dp"
                 android:textStyle="italic" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Tiempo Restante:"
+                android:paddingStart="5dp"
+                android:textSize="20sp"
+                android:textStyle="italic"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingStart="30sp"
+                android:paddingRight="10dp"
+                android:text="Horas:  75h"
+                android:textSize="18dp"/>
         </LinearLayout>
 
     </LinearLayout>

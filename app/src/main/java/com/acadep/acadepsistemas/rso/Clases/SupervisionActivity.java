@@ -316,11 +316,11 @@ public class SupervisionActivity extends AppCompatActivity
 
         txtEstado.setText("Antes del Evento");
         estado = "before";
-
+/*
         if(nEvent.getType_activity().equals("auditoria")){
             estado = "before";
             bottomNavigationView.setVisibility(View.INVISIBLE);
-        }
+        }*/
 
         edObserv = (EditText) findViewById(R.id.edObserv);
         btnEnviar = (FloatingTextButton) findViewById(R.id.btnEnviar);
@@ -2454,7 +2454,9 @@ public class SupervisionActivity extends AppCompatActivity
         Fragment mifragment = null;
         Boolean FragmentoSeleccionado=false;
 
-        if (id == R.id.nav_acty) {
+        if (id == R.id.nav_perfil) {
+            StyleableToast.makeText(getApplicationContext(), "Aún en proceso", Toast.LENGTH_SHORT, R.style.warningToast).show();
+        }else if (id == R.id.nav_acty) {
             StyleableToast.makeText(getApplicationContext(), "Aún en proceso", Toast.LENGTH_SHORT, R.style.warningToast).show();
         } else if (id == R.id.nav_event) {
             mifragment = new EventosFragment();
@@ -2472,6 +2474,8 @@ public class SupervisionActivity extends AppCompatActivity
             //intent.putExtra("Lng",Lng);
             startActivity(intent);
 
+        }else if(id == R.id.nav_conf) {
+            StyleableToast.makeText(getApplicationContext(), "Aún en proceso", Toast.LENGTH_SHORT, R.style.warningToast).show();
         } else if (id == R.id.nav_signOut) {
             cerrarSesion();
         }

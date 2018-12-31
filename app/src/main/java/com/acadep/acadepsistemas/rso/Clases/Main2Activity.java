@@ -19,6 +19,7 @@ import com.acadep.acadepsistemas.rso.Fragmentos.EventosFragment;
 import com.acadep.acadepsistemas.rso.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
+import com.muddzdev.styleabletoast.StyleableToast;
 
 public class Main2Activity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -32,6 +33,8 @@ public class Main2Activity extends AppCompatActivity
     TextView txtBienvenida;
 
 
+    int cont=0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,7 +44,16 @@ public class Main2Activity extends AppCompatActivity
 
         mAuth = FirebaseAuth.getInstance();
 
-
+        Fragment mifragment = null;
+        mifragment = new EventosFragment();
+        if(cont<1){
+            ocultarItems();
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.Contenedor, mifragment)
+                    .commit();
+            cont++;
+        }
 
      /*mDatabase.addValueEventListener(new ValueEventListener() {
             @Override
@@ -144,7 +156,9 @@ public class Main2Activity extends AppCompatActivity
         Fragment mifragment = null;
         Boolean FragmentoSeleccionado=false;
 
-        if (id == R.id.nav_acty) {
+        if (id == R.id.nav_perfil) {
+            StyleableToast.makeText(getApplicationContext(), "Aún en proceso", Toast.LENGTH_SHORT, R.style.warningToast).show();
+        }else if (id == R.id.nav_acty) {
             /*mifragment = new SupervisionFragment();
             FragmentoSeleccionado=true;*/
             Toast.makeText(getApplicationContext(),"Aún en proceso",Toast.LENGTH_SHORT).show();
@@ -156,8 +170,8 @@ public class Main2Activity extends AppCompatActivity
             startActivity(intent);]*/
            //finish();
 
-        } else if (id == R.id.nav_ext) {
-            Toast.makeText(getApplicationContext(),"Aún en proceso",Toast.LENGTH_SHORT).show();
+        } else if (id == R.id.nav_conf) {
+            StyleableToast.makeText(getApplicationContext(), "Aún en proceso", Toast.LENGTH_SHORT, R.style.warningToast).show();
         } else if (id == R.id.nav_signOut) {
             cerrarSesion();
         }

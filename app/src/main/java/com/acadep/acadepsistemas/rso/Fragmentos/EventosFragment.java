@@ -10,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.acadep.acadepsistemas.rso.Adapter.EventoAdapter;
@@ -35,6 +36,9 @@ import java.util.List;
  */
 public class EventosFragment extends Fragment {
 
+    static int contEventos=0;
+
+
     public String uidUserGlobal;
     public String user_id;
     static boolean activeStatus;
@@ -48,6 +52,7 @@ public class EventosFragment extends Fragment {
     CollectionReference eventsReference;
     //CollectionReference eventsReference = BDFireStore.collection("events");
 
+    TextView EventosPendientes;
     RecyclerView rv;
 
 
@@ -65,7 +70,7 @@ public class EventosFragment extends Fragment {
 
         final View view = inflater.inflate(R.layout.fragment_eventos, container, false);
         rv = (RecyclerView) view.findViewById(R.id.recycler);
-
+        EventosPendientes = (TextView) view.findViewById(R.id.txtEventosPendientes);
 
         FragmentTransaction fragmentTransaction1 = getFragmentManager().beginTransaction();
         //fragmentTransaction1.add(R.id.fragment_container, new SupervisionFragment());
@@ -184,7 +189,9 @@ public class EventosFragment extends Fragment {
         });
 
 
+                contEventos++;
 
+                EventosPendientes.setText(contEventos + " Eventos pendientes");
                 rv.setHasFixedSize(true);
                 rv.setLayoutManager(new LinearLayoutManager(getContext()));
                 rv.setAdapter(EventAdapter);
