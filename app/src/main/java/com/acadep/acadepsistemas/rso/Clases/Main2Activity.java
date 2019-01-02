@@ -157,7 +157,7 @@ public class Main2Activity extends AppCompatActivity
         Boolean FragmentoSeleccionado=false;
 
         if (id == R.id.nav_perfil) {
-            StyleableToast.makeText(getApplicationContext(), "Aún en proceso", Toast.LENGTH_SHORT, R.style.warningToast).show();
+            Toast.makeText(getApplicationContext(),"Aún en proceso",Toast.LENGTH_SHORT).show();
         }else if (id == R.id.nav_acty) {
             /*mifragment = new SupervisionFragment();
             FragmentoSeleccionado=true;*/
@@ -171,7 +171,7 @@ public class Main2Activity extends AppCompatActivity
            //finish();
 
         } else if (id == R.id.nav_conf) {
-            StyleableToast.makeText(getApplicationContext(), "Aún en proceso", Toast.LENGTH_SHORT, R.style.warningToast).show();
+            Toast.makeText(getApplicationContext(),"Aún en proceso",Toast.LENGTH_SHORT).show();
         } else if (id == R.id.nav_signOut) {
             cerrarSesion();
         }

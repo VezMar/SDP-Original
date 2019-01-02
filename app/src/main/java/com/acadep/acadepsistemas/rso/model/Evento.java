@@ -1,12 +1,8 @@
 package com.acadep.acadepsistemas.rso.model;
 
-import android.provider.ContactsContract;
-
 import com.google.firebase.firestore.IgnoreExtraProperties;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @IgnoreExtraProperties
 public class Evento {
@@ -20,8 +16,8 @@ public class Evento {
 //    String end;
     String idactivity;
     String description;
-    private Fecha end = new Fecha();
-    private Fecha start = new Fecha();
+    private datatime end = new datatime();
+    private datatime start = new datatime();
 
     //  List<String> tools;
 
@@ -68,7 +64,7 @@ public class Evento {
 //    }
 
 
-    public Evento(String user_id, String type_activity, String trabajador, String id, String name, String idactivity, String description, Fecha end, Fecha start, List<Recursos> tools, List<Recursos> staff, boolean active, boolean deleted) {
+    public Evento(String user_id, String type_activity, String trabajador, String id, String name, String idactivity, String description, datatime end, datatime start, List<Recursos> tools, List<Recursos> staff, boolean active, boolean deleted) {
         this.user_id = user_id;
         this.type_activity = type_activity;
         this.trabajador = trabajador;
@@ -84,19 +80,19 @@ public class Evento {
         this.deleted = deleted;
     }
 
-    public Fecha getEnd() {
+    public datatime getEnd() {
         return end;
     }
 
-    public void setEnd(Fecha end) {
+    public void setEnd(datatime end) {
         this.end = end;
     }
 
-    public Fecha getStart() {
+    public datatime getStart() {
         return start;
     }
 
-    public void setStart(Fecha start) {
+    public void setStart(datatime start) {
         this.start = start;
     }
 

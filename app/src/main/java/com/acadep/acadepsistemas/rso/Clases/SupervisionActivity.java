@@ -39,6 +39,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -52,6 +53,7 @@ import com.acadep.acadepsistemas.rso.model.Data;
 import com.acadep.acadepsistemas.rso.model.Data2;
 import com.acadep.acadepsistemas.rso.model.Data3;
 import com.acadep.acadepsistemas.rso.model.Evento;
+import com.acadep.acadepsistemas.rso.model.Foto;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.SettingsClient;
@@ -102,11 +104,12 @@ public class SupervisionActivity extends AppCompatActivity
     private static final String CARPETA_IMAGEN = "Camera";
     private static final String DIRECTORIO_IMAGEN = CARPETA_PRINCIPAL + CARPETA_IMAGEN;
 
-    static File fileimagen;
-    static File fileimagen2;
-    static File fileimagen3;
-    static File fileimagen4;
-    static File fileimagen5;
+    static File fileimagen = null;
+    static File fileimagen2 = null;
+    static File fileimagen3 = null;
+    static File fileimagen4 = null;
+    static File fileimagen5 = null;
+    static File fileimagen6 = null;
 
 
     static Bitmap capturedCoolerBitmap;
@@ -161,6 +164,7 @@ public class SupervisionActivity extends AppCompatActivity
     private FloatingTextButton btnFoto5;
 
 
+
     ListView listView;
 
 
@@ -199,6 +203,7 @@ public class SupervisionActivity extends AppCompatActivity
     private static ImageView imageView3;
     private static ImageView imageView4;
     private static ImageView imageView5;
+    private static ImageView imageView6;
 
     private static ImageView noImage;
 
@@ -272,6 +277,12 @@ public class SupervisionActivity extends AppCompatActivity
     private BottomNavigationView bottomNavigationView;
 
 
+
+    com.acadep.acadepsistemas.rso.model.Foto evidence = new Foto();
+
+
+    CheckBox checkBox1 ,checkBox2,checkBox3,checkBox4, checkBox5,checkBox6;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -328,16 +339,26 @@ public class SupervisionActivity extends AppCompatActivity
         btnArchivo = (FloatingTextButton) findViewById(R.id.btnArchivo);
 
         btnFoto = (FloatingTextButton) findViewById(R.id.btnFoto);
-        btnFoto2 = (FloatingTextButton) findViewById(R.id.btnFoto2);
-        btnFoto3 = (FloatingTextButton) findViewById(R.id.btnFoto3);
-        btnFoto4 = (FloatingTextButton) findViewById(R.id.btnFoto4);
-        btnFoto5 = (FloatingTextButton) findViewById(R.id.btnFoto5);
-
+//        btnFoto2 = (FloatingTextButton) findViewById(R.id.btnFoto2);
+//        btnFoto3 = (FloatingTextButton) findViewById(R.id.btnFoto3);
+//        btnFoto4 = (FloatingTextButton) findViewById(R.id.btnFoto4);
+//        btnFoto5 = (FloatingTextButton) findViewById(R.id.btnFoto5);
+//
         btnBorrar = (FloatingTextButton) findViewById(R.id.btnBorrar);
-        btnBorrar2 = (FloatingTextButton) findViewById(R.id.btnBorrar2);
-        btnBorrar3 = (FloatingTextButton) findViewById(R.id.btnBorrar3);
-        btnBorrar4 = (FloatingTextButton) findViewById(R.id.btnBorrar4);
-        btnBorrar5 = (FloatingTextButton) findViewById(R.id.btnBorrar5);
+//        btnBorrar2 = (FloatingTextButton) findViewById(R.id.btnBorrar2);
+//        btnBorrar3 = (FloatingTextButton) findViewById(R.id.btnBorrar3);
+//        btnBorrar4 = (FloatingTextButton) findViewById(R.id.btnBorrar4);
+//        btnBorrar5 = (FloatingTextButton) findViewById(R.id.btnBorrar5);
+
+
+        checkBox1 = (CheckBox) findViewById(R.id.Check1);
+        checkBox2 = (CheckBox) findViewById(R.id.Check2);
+        checkBox3 = (CheckBox) findViewById(R.id.Check3);
+        checkBox4 = (CheckBox) findViewById(R.id.Check4);
+        checkBox5 = (CheckBox) findViewById(R.id.Check5);
+        checkBox6 = (CheckBox) findViewById(R.id.Check6);
+
+
 
         btnBorrarArchivo = (FloatingTextButton) findViewById(R.id.btnBorrarArchivo);
 
@@ -347,6 +368,7 @@ public class SupervisionActivity extends AppCompatActivity
         imageView3 = (ImageView) findViewById(R.id.imgView3);
         imageView4 = (ImageView) findViewById(R.id.imgView4);
         imageView5 = (ImageView) findViewById(R.id.imgView5);
+        imageView6 = (ImageView) findViewById(R.id.imgView6);
 
         noImage = imageView5;
 
@@ -427,77 +449,55 @@ public class SupervisionActivity extends AppCompatActivity
         btnBorrar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (estado.equals("before") && cont1<1 || estado.equals("during") && cont2<1 || estado.equals("after") && cont3<1) {
 
-                    imageView.setImageDrawable(Drawable.createFromPath("@drawable/empty_image"));
-                    fileimagen = null;
-                    Toast.makeText(getApplicationContext(), "Borrada con exito", Toast.LENGTH_SHORT).show();
+                if(checkBox1.isChecked() || checkBox2.isChecked() || checkBox3.isChecked() || checkBox4.isChecked() || checkBox5.isChecked() || checkBox6.isChecked()) {
+
+
+                    if (checkBox1.isChecked()) {
+
+                        imageView.setImageResource(R.drawable.empty_image);
+                        checkBox1.setChecked(false);
+                        fileimagen = null;
+                    }
+
+                    if (checkBox2.isChecked()) {
+                        imageView2.setImageResource(R.drawable.empty_image);
+                        checkBox2.setChecked(false);
+                        fileimagen2 = null;
+                    }
+
+                    if (checkBox3.isChecked()) {
+                        imageView3.setImageResource(R.drawable.empty_image);
+                        checkBox3.setChecked(false);
+                        fileimagen3 = null;
+                    }
+
+                    if (checkBox4.isChecked()) {
+                        imageView4.setImageResource(R.drawable.empty_image);
+                        checkBox4.setChecked(false);
+                        fileimagen4 = null;
+                    }
+
+                    if (checkBox5.isChecked()) {
+                        imageView5.setImageResource(R.drawable.empty_image);
+                        checkBox5.setChecked(false);
+                        fileimagen5 = null;
+                    }
+
+                    if (checkBox6.isChecked()) {
+                        imageView6.setImageResource(R.drawable.empty_image);
+                        checkBox6.setChecked(false);
+                        fileimagen6 = null;
+                    }
                 }else{
-                    StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT, R.style.warningToast).show();
+                    StyleableToast.makeText(getApplicationContext(), "No ha seleccionado ninguna foto", Toast.LENGTH_SHORT, R.style.warningToast).show();
                 }
 
 
             }
         });
 
-        btnBorrar2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (estado.equals("before") && cont1<1 || estado.equals("during") && cont2<1 || estado.equals("after") && cont3<1) {
 
-                    imageView2.setImageDrawable(Drawable.createFromPath("@drawable/empty_image"));
-                    fileimagen2 = null;
-                    Toast.makeText(getApplicationContext(), "Borrada con exito", Toast.LENGTH_SHORT).show();
-                }else{
-                    StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT, R.style.warningToast).show();
-                }
-
-            }
-        });
-
-        btnBorrar3.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (estado.equals("before") && cont1<1 || estado.equals("during") && cont2<1 || estado.equals("after") && cont3<1) {
-                    imageView3.setImageDrawable(Drawable.createFromPath("@drawable/empty_image"));
-                    fileimagen3 = null;
-                    StyleableToast.makeText(getApplicationContext(), "Borrada con exito", Toast.LENGTH_SHORT, R.style.doneToast).show();
-                }else{
-                    StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT, R.style.warningToast).show();
-                }
-            }
-        });
-
-        btnBorrar4.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (estado.equals("before") && cont1<1 || estado.equals("during") && cont2<1 || estado.equals("after") && cont3<1) {
-                    imageView4.setImageDrawable(Drawable.createFromPath("@drawable/empty_image"));
-                    //imageView4.setImageURI(Uri.parse("@drawable/empty_image"));
-                    //imageView4.findViewById(R.id.imgView4);
-
-                    fileimagen4 = null;
-                    StyleableToast.makeText(getApplicationContext(), "Borrada con exito", Toast.LENGTH_SHORT, R.style.doneToast).show();
-                }else{
-                    StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT, R.style.warningToast).show();
-                }
-
-
-            }
-        });
-
-        btnBorrar5.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (estado.equals("before") && cont1<1 || estado.equals("during") && cont2<1 || estado.equals("after") && cont3<1) {
-                    imageView5.setImageDrawable(Drawable.createFromPath("@drawable/empty_image"));
-                    fileimagen5 = null;
-                    StyleableToast.makeText(getApplicationContext(), "Borrada con exito", Toast.LENGTH_SHORT, R.style.doneToast).show();
-                }else{
-                    StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT, R.style.warningToast).show();
-                }
-            }
-        });
 
         btnFoto.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -515,8 +515,13 @@ public class SupervisionActivity extends AppCompatActivity
                             new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_PERM_WRITE_STORAGE);
                 } else {
                     locationStart();
-                    descision = 0;
-                    takePhoto();
+
+                    if(fileimagen !=null && fileimagen2 !=null && fileimagen3 !=null && fileimagen4 !=null && fileimagen5 !=null && fileimagen6 !=null){
+                        StyleableToast.makeText(getApplicationContext(), "Ya no puede añadir más fotos", Toast.LENGTH_SHORT, R.style.warningToast).show();
+                    }else{
+                        takePhoto();
+                    }
+
 
                     Fecha =  today.monthDay + "/" + today.month + "/" + today.year + "T" + today.hour + ":" + today.minute;
 
@@ -527,115 +532,241 @@ public class SupervisionActivity extends AppCompatActivity
             }
         });
 
-        btnFoto2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    if (checkSelfPermission(String.valueOf(Manifest.permission.CAMERA)) != PackageManager.PERMISSION_DENIED) {
-                        ActivityCompat.requestPermissions(SupervisionActivity.this, new String[]{Manifest.permission.CAMERA}, 1);
-                    }
-                }
 
-                if (ActivityCompat.checkSelfPermission(getApplicationContext(),
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
 
-                    ActivityCompat.requestPermissions(SupervisionActivity.this,
-                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_PERM_WRITE_STORAGE);
-                } else {
-                    descision = 1;
-                    takePhoto();
 
-                    locationStart();
-                    Fecha =  today.monthDay + "/" + today.month + "/" + today.year + "T" + today.hour + ":" + today.minute;
-                    Foto2.add(""+Fecha);
-                    Foto2.add(""+Lng);
-                    Foto2.add(""+Lat);
-                }
-            }
-        });
 
-        btnFoto3.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    if (checkSelfPermission(String.valueOf(Manifest.permission.CAMERA)) != PackageManager.PERMISSION_DENIED) {
-                        ActivityCompat.requestPermissions(SupervisionActivity.this, new String[]{Manifest.permission.CAMERA}, 1);
-                    }
-                }
 
-                if (ActivityCompat.checkSelfPermission(getApplicationContext(),
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
 
-                    ActivityCompat.requestPermissions(SupervisionActivity.this,
-                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_PERM_WRITE_STORAGE);
-                } else {
-                    descision = 2;
-                    takePhoto();
 
-                    locationStart();
-                    Fecha =  today.monthDay + "/" + today.month + "/" + today.year + "T" + today.hour + ":" + today.minute;
-                    Foto3.add(Fecha);
-                    Foto3.add(""+Lng);
-                    Foto3.add(""+Lat);
 
-                }
-            }
-        });
 
-        btnFoto4.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    if (checkSelfPermission(String.valueOf(Manifest.permission.CAMERA)) != PackageManager.PERMISSION_DENIED) {
-                        ActivityCompat.requestPermissions(SupervisionActivity.this, new String[]{Manifest.permission.CAMERA}, 1);
-                    }
-                }
 
-                if (ActivityCompat.checkSelfPermission(getApplicationContext(),
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
 
-                    ActivityCompat.requestPermissions(SupervisionActivity.this,
-                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_PERM_WRITE_STORAGE);
-                } else {
-                    descision = 3;
-                    takePhoto();
 
-                    locationStart();
-                    Fecha =  today.monthDay + "/" + today.month + "/" + today.year + "T" + today.hour;
-                    Foto4.add(Fecha);
-                    Foto4.add(""+Lng);
-                    Foto4.add(""+Lat);
 
-                }
-            }
-        });
 
-        btnFoto5.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    if (checkSelfPermission(String.valueOf(Manifest.permission.CAMERA)) != PackageManager.PERMISSION_DENIED) {
-                        ActivityCompat.requestPermissions(SupervisionActivity.this, new String[]{Manifest.permission.CAMERA}, 1);
-                    }
-                }
 
-                if (ActivityCompat.checkSelfPermission(getApplicationContext(),
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
 
-                    ActivityCompat.requestPermissions(SupervisionActivity.this,
-                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_PERM_WRITE_STORAGE);
-                } else {
-                    descision = 4;
-                    takePhoto();
 
-                    locationStart();
-                    Fecha =  today.monthDay + "/" + today.month + "/" + today.year + "T" + today.hour;
-                    Foto5.add(Fecha);
-                    Foto5.add(""+Lng);
-                    Foto5.add(""+Lat);
-                }
-            }
-        });
+
+
+
+
+
+
+//        btnBorrar.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if (estado.equals("before") && cont1<1 || estado.equals("during") && cont2<1 || estado.equals("after") && cont3<1) {
+//
+//                    imageView.setImageDrawable(Drawable.createFromPath("@drawable/empty_image"));
+//                    fileimagen = null;
+//                    Toast.makeText(getApplicationContext(), "Borrada con exito", Toast.LENGTH_SHORT).show();
+//                }else{
+//                    StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT, R.style.warningToast).show();
+//                }
+//
+//
+//            }
+//        });
+//
+//        btnBorrar2.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if (estado.equals("before") && cont1<1 || estado.equals("during") && cont2<1 || estado.equals("after") && cont3<1) {
+//
+//                    imageView2.setImageDrawable(Drawable.createFromPath("@drawable/empty_image"));
+//                    fileimagen2 = null;
+//                    Toast.makeText(getApplicationContext(), "Borrada con exito", Toast.LENGTH_SHORT).show();
+//                }else{
+//                    StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT, R.style.warningToast).show();
+//                }
+//
+//            }
+//        });
+//
+//        btnBorrar3.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if (estado.equals("before") && cont1<1 || estado.equals("during") && cont2<1 || estado.equals("after") && cont3<1) {
+//                    imageView3.setImageDrawable(Drawable.createFromPath("@drawable/empty_image"));
+//                    fileimagen3 = null;
+//                    StyleableToast.makeText(getApplicationContext(), "Borrada con exito", Toast.LENGTH_SHORT, R.style.doneToast).show();
+//                }else{
+//                    StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT, R.style.warningToast).show();
+//                }
+//            }
+//        });
+//
+//        btnBorrar4.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if (estado.equals("before") && cont1<1 || estado.equals("during") && cont2<1 || estado.equals("after") && cont3<1) {
+//                    imageView4.setImageDrawable(Drawable.createFromPath("@drawable/empty_image"));
+//                    //imageView4.setImageURI(Uri.parse("@drawable/empty_image"));
+//                    //imageView4.findViewById(R.id.imgView4);
+//
+//                    fileimagen4 = null;
+//                    StyleableToast.makeText(getApplicationContext(), "Borrada con exito", Toast.LENGTH_SHORT, R.style.doneToast).show();
+//                }else{
+//                    StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT, R.style.warningToast).show();
+//                }
+//
+//
+//            }
+//        });
+//
+//        btnBorrar5.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if (estado.equals("before") && cont1<1 || estado.equals("during") && cont2<1 || estado.equals("after") && cont3<1) {
+//                    imageView5.setImageDrawable(Drawable.createFromPath("@drawable/empty_image"));
+//                    fileimagen5 = null;
+//                    StyleableToast.makeText(getApplicationContext(), "Borrada con exito", Toast.LENGTH_SHORT, R.style.doneToast).show();
+//                }else{
+//                    StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT, R.style.warningToast).show();
+//                }
+//            }
+//        });
+//
+//        btnFoto.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//                    if (checkSelfPermission(String.valueOf(Manifest.permission.CAMERA)) != PackageManager.PERMISSION_DENIED) {
+//                        ActivityCompat.requestPermissions(SupervisionActivity.this, new String[]{Manifest.permission.CAMERA}, 1);
+//                    }
+//                }
+//
+//                if (ActivityCompat.checkSelfPermission(getApplicationContext(),
+//                        Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+//
+//                    ActivityCompat.requestPermissions(SupervisionActivity.this,
+//                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_PERM_WRITE_STORAGE);
+//                } else {
+//                    locationStart();
+//                    descision = 0;
+//                    takePhoto();
+//
+//                    datatime =  today.monthDay + "/" + today.month + "/" + today.year + "T" + today.hour + ":" + today.minute;
+//
+//                    Foto.add(datatime);
+//                    Foto.add(""+Lng);
+//                    Foto.add(""+Lat);
+//                }
+//            }
+//        });
+//
+//        btnFoto2.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//                    if (checkSelfPermission(String.valueOf(Manifest.permission.CAMERA)) != PackageManager.PERMISSION_DENIED) {
+//                        ActivityCompat.requestPermissions(SupervisionActivity.this, new String[]{Manifest.permission.CAMERA}, 1);
+//                    }
+//                }
+//
+//                if (ActivityCompat.checkSelfPermission(getApplicationContext(),
+//                        Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+//
+//                    ActivityCompat.requestPermissions(SupervisionActivity.this,
+//                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_PERM_WRITE_STORAGE);
+//                } else {
+//                    descision = 1;
+//                    takePhoto();
+//
+//                    locationStart();
+//                    datatime =  today.monthDay + "/" + today.month + "/" + today.year + "T" + today.hour + ":" + today.minute;
+//                    Foto2.add(""+datatime);
+//                    Foto2.add(""+Lng);
+//                    Foto2.add(""+Lat);
+//                }
+//            }
+//        });
+//
+//        btnFoto3.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//                    if (checkSelfPermission(String.valueOf(Manifest.permission.CAMERA)) != PackageManager.PERMISSION_DENIED) {
+//                        ActivityCompat.requestPermissions(SupervisionActivity.this, new String[]{Manifest.permission.CAMERA}, 1);
+//                    }
+//                }
+//
+//                if (ActivityCompat.checkSelfPermission(getApplicationContext(),
+//                        Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+//
+//                    ActivityCompat.requestPermissions(SupervisionActivity.this,
+//                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_PERM_WRITE_STORAGE);
+//                } else {
+//                    descision = 2;
+//                    takePhoto();
+//
+//                    locationStart();
+//                    datatime =  today.monthDay + "/" + today.month + "/" + today.year + "T" + today.hour + ":" + today.minute;
+//                    Foto3.add(datatime);
+//                    Foto3.add(""+Lng);
+//                    Foto3.add(""+Lat);
+//
+//                }
+//            }
+//        });
+//
+//        btnFoto4.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//                    if (checkSelfPermission(String.valueOf(Manifest.permission.CAMERA)) != PackageManager.PERMISSION_DENIED) {
+//                        ActivityCompat.requestPermissions(SupervisionActivity.this, new String[]{Manifest.permission.CAMERA}, 1);
+//                    }
+//                }
+//
+//                if (ActivityCompat.checkSelfPermission(getApplicationContext(),
+//                        Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+//
+//                    ActivityCompat.requestPermissions(SupervisionActivity.this,
+//                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_PERM_WRITE_STORAGE);
+//                } else {
+//                    descision = 3;
+//                    takePhoto();
+//
+//                    locationStart();
+//                    datatime =  today.monthDay + "/" + today.month + "/" + today.year + "T" + today.hour;
+//                    Foto4.add(datatime);
+//                    Foto4.add(""+Lng);
+//                    Foto4.add(""+Lat);
+//
+//                }
+//            }
+//        });
+//
+//        btnFoto5.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//                    if (checkSelfPermission(String.valueOf(Manifest.permission.CAMERA)) != PackageManager.PERMISSION_DENIED) {
+//                        ActivityCompat.requestPermissions(SupervisionActivity.this, new String[]{Manifest.permission.CAMERA}, 1);
+//                    }
+//                }
+//
+//                if (ActivityCompat.checkSelfPermission(getApplicationContext(),
+//                        Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+//
+//                    ActivityCompat.requestPermissions(SupervisionActivity.this,
+//                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_PERM_WRITE_STORAGE);
+//                } else {
+//                    descision = 4;
+//                    takePhoto();
+//
+//                    locationStart();
+//                    datatime =  today.monthDay + "/" + today.month + "/" + today.year + "T" + today.hour;
+//                    Foto5.add(datatime);
+//                    Foto5.add(""+Lng);
+//                    Foto5.add(""+Lat);
+//                }
+//            }
+//        });
 
 
 
@@ -907,7 +1038,6 @@ public class SupervisionActivity extends AppCompatActivity
         if (ArchivoUri != null && contUris==1) {
             uploadfile(ArchivoUri);
             contUris=0;
-
             ArchivoUri=null;
         }else if(ArchivoUri2 != null && contUris==2) {
             uploadfile(ArchivoUri);
@@ -2172,36 +2302,41 @@ public class SupervisionActivity extends AppCompatActivity
                     //Bitmap resizeImage = Bitmap.createScaledBitmap(capturedCoolerBitmap,CamWidth,CamHegith,false);
                     Bitmap Bitnew = redimensionarImagenMaximo(capturedCoolerBitmap, 1200, 800);
 
-                    if (descision == 0) {
 
-                        imageView.setImageBitmap(Bitnew);
-                        saveImageToGallery(Bitnew);
+                    for(int i=0; i<6; i++) {
+                        if (fileimagen==null){
+                            descision=0;
+                            imageView.setImageBitmap(Bitnew);
+                            saveImageToGallery(Bitnew);
 
-
-
-
-
-
-                    } else if (descision == 1) {
-                        imageView2.setImageBitmap(Bitnew);
-                        saveImageToGallery(Bitnew);
-
-
-                    } else if (descision == 2) {
-                        imageView3.setImageBitmap(Bitnew);
-                        saveImageToGallery(Bitnew);
-
-                    } else if (descision == 3) {
-                        imageView4.setImageBitmap(Bitnew);
-                        saveImageToGallery(Bitnew);
-
-                    } else if (descision == 4) {
-                        imageView5.setImageBitmap(Bitnew);
-                        saveImageToGallery(Bitnew);
-
-
+                            break;
+                        } else if (fileimagen2==null) {
+                            descision=1;
+                            imageView2.setImageBitmap(Bitnew);
+                            saveImageToGallery(Bitnew);
+                            break;
+                        } else if (fileimagen3 ==null) {
+                            descision=2;
+                            imageView3.setImageBitmap(Bitnew);
+                            saveImageToGallery(Bitnew);
+                            break;
+                        } else if (fileimagen4 == null) {
+                            descision=3;
+                            imageView4.setImageBitmap(Bitnew);
+                            saveImageToGallery(Bitnew);
+                            break;
+                        } else if (fileimagen5 == null) {
+                            descision=4;
+                            imageView5.setImageBitmap(Bitnew);
+                            saveImageToGallery(Bitnew);
+                            break;
+                        } else if (fileimagen6 == null) {
+                            descision=5;
+                            imageView6.setImageBitmap(Bitnew);
+                            saveImageToGallery(Bitnew);
+                            break;
+                        }
                     }
-
 
                     break;
 
@@ -2300,6 +2435,8 @@ public class SupervisionActivity extends AppCompatActivity
             fileimagen4 = file;
         } else if (descision==4){
             fileimagen5 = file;
+        }else if (descision==5){
+            fileimagen6 = file;
         }
 
         if (file.exists()) file.delete();
@@ -2455,9 +2592,9 @@ public class SupervisionActivity extends AppCompatActivity
         Boolean FragmentoSeleccionado=false;
 
         if (id == R.id.nav_perfil) {
-            StyleableToast.makeText(getApplicationContext(), "Aún en proceso", Toast.LENGTH_SHORT, R.style.warningToast).show();
+            Toast.makeText(getApplicationContext(),"Aún en proceso",Toast.LENGTH_SHORT).show();
         }else if (id == R.id.nav_acty) {
-            StyleableToast.makeText(getApplicationContext(), "Aún en proceso", Toast.LENGTH_SHORT, R.style.warningToast).show();
+            Toast.makeText(getApplicationContext(),"Aún en proceso",Toast.LENGTH_SHORT).show();
         } else if (id == R.id.nav_event) {
             mifragment = new EventosFragment();
             FragmentoSeleccionado=true;
@@ -2475,7 +2612,7 @@ public class SupervisionActivity extends AppCompatActivity
             startActivity(intent);
 
         }else if(id == R.id.nav_conf) {
-            StyleableToast.makeText(getApplicationContext(), "Aún en proceso", Toast.LENGTH_SHORT, R.style.warningToast).show();
+            Toast.makeText(getApplicationContext(),"Aún en proceso",Toast.LENGTH_SHORT).show();
         } else if (id == R.id.nav_signOut) {
             cerrarSesion();
         }

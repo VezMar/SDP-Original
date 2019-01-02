@@ -14,7 +14,9 @@ public class Data {
     private List<String> Foto3;
     private List<String> Foto4;
     private List<String> Foto5;
-    //private String Fecha;
+
+   // private List<Foto> evidence;
+    //private String datatime;
 
     public Data() {
     }
@@ -27,7 +29,24 @@ public class Data {
         this.Lng = lng;
     }*/
 
-    public Data(String observ, boolean before, double lat, double lng, List<String> foto1, List<String> foto2, List<String> foto3, List<String> foto4, List<String> foto5) {
+//    public Data(String observ, boolean before, double lat, double lng, List<Foto> evidence) {
+//        this.observ = observ;
+//        this.before = before;
+//        Lat = lat;
+//        Lng = lng;
+//        this.evidence = evidence;
+//    }
+//
+//    public List<Foto> getEvidence() {
+//        return evidence;
+//    }
+//
+//    public void setEvidence(List<Foto> evidence) {
+//        this.evidence = evidence;
+//    }
+
+
+        public Data(String observ, boolean before, double lat, double lng, List<String> foto1, List<String> foto2, List<String> foto3, List<String> foto4, List<String> foto5) {
         this.observ = observ;
         this.before = before;
         Lat = lat;

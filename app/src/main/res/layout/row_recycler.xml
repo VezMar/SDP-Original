@@ -70,7 +70,7 @@
                 android:gravity="top|left"
                 android:hint="Descripcion"
                 android:inputType="textMultiLine"
-                android:lines="3"
+                android:lines="6"
                 android:overScrollMode="always"
                 android:scrollbarStyle="insideInset"
                 android:scrollbars="vertical"
@@ -150,11 +150,12 @@
                 android:textStyle="italic"/>
 
             <TextView
+                android:id="@+id/txtHrs"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingStart="30sp"
+                android:paddingStart="20sp"
                 android:paddingRight="10dp"
-                android:text="Horas:  75h"
+                android:text="Horas:  XX h"
                 android:textSize="18dp"/>
         </LinearLayout>
 

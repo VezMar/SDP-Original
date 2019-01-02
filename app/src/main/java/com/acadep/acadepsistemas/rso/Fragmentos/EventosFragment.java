@@ -82,7 +82,7 @@ public class EventosFragment extends Fragment {
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
         uidUserGlobal = user.getUid();
-
+        contEventos=0;
         chequeoDevariables();
 
         setUpRecyclerView();

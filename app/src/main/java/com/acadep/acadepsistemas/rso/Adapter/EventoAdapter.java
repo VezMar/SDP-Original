@@ -2,6 +2,7 @@ package com.acadep.acadepsistemas.rso.Adapter;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.text.format.Time;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +16,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 
 public class EventoAdapter extends FirestoreRecyclerAdapter<Evento, EventoAdapter.EventoHolder>{
     private OnItemClickListener listener;
-
+    static Time today = new Time(Time.getCurrentTimezone());
 
     /**
      * Create a new RecyclerView adapter that listens to a Firestore Query.  See {@link
@@ -28,8 +29,21 @@ public class EventoAdapter extends FirestoreRecyclerAdapter<Evento, EventoAdapte
 
     }
 
+
     @Override
     protected void onBindViewHolder(@NonNull EventoHolder holder, int position, @NonNull Evento evento) {
+
+       String date = evento.getEnd().getDate();
+
+        String horaFinal = evento.getEnd().getTime();
+        //String
+        String diaFinal = date.substring(8,10);
+        String diaActual = ""+today.monthDay;
+//        int HorasFinal = Integer.parseInt(diaFinal)*24;
+//        int HorasActual = Integer.parseInt(diaActual)*24;
+        int diaRestante = Integer.parseInt(diaFinal) - Integer.parseInt(diaActual);
+
+
         holder.txtview_actividad.setText(evento.getType_activity());
          //holder.txtview_uid.setText(evento.get(position).getUid());
         //holder.txtview_trabajador.setText(evento.get(position).getTrabajador());
@@ -40,6 +54,7 @@ public class EventoAdapter extends FirestoreRecyclerAdapter<Evento, EventoAdapte
         holder.txtview_end.setText(evento.getEnd().getDate());
         holder.txtview_name.setText(evento.getName());
         holder.txtDescripcion.setText(evento.getDescription());
+        //holder.txtHrs.setText(""+diaRestante);
     }
 
     @NonNull
@@ -55,7 +70,7 @@ public class EventoAdapter extends FirestoreRecyclerAdapter<Evento, EventoAdapte
 
         TextView txtview_actividad, txtview_trabajador,txtview_uid;
         TextView txtview_name, txtview_start, txtview_end, txtview_active;
-        TextView txtDescripcion;
+        TextView txtDescripcion, txtHrs;
 
         public EventoHolder(@NonNull View itemView) {
             super(itemView);
@@ -66,6 +81,7 @@ public class EventoAdapter extends FirestoreRecyclerAdapter<Evento, EventoAdapte
             txtview_start = (TextView) itemView.findViewById(R.id.txtview_start);
             txtview_end = (TextView) itemView.findViewById(R.id.txtview_end);
 
+            txtHrs = (TextView) itemView.findViewById(R.id.txtHrs);
             txtDescripcion = (TextView) itemView.findViewById(R.id.txtDescripcion);
             //txtview_active = (TextView) itemView.findViewById(R.id.txtview_active);
             // txtview_uid = (TextView) itemView.findViewById(R.id.txtview_uid);
