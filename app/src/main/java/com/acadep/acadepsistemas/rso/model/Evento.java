@@ -16,8 +16,8 @@ public class Evento {
 //    String end;
     String idactivity;
     String description;
-    private datatime end = new datatime();
-    private datatime start = new datatime();
+    private datetime end = new datetime();
+    private datetime start = new datetime();
 
     //  List<String> tools;
 
@@ -64,7 +64,7 @@ public class Evento {
 //    }
 
 
-    public Evento(String user_id, String type_activity, String trabajador, String id, String name, String idactivity, String description, datatime end, datatime start, List<Recursos> tools, List<Recursos> staff, boolean active, boolean deleted) {
+    public Evento(String user_id, String type_activity, String trabajador, String id, String name, String idactivity, String description, datetime end, datetime start, List<Recursos> tools, List<Recursos> staff, boolean active, boolean deleted) {
         this.user_id = user_id;
         this.type_activity = type_activity;
         this.trabajador = trabajador;
@@ -80,19 +80,19 @@ public class Evento {
         this.deleted = deleted;
     }
 
-    public datatime getEnd() {
+    public datetime getEnd() {
         return end;
     }
 
-    public void setEnd(datatime end) {
+    public void setEnd(datetime end) {
         this.end = end;
     }
 
-    public datatime getStart() {
+    public datetime getStart() {
         return start;
     }
 
-    public void setStart(datatime start) {
+    public void setStart(datetime start) {
         this.start = start;
     }
 

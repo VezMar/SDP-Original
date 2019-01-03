@@ -1,15 +1,15 @@
 package com.acadep.acadepsistemas.rso.model;
 
-public class datatime {
+public class datetime {
 
     private String date;
     private String time;
 
 
-    public datatime() {
+    public datetime() {
     }
 
-    public datatime(String date, String time) {
+    public datetime(String date, String time) {
         this.date = date;
         this.time = time;
     }

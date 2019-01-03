@@ -1,13 +1,13 @@
 package com.acadep.acadepsistemas.rso.model;
 
-public class Ubicacion {
+public class Ubication {
     private String lat;
     private String lng;
 
-    public Ubicacion() {
+    public Ubication() {
     }
 
-    public Ubicacion(String lat, String lng) {
+    public Ubication(String lat, String lng) {
         this.lat = lat;
         this.lng = lng;
     }

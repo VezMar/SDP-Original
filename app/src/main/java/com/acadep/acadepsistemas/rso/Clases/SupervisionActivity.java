@@ -54,9 +54,12 @@ import com.acadep.acadepsistemas.rso.model.Data2;
 import com.acadep.acadepsistemas.rso.model.Data3;
 import com.acadep.acadepsistemas.rso.model.Evento;
 import com.acadep.acadepsistemas.rso.model.Foto;
+import com.acadep.acadepsistemas.rso.model.Ubication;
+import com.acadep.acadepsistemas.rso.model.datetime;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.SettingsClient;
+import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -215,8 +218,7 @@ public class SupervisionActivity extends AppCompatActivity
 
     FloatingTextButton btnBorrarArchivo;
 
-    static Time today = new Time(Time.getCurrentTimezone());
-    static String Fecha;
+
 
 
     static List<String> Foto =  new ArrayList<>();
@@ -277,12 +279,30 @@ public class SupervisionActivity extends AppCompatActivity
     private BottomNavigationView bottomNavigationView;
 
 
+    private static List<Foto> evidence = new ArrayList<>();
+    private static com.acadep.acadepsistemas.rso.model.Foto PerFoto1 = new Foto();
+    private static com.acadep.acadepsistemas.rso.model.Foto PerFoto2 = new Foto();
+    private static com.acadep.acadepsistemas.rso.model.Foto PerFoto3 = new Foto();
+    private static com.acadep.acadepsistemas.rso.model.Foto PerFoto4 = new Foto();
+    private static com.acadep.acadepsistemas.rso.model.Foto PerFoto5 = new Foto();
+    private static com.acadep.acadepsistemas.rso.model.Foto PerFoto6 = new Foto();
 
-    com.acadep.acadepsistemas.rso.model.Foto evidence = new Foto();
+    private static datetime datatime = new datetime();
+    private static Ubication ubication = new Ubication();
 
+    private static Time today = new Time(Time.getCurrentTimezone());
+    private static String Fecha;
+    private static String Hora;
+
+    static String src1;
+    static String src2;
+    static String src3;
+    static String src4;
+    static String src5;
+    static String src6;
 
     CheckBox checkBox1 ,checkBox2,checkBox3,checkBox4, checkBox5,checkBox6;
-
+//-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -522,12 +542,40 @@ public class SupervisionActivity extends AppCompatActivity
                         takePhoto();
                     }
 
+                    Fecha =  today.monthDay + "/" + today.month + "/" + today.year;
+                    Hora = today.hour +":" + today.minute;
 
-                    Fecha =  today.monthDay + "/" + today.month + "/" + today.year + "T" + today.hour + ":" + today.minute;
+                    datatime.setDate(Fecha);
+                    datatime.setTime(Hora);
 
-                    Foto.add(Fecha);
-                    Foto.add(""+Lng);
-                    Foto.add(""+Lat);
+                    ubication.setLat(""+Lat);
+                    ubication.setLng(""+Lng);
+
+                    if(descision==0) {
+                        PerFoto1.setDatatime(datatime);
+                        PerFoto1.setUbicacion(ubication);
+                        PerFoto1.setType("Imagen");
+                    } else if (descision==1){
+                        PerFoto2.setDatatime(datatime);
+                        PerFoto2.setUbicacion(ubication);
+                        PerFoto2.setType("Imagen");
+                    } else if (descision==2){
+                        PerFoto3.setDatatime(datatime);
+                        PerFoto3.setUbicacion(ubication);
+                        PerFoto3.setType("Imagen");
+                    } else if (descision==3){
+                        PerFoto4.setDatatime(datatime);
+                        PerFoto4.setUbicacion(ubication);
+                        PerFoto4.setType("Imagen");
+                    } else if (descision==4){
+                        PerFoto5.setDatatime(datatime);
+                        PerFoto5.setUbicacion(ubication);
+                        PerFoto5.setType("Imagen");
+                    }else if (descision==5){
+                        PerFoto6.setDatatime(datatime);
+                        PerFoto6.setUbicacion(ubication);
+                        PerFoto6.setType("Imagen");
+                    }
                 }
             }
         });
@@ -649,9 +697,9 @@ public class SupervisionActivity extends AppCompatActivity
 //                    descision = 0;
 //                    takePhoto();
 //
-//                    datatime =  today.monthDay + "/" + today.month + "/" + today.year + "T" + today.hour + ":" + today.minute;
+//                    datetime =  today.monthDay + "/" + today.month + "/" + today.year + "T" + today.hour + ":" + today.minute;
 //
-//                    Foto.add(datatime);
+//                    Foto.add(datetime);
 //                    Foto.add(""+Lng);
 //                    Foto.add(""+Lat);
 //                }
@@ -677,8 +725,8 @@ public class SupervisionActivity extends AppCompatActivity
 //                    takePhoto();
 //
 //                    locationStart();
-//                    datatime =  today.monthDay + "/" + today.month + "/" + today.year + "T" + today.hour + ":" + today.minute;
-//                    Foto2.add(""+datatime);
+//                    datetime =  today.monthDay + "/" + today.month + "/" + today.year + "T" + today.hour + ":" + today.minute;
+//                    Foto2.add(""+datetime);
 //                    Foto2.add(""+Lng);
 //                    Foto2.add(""+Lat);
 //                }
@@ -704,8 +752,8 @@ public class SupervisionActivity extends AppCompatActivity
 //                    takePhoto();
 //
 //                    locationStart();
-//                    datatime =  today.monthDay + "/" + today.month + "/" + today.year + "T" + today.hour + ":" + today.minute;
-//                    Foto3.add(datatime);
+//                    datetime =  today.monthDay + "/" + today.month + "/" + today.year + "T" + today.hour + ":" + today.minute;
+//                    Foto3.add(datetime);
 //                    Foto3.add(""+Lng);
 //                    Foto3.add(""+Lat);
 //
@@ -732,8 +780,8 @@ public class SupervisionActivity extends AppCompatActivity
 //                    takePhoto();
 //
 //                    locationStart();
-//                    datatime =  today.monthDay + "/" + today.month + "/" + today.year + "T" + today.hour;
-//                    Foto4.add(datatime);
+//                    datetime =  today.monthDay + "/" + today.month + "/" + today.year + "T" + today.hour;
+//                    Foto4.add(datetime);
 //                    Foto4.add(""+Lng);
 //                    Foto4.add(""+Lat);
 //
@@ -760,8 +808,8 @@ public class SupervisionActivity extends AppCompatActivity
 //                    takePhoto();
 //
 //                    locationStart();
-//                    datatime =  today.monthDay + "/" + today.month + "/" + today.year + "T" + today.hour;
-//                    Foto5.add(datatime);
+//                    datetime =  today.monthDay + "/" + today.month + "/" + today.year + "T" + today.hour;
+//                    Foto5.add(datetime);
 //                    Foto5.add(""+Lng);
 //                    Foto5.add(""+Lat);
 //                }
@@ -801,8 +849,28 @@ public class SupervisionActivity extends AppCompatActivity
                                         cont1++;
                                         boolean before = true;
 
+                                        uploadImage1();
+                                        uploadImage2();
+                                        uploadImage3();
+                                        uploadImage4();
+                                        uploadImage5();
 
-                                        Data data = new Data(Observation, before, Lat, Lng, Foto, Foto2, Foto3, Foto4, Foto5);
+                                        uploadAllFiles();
+
+
+                                        PerFoto1.setSrc(src1);
+                                        PerFoto2.setSrc(src2);
+                                        PerFoto3.setSrc(src3);
+
+
+
+                                        evidence.add(PerFoto1);
+                                        evidence.add(PerFoto2);
+                                        evidence.add(PerFoto3);
+                                        evidence.add(PerFoto4);
+                                        evidence.add(PerFoto5);
+                                        evidence.add(PerFoto6);
+                                        Data data = new Data(Observation, before, Lat, Lng, evidence);
                                         // String k = mDatabase.child("Eventos").child(idevent).child("observation").child("before").child("status").;
                                         //mDatabase.child("Eventos").child(idevent).child("observation").child("before").setValue(data);
 
@@ -813,15 +881,12 @@ public class SupervisionActivity extends AppCompatActivity
                                         StyleableToast.makeText(getApplicationContext(), "Datos ingresados", Toast.LENGTH_LONG, R.style.sucessToast).show();
                                         //Toast.makeText(getApplicationContext(), "Datos ingresados", Toast.LENGTH_SHORT).show();
 
+
                                         edObserv.setText("");
-                                        uploadImage1();
-                                        uploadImage2();
-                                        uploadImage3();
-                                        uploadImage4();
-                                        uploadImage5();
 
 
-                                        uploadAllFiles();
+
+
 
                                         BorrarImagenes();
                                     }
@@ -1516,20 +1581,29 @@ public class SupervisionActivity extends AppCompatActivity
             }
 
     private void BorrarImagenes() {
-        imageView.setImageDrawable(Drawable.createFromPath("@drawable/empty_image"));
+        imageView.setImageResource(R.drawable.empty_image);
+        checkBox1.setChecked(false);
         fileimagen = null;
 
-        imageView2.setImageDrawable(Drawable.createFromPath("@drawable/empty_image"));
+        imageView2.setImageResource(R.drawable.empty_image);
+        checkBox2.setChecked(false);
         fileimagen2 = null;
 
-        imageView3.setImageDrawable(Drawable.createFromPath("@drawable/empty_image"));
+        imageView3.setImageResource(R.drawable.empty_image);
+        checkBox3.setChecked(false);
         fileimagen3 = null;
 
-        imageView4.setImageDrawable(Drawable.createFromPath("@drawable/empty_image"));
+        imageView4.setImageResource(R.drawable.empty_image);
+        checkBox4.setChecked(false);
+        fileimagen4 = null;
+
+        imageView5.setImageResource(R.drawable.empty_image);
+        checkBox5.setChecked(false);
         fileimagen5 = null;
 
-        imageView5.setImageDrawable(Drawable.createFromPath("@drawable/empty_image"));
-        fileimagen5 = null;
+        imageView6.setImageResource(R.drawable.empty_image);
+        checkBox6.setChecked(false);
+        fileimagen6 = null;
     }
 
     public void takePhoto() {
@@ -1558,6 +1632,9 @@ public class SupervisionActivity extends AppCompatActivity
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                             progressDialog.dismiss();
+
+                            src1 = taskSnapshot.getUploadSessionUri().toString();
+
                             // Toast.makeText(getApplicationContext(), "Exito al Subirse", Toast.LENGTH_SHORT).show();
                         }
                     })
@@ -1568,6 +1645,16 @@ public class SupervisionActivity extends AppCompatActivity
                             StyleableToast.makeText(getApplicationContext(), "Fallo al Subir", Toast.LENGTH_LONG, R.style.dangerToast).show();
                            // Toast.makeText(getApplicationContext(), "Fallo al Subir", Toast.LENGTH_SHORT).show();
                         }
+                    }).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                            if (task.isSuccessful()) {
+                                String downloadUri = ""+task.getResult().toString();
+
+                            }else{
+                                StyleableToast.makeText(getApplicationContext(), "Ocurrio un error", Toast.LENGTH_LONG, R.style.dangerToast).show();
+                            }
+                        }
                     })
                     .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
                         @Override
@@ -1576,6 +1663,23 @@ public class SupervisionActivity extends AppCompatActivity
                             progressDialog.setMessage("Subido " + (int) progress + "%");
                         }
                     });
+
+            //src1 = ""+ref.getDownloadUrl();
+
+            ref.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                @Override
+                public void onSuccess(Uri uri) {
+                   src1 = ""+uri;
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    // Handle any errors
+                }
+            });
+
+
+
         }
     }
 
@@ -1602,6 +1706,14 @@ public class SupervisionActivity extends AppCompatActivity
                             StyleableToast.makeText(getApplicationContext(), "Fallo al Subir", Toast.LENGTH_LONG, R.style.dangerToast).show();
                             //Toast.makeText(getApplicationContext(), "Fallo al Subir", Toast.LENGTH_SHORT).show();
                         }
+                    }).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                            if (task.isSuccessful()) {
+                                UploadTask.TaskSnapshot downloadUri = task.getResult();
+
+                            }
+                        }
                     })
                     .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
                         @Override
@@ -1610,6 +1722,7 @@ public class SupervisionActivity extends AppCompatActivity
                             progressDialog.setMessage("Subido " + (int) progress + "%");
                         }
                     });
+            src2 = ""+ref.getDownloadUrl();
         }
     }
 
@@ -1618,7 +1731,7 @@ public class SupervisionActivity extends AppCompatActivity
             final ProgressDialog progressDialog = new ProgressDialog(SupervisionActivity.this);
             progressDialog.setTitle("Subiendo....");
 
-            StorageReference ref = storageReference.child("images").child(idevent).child(estado).child("Img" + UUID.randomUUID().toString());
+            final StorageReference ref = storageReference.child("images").child(idevent).child(estado).child("Img" + UUID.randomUUID().toString());
             // StorageReference ref = storageReference.child("images/"+UUID.randomUUID().toString());
 
             ref.putFile(Uri.fromFile(fileimagen3))
@@ -1637,6 +1750,15 @@ public class SupervisionActivity extends AppCompatActivity
                             //Toast.makeText(getApplicationContext(), "Fallo al Subir", Toast.LENGTH_SHORT).show();
                         }
                     })
+                    .addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                            if (task.isSuccessful()) {
+                                UploadTask.TaskSnapshot downloadUri = task.getResult();
+
+                            }
+                        }
+                    })
                     .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
@@ -1644,6 +1766,10 @@ public class SupervisionActivity extends AppCompatActivity
                             progressDialog.setMessage("Subido " + (int) progress + "%");
                         }
                     });
+            src3 = ""+ref.getDownloadUrl();
+
+
+
         }
     }
 

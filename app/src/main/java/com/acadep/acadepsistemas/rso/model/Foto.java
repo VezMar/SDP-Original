@@ -3,32 +3,32 @@ package com.acadep.acadepsistemas.rso.model;
 public class Foto {
     private String type;
     private String src;
-    private Ubicacion ubicacion = new Ubicacion();
-    private datatime datatime = new datatime();
+    private Ubication ubicacion = new Ubication();
+    private datetime datatime = new datetime();
 
     public Foto() {
     }
 
-    public Foto(String type, String src, Ubicacion ubicacion, com.acadep.acadepsistemas.rso.model.datatime datatime) {
+    public Foto(String type, String src, Ubication ubicacion, datetime datatime) {
         this.type = type;
         this.src = src;
         this.ubicacion = ubicacion;
         this.datatime = datatime;
     }
 
-    public Ubicacion getUbicacion() {
+    public Ubication getUbicacion() {
         return ubicacion;
     }
 
-    public void setUbicacion(Ubicacion ubicacion) {
+    public void setUbicacion(Ubication ubicacion) {
         this.ubicacion = ubicacion;
     }
 
-    public com.acadep.acadepsistemas.rso.model.datatime getDatatime() {
+    public datetime getDatatime() {
         return datatime;
     }
 
-    public void setDatatime(com.acadep.acadepsistemas.rso.model.datatime datatime) {
+    public void setDatatime(datetime datatime) {
         this.datatime = datatime;
     }
 
@@ -47,4 +47,6 @@ public class Foto {
     public void setSrc(String src) {
         this.src = src;
     }
+
+
 }

@@ -3,12 +3,12 @@ package com.acadep.acadepsistemas.rso.model;
 public class archivo {
     private String type;
     private String src;
-    private datatime datatime = new datatime();
+    private datetime datatime = new datetime();
 
     public archivo() {
     }
 
-    public archivo(String type, String src, com.acadep.acadepsistemas.rso.model.datatime datatime) {
+    public archivo(String type, String src, datetime datatime) {
         this.type = type;
         this.src = src;
         this.datatime = datatime;
@@ -30,11 +30,11 @@ public class archivo {
         this.src = src;
     }
 
-    public com.acadep.acadepsistemas.rso.model.datatime getDatatime() {
+    public datetime getDatatime() {
         return datatime;
     }
 
-    public void setDatatime(com.acadep.acadepsistemas.rso.model.datatime datatime) {
+    public void setDatatime(datetime datatime) {
         this.datatime = datatime;
     }
 }
