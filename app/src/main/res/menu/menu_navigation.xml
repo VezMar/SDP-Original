@@ -3,18 +3,18 @@
 
     <item
         android:id="@+id/itemAntes"
-        android:icon="@drawable/ic_star_border_black_36dp"
+        android:icon="@drawable/ic_arrow_back_black_24dp"
         android:title="Antes"
         />
 
     <item
         android:id="@+id/itemDurante"
-        android:icon="@drawable/ic_star_half_black_36dp"
+        android:icon="@drawable/ic_arrow_downward_black_24dp"
         android:title="Durante"
         />
     <item
         android:id="@+id/itemDespues"
-        android:icon="@drawable/ic_star_black_36dp"
+        android:icon="@drawable/ic_arrow_forward_black_24dp"
         android:title="Después"
         />
 </menu>

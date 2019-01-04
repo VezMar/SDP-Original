@@ -28,12 +28,13 @@
                 android:id="@+id/txtview_actividad"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
                 android:text="@string/text_actividad"
                 android:textAllCaps="true"
                 android:textColor="#504e4e"
-                android:textSize="30sp"
+                android:textSize="18dp"
                 android:textStyle="bold"
-                android:layout_marginLeft="5dp"/>
+                />
 
         </LinearLayout>
 
@@ -62,23 +63,6 @@
             android:orientation="vertical"
             android:gravity="center">
 
-            <EditText
-                android:id="@+id/txtDescripcion"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:ems="10"
-                android:gravity="top|left"
-                android:hint="Descripcion"
-                android:inputType="textMultiLine"
-                android:lines="6"
-                android:overScrollMode="always"
-                android:scrollbarStyle="insideInset"
-                android:scrollbars="vertical"
-                android:scrollHorizontally="false"
-                android:enabled="false"
-                android:textColorHint="@android:color/darker_gray" />
-
-
 
         </LinearLayout>
 
@@ -101,16 +85,17 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Inicio: "
-                android:paddingStart="5dp"
-                android:textSize="20sp"
-                android:textStyle="italic" />
+                android:paddingStart="15dp"
+                android:textSize="13dp"
+
+                android:textColor="#6b6b6b"/>
             <TextView
                 android:id="@+id/txtview_start"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Fecha inicial"
-                android:textSize="18dp"
-                android:textStyle="italic" />
+                android:textSize="13dp"
+                android:textColor="#6b6b6b"/>
 
 
         </LinearLayout>
@@ -125,16 +110,16 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Termina: "
-                android:paddingStart="5dp"
-                android:textSize="20sp"
-                android:textStyle="italic" />
+                android:paddingStart="15dp"
+                android:textSize="13dp"
+                android:textColor="#6b6b6b" />
             <TextView
                 android:id="@+id/txtview_end"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Fecha final"
-                android:textSize="18dp"
-                android:textStyle="italic" />
+                android:textSize="13dp"
+                android:textColor="#6b6b6b" />
         </LinearLayout>
 
         <LinearLayout
@@ -145,18 +130,17 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Tiempo Restante:"
-                android:paddingStart="5dp"
-                android:textSize="20sp"
-                android:textStyle="italic"/>
+                android:paddingStart="15dp"
+                android:textSize="13dp"/>
 
             <TextView
                 android:id="@+id/txtHrs"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingStart="20sp"
-                android:paddingRight="10dp"
-                android:text="Horas:  XX h"
-                android:textSize="18dp"/>
+                android:text=" 75 h 35 m"
+                android:textSize="13dp"
+                android:layout_marginLeft="130dp"
+                android:layout_gravity="right"/>
         </LinearLayout>
 
     </LinearLayout>

@@ -12,6 +12,8 @@ public class Evento {
     String trabajador;
     String id;
     String name;
+    int status;
+
 //    String start;
 //    String end;
     String idactivity;
@@ -31,45 +33,31 @@ public class Evento {
 
 
 
-//    public Evento(String user_id, String type_activity, String trabajador, String id, String name, String start, String end, String idactivity, String description, List<Recursos> tools, List<Recursos> staff, boolean active, boolean deleted) {
+
+//    public Evento(String user_id, String type_activity, String trabajador, String id, String name, String idactivity, String description, datetime end, datetime start, List<Recursos> tools, List<Recursos> staff, boolean active, boolean deleted) {
 //        this.user_id = user_id;
 //        this.type_activity = type_activity;
 //        this.trabajador = trabajador;
 //        this.id = id;
 //        this.name = name;
-//        this.start = start;
-//        this.end = end;
 //        this.idactivity = idactivity;
 //        this.description = description;
+//        this.end = end;
+//        this.start = start;
 //        this.tools = tools;
 //        this.staff = staff;
 //        this.active = active;
 //        this.deleted = deleted;
 //    }
-//
-//    public String getStart() {
-//        return start;
-//    }
-//
-//    public void setStart(String start) {
-//        this.start = start;
-//    }
-//
-//    public String getEnd() {
-//        return end;
-//    }
-//
-//    public void setEnd(String end) {
-//        this.end = end;
-//    }
 
 
-    public Evento(String user_id, String type_activity, String trabajador, String id, String name, String idactivity, String description, datetime end, datetime start, List<Recursos> tools, List<Recursos> staff, boolean active, boolean deleted) {
+    public Evento(String user_id, String type_activity, String trabajador, String id, String name, int status, String idactivity, String description, datetime end, datetime start, List<Recursos> tools, List<Recursos> staff, boolean active, boolean deleted) {
         this.user_id = user_id;
         this.type_activity = type_activity;
         this.trabajador = trabajador;
         this.id = id;
         this.name = name;
+        this.status = status;
         this.idactivity = idactivity;
         this.description = description;
         this.end = end;
@@ -78,6 +66,14 @@ public class Evento {
         this.staff = staff;
         this.active = active;
         this.deleted = deleted;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
     }
 
     public datetime getEnd() {

@@ -28,10 +28,7 @@
                 android:id="@+id/bottomNavigationView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true"
-                android:layout_marginStart="0dp"
-                android:layout_marginTop="455dp"
+                android:layout_alignParentBottom="true"
                 design:menu="@menu/menu_navigation" />
 
 
@@ -73,6 +70,7 @@
                 android:visibility="invisible" /-->
 
             <ScrollView
+                android:id="@+id/scroll"
                 android:layout_width="match_parent"
                 android:layout_height="394dp"
                 android:layout_alignParentStart="true"
@@ -81,6 +79,7 @@
                 android:layout_marginTop="63dp">
 
                 <LinearLayout
+
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical">
@@ -113,6 +112,7 @@
 
 
                     <LinearLayout
+                        android:id="@+id/Lfotos1"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
                         <RelativeLayout
@@ -149,7 +149,7 @@
                             android:layout_marginLeft="15dp"
                             >
 
-                            <com.beardedhen.androidbootstrap.BootstrapCircleThumbnail
+                            <ImageView
                                 android:id="@+id/imgView2"
                                 android:layout_width="100dp"
                                 android:layout_height="100dp"
@@ -157,8 +157,6 @@
                                 android:layout_alignParentTop="true"
                                 android:layout_marginStart="0dp"
                                 android:src="@drawable/empty_image"
-                                app:bootstrapBrand="primary"
-                                app:hasBorder="false"
                                 android:layout_marginTop="10dp"
                                 android:layout_marginRight="10dp" />
 
@@ -203,6 +201,7 @@
 
                     </LinearLayout>
                     <LinearLayout
+                        android:id="@+id/Lfotos2"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
                         <RelativeLayout

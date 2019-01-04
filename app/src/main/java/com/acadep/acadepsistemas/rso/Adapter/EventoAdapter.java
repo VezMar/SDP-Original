@@ -53,7 +53,7 @@ public class EventoAdapter extends FirestoreRecyclerAdapter<Evento, EventoAdapte
         holder.txtview_start.setText(evento.getStart().getDate());
         holder.txtview_end.setText(evento.getEnd().getDate());
         holder.txtview_name.setText(evento.getName());
-        holder.txtDescripcion.setText(evento.getDescription());
+        //holder.txtDescripcion.setText(evento.getDescription());
         //holder.txtHrs.setText(""+diaRestante);
     }
 
@@ -82,7 +82,7 @@ public class EventoAdapter extends FirestoreRecyclerAdapter<Evento, EventoAdapte
             txtview_end = (TextView) itemView.findViewById(R.id.txtview_end);
 
             txtHrs = (TextView) itemView.findViewById(R.id.txtHrs);
-            txtDescripcion = (TextView) itemView.findViewById(R.id.txtDescripcion);
+            //txtDescripcion = (TextView) itemView.findViewById(R.id.txtDescripcion);
             //txtview_active = (TextView) itemView.findViewById(R.id.txtview_active);
             // txtview_uid = (TextView) itemView.findViewById(R.id.txtview_uid);
             //btnRealizar = (Button) itemView.findViewById(R.id.btnRealizar);

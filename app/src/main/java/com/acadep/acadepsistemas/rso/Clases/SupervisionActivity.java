@@ -2,6 +2,9 @@ package com.acadep.acadepsistemas.rso.Clases;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -27,6 +30,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
 import android.text.format.Time;
 import android.util.Log;
@@ -42,6 +46,7 @@ import android.view.MenuItem;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -56,6 +61,7 @@ import com.acadep.acadepsistemas.rso.model.Evento;
 import com.acadep.acadepsistemas.rso.model.Foto;
 import com.acadep.acadepsistemas.rso.model.Ubication;
 import com.acadep.acadepsistemas.rso.model.datetime;
+import com.github.chrisbanes.photoview.PhotoView;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.SettingsClient;
@@ -200,7 +206,7 @@ public class SupervisionActivity extends AppCompatActivity
 
 
     //Variables Fotos
-    private Uri filePath;
+    //private Uri filePath;
     private static ImageView imageView;
     private static ImageView imageView2;
     private static ImageView imageView3;
@@ -294,7 +300,7 @@ public class SupervisionActivity extends AppCompatActivity
     private static String Fecha;
     private static String Hora;
 
-    static String src1;
+    private static String src1;
     static String src2;
     static String src3;
     static String src4;
@@ -302,6 +308,7 @@ public class SupervisionActivity extends AppCompatActivity
     static String src6;
 
     CheckBox checkBox1 ,checkBox2,checkBox3,checkBox4, checkBox5,checkBox6;
+    LinearLayout Lfotos1, Lfotos2;
 //-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -390,6 +397,30 @@ public class SupervisionActivity extends AppCompatActivity
         imageView5 = (ImageView) findViewById(R.id.imgView5);
         imageView6 = (ImageView) findViewById(R.id.imgView6);
 
+
+
+
+        checkBox1.setVisibility(View.INVISIBLE);
+        checkBox2.setVisibility(View.INVISIBLE);
+        checkBox3.setVisibility(View.INVISIBLE);
+        checkBox4.setVisibility(View.INVISIBLE);
+        checkBox5.setVisibility(View.INVISIBLE);
+        checkBox6.setVisibility(View.INVISIBLE);
+
+
+        imageView.setVisibility(View.INVISIBLE);
+        imageView2.setVisibility(View.INVISIBLE);
+        imageView3.setVisibility(View.INVISIBLE);
+        imageView4.setVisibility(View.INVISIBLE);
+        imageView5.setVisibility(View.INVISIBLE);
+        imageView6.setVisibility(View.INVISIBLE);
+
+        Lfotos1 = (LinearLayout) findViewById(R.id.Lfotos1);
+        Lfotos2 = (LinearLayout) findViewById(R.id.Lfotos2);
+
+
+
+
         noImage = imageView5;
 
         // GPSSSSSSSSSSSSSSSSSSSSS
@@ -461,7 +492,9 @@ public class SupervisionActivity extends AppCompatActivity
         btnBorrarArchivo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MostrarOpciones();
+               MostrarOpciones();
+
+
             }
         });
 
@@ -478,36 +511,55 @@ public class SupervisionActivity extends AppCompatActivity
                         imageView.setImageResource(R.drawable.empty_image);
                         checkBox1.setChecked(false);
                         fileimagen = null;
+
+
+                        imageView.setVisibility(View.INVISIBLE);
+                        checkBox1.setVisibility(View.INVISIBLE);
                     }
 
                     if (checkBox2.isChecked()) {
                         imageView2.setImageResource(R.drawable.empty_image);
                         checkBox2.setChecked(false);
                         fileimagen2 = null;
+
+                        imageView2.setVisibility(View.INVISIBLE);
+                        checkBox2.setVisibility(View.INVISIBLE);
                     }
 
                     if (checkBox3.isChecked()) {
                         imageView3.setImageResource(R.drawable.empty_image);
                         checkBox3.setChecked(false);
                         fileimagen3 = null;
+
+                        imageView3.setVisibility(View.INVISIBLE);
+                        checkBox3.setVisibility(View.INVISIBLE);
                     }
 
                     if (checkBox4.isChecked()) {
                         imageView4.setImageResource(R.drawable.empty_image);
                         checkBox4.setChecked(false);
                         fileimagen4 = null;
+
+                        imageView4.setVisibility(View.INVISIBLE);
+                        checkBox4.setVisibility(View.INVISIBLE);
                     }
 
                     if (checkBox5.isChecked()) {
                         imageView5.setImageResource(R.drawable.empty_image);
                         checkBox5.setChecked(false);
                         fileimagen5 = null;
+
+                        imageView5.setVisibility(View.INVISIBLE);
+                        checkBox5.setVisibility(View.INVISIBLE);
                     }
 
                     if (checkBox6.isChecked()) {
                         imageView6.setImageResource(R.drawable.empty_image);
                         checkBox6.setChecked(false);
                         fileimagen6 = null;
+
+                        imageView6.setVisibility(View.INVISIBLE);
+                        checkBox6.setVisibility(View.INVISIBLE);
                     }
                 }else{
                     StyleableToast.makeText(getApplicationContext(), "No ha seleccionado ninguna foto", Toast.LENGTH_SHORT, R.style.warningToast).show();
@@ -540,8 +592,9 @@ public class SupervisionActivity extends AppCompatActivity
                         StyleableToast.makeText(getApplicationContext(), "Ya no puede añadir más fotos", Toast.LENGTH_SHORT, R.style.warningToast).show();
                     }else{
                         takePhoto();
+                        locationStart();
                     }
-
+                    locationStart();
                     Fecha =  today.monthDay + "/" + today.month + "/" + today.year;
                     Hora = today.hour +":" + today.minute;
 
@@ -551,30 +604,41 @@ public class SupervisionActivity extends AppCompatActivity
                     ubication.setLat(""+Lat);
                     ubication.setLng(""+Lng);
 
-                    if(descision==0) {
+                    if(descision==0 && fileimagen!=null) {
                         PerFoto1.setDatatime(datatime);
                         PerFoto1.setUbicacion(ubication);
                         PerFoto1.setType("Imagen");
+
                     } else if (descision==1){
                         PerFoto2.setDatatime(datatime);
                         PerFoto2.setUbicacion(ubication);
                         PerFoto2.setType("Imagen");
+
+                        imageView2.setVisibility(View.VISIBLE);
+                        checkBox2.setVisibility(View.VISIBLE);
                     } else if (descision==2){
                         PerFoto3.setDatatime(datatime);
                         PerFoto3.setUbicacion(ubication);
                         PerFoto3.setType("Imagen");
+
+
                     } else if (descision==3){
                         PerFoto4.setDatatime(datatime);
                         PerFoto4.setUbicacion(ubication);
                         PerFoto4.setType("Imagen");
+
+
                     } else if (descision==4){
                         PerFoto5.setDatatime(datatime);
                         PerFoto5.setUbicacion(ubication);
                         PerFoto5.setType("Imagen");
+
+
                     }else if (descision==5){
                         PerFoto6.setDatatime(datatime);
                         PerFoto6.setUbicacion(ubication);
                         PerFoto6.setType("Imagen");
+
                     }
                 }
             }
@@ -857,26 +921,39 @@ public class SupervisionActivity extends AppCompatActivity
 
                                         uploadAllFiles();
 
-
-                                        PerFoto1.setSrc(src1);
-                                        PerFoto2.setSrc(src2);
-                                        PerFoto3.setSrc(src3);
-
+                                        //PerFoto1.setSrc(src1);
+                                        //PerFoto2.setSrc(src2);
+                                        //PerFoto3.setSrc(src3);
 
 
-                                        evidence.add(PerFoto1);
-                                        evidence.add(PerFoto2);
-                                        evidence.add(PerFoto3);
-                                        evidence.add(PerFoto4);
-                                        evidence.add(PerFoto5);
-                                        evidence.add(PerFoto6);
+                                        if (fileimagen!= null){
+                                            evidence.add(PerFoto1);
+                                        }
+                                        if (fileimagen2 != null){
+                                            evidence.add(PerFoto2);
+                                        }
+                                        if (fileimagen3 != null){
+                                            evidence.add(PerFoto3);
+                                        }
+                                        if (fileimagen4 != null){
+                                            evidence.add(PerFoto4);
+                                        }
+                                        if (fileimagen5 != null){
+                                            evidence.add(PerFoto5);
+                                        }
+                                        if (fileimagen6 != null){
+                                            evidence.add(PerFoto6);
+                                        }
+
+
                                         Data data = new Data(Observation, before, Lat, Lng, evidence);
+                                        BDFireStore.collection("events").document(idevent).collection("observation").document("before").set(data);
                                         // String k = mDatabase.child("Eventos").child(idevent).child("observation").child("before").child("status").;
                                         //mDatabase.child("Eventos").child(idevent).child("observation").child("before").setValue(data);
 
                                         //BDFireStore.collection("events").document("asdawd").set(data);
                                         //BDFireStore.collection("events").document(idevent).update("Observation", data);
-                                        BDFireStore.collection("events").document(idevent).collection("observation").document("before").set(data);
+
 
                                         StyleableToast.makeText(getApplicationContext(), "Datos ingresados", Toast.LENGTH_LONG, R.style.sucessToast).show();
                                         //Toast.makeText(getApplicationContext(), "Datos ingresados", Toast.LENGTH_SHORT).show();
@@ -911,11 +988,11 @@ public class SupervisionActivity extends AppCompatActivity
                                     } else {
                                         cont2++;
                                         boolean during = true;
-                                        Data2 data2 = new Data2(Observation, during, Lat, Lng, Foto, Foto2, Foto3, Foto4, Foto5);
+
                                         //mDatabase.child("Eventos").child(idevent).child("observation").child("during").setValue(data2);
 
 
-                                        BDFireStore.collection("events").document(idevent).collection("observation").document("during").set(data2);
+
 
                                         StyleableToast.makeText(getApplicationContext(), "Datos ingresados", Toast.LENGTH_LONG, R.style.sucessToast).show();
                                         //Toast.makeText(getApplicationContext(), "Datos ingresados", Toast.LENGTH_SHORT).show();
@@ -929,6 +1006,28 @@ public class SupervisionActivity extends AppCompatActivity
 
                                         uploadAllFiles();
 
+                                        if (fileimagen!= null){
+                                            evidence.add(PerFoto1);
+                                        }
+                                        if (fileimagen2 != null){
+                                            evidence.add(PerFoto2);
+                                        }
+                                        if (fileimagen3 != null){
+                                            evidence.add(PerFoto3);
+                                        }
+                                        if (fileimagen4 != null){
+                                            evidence.add(PerFoto4);
+                                        }
+                                        if (fileimagen5 != null){
+                                            evidence.add(PerFoto5);
+                                        }
+                                        if (fileimagen6 != null){
+                                            evidence.add(PerFoto6);
+                                        }
+
+
+                                        Data2 data2 = new Data2(Observation, during, Lat, Lng, evidence);
+                                        BDFireStore.collection("events").document(idevent).collection("observation").document("during").set(data2);
                                         BorrarImagenes();
                                     }
 
@@ -949,9 +1048,8 @@ public class SupervisionActivity extends AppCompatActivity
                                     } else {
                                         cont3++;
                                         boolean after = true;
-                                        Data3 data3 = new Data3(Observation, after, Lat, Lng, Foto, Foto2, Foto3, Foto4, Foto5);
+
                                         //mDatabase.child("Eventos").child(idevent).child("observation").child("after").setValue(data3);
-                                        BDFireStore.collection("events").document(idevent).collection("observation").document("after").set(data3);
 
                                         StyleableToast.makeText(getApplicationContext(), "Datos ingresados", Toast.LENGTH_LONG, R.style.sucessToast).show();
                                         // Toast.makeText(getApplicationContext(), "Datos ingresados", Toast.LENGTH_SHORT).show();
@@ -965,6 +1063,30 @@ public class SupervisionActivity extends AppCompatActivity
 
                                         uploadAllFiles();
 
+
+                                        if (fileimagen!= null){
+                                            evidence.add(PerFoto1);
+                                        }
+                                        if (fileimagen2 != null){
+                                            evidence.add(PerFoto2);
+                                        }
+                                        if (fileimagen3 != null){
+                                            evidence.add(PerFoto3);
+                                        }
+                                        if (fileimagen4 != null){
+                                            evidence.add(PerFoto4);
+                                        }
+                                        if (fileimagen5 != null){
+                                            evidence.add(PerFoto5);
+                                        }
+                                        if (fileimagen6 != null){
+                                            evidence.add(PerFoto6);
+                                        }
+
+
+                                        Data3 data3 = new Data3(Observation, after, Lat, Lng, evidence);
+                                        BDFireStore.collection("events").document(idevent).collection("observation").document("after").set(data3);
+
                                         BorrarImagenes();
                                     }
 
@@ -977,6 +1099,9 @@ public class SupervisionActivity extends AppCompatActivity
                                         StyleableToast.makeText(getApplicationContext(), "Evento terminado", Toast.LENGTH_SHORT, R.style.doneToast).show();
                                         //StyleableToast.makeText(getApplicationContext(), "Evento terminado", Toast.LENGTH_LONG, R.style.doneToast).show();
                                         //Toast.makeText(getApplicationContext(),"Evento terminado",Toast.LENGTH_SHORT).show();
+
+                                        EventoTerminado();
+
                                     }
 
                                 }
@@ -1004,7 +1129,7 @@ public class SupervisionActivity extends AppCompatActivity
 
 
         // -------------------Image view --------------------- Zoom ---------------------
-       /* imageView.setOnClickListener(new View.OnClickListener() {
+        imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 AlertDialog.Builder mBuilder = new AlertDialog.Builder(SupervisionActivity.this);
@@ -1015,7 +1140,7 @@ public class SupervisionActivity extends AppCompatActivity
                 AlertDialog mDialog = mBuilder.create();
                 mDialog.show();
             }
-        });*/
+        });
 
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout2);
@@ -1026,6 +1151,33 @@ public class SupervisionActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+    }
+
+    private void EventoTerminado() {
+        NotificationCompat.Builder mBuilder;
+        NotificationManager mNotifyMgr =(NotificationManager) getApplicationContext().getSystemService(NOTIFICATION_SERVICE);
+
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        String NOTIFICACION_CHANNEL_ID = "com.acadep.acadepsistemas.rso.test";
+
+        int icono = R.mipmap.ic_launcher;
+        Intent intent = new Intent(SupervisionActivity.this, Main2Activity.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(SupervisionActivity.this, 0,intent, 0);
+
+        NotificationCompat.Builder notiBuilder = new NotificationCompat.Builder(getApplicationContext(), NOTIFICACION_CHANNEL_ID);
+
+        notiBuilder.setAutoCancel(true)
+                .setDefaults(Notification.DEFAULT_ALL)
+                .setWhen(System.currentTimeMillis())
+                .setSmallIcon(R.drawable.rso)
+                .setContentTitle("Evento terminado")
+                .setContentText(nameEvent + " ha finalizado")
+                .setContentInfo("info")
+                .setAutoCancel(true)
+                .setContentIntent(pendingIntent);
+
+
+        notificationManager.notify(new Random().nextInt(), notiBuilder.build());
     }
 
     private void MostrarOpciones() {
@@ -1355,10 +1507,8 @@ public class SupervisionActivity extends AppCompatActivity
 
                                                         if(check3.isAfter()==true) {
                                                             cont3++;
-                                                            ocultarItems();
-                                                            Intent intent= new Intent (getApplicationContext(), Main2Activity.class);
-                                                            startActivity(intent);
                                                             StyleableToast.makeText(getApplicationContext(), "Evento terminado", Toast.LENGTH_SHORT, R.style.doneToast).show();
+
                                                         }
 
                                                     }
@@ -1604,6 +1754,21 @@ public class SupervisionActivity extends AppCompatActivity
         imageView6.setImageResource(R.drawable.empty_image);
         checkBox6.setChecked(false);
         fileimagen6 = null;
+
+        checkBox1.setVisibility(View.INVISIBLE);
+        checkBox2.setVisibility(View.INVISIBLE);
+        checkBox3.setVisibility(View.INVISIBLE);
+        checkBox4.setVisibility(View.INVISIBLE);
+        checkBox5.setVisibility(View.INVISIBLE);
+        checkBox6.setVisibility(View.INVISIBLE);
+
+
+        imageView.setVisibility(View.INVISIBLE);
+        imageView2.setVisibility(View.INVISIBLE);
+        imageView3.setVisibility(View.INVISIBLE);
+        imageView4.setVisibility(View.INVISIBLE);
+        imageView5.setVisibility(View.INVISIBLE);
+        imageView6.setVisibility(View.INVISIBLE);
     }
 
     public void takePhoto() {
@@ -1624,8 +1789,62 @@ public class SupervisionActivity extends AppCompatActivity
             final ProgressDialog progressDialog = new ProgressDialog(SupervisionActivity.this);
             progressDialog.setTitle("Subiendo....");
 
-            StorageReference ref = storageReference.child("images").child(idevent).child(estado).child("Img" + UUID.randomUUID().toString());
+            final StorageReference ref = storageReference.child("images").child(idevent).child(estado).child("Img" + UUID.randomUUID().toString());
             // StorageReference ref = storageReference.child("images/"+UUID.randomUUID().toString());
+
+            final UploadTask uploadTask = ref.putFile(Uri.fromFile(fileimagen));
+
+//            uploadTask.addOnFailureListener(new OnFailureListener() {
+//                @Override
+//                public void onFailure(@NonNull Exception e) {
+//                    String message = e.toString();
+//                    Toast.makeText(getApplicationContext(), "Error: " + message, Toast.LENGTH_SHORT).show();
+//                }
+//            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+//                @Override
+//                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+//                    Toast.makeText(getApplicationContext(), "Exito al Subirse", Toast.LENGTH_SHORT).show();
+//
+//                    src1 = taskSnapshot.getMetadata().getPath();
+//
+//                    Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+//                        @Override
+//                        public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+//                            if (!task.isSuccessful()) {
+//                                throw task.getException();
+//                            }
+//
+//                            src1 = ref.getDownloadUrl().toString();
+//                            //PerFoto1.setSrc(src1);
+//                            // Continue with the task to get the download URL
+//                            return ref.getDownloadUrl();
+//                        }
+//                    }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+//                        @Override
+//                        public void onComplete(@NonNull Task<Uri> task) {
+//                            if (task.isSuccessful()) {
+//                                Uri downloadUri = task.getResult();
+//
+//                                urls();
+//                            } else {
+//                                // Handle failures
+//                                // ...
+//                            }
+//                        }
+//                    });
+//                }
+//            });
+//
+//
+//
+//            ref.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+//                @Override
+//                public void onSuccess(Uri uri) {
+//                    PerFoto1.setSrc(uri.toString());
+//                }
+//            });
+
+
 
             ref.putFile(Uri.fromFile(fileimagen))
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -1633,7 +1852,6 @@ public class SupervisionActivity extends AppCompatActivity
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                             progressDialog.dismiss();
 
-                            src1 = taskSnapshot.getUploadSessionUri().toString();
 
                             // Toast.makeText(getApplicationContext(), "Exito al Subirse", Toast.LENGTH_SHORT).show();
                         }
@@ -1650,7 +1868,7 @@ public class SupervisionActivity extends AppCompatActivity
                         public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
                             if (task.isSuccessful()) {
                                 String downloadUri = ""+task.getResult().toString();
-
+                                src1 = downloadUri;
                             }else{
                                 StyleableToast.makeText(getApplicationContext(), "Ocurrio un error", Toast.LENGTH_LONG, R.style.dangerToast).show();
                             }
@@ -1666,21 +1884,15 @@ public class SupervisionActivity extends AppCompatActivity
 
             //src1 = ""+ref.getDownloadUrl();
 
-            ref.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                @Override
-                public void onSuccess(Uri uri) {
-                   src1 = ""+uri;
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception exception) {
-                    // Handle any errors
-                }
-            });
+
 
 
 
         }
+    }
+
+    private void urls() {
+        PerFoto1.setSrc(src1);
     }
 
     private void uploadImage2() {
@@ -1688,15 +1900,17 @@ public class SupervisionActivity extends AppCompatActivity
             final ProgressDialog progressDialog = new ProgressDialog(SupervisionActivity.this);
             progressDialog.setTitle("Subiendo....");
 
-            StorageReference ref = storageReference.child("images").child(idevent).child(estado).child("Img" + UUID.randomUUID().toString());
-            // StorageReference ref = storageReference.child("images/"+UUID.randomUUID().toString());
+            StorageReference ref = storageReference.child("images").child(idevent).child(estado).child("Img" + UUID.randomUUID().toString());            // StorageReference ref = storageReference.child("images/"+UUID.randomUUID().toString());
+
+
 
             ref.putFile(Uri.fromFile(fileimagen2))
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                             progressDialog.dismiss();
-                            // Toast.makeText(getApplicationContext(), "Exito al Subirse", Toast.LENGTH_SHORT).show();
+
+
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {
@@ -2551,24 +2765,12 @@ public class SupervisionActivity extends AppCompatActivity
         File file = new File (myDir, imageName);
 
 
-        if(descision==0) {
-            fileimagen = file;
-        } else if (descision==1){
-            fileimagen2 = file;
-        } else if (descision==2){
-            fileimagen3 = file;
-        } else if (descision==3){
-            fileimagen4 = file;
-        } else if (descision==4){
-            fileimagen5 = file;
-        }else if (descision==5){
-            fileimagen6 = file;
-        }
+
 
         if (file.exists()) file.delete();
         try {
             FileOutputStream out = new FileOutputStream(file);
-            finalBitmap.compress(Bitmap.CompressFormat.JPEG, 90, out);
+            finalBitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
             String resizeCoolerImagePath = file.getAbsolutePath();
             out.flush();
             out.close();
@@ -2577,6 +2779,38 @@ public class SupervisionActivity extends AppCompatActivity
         }catch (Exception e){
             e.printStackTrace();
             Toast.makeText(getApplicationContext(),"Hubo un error",Toast.LENGTH_SHORT).show();
+        }
+
+        if(descision==0) {
+            fileimagen = file;
+
+            imageView.setVisibility(View.VISIBLE);
+            checkBox1.setVisibility(View.VISIBLE);
+        } else if (descision==1){
+            fileimagen2 = file;
+
+            imageView2.setVisibility(View.VISIBLE);
+            checkBox2.setVisibility(View.VISIBLE);
+        } else if (descision==2){
+            fileimagen3 = file;
+
+            imageView3.setVisibility(View.VISIBLE);
+            checkBox3.setVisibility(View.VISIBLE);
+        } else if (descision==3){
+            fileimagen4 = file;
+
+            imageView4.setVisibility(View.VISIBLE);
+            checkBox4.setVisibility(View.VISIBLE);
+        } else if (descision==4){
+            fileimagen5 = file;
+
+            imageView5.setVisibility(View.VISIBLE);
+            checkBox5.setVisibility(View.VISIBLE);
+        }else if (descision==5){
+            fileimagen6 = file;
+
+            imageView6.setVisibility(View.VISIBLE);
+            checkBox6.setVisibility(View.VISIBLE);
         }
     }
 

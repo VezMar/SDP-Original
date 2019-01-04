@@ -114,6 +114,8 @@ public class EventosFragment extends Fragment {
 
         EventAdapter = new EventoAdapter(options);
 
+        //contEventos++;
+
 
         EventAdapter.setOnItemClickListener(new EventoAdapter.OnItemClickListener() {
             @Override
@@ -189,9 +191,17 @@ public class EventosFragment extends Fragment {
         });
 
 
-                contEventos++;
 
-                EventosPendientes.setText(contEventos + " Eventos pendientes");
+                contEventos++;
+                if(contEventos !=0 ){
+                    EventosPendientes.setText(contEventos + " Eventos pendientes");
+                }else{
+                    EventosPendientes.setText("0" + " Eventos pendientes");
+                }
+
+
+
+
                 rv.setHasFixedSize(true);
                 rv.setLayoutManager(new LinearLayoutManager(getContext()));
                 rv.setAdapter(EventAdapter);
