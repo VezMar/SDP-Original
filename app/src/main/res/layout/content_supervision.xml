@@ -28,7 +28,10 @@
                 android:id="@+id/bottomNavigationView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="0dp"
+                android:layout_marginTop="455dp"
                 design:menu="@menu/menu_navigation" />
 
 
@@ -149,14 +152,13 @@
                             android:layout_marginLeft="15dp"
                             >
 
-                            <ImageView
+                            <com.beardedhen.androidbootstrap.BootstrapCircleThumbnail
                                 android:id="@+id/imgView2"
                                 android:layout_width="100dp"
                                 android:layout_height="100dp"
-                                android:layout_alignParentStart="true"
-                                android:layout_alignParentTop="true"
-                                android:layout_marginStart="0dp"
                                 android:src="@drawable/empty_image"
+                                app:bootstrapBrand="primary"
+                                app:hasBorder="false"
                                 android:layout_marginTop="10dp"
                                 android:layout_marginRight="10dp" />
 

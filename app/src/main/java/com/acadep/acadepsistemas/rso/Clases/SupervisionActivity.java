@@ -307,6 +307,8 @@ public class SupervisionActivity extends AppCompatActivity
     static String src5;
     static String src6;
 
+    int status=1;
+
     CheckBox checkBox1 ,checkBox2,checkBox3,checkBox4, checkBox5,checkBox6;
     LinearLayout Lfotos1, Lfotos2;
 //-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -897,213 +899,215 @@ public class SupervisionActivity extends AppCompatActivity
                         AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
                         builder.setTitle("Confirmación");
                         builder.setMessage("¿Está seguro?");
-                        StyleableToast.makeText(getApplicationContext(), "Una vez hecho, esta accion no se puede revertir", Toast.LENGTH_SHORT, R.style.warningToast).show();
+                        StyleableToast.makeText(getApplicationContext(), "Una vez realizada, esta acción no se puede revertir", Toast.LENGTH_SHORT, R.style.warningToast).show();
                         // builder.setCancelable(false);
                         builder.setPositiveButton("Si", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 String Observation = edObserv.getText().toString();
 
-                                if ((estado).equals("before")) {
+                                if(!Observation.equals("")) {
+                                    if ((estado).equals("before")) {
 
-                                    if (cont1 > 0) {
-                                        StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT, R.style.warningToast).show();
-                                        // Toast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT).show();
-                                    } else {
-                                        cont1++;
-                                        boolean before = true;
+                                        if (cont1 > 0) {
+                                            StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT, R.style.warningToast).show();
+                                            // Toast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT).show();
+                                        } else {
+                                            cont1++;
+                                            boolean before = true;
 
-                                        uploadImage1();
-                                        uploadImage2();
-                                        uploadImage3();
-                                        uploadImage4();
-                                        uploadImage5();
+                                            uploadImage1();
+                                            uploadImage2();
+                                            uploadImage3();
+                                            uploadImage4();
+                                            uploadImage5();
 
-                                        uploadAllFiles();
+                                            uploadAllFiles();
 
-                                        //PerFoto1.setSrc(src1);
-                                        //PerFoto2.setSrc(src2);
-                                        //PerFoto3.setSrc(src3);
+                                            //PerFoto1.setSrc(src1);
+                                            //PerFoto2.setSrc(src2);
+                                            //PerFoto3.setSrc(src3);
 
 
-                                        if (fileimagen!= null){
-                                            evidence.add(PerFoto1);
+                                            if (fileimagen != null) {
+                                                evidence.add(PerFoto1);
+                                            }
+                                            if (fileimagen2 != null) {
+                                                evidence.add(PerFoto2);
+                                            }
+                                            if (fileimagen3 != null) {
+                                                evidence.add(PerFoto3);
+                                            }
+                                            if (fileimagen4 != null) {
+                                                evidence.add(PerFoto4);
+                                            }
+                                            if (fileimagen5 != null) {
+                                                evidence.add(PerFoto5);
+                                            }
+                                            if (fileimagen6 != null) {
+                                                evidence.add(PerFoto6);
+                                            }
+
+
+                                            Data data = new Data(Observation, before, Lat, Lng, evidence);
+                                            BDFireStore.collection("events").document(idevent).collection("observation").document("before").set(data);
+
+                                            BDFireStore.collection("events").document(idevent).update("status", 2);
+                                            // String k = mDatabase.child("Eventos").child(idevent).child("observation").child("before").child("status").;
+                                            //mDatabase.child("Eventos").child(idevent).child("observation").child("before").setValue(data);
+
+                                            //BDFireStore.collection("events").document("asdawd").set(data);
+                                            //BDFireStore.collection("events").document(idevent).update("Observation", data);
+
+
+                                            StyleableToast.makeText(getApplicationContext(), "Datos ingresados", Toast.LENGTH_LONG, R.style.sucessToast).show();
+                                            //Toast.makeText(getApplicationContext(), "Datos ingresados", Toast.LENGTH_SHORT).show();
+
+
+                                            edObserv.setText("");
+
+
+                                            BorrarImagenes();
                                         }
-                                        if (fileimagen2 != null){
-                                            evidence.add(PerFoto2);
+
+                                        if (cont1 > 0 && cont2 > 0 && cont3 > 0) {
+
+
+                                            //mDatabase.child("Eventos").child(idevent).child("active").setValue(false);
+                                            BDFireStore.collection("events").document(idevent).set(nEvent);
+
+                                            StyleableToast.makeText(getApplicationContext(), "Evento terminado", Toast.LENGTH_LONG, R.style.doneToast).show();
+                                            //Toast.makeText(getApplicationContext(),"Evento terminado",Toast.LENGTH_SHORT).show();
+
                                         }
-                                        if (fileimagen3 != null){
-                                            evidence.add(PerFoto3);
-                                        }
-                                        if (fileimagen4 != null){
-                                            evidence.add(PerFoto4);
-                                        }
-                                        if (fileimagen5 != null){
-                                            evidence.add(PerFoto5);
-                                        }
-                                        if (fileimagen6 != null){
-                                            evidence.add(PerFoto6);
-                                        }
-
-
-                                        Data data = new Data(Observation, before, Lat, Lng, evidence);
-                                        BDFireStore.collection("events").document(idevent).collection("observation").document("before").set(data);
-                                        // String k = mDatabase.child("Eventos").child(idevent).child("observation").child("before").child("status").;
-                                        //mDatabase.child("Eventos").child(idevent).child("observation").child("before").setValue(data);
-
-                                        //BDFireStore.collection("events").document("asdawd").set(data);
-                                        //BDFireStore.collection("events").document(idevent).update("Observation", data);
-
-
-                                        StyleableToast.makeText(getApplicationContext(), "Datos ingresados", Toast.LENGTH_LONG, R.style.sucessToast).show();
-                                        //Toast.makeText(getApplicationContext(), "Datos ingresados", Toast.LENGTH_SHORT).show();
-
-
-                                        edObserv.setText("");
-
-
-
-
-
-                                        BorrarImagenes();
                                     }
 
-                                    if (cont1 > 0 && cont2 > 0 && cont3 > 0) {
+                                    if ((estado).equals("during")) {
+
+                                        if (cont2 > 0) {
+                                            StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_LONG, R.style.warningToast).show();
+                                            //Toast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT).show();
+                                        } else {
+                                            cont2++;
+                                            boolean during = true;
+
+                                            //mDatabase.child("Eventos").child(idevent).child("observation").child("during").setValue(data2);
 
 
-                                        //mDatabase.child("Eventos").child(idevent).child("active").setValue(false);
-                                        BDFireStore.collection("events").document(idevent).set(nEvent);
+                                            StyleableToast.makeText(getApplicationContext(), "Datos ingresados", Toast.LENGTH_LONG, R.style.sucessToast).show();
+                                            //Toast.makeText(getApplicationContext(), "Datos ingresados", Toast.LENGTH_SHORT).show();
 
-                                        StyleableToast.makeText(getApplicationContext(), "Evento terminado", Toast.LENGTH_LONG, R.style.doneToast).show();
-                                        //Toast.makeText(getApplicationContext(),"Evento terminado",Toast.LENGTH_SHORT).show();
+                                            edObserv.setText("");
+                                            uploadImage1();
+                                            uploadImage2();
+                                            uploadImage3();
+                                            uploadImage4();
+                                            uploadImage5();
 
-                                    }
-                                }
+                                            uploadAllFiles();
 
-                                if ((estado).equals("during")) {
+                                            if (fileimagen != null) {
+                                                evidence.add(PerFoto1);
+                                            }
+                                            if (fileimagen2 != null) {
+                                                evidence.add(PerFoto2);
+                                            }
+                                            if (fileimagen3 != null) {
+                                                evidence.add(PerFoto3);
+                                            }
+                                            if (fileimagen4 != null) {
+                                                evidence.add(PerFoto4);
+                                            }
+                                            if (fileimagen5 != null) {
+                                                evidence.add(PerFoto5);
+                                            }
+                                            if (fileimagen6 != null) {
+                                                evidence.add(PerFoto6);
+                                            }
 
-                                    if (cont2 > 0) {
-                                        StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_LONG, R.style.warningToast).show();
-                                        //Toast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT).show();
-                                    } else {
-                                        cont2++;
-                                        boolean during = true;
 
-                                        //mDatabase.child("Eventos").child(idevent).child("observation").child("during").setValue(data2);
-
-
-
-
-                                        StyleableToast.makeText(getApplicationContext(), "Datos ingresados", Toast.LENGTH_LONG, R.style.sucessToast).show();
-                                        //Toast.makeText(getApplicationContext(), "Datos ingresados", Toast.LENGTH_SHORT).show();
-
-                                        edObserv.setText("");
-                                        uploadImage1();
-                                        uploadImage2();
-                                        uploadImage3();
-                                        uploadImage4();
-                                        uploadImage5();
-
-                                        uploadAllFiles();
-
-                                        if (fileimagen!= null){
-                                            evidence.add(PerFoto1);
-                                        }
-                                        if (fileimagen2 != null){
-                                            evidence.add(PerFoto2);
-                                        }
-                                        if (fileimagen3 != null){
-                                            evidence.add(PerFoto3);
-                                        }
-                                        if (fileimagen4 != null){
-                                            evidence.add(PerFoto4);
-                                        }
-                                        if (fileimagen5 != null){
-                                            evidence.add(PerFoto5);
-                                        }
-                                        if (fileimagen6 != null){
-                                            evidence.add(PerFoto6);
+                                            Data2 data2 = new Data2(Observation, during, Lat, Lng, evidence);
+                                            BDFireStore.collection("events").document(idevent).collection("observation").document("during").set(data2);
+                                            BorrarImagenes();
                                         }
 
+                                        if (cont1 > 0 && cont2 > 0 && cont3 > 0) {
 
-                                        Data2 data2 = new Data2(Observation, during, Lat, Lng, evidence);
-                                        BDFireStore.collection("events").document(idevent).collection("observation").document("during").set(data2);
-                                        BorrarImagenes();
+                                            //mDatabase.child("Eventos").child(idevent).child("active").setValue(false);
+                                            BDFireStore.collection("events").document(idevent).set(nEvent);
+                                            StyleableToast.makeText(getApplicationContext(), "Evento terminado", Toast.LENGTH_LONG, R.style.doneToast).show();
+                                            //Toast.makeText(getApplicationContext(),"Evento terminado",Toast.LENGTH_SHORT).show();
+                                        }
                                     }
 
-                                    if (cont1 > 0 && cont2 > 0 && cont3 > 0) {
+                                    if ((estado).equals("after")) {
 
-                                        //mDatabase.child("Eventos").child(idevent).child("active").setValue(false);
-                                        BDFireStore.collection("events").document(idevent).set(nEvent);
-                                        StyleableToast.makeText(getApplicationContext(), "Evento terminado", Toast.LENGTH_LONG, R.style.doneToast).show();
-                                        //Toast.makeText(getApplicationContext(),"Evento terminado",Toast.LENGTH_SHORT).show();
-                                    }
-                                }
+                                        if (cont3 > 0) {
+                                            StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_LONG, R.style.warningToast).show();
+                                            //Toast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT).show();
+                                        } else {
+                                            cont3++;
+                                            boolean after = true;
 
-                                if ((estado).equals("after")) {
+                                            //mDatabase.child("Eventos").child(idevent).child("observation").child("after").setValue(data3);
 
-                                    if (cont3 > 0) {
-                                        StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_LONG, R.style.warningToast).show();
-                                        //Toast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT).show();
-                                    } else {
-                                        cont3++;
-                                        boolean after = true;
+                                            StyleableToast.makeText(getApplicationContext(), "Datos ingresados", Toast.LENGTH_LONG, R.style.sucessToast).show();
+                                            // Toast.makeText(getApplicationContext(), "Datos ingresados", Toast.LENGTH_SHORT).show();
 
-                                        //mDatabase.child("Eventos").child(idevent).child("observation").child("after").setValue(data3);
+                                            edObserv.setText("");
+                                            uploadImage1();
+                                            uploadImage2();
+                                            uploadImage3();
+                                            uploadImage4();
+                                            uploadImage5();
 
-                                        StyleableToast.makeText(getApplicationContext(), "Datos ingresados", Toast.LENGTH_LONG, R.style.sucessToast).show();
-                                        // Toast.makeText(getApplicationContext(), "Datos ingresados", Toast.LENGTH_SHORT).show();
-
-                                        edObserv.setText("");
-                                        uploadImage1();
-                                        uploadImage2();
-                                        uploadImage3();
-                                        uploadImage4();
-                                        uploadImage5();
-
-                                        uploadAllFiles();
+                                            uploadAllFiles();
 
 
-                                        if (fileimagen!= null){
-                                            evidence.add(PerFoto1);
-                                        }
-                                        if (fileimagen2 != null){
-                                            evidence.add(PerFoto2);
-                                        }
-                                        if (fileimagen3 != null){
-                                            evidence.add(PerFoto3);
-                                        }
-                                        if (fileimagen4 != null){
-                                            evidence.add(PerFoto4);
-                                        }
-                                        if (fileimagen5 != null){
-                                            evidence.add(PerFoto5);
-                                        }
-                                        if (fileimagen6 != null){
-                                            evidence.add(PerFoto6);
+                                            if (fileimagen != null) {
+                                                evidence.add(PerFoto1);
+                                            }
+                                            if (fileimagen2 != null) {
+                                                evidence.add(PerFoto2);
+                                            }
+                                            if (fileimagen3 != null) {
+                                                evidence.add(PerFoto3);
+                                            }
+                                            if (fileimagen4 != null) {
+                                                evidence.add(PerFoto4);
+                                            }
+                                            if (fileimagen5 != null) {
+                                                evidence.add(PerFoto5);
+                                            }
+                                            if (fileimagen6 != null) {
+                                                evidence.add(PerFoto6);
+                                            }
+
+
+                                            Data3 data3 = new Data3(Observation, after, Lat, Lng, evidence);
+                                            BDFireStore.collection("events").document(idevent).collection("observation").document("after").set(data3);
+
+                                            BorrarImagenes();
                                         }
 
+                                        if (cont1 > 0 && cont2 > 0 && cont3 > 0) {
 
-                                        Data3 data3 = new Data3(Observation, after, Lat, Lng, evidence);
-                                        BDFireStore.collection("events").document(idevent).collection("observation").document("after").set(data3);
+                                            //mDatabase.child("Eventos").child(idevent).child("active").setValue(false);
+                                            BDFireStore.collection("events").document(idevent).update("active", false);
+                                            BDFireStore.collection("events").document(idevent).update("status", 3);
+                                            //Intent intent= new Intent (getApplicationContext(), Main2Activity.class);
+                                            //startActivity(intent);
+                                            StyleableToast.makeText(getApplicationContext(), "Evento terminado", Toast.LENGTH_SHORT, R.style.doneToast).show();
+                                            //StyleableToast.makeText(getApplicationContext(), "Evento terminado", Toast.LENGTH_LONG, R.style.doneToast).show();
+                                            //Toast.makeText(getApplicationContext(),"Evento terminado",Toast.LENGTH_SHORT).show();
 
-                                        BorrarImagenes();
-                                    }
+                                            EventoTerminado();
 
-                                    if (cont1 > 0 && cont2 > 0 && cont3 > 0) {
-
-                                        //mDatabase.child("Eventos").child(idevent).child("active").setValue(false);
-                                        BDFireStore.collection("events").document(idevent).update("active", false);
-                                        //Intent intent= new Intent (getApplicationContext(), Main2Activity.class);
-                                        //startActivity(intent);
-                                        StyleableToast.makeText(getApplicationContext(), "Evento terminado", Toast.LENGTH_SHORT, R.style.doneToast).show();
-                                        //StyleableToast.makeText(getApplicationContext(), "Evento terminado", Toast.LENGTH_LONG, R.style.doneToast).show();
-                                        //Toast.makeText(getApplicationContext(),"Evento terminado",Toast.LENGTH_SHORT).show();
-
-                                        EventoTerminado();
+                                        }
 
                                     }
-
+                                }else{
+                                    StyleableToast.makeText(getApplicationContext(), "El texto es necesario para poder enviar", Toast.LENGTH_SHORT, R.style.warningToastMiddle).show();
                                 }
                             }
                         });

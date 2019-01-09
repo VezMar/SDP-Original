@@ -192,12 +192,12 @@ public class EventosFragment extends Fragment {
 
 
 
-                contEventos++;
-                if(contEventos !=0 ){
-                    EventosPendientes.setText(contEventos + " Eventos pendientes");
-                }else{
-                    EventosPendientes.setText("0" + " Eventos pendientes");
-                }
+//                contEventos++;
+//                if(contEventos !=0 ){
+//                    EventosPendientes.setText("#" + " Eventos pendientes");
+//                }else{
+//                    EventosPendientes.setText("#" + " Eventos pendientes");
+//                }
 
 
 
