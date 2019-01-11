@@ -102,6 +102,7 @@ public class EventoAdapter extends FirestoreRecyclerAdapter<Evento, EventoAdapte
         void onItemClick(DocumentSnapshot documentSnapshot, int position);
     }
 
+
     public void setOnItemClickListener(OnItemClickListener listener){
         this.listener = listener;
     }

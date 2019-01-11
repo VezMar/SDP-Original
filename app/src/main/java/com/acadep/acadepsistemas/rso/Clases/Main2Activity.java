@@ -21,6 +21,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.muddzdev.styleabletoast.StyleableToast;
 
+import com.onesignal.OneSignal;
 public class Main2Activity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -38,6 +39,10 @@ public class Main2Activity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        OneSignal.startInit(this)
+                .inFocusDisplaying(OneSignal.OSInFocusDisplayOption.Notification)
+                .unsubscribeWhenNotificationsAreDisabled(true)
+                .init();
         setContentView(R.layout.activity_main2);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -159,8 +164,8 @@ public class Main2Activity extends AppCompatActivity
         if (id == R.id.nav_perfil) {
             Toast.makeText(getApplicationContext(),"Aún en proceso",Toast.LENGTH_SHORT).show();
         }else if (id == R.id.nav_acty) {
-            /*mifragment = new SupervisionFragment();
-            FragmentoSeleccionado=true;*/
+//            Intent intent = new Intent(Main2Activity.this, grid_prueba.class);
+//            startActivity(intent);
             Toast.makeText(getApplicationContext(),"Aún en proceso",Toast.LENGTH_SHORT).show();
         } else if (id == R.id.nav_event) {
             mifragment = new EventosFragment();

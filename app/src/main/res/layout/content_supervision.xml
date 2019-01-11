@@ -36,19 +36,7 @@
 
 
 
-            <TextView
-                android:id="@+id/txtEstado"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true"
-                android:layout_marginStart="10dp"
-                android:layout_marginLeft="5dp"
-                android:layout_marginTop="10dp"
-                android:text="Antes de la Actividad"
-                android:textSize="26dp"
-                android:textColor="@android:color/black"
-                android:textStyle="bold" />
+
 
             <TextView
                 android:id="@+id/location_result"
@@ -75,11 +63,11 @@
             <ScrollView
                 android:id="@+id/scroll"
                 android:layout_width="match_parent"
-                android:layout_height="394dp"
+                android:layout_height="454dp"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentTop="true"
                 android:layout_marginStart="0dp"
-                android:layout_marginTop="63dp">
+                android:layout_marginTop="3dp">
 
                 <LinearLayout
 
@@ -91,26 +79,114 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
 
+                        <TextView
+                            android:id="@+id/txtEstado"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentStart="true"
+                            android:layout_alignParentTop="true"
+                            android:layout_marginStart="10dp"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginTop="10dp"
+                            android:text="Antes de la Actividad"
+                            android:textColor="@android:color/black"
+                            android:textSize="26dp"
+                            android:textStyle="bold" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical"
+                            android:layout_gravity="right">
+
+                            <TextView
+                                android:id="@+id/txtFecha"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Fecha"
+                                android:layout_gravity="right"
+                                android:textSize="18dp"/>
+
+                            <TextView
+                                android:id="@+id/txtHora"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Hora"
+                                android:layout_gravity="right"
+                                android:textSize="18dp"/>
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Porcentaje de avance: "
+                                android:textSize="18dp"/>
+
+                            <EditText
+                                android:layout_width="30sp"
+                                android:layout_height="wrap_content"
+                                android:maxHeight="3dp"
+                                android:minHeight="0dp"
+                                android:textSize="15dp"
+                                android:digits="3"/>
+
+                        </LinearLayout>
+
+                        <EditText
+                            android:id="@+id/edObserv"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:ems="10"
+                            android:gravity="top|left"
+                            android:hint="Descripcion"
+                            android:inputType="textMultiLine"
+                            android:lines="6"
+                            android:overScrollMode="always"
+                            android:scrollbarStyle="insideInset"
+                            android:scrollbars="vertical"
+                            android:scrollHorizontally="false"
+                            android:textColorHint="@android:color/darker_gray" />
+
+
+                    </LinearLayout>
+
+
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
                         <ru.dimorinny.floatingtextbutton.FloatingTextButton
                             android:id="@+id/btnFoto"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginLeft="20sp"
                             app:floating_background_color="@color/colorPrimary"
                             app:floating_left_icon="@drawable/ic_add_a_photo_black_24dp"
                             app:floating_title="Añadir"
-                            app:floating_title_color="@android:color/white"
-                            android:layout_marginLeft="20sp"/>
+                            app:floating_title_color="@android:color/white" />
 
 
                         <ru.dimorinny.floatingtextbutton.FloatingTextButton
                             android:id="@+id/btnBorrar"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginLeft="20sp"
                             app:floating_background_color="#be4747"
                             app:floating_left_icon="@drawable/ic_delete_black_24dp"
                             app:floating_title="Borrar"
-                            app:floating_title_color="@android:color/white"
-                            android:layout_marginLeft="20sp"/>
+                            app:floating_title_color="@android:color/white" />
                     </LinearLayout>
 
 
@@ -118,21 +194,22 @@
                         android:id="@+id/Lfotos1"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
+
                         <RelativeLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:layout_marginTop="10dp">
+                            android:layout_marginTop="10dp"
+                            android:orientation="horizontal">
 
                             <com.beardedhen.androidbootstrap.BootstrapCircleThumbnail
                                 android:id="@+id/imgView"
                                 android:layout_width="100dp"
                                 android:layout_height="100dp"
+                                android:layout_marginTop="10dp"
+                                android:layout_marginRight="10dp"
                                 android:src="@drawable/empty_image"
                                 app:bootstrapBrand="primary"
-                                app:hasBorder="false"
-                                android:layout_marginTop="10dp"
-                                android:layout_marginRight="10dp" />
+                                app:hasBorder="false" />
 
                             <CheckBox
                                 android:id="@+id/Check1"
@@ -140,27 +217,26 @@
                                 android:layout_height="wrap_content"
                                 android:layout_alignEnd="@+id/imgView"
                                 android:layout_alignParentTop="true"
-                                android:layout_marginEnd="-10dp"/>
+                                android:layout_marginEnd="-10dp" />
 
                         </RelativeLayout>
 
                         <RelativeLayout
                             android:layout_width="110dp"
                             android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:layout_marginTop="10dp"
                             android:layout_marginLeft="15dp"
-                            >
+                            android:layout_marginTop="10dp"
+                            android:orientation="horizontal">
 
                             <com.beardedhen.androidbootstrap.BootstrapCircleThumbnail
                                 android:id="@+id/imgView2"
                                 android:layout_width="100dp"
                                 android:layout_height="100dp"
+                                android:layout_marginTop="10dp"
+                                android:layout_marginRight="10dp"
                                 android:src="@drawable/empty_image"
                                 app:bootstrapBrand="primary"
-                                app:hasBorder="false"
-                                android:layout_marginTop="10dp"
-                                android:layout_marginRight="10dp" />
+                                app:hasBorder="false" />
 
                             <CheckBox
                                 android:id="@+id/Check2"
@@ -176,19 +252,19 @@
                         <RelativeLayout
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:orientation="horizontal"
+                            android:layout_marginLeft="15dp"
                             android:layout_marginTop="10dp"
-                            android:layout_marginLeft="15dp">
+                            android:orientation="horizontal">
 
                             <com.beardedhen.androidbootstrap.BootstrapCircleThumbnail
                                 android:id="@+id/imgView3"
                                 android:layout_width="100dp"
                                 android:layout_height="100dp"
+                                android:layout_marginTop="10dp"
+                                android:layout_marginRight="10dp"
                                 android:src="@drawable/empty_image"
                                 app:bootstrapBrand="primary"
-                                app:hasBorder="false"
-                                android:layout_marginTop="10dp"
-                                android:layout_marginRight="10dp"/>
+                                app:hasBorder="false" />
 
                             <CheckBox
                                 android:id="@+id/Check3"
@@ -196,32 +272,33 @@
                                 android:layout_height="wrap_content"
                                 android:layout_alignEnd="@+id/imgView3"
                                 android:layout_alignParentTop="true"
-                                android:layout_marginEnd="-10dp"/>
+                                android:layout_marginEnd="-10dp" />
 
 
                         </RelativeLayout>
 
                     </LinearLayout>
+
                     <LinearLayout
                         android:id="@+id/Lfotos2"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
+
                         <RelativeLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:layout_marginTop="10dp">
+                            android:layout_marginTop="10dp"
+                            android:orientation="horizontal">
 
                             <com.beardedhen.androidbootstrap.BootstrapCircleThumbnail
                                 android:id="@+id/imgView4"
                                 android:layout_width="100dp"
                                 android:layout_height="100dp"
-                                android:src="@drawable/empty_image"
-                                app:bootstrapBrand="primary"
-                                app:hasBorder="false"
                                 android:layout_marginTop="10dp"
                                 android:layout_marginRight="10dp"
-                                />
+                                android:src="@drawable/empty_image"
+                                app:bootstrapBrand="primary"
+                                app:hasBorder="false" />
 
                             <CheckBox
                                 android:id="@+id/Check4"
@@ -229,16 +306,16 @@
                                 android:layout_height="wrap_content"
                                 android:layout_alignEnd="@+id/imgView4"
                                 android:layout_alignParentTop="true"
-                                android:layout_marginEnd="-10dp"/>
+                                android:layout_marginEnd="-10dp" />
 
                         </RelativeLayout>
 
                         <RelativeLayout
                             android:layout_width="110dp"
                             android:layout_height="wrap_content"
-                            android:orientation="horizontal"
+                            android:layout_marginLeft="15dp"
                             android:layout_marginTop="10dp"
-                            android:layout_marginLeft="15dp">
+                            android:orientation="horizontal">
 
                             <com.beardedhen.androidbootstrap.BootstrapCircleThumbnail
                                 android:id="@+id/imgView5"
@@ -247,11 +324,11 @@
                                 android:layout_alignParentStart="true"
                                 android:layout_alignParentTop="true"
                                 android:layout_marginStart="0dp"
+                                android:layout_marginTop="10dp"
+                                android:layout_marginRight="10dp"
                                 android:src="@drawable/empty_image"
                                 app:bootstrapBrand="primary"
-                                app:hasBorder="false"
-                                android:layout_marginTop="10dp"
-                                android:layout_marginRight="10dp" />
+                                app:hasBorder="false" />
 
                             <CheckBox
                                 android:id="@+id/Check5"
@@ -267,19 +344,19 @@
                         <RelativeLayout
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:orientation="horizontal"
+                            android:layout_marginLeft="15dp"
                             android:layout_marginTop="10dp"
-                            android:layout_marginLeft="15dp">
+                            android:orientation="horizontal">
 
                             <com.beardedhen.androidbootstrap.BootstrapCircleThumbnail
                                 android:id="@+id/imgView6"
                                 android:layout_width="100dp"
                                 android:layout_height="100dp"
+                                android:layout_marginTop="10dp"
+                                android:layout_marginRight="10dp"
                                 android:src="@drawable/empty_image"
                                 app:bootstrapBrand="primary"
-                                app:hasBorder="false"
-                                android:layout_marginTop="10dp"
-                                android:layout_marginRight="10dp"/>
+                                app:hasBorder="false" />
 
                             <CheckBox
                                 android:id="@+id/Check6"
@@ -291,31 +368,6 @@
 
 
                         </RelativeLayout>
-
-                    </LinearLayout>
-
-
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp">
-
-                        <EditText
-                            android:id="@+id/edObserv"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:ems="10"
-                            android:gravity="top|left"
-                            android:hint="Observaciones"
-                            android:inputType="textMultiLine"
-                            android:lines="6"
-                            android:overScrollMode="always"
-                            android:scrollbarStyle="insideInset"
-                            android:scrollbars="vertical"
-                            android:scrollHorizontally="false"
-                            android:textColorHint="@android:color/darker_gray" />
-
 
                     </LinearLayout>
 
@@ -354,6 +406,8 @@
                             app:floating_title="Enviar"
                             app:floating_title_color="@android:color/white" />
                     </LinearLayout>
+
+
 
                 </LinearLayout>
 
@@ -398,7 +452,6 @@
                 android:id="@+id/txtLat"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/txtEstado"
                 android:layout_centerHorizontal="true" />
 
             <TextView
