@@ -33,15 +33,14 @@ public class EventoAdapter extends FirestoreRecyclerAdapter<Evento, EventoAdapte
     @Override
     protected void onBindViewHolder(@NonNull EventoHolder holder, int position, @NonNull Evento evento) {
 
-       String date = evento.getEnd().getDate();
+       String start, end;
 
-        String horaFinal = evento.getEnd().getTime();
-        //String
-        String diaFinal = date.substring(8,10);
-        String diaActual = ""+today.monthDay;
+       start = evento.getStart().substring(0,10);
+        end = evento.getEnd().substring(0,10);
+
+
 //        int HorasFinal = Integer.parseInt(diaFinal)*24;
 //        int HorasActual = Integer.parseInt(diaActual)*24;
-        int diaRestante = Integer.parseInt(diaFinal) - Integer.parseInt(diaActual);
 
 
         holder.txtview_actividad.setText(evento.getType_activity());
@@ -50,9 +49,9 @@ public class EventoAdapter extends FirestoreRecyclerAdapter<Evento, EventoAdapte
 
         //holder.txtview_start.setText(evento.getStart());
         //holder.txtview_end.setText(evento.getEnd());
-        holder.txtview_start.setText(evento.getStart().getDate());
-        holder.txtview_end.setText(evento.getEnd().getDate());
-        holder.txtview_name.setText(evento.getName());
+        holder.txtview_start.setText(start);
+        holder.txtview_end.setText(end);
+        holder.txtview_name.setText(evento.getTitle());
         //holder.txtDescripcion.setText(evento.getDescription());
         //holder.txtHrs.setText(""+diaRestante);
     }

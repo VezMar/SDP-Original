@@ -90,6 +90,7 @@ import java.io.IOException;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -178,7 +179,7 @@ public class SupervisionActivity extends AppCompatActivity
 
 
     static int conteo = 0;
-    static int descision;
+    static int descision= 0;
 
     static String idevent;
     static String nameEvent;
@@ -192,10 +193,15 @@ public class SupervisionActivity extends AppCompatActivity
     static String description;
     static  List<String> tools;
 
+    static int porcentage;
+
     static boolean deleted;
     static boolean active;
 
     EditText edObserv;
+    EditText edPorcentage;
+    TextView txtAvance;
+
     static TextView txtEstado;
 
     boolean statusChange;
@@ -308,6 +314,9 @@ public class SupervisionActivity extends AppCompatActivity
     static String src6;
 
     int status=1;
+    int terminado = 1;
+
+    static String created_at;
 
     CheckBox checkBox1 ,checkBox2,checkBox3,checkBox4, checkBox5,checkBox6;
     LinearLayout Lfotos1, Lfotos2;
@@ -325,29 +334,26 @@ public class SupervisionActivity extends AppCompatActivity
         //init();
 
 
-        cont1=0;
-        cont2=0;
-        cont3=0;
-
-
-
+        cont1 = 0;
+        cont2 = 0;
+        cont3 = 0;
 
 
         recibirDatos();
+
 
         final Evento nEvent = new Evento();
 
         nEvent.setActive(false);
         nEvent.setType_activity(actividad);
-        nEvent.setName(nameEvent);
+        nEvent.setTitle(nameEvent);
         //nEvent.setEnd(end);
-        nEvent.setIdactivity(idactivity);
+
         nEvent.setId(idevent);
         //nEvent.setStart(start);
         nEvent.setUser_id(user_id);
-        nEvent.setTrabajador(trabajador);
         nEvent.setDeleted(deleted);
-       // nEvent.setTools(tools);
+        // nEvent.setTools(tools);
 
         //Inicializacion de varibales
         bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottomNavigationView);
@@ -363,6 +369,9 @@ public class SupervisionActivity extends AppCompatActivity
         }*/
 
         edObserv = (EditText) findViewById(R.id.edObserv);
+        edPorcentage = (EditText) findViewById(R.id.edit_porcentage);
+        txtAvance = (TextView) findViewById(R.id.txtAvance);
+
         btnEnviar = (FloatingTextButton) findViewById(R.id.btnEnviar);
 
         btnArchivo = (FloatingTextButton) findViewById(R.id.btnArchivo);
@@ -446,6 +455,7 @@ public class SupervisionActivity extends AppCompatActivity
 
 
 
+
         //Instancias
         mAuth = FirebaseAuth.getInstance();
         storage = FirebaseStorage.getInstance();
@@ -469,7 +479,7 @@ public class SupervisionActivity extends AppCompatActivity
             locationStart();
         }
 
-
+        edPorcentage.setText(""+porcentage);
         chequeoDevariables();
         /**/
 
@@ -593,55 +603,16 @@ public class SupervisionActivity extends AppCompatActivity
                     if(fileimagen !=null && fileimagen2 !=null && fileimagen3 !=null && fileimagen4 !=null && fileimagen5 !=null && fileimagen6 !=null){
                         StyleableToast.makeText(getApplicationContext(), "Ya no puede añadir más fotos", Toast.LENGTH_SHORT, R.style.warningToast).show();
                     }else{
+                        GuardarInformacion();
                         takePhoto();
                         locationStart();
-                    }
-                    locationStart();
-                    Fecha =  today.monthDay + "/" + today.month + "/" + today.year;
-                    Hora = today.hour +":" + today.minute;
-
-                    datatime.setDate(Fecha);
-                    datatime.setTime(Hora);
-
-                    ubication.setLat(""+Lat);
-                    ubication.setLng(""+Lng);
-
-                    if(descision==0 && fileimagen!=null) {
-                        PerFoto1.setDatatime(datatime);
-                        PerFoto1.setUbicacion(ubication);
-                        PerFoto1.setType("Imagen");
-
-                    } else if (descision==1){
-                        PerFoto2.setDatatime(datatime);
-                        PerFoto2.setUbicacion(ubication);
-                        PerFoto2.setType("Imagen");
-
-                        imageView2.setVisibility(View.VISIBLE);
-                        checkBox2.setVisibility(View.VISIBLE);
-                    } else if (descision==2){
-                        PerFoto3.setDatatime(datatime);
-                        PerFoto3.setUbicacion(ubication);
-                        PerFoto3.setType("Imagen");
-
-
-                    } else if (descision==3){
-                        PerFoto4.setDatatime(datatime);
-                        PerFoto4.setUbicacion(ubication);
-                        PerFoto4.setType("Imagen");
-
-
-                    } else if (descision==4){
-                        PerFoto5.setDatatime(datatime);
-                        PerFoto5.setUbicacion(ubication);
-                        PerFoto5.setType("Imagen");
-
-
-                    }else if (descision==5){
-                        PerFoto6.setDatatime(datatime);
-                        PerFoto6.setUbicacion(ubication);
-                        PerFoto6.setType("Imagen");
 
                     }
+
+
+
+
+
                 }
             }
         });
@@ -889,6 +860,8 @@ public class SupervisionActivity extends AppCompatActivity
             @Override
             public void onClick(View v) {
 
+
+
                 if((estado).equals("before") && cont1>0){
                     StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT, R.style.warningToast).show();
                 }else if ((estado).equals("during") && cont2>0){
@@ -910,11 +883,8 @@ public class SupervisionActivity extends AppCompatActivity
                                 if(!Observation.equals("")) {
                                     if ((estado).equals("before")) {
 
-                                        if (cont1 > 0) {
-                                            StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT, R.style.warningToast).show();
-                                            // Toast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT).show();
-                                        } else {
-                                            cont1++;
+
+
                                             boolean before = true;
 
                                             uploadImage1();
@@ -948,19 +918,17 @@ public class SupervisionActivity extends AppCompatActivity
                                             if (fileimagen6 != null) {
                                                 evidence.add(PerFoto6);
                                             }
+                                            UUID uuid = UUID.randomUUID();
+                                            created_at_funct();
 
 
-                                            Data data = new Data(Observation, before, Lat, Lng, evidence);
-                                            BDFireStore.collection("events").document(idevent).collection("observation").document("before").set(data);
+
+                                            Data data = new Data(created_at, Observation, "event", Lat, Lng, evidence);
+                                            BDFireStore.collection("events").document(idevent).collection("evidence").document(""+uuid).set(data);
 
                                             BDFireStore.collection("events").document(idevent).update("status", 2);
-                                            // String k = mDatabase.child("Eventos").child(idevent).child("observation").child("before").child("status").;
-                                            //mDatabase.child("Eventos").child(idevent).child("observation").child("before").setValue(data);
 
-                                            //BDFireStore.collection("events").document("asdawd").set(data);
-                                            //BDFireStore.collection("events").document(idevent).update("Observation", data);
-
-
+                                            BDFireStore.collection("events").document(idevent).update("porcentage", 1);
                                             StyleableToast.makeText(getApplicationContext(), "Datos ingresados", Toast.LENGTH_LONG, R.style.sucessToast).show();
                                             //Toast.makeText(getApplicationContext(), "Datos ingresados", Toast.LENGTH_SHORT).show();
 
@@ -969,26 +937,12 @@ public class SupervisionActivity extends AppCompatActivity
 
 
                                             BorrarImagenes();
-                                        }
-
-                                        if (cont1 > 0 && cont2 > 0 && cont3 > 0) {
 
 
-                                            //mDatabase.child("Eventos").child(idevent).child("active").setValue(false);
-                                            BDFireStore.collection("events").document(idevent).set(nEvent);
-
-                                            StyleableToast.makeText(getApplicationContext(), "Evento terminado", Toast.LENGTH_LONG, R.style.doneToast).show();
-                                            //Toast.makeText(getApplicationContext(),"Evento terminado",Toast.LENGTH_SHORT).show();
-
-                                        }
                                     }
 
                                     if ((estado).equals("during")) {
 
-                                        if (cont2 > 0) {
-                                            StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_LONG, R.style.warningToast).show();
-                                            //Toast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT).show();
-                                        } else {
                                             cont2++;
                                             boolean during = true;
 
@@ -1025,29 +979,21 @@ public class SupervisionActivity extends AppCompatActivity
                                             if (fileimagen6 != null) {
                                                 evidence.add(PerFoto6);
                                             }
+                                            porcentage = Integer.parseInt(String.valueOf(edPorcentage.getText()));
 
-
-                                            Data2 data2 = new Data2(Observation, during, Lat, Lng, evidence);
-                                            BDFireStore.collection("events").document(idevent).collection("observation").document("during").set(data2);
+                                            terminado = 2;
+                                            UUID uuid = UUID.randomUUID();
+                                            created_at_funct();
+                                            Data data = new Data(created_at, Observation, "event", Lat, Lng, evidence);
+                                            BDFireStore.collection("events").document(idevent).update("porcentage", porcentage);
+                                            BDFireStore.collection("events").document(idevent).collection("evidence").document(""+uuid).set(data);
                                             BorrarImagenes();
-                                        }
 
-                                        if (cont1 > 0 && cont2 > 0 && cont3 > 0) {
 
-                                            //mDatabase.child("Eventos").child(idevent).child("active").setValue(false);
-                                            BDFireStore.collection("events").document(idevent).set(nEvent);
-                                            StyleableToast.makeText(getApplicationContext(), "Evento terminado", Toast.LENGTH_LONG, R.style.doneToast).show();
-                                            //Toast.makeText(getApplicationContext(),"Evento terminado",Toast.LENGTH_SHORT).show();
-                                        }
                                     }
 
                                     if ((estado).equals("after")) {
 
-                                        if (cont3 > 0) {
-                                            StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_LONG, R.style.warningToast).show();
-                                            //Toast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT).show();
-                                        } else {
-                                            cont3++;
                                             boolean after = true;
 
                                             //mDatabase.child("Eventos").child(idevent).child("observation").child("after").setValue(data3);
@@ -1084,14 +1030,18 @@ public class SupervisionActivity extends AppCompatActivity
                                                 evidence.add(PerFoto6);
                                             }
 
+                                            UUID uuid = UUID.randomUUID();
 
-                                            Data3 data3 = new Data3(Observation, after, Lat, Lng, evidence);
-                                            BDFireStore.collection("events").document(idevent).collection("observation").document("after").set(data3);
+                                            created_at_funct();
+                                            Data data = new Data(created_at, Observation, "event", Lat, Lng, evidence);
+                                            BDFireStore.collection("events").document(idevent).update("porcentage", porcentage);
+                                            BDFireStore.collection("events").document(idevent).collection("evidence").document(""+uuid).set(data);
 
                                             BorrarImagenes();
-                                        }
 
-                                        if (cont1 > 0 && cont2 > 0 && cont3 > 0) {
+
+
+                                        if (porcentage==100) {
 
                                             //mDatabase.child("Eventos").child(idevent).child("active").setValue(false);
                                             BDFireStore.collection("events").document(idevent).update("active", false);
@@ -1110,6 +1060,8 @@ public class SupervisionActivity extends AppCompatActivity
                                 }else{
                                     StyleableToast.makeText(getApplicationContext(), "El texto es necesario para poder enviar", Toast.LENGTH_SHORT, R.style.warningToastMiddle).show();
                                 }
+
+                                chequeoDevariables();
                             }
                         });
 
@@ -1121,6 +1073,8 @@ public class SupervisionActivity extends AppCompatActivity
                         });
                         builder.create().show();
                     }
+
+
 
 
 
@@ -1156,6 +1110,65 @@ public class SupervisionActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+    }
+
+    private void created_at_funct() {
+        java.util.Date FecAct = new Date();
+
+//        Fecha =   today.year + "-" + today.month + "-" + today.monthDay;
+        Fecha =   today.year + "-" + today.month + "-" + today.monthDay;
+        Hora = today.hour +":" + today.minute;
+
+        created_at = Fecha + "T" +Hora;
+
+    }
+
+    private void GuardarInformacion() {
+
+        locationStart();
+        created_at_funct();
+
+        datatime.setDate(Fecha);
+        datatime.setTime(Hora);
+
+        ubication.setLat(""+Lat);
+        ubication.setLng(""+Lng);
+
+        if(fileimagen==null) {
+            PerFoto1.setCreated_at(created_at);
+            PerFoto1.setUbicacion(ubication);
+            PerFoto1.setType("Imagen");
+        }else
+
+        if (fileimagen2==null){
+            PerFoto2.setCreated_at(created_at);
+            PerFoto2.setUbicacion(ubication);
+            PerFoto2.setType("Imagen");
+        } else
+
+        if (fileimagen3==null){
+            PerFoto3.setCreated_at(created_at);
+            PerFoto3.setUbicacion(ubication);
+            PerFoto3.setType("Imagen");
+        }else
+
+        if (fileimagen4==null){
+            PerFoto4.setCreated_at(created_at);
+            PerFoto4.setUbicacion(ubication);
+            PerFoto4.setType("Imagen");
+        }else
+
+        if (fileimagen5==null){
+            PerFoto5.setCreated_at(created_at);
+            PerFoto5.setUbicacion(ubication);
+            PerFoto5.setType("Imagen");
+        }else
+
+        if (fileimagen6==null){
+            PerFoto6.setCreated_at(created_at);
+            PerFoto6.setUbicacion(ubication);
+            PerFoto6.setType("Imagen");
+        }
     }
 
     private void EventoTerminado() {
@@ -1466,122 +1479,82 @@ public class SupervisionActivity extends AppCompatActivity
 
     private void chequeoDevariables() {
 
-        /*CollectionReference refEvents = BDFireStore.collection("events");
-        CollectionReference refObservation = BDFireStore.collection("Observation");
 
-        DocumentReference refIDEvent = BDFireStore.document(idevent);
-        DocumentReference refBefore = BDFireStore.document("before");
-        DocumentReference refduring = BDFireStore.document("during");
-        DocumentReference refafter = BDFireStore.document("after");*/
+        if(porcentage==0){
+            txtAvance.setVisibility(View.INVISIBLE);
+            edPorcentage.setVisibility(View.INVISIBLE);
+        }
 
+        if(porcentage>=1 && porcentage<=99){
+            txtAvance.setVisibility(View.VISIBLE);
+            edPorcentage.setVisibility(View.VISIBLE);
 
+            bottomNavigationView.getSelectedItemId();
+            bottomNavigationView.setEnabled(false);
+            bottomNavigationView.setSelectedItemId(R.id.itemDurante);
+            estado = "during";
+            txtEstado.setText("Durante el Evento");
+        }
 
+        if(porcentage==100){
+            txtAvance.setVisibility(View.INVISIBLE);
+            edPorcentage.setVisibility(View.INVISIBLE);
 
-
-
-        BDFireStore.collection("events")
-                .document(idevent)
-                .collection("observation")
-                .get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                                                @Override
-                                                public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-
-                                                    for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots){
-
-                                                        Data check = documentSnapshot.toObject(Data.class);
-                                                        Data2 check2 = documentSnapshot.toObject(Data2.class);
-                                                        Data3 check3 = documentSnapshot.toObject(Data3.class);
-
-                                                        if(check.isBefore()==true) {
-                                                            cont1++;
-                                                            bottomNavigationView.getSelectedItemId();
-                                                            bottomNavigationView.setEnabled(false);
-                                                            bottomNavigationView.setSelectedItemId(R.id.itemDurante);
-                                                            estado = "during";
-                                                            txtEstado.setText("Durante el Evento");
-                                                        }
-
-                                                        if(check2.isDuring()==true) {
-                                                            cont2++;
-                                                            bottomNavigationView.getSelectedItemId();
-                                                            bottomNavigationView.setEnabled(false);
-                                                            bottomNavigationView.setSelectedItemId(R.id.itemDespues);
-                                                            estado = "after";
-                                                            txtEstado.setText("Después del Evento");
-                                                        }
-
-                                                        if(check3.isAfter()==true) {
-                                                            cont3++;
-                                                            StyleableToast.makeText(getApplicationContext(), "Evento terminado", Toast.LENGTH_SHORT, R.style.doneToast).show();
-
-                                                        }
-
-                                                    }
-
-                                                }
-                                            });
-
-
-        /* Query ok = ref.orderByChild("before").equalTo(true);
-        //(mDatabase.child("Eventos").child(idevent).child("observation").child("before").child("observ").equalTo(""));
-        ok.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                for(DataSnapshot datasnapshot: dataSnapshot.getChildren()){
-                    cont1++;
-                    //Toast.makeText(getApplicationContext(),"he: "+cont1,Toast.LENGTH_SHORT).show();
-                }
-            }
+            bottomNavigationView.getSelectedItemId();
+            bottomNavigationView.setEnabled(false);
+            bottomNavigationView.setSelectedItemId(R.id.itemDespues);
+            estado = "after";
+            txtEstado.setText("Después del Evento");
+        }
 
 
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-
-        Query ok1 = ref.orderByChild("during").equalTo(true);
-        //(mDatabase.child("Eventos").child(idevent).child("observation").child("before").child("observ").equalTo(""));
-        ok1.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                for(DataSnapshot datasnapshot: dataSnapshot.getChildren()){
-                    cont2++;
-                    //Toast.makeText(getApplicationContext(),"he: "+cont2,Toast.LENGTH_SHORT).show();
-                }
-            }
 
 
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-
-        Query ok3 = ref.orderByChild("after").equalTo(true);
-        //(mDatabase.child("Eventos").child(idevent).child("observation").child("before").child("observ").equalTo(""));
-        ok3.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                for(DataSnapshot datasnapshot: dataSnapshot.getChildren()){
-                    cont3++;
-                    // Toast.makeText(getApplicationContext(),"he: "+cont1,Toast.LENGTH_SHORT).show();
-                }
-            }
 
 
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });*/
-
+//        BDFireStore.collection("events")
+//                .document(idevent)
+//                .collection("observation")
+//                .get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+//                                                @Override
+//                                                public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+//
+//                                                    for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots){
+//
+//                                                        Data check = documentSnapshot.toObject(Data.class);
+//                                                        Data2 check2 = documentSnapshot.toObject(Data2.class);
+//                                                        Data3 check3 = documentSnapshot.toObject(Data3.class);
+//
+//                                                        if(check.isBefore()==true) {
+//                                                            cont1++;
+//                                                            bottomNavigationView.getSelectedItemId();
+//                                                            bottomNavigationView.setEnabled(false);
+//                                                            bottomNavigationView.setSelectedItemId(R.id.itemDurante);
+//                                                            estado = "during";
+//                                                            txtEstado.setText("Durante el Evento");
+//                                                        }
+//
+//                                                        if(check2.isDuring()==true) {
+//                                                            cont2++;
+//                                                            bottomNavigationView.getSelectedItemId();
+//                                                            bottomNavigationView.setEnabled(false);
+//                                                            bottomNavigationView.setSelectedItemId(R.id.itemDespues);
+//                                                            estado = "after";
+//                                                            txtEstado.setText("Después del Evento");
+//                                                        }
+//
+//                                                        if(check3.isAfter()==true) {
+//                                                            cont3++;
+//                                                            StyleableToast.makeText(getApplicationContext(), "Evento terminado", Toast.LENGTH_SHORT, R.style.doneToast).show();
+//
+//                                                        }
+//
+//                                                    }
+//
+//                                                }
+//                                            });
 
 
     }
@@ -1736,6 +1709,8 @@ public class SupervisionActivity extends AppCompatActivity
             }
 
     private void BorrarImagenes() {
+        descision=0;
+        evidence.removeAll(Foto);
         imageView.setImageResource(R.drawable.empty_image);
         checkBox1.setChecked(false);
         fileimagen = null;
@@ -1777,11 +1752,9 @@ public class SupervisionActivity extends AppCompatActivity
     }
 
     public void takePhoto() {
-        if((estado).equals("before") && cont1>0){
+        if((estado).equals("before") && porcentage>=1){
             StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT, R.style.warningToast).show();
-        }else if ((estado).equals("during") && cont2>0){
-            StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT, R.style.warningToast).show();
-        }else if ((estado).equals("after") && cont3>0){
+        }else if ((estado).equals("during") && porcentage>99){
             StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT, R.style.warningToast).show();
         }else {
             Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -2061,9 +2034,6 @@ public class SupervisionActivity extends AppCompatActivity
         }
     }
 
-
-
-
     private void uploadfile(Uri ArchivoUri) {
         progressDialog= new ProgressDialog(SupervisionActivity.this);
         progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
@@ -2113,8 +2083,6 @@ public class SupervisionActivity extends AppCompatActivity
         }
 
     }
-
-
 
     private void uploadfile2(Uri ArchivoUri) {
         progressDialog= new ProgressDialog(SupervisionActivity.this);
@@ -2560,9 +2528,6 @@ public class SupervisionActivity extends AppCompatActivity
 
     }
 
-
-
-
     private void selectPDF() {
         Intent intent = new Intent();
         intent.setType("application/pdf");
@@ -2653,7 +2618,6 @@ public class SupervisionActivity extends AppCompatActivity
                             descision=0;
                             imageView.setImageBitmap(Bitnew);
                             saveImageToGallery(Bitnew);
-
                             break;
                         } else if (fileimagen2==null) {
                             descision=1;
@@ -2788,32 +2752,26 @@ public class SupervisionActivity extends AppCompatActivity
 
         if(descision==0) {
             fileimagen = file;
-
             imageView.setVisibility(View.VISIBLE);
             checkBox1.setVisibility(View.VISIBLE);
         } else if (descision==1){
             fileimagen2 = file;
-
             imageView2.setVisibility(View.VISIBLE);
             checkBox2.setVisibility(View.VISIBLE);
         } else if (descision==2){
             fileimagen3 = file;
-
             imageView3.setVisibility(View.VISIBLE);
             checkBox3.setVisibility(View.VISIBLE);
         } else if (descision==3){
             fileimagen4 = file;
-
             imageView4.setVisibility(View.VISIBLE);
             checkBox4.setVisibility(View.VISIBLE);
         } else if (descision==4){
             fileimagen5 = file;
-
             imageView5.setVisibility(View.VISIBLE);
             checkBox5.setVisibility(View.VISIBLE);
         }else if (descision==5){
             fileimagen6 = file;
-
             imageView6.setVisibility(View.VISIBLE);
             checkBox6.setVisibility(View.VISIBLE);
         }
@@ -2827,12 +2785,11 @@ public class SupervisionActivity extends AppCompatActivity
                     boolean opcion = true;
 
                     if (menuItem.getItemId()==R.id.itemAntes) {
-                        if (cont1 > 0) {
+                        if (porcentage>=1) {
                             StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT, R.style.warningToast).show();
                             opcion = false;
                             menuItem.setEnabled(false);
                         } else {
-
                             StyleableToast.makeText(getApplicationContext(), "Seccion disponible", Toast.LENGTH_SHORT, R.style.doneToast).show();
                             estado = "before";
                             txtEstado.setText("Antes del Evento");
@@ -2841,13 +2798,12 @@ public class SupervisionActivity extends AppCompatActivity
                     }
 
                     if (menuItem.getItemId()==R.id.itemDurante){
-                        if(cont2>0) {
+                        if(porcentage==100) {
                             StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT, R.style.warningToast).show();
                             opcion = false;
                             menuItem.setEnabled(false);
                         }else {
-                            if (cont1>0) {
-
+                            if (porcentage >= 1 && porcentage <= 99) {
                                 StyleableToast.makeText(getApplicationContext(), "Seccion disponible", Toast.LENGTH_SHORT, R.style.doneToast).show();
                                 estado = "during";
                                 txtEstado.setText("Durante el Evento");
@@ -2860,11 +2816,8 @@ public class SupervisionActivity extends AppCompatActivity
                     }
 
                     if (menuItem.getItemId()==R.id.itemDespues){
-                        if(cont3>0) {
-                            StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT, R.style.warningToast).show();
-                            opcion = false;
-                        }else {
-                            if (cont1>0 && cont2>0) {
+
+                            if (porcentage == 100) {
 
                                 StyleableToast.makeText(getApplicationContext(), "Seccion disponible", Toast.LENGTH_SHORT, R.style.doneToast).show();
                                 estado = "after";
@@ -2873,7 +2826,7 @@ public class SupervisionActivity extends AppCompatActivity
                                 opcion = false;
                                 StyleableToast.makeText(getApplicationContext(), "Te faltan secciones por realizar", Toast.LENGTH_SHORT, R.style.warningToast).show();
                             }
-                        }
+
                     }
                    /* switch (menuItem.getItemId()){
                         case R.id.itemAntes:
@@ -2911,6 +2864,7 @@ public class SupervisionActivity extends AppCompatActivity
         description= extras.getString("description");
         tools = extras.getStringArrayList("tools");
         deleted = extras.getBoolean("deleted");
+        porcentage = extras.getInt("porcentage");
         //active=false;
 
 

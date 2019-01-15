@@ -124,13 +124,15 @@ public class EventosFragment extends Fragment {
 
                 String actividad = evento.getType_activity();
                 String user_id = evento.getUser_id();
-                String trabajador = evento.getTrabajador();
-                //String start = evento.getStart();
-                //String end = evento.getEnd();
-                String idactivity = evento.getIdactivity();
+
+                String start = evento.getStart();
+                String end = evento.getEnd();
                 String description = evento.getDescription();
                 String idEvento = evento.getId();
-                String nameEvent = evento.getName();
+                String nameEvent = evento.getTitle();
+
+                int porcentage = evento.getPorcentage();
+
                 List<Recursos> tools = evento.getTools();
                 boolean deleted = evento.isDeleted();
                 activeStatus = evento.isActive();
@@ -141,13 +143,11 @@ public class EventosFragment extends Fragment {
                 intent.putExtra("actividad", actividad);
                 intent.putExtra("nameEvent", nameEvent);
                 intent.putExtra("user_id", user_id);
-                intent.putExtra("trabajador", trabajador);
-                //intent.putExtra("start", start);
-                //intent.putExtra("end", end);
-                intent.putExtra("idactivity", idactivity);
+                intent.putExtra("start", start);
+                intent.putExtra("end", end);
                 intent.putExtra("description", description);
-                //intent.putStringArrayListExtra("tools", (ArrayList<Recursos>) tools);
                 intent.putExtra("deleted", deleted);
+                intent.putExtra("porcentage", porcentage);
 
                 if (evento.getType_activity().equals("supervision")) {
                     //mifragment = new SupervisionFragment();

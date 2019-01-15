@@ -5,8 +5,9 @@ import java.util.List;
 
 public class Data {
 
-    String observ;
-    boolean before;
+    String created_at;
+    String description;
+    String header;
     private double Lat;
     private double Lng;
 //    private List<String> Foto1;
@@ -15,88 +16,52 @@ public class Data {
 //    private List<String> Foto4;
 //    private List<String> Foto5;
 
-    List<Foto> evidence;
+    List<Foto> multimedia;
     //private String datetime;
 
     public Data() {
     }
 
-
-    /*public Data(String observ, boolean before, double lat, double lng) {
-        this.observ = observ;
-        this.before = before;
-        this.Lat = lat;
-        this.Lng = lng;
-    }*/
-
-    public Data(String observ, boolean before, double lat, double lng, List<Foto> evidence) {
-        this.observ = observ;
-        this.before = before;
+    public Data(String created_at, String description, String header, double lat, double lng, List<Foto> multimedia) {
+        this.created_at = created_at;
+        this.description = description;
+        this.header = header;
         Lat = lat;
         Lng = lng;
-        this.evidence = evidence;
+        this.multimedia = multimedia;
     }
 
-    public List<Foto> getEvidence() {
-        return evidence;
+    public List<Foto> getMultimedia() {
+        return multimedia;
     }
 
-    public void setEvidence(List<Foto> evidence) {
-        this.evidence = evidence;
+    public void setMultimedia(List<Foto> multimedia) {
+        this.multimedia = multimedia;
     }
 
+    public String getCreated_at() {
+        return created_at;
+    }
 
-//        public Data(String observ, boolean before, double lat, double lng, List<String> foto1, List<String> foto2, List<String> foto3, List<String> foto4, List<String> foto5) {
-//        this.observ = observ;
-//        this.before = before;
-//        Lat = lat;
-//        Lng = lng;
-//        Foto1 = foto1;
-//        Foto2 = foto2;
-//        Foto3 = foto3;
-//        Foto4 = foto4;
-//        Foto5 = foto5;
-//    }
-//
-//    public List<String> getFoto1() {
-//        return Foto1;
-//    }
-//
-//    public void setFoto1(List<String> foto1) {
-//        Foto1 = foto1;
-//    }
-//
-//    public List<String> getFoto2() {
-//        return Foto2;
-//    }
-//
-//    public void setFoto2(List<String> foto2) {
-//        Foto2 = foto2;
-//    }
-//
-//    public List<String> getFoto3() {
-//        return Foto3;
-//    }
-//
-//    public void setFoto3(List<String> foto3) {
-//        Foto3 = foto3;
-//    }
-//
-//    public List<String> getFoto4() {
-//        return Foto4;
-//    }
-//
-//    public void setFoto4(List<String> foto4) {
-//        Foto4 = foto4;
-//    }
-//
-//    public List<String> getFoto5() {
-//        return Foto5;
-//    }
-//
-//    public void setFoto5(List<String> foto5) {
-//        Foto5 = foto5;
-//    }
+    public void setCreated_at(String created_at) {
+        this.created_at = created_at;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getHeader() {
+        return header;
+    }
+
+    public void setHeader(String header) {
+        this.header = header;
+    }
 
     public double getLat() {
         return Lat;
@@ -114,19 +79,4 @@ public class Data {
         Lng = lng;
     }
 
-    public String getObserv() {
-        return observ;
-    }
-
-    public void setObserv(String observ) {
-        this.observ = observ;
-    }
-
-    public boolean isBefore() {
-        return before;
-    }
-
-    public void setBefore(boolean before) {
-        this.before = before;
-    }
 }

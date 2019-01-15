@@ -53,7 +53,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.EventoviewHolder> impl
         //holder.txtview_trabajador.setText(evento.get(position).getTrabajador());
         //holder.txtview_start.setText(evento.get(position).getStart());
        // holder.txtview_end.setText(evento.get(position).getEnd());
-        holder.txtview_name.setText(evento.get(position).getName());
+        holder.txtview_name.setText(evento.get(position).getTitle());
 
 
     }

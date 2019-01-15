@@ -4,16 +4,24 @@ public class Foto {
     private String type;
     private String src;
     private Ubication ubicacion = new Ubication();
-    private datetime datatime = new datetime();
+    private String created_at;
 
     public Foto() {
     }
 
-    public Foto(String type, String src, Ubication ubicacion, datetime datatime) {
+    public Foto(String type, String src, Ubication ubicacion, String created_at) {
         this.type = type;
         this.src = src;
         this.ubicacion = ubicacion;
-        this.datatime = datatime;
+        this.created_at = created_at;
+    }
+
+    public String getCreated_at() {
+        return created_at;
+    }
+
+    public void setCreated_at(String created_at) {
+        this.created_at = created_at;
     }
 
     public Ubication getUbicacion() {
@@ -22,14 +30,6 @@ public class Foto {
 
     public void setUbicacion(Ubication ubicacion) {
         this.ubicacion = ubicacion;
-    }
-
-    public datetime getDatatime() {
-        return datatime;
-    }
-
-    public void setDatatime(datetime datatime) {
-        this.datatime = datatime;
     }
 
     public String getType() {
