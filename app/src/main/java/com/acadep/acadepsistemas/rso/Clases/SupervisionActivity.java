@@ -193,13 +193,13 @@ public class SupervisionActivity extends AppCompatActivity
     static String description;
     static  List<String> tools;
 
-    static int porcentage;
+    static int percentage;
 
     static boolean deleted;
     static boolean active;
 
     EditText edObserv;
-    EditText edPorcentage;
+    EditText edpercentage;
     TextView txtAvance;
 
     static TextView txtEstado;
@@ -369,7 +369,7 @@ public class SupervisionActivity extends AppCompatActivity
         }*/
 
         edObserv = (EditText) findViewById(R.id.edObserv);
-        edPorcentage = (EditText) findViewById(R.id.edit_porcentage);
+        edpercentage = (EditText) findViewById(R.id.edit_porcentage);
         txtAvance = (TextView) findViewById(R.id.txtAvance);
 
         btnEnviar = (FloatingTextButton) findViewById(R.id.btnEnviar);
@@ -479,7 +479,7 @@ public class SupervisionActivity extends AppCompatActivity
             locationStart();
         }
 
-        edPorcentage.setText(""+porcentage);
+        edpercentage.setText(""+percentage);
         chequeoDevariables();
         /**/
 
@@ -923,12 +923,12 @@ public class SupervisionActivity extends AppCompatActivity
 
 
 
-                                            Data data = new Data(created_at, Observation, "event", Lat, Lng, evidence);
-                                            BDFireStore.collection("events").document(idevent).collection("evidence").document(""+uuid).set(data);
+                                            Data data = new Data(created_at, Observation, "before", idevent, Lat, Lng, evidence);
+                                            BDFireStore.collection("evidence").document(""+uuid).set(data);
 
                                             BDFireStore.collection("events").document(idevent).update("status", 2);
 
-                                            BDFireStore.collection("events").document(idevent).update("porcentage", 1);
+                                            BDFireStore.collection("events").document(idevent).update("percentage", 1);
                                             StyleableToast.makeText(getApplicationContext(), "Datos ingresados", Toast.LENGTH_LONG, R.style.sucessToast).show();
                                             //Toast.makeText(getApplicationContext(), "Datos ingresados", Toast.LENGTH_SHORT).show();
 
@@ -979,14 +979,14 @@ public class SupervisionActivity extends AppCompatActivity
                                             if (fileimagen6 != null) {
                                                 evidence.add(PerFoto6);
                                             }
-                                            porcentage = Integer.parseInt(String.valueOf(edPorcentage.getText()));
+                                            percentage = Integer.parseInt(String.valueOf(edpercentage.getText()));
 
                                             terminado = 2;
                                             UUID uuid = UUID.randomUUID();
                                             created_at_funct();
-                                            Data data = new Data(created_at, Observation, "event", Lat, Lng, evidence);
-                                            BDFireStore.collection("events").document(idevent).update("porcentage", porcentage);
-                                            BDFireStore.collection("events").document(idevent).collection("evidence").document(""+uuid).set(data);
+                                            Data data = new Data(created_at, Observation, "during",idevent, Lat, Lng, evidence);
+                                            BDFireStore.collection("events").document(idevent).update("percentage", percentage);
+                                            BDFireStore.collection("evidence").document(""+uuid).set(data);
                                             BorrarImagenes();
 
 
@@ -1033,15 +1033,15 @@ public class SupervisionActivity extends AppCompatActivity
                                             UUID uuid = UUID.randomUUID();
 
                                             created_at_funct();
-                                            Data data = new Data(created_at, Observation, "event", Lat, Lng, evidence);
-                                            BDFireStore.collection("events").document(idevent).update("porcentage", porcentage);
-                                            BDFireStore.collection("events").document(idevent).collection("evidence").document(""+uuid).set(data);
+                                            Data data = new Data(created_at, Observation, "after", idevent, Lat, Lng, evidence);
+                                            BDFireStore.collection("events").document(idevent).update("percentage", percentage);
+                                            BDFireStore.collection("evidence").document(""+uuid).set(data);
 
                                             BorrarImagenes();
 
 
 
-                                        if (porcentage==100) {
+                                        if (percentage==100) {
 
                                             //mDatabase.child("Eventos").child(idevent).child("active").setValue(false);
                                             BDFireStore.collection("events").document(idevent).update("active", false);
@@ -1480,14 +1480,14 @@ public class SupervisionActivity extends AppCompatActivity
     private void chequeoDevariables() {
 
 
-        if(porcentage==0){
+        if(percentage==0){
             txtAvance.setVisibility(View.INVISIBLE);
-            edPorcentage.setVisibility(View.INVISIBLE);
+            edpercentage.setVisibility(View.INVISIBLE);
         }
 
-        if(porcentage>=1 && porcentage<=99){
+        if(percentage>=1 && percentage<=99){
             txtAvance.setVisibility(View.VISIBLE);
-            edPorcentage.setVisibility(View.VISIBLE);
+            edpercentage.setVisibility(View.VISIBLE);
 
             bottomNavigationView.getSelectedItemId();
             bottomNavigationView.setEnabled(false);
@@ -1496,9 +1496,9 @@ public class SupervisionActivity extends AppCompatActivity
             txtEstado.setText("Durante el Evento");
         }
 
-        if(porcentage==100){
+        if(percentage==100){
             txtAvance.setVisibility(View.INVISIBLE);
-            edPorcentage.setVisibility(View.INVISIBLE);
+            edpercentage.setVisibility(View.INVISIBLE);
 
             bottomNavigationView.getSelectedItemId();
             bottomNavigationView.setEnabled(false);
@@ -1752,9 +1752,9 @@ public class SupervisionActivity extends AppCompatActivity
     }
 
     public void takePhoto() {
-        if((estado).equals("before") && porcentage>=1){
+        if((estado).equals("before") && percentage>=1){
             StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT, R.style.warningToast).show();
-        }else if ((estado).equals("during") && porcentage>99){
+        }else if ((estado).equals("during") && percentage>99){
             StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT, R.style.warningToast).show();
         }else {
             Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -2785,7 +2785,7 @@ public class SupervisionActivity extends AppCompatActivity
                     boolean opcion = true;
 
                     if (menuItem.getItemId()==R.id.itemAntes) {
-                        if (porcentage>=1) {
+                        if (percentage>=1) {
                             StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT, R.style.warningToast).show();
                             opcion = false;
                             menuItem.setEnabled(false);
@@ -2798,12 +2798,12 @@ public class SupervisionActivity extends AppCompatActivity
                     }
 
                     if (menuItem.getItemId()==R.id.itemDurante){
-                        if(porcentage==100) {
+                        if(percentage==100) {
                             StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT, R.style.warningToast).show();
                             opcion = false;
                             menuItem.setEnabled(false);
                         }else {
-                            if (porcentage >= 1 && porcentage <= 99) {
+                            if (percentage >= 1 && percentage <= 99) {
                                 StyleableToast.makeText(getApplicationContext(), "Seccion disponible", Toast.LENGTH_SHORT, R.style.doneToast).show();
                                 estado = "during";
                                 txtEstado.setText("Durante el Evento");
@@ -2817,7 +2817,7 @@ public class SupervisionActivity extends AppCompatActivity
 
                     if (menuItem.getItemId()==R.id.itemDespues){
 
-                            if (porcentage == 100) {
+                            if (percentage == 100) {
 
                                 StyleableToast.makeText(getApplicationContext(), "Seccion disponible", Toast.LENGTH_SHORT, R.style.doneToast).show();
                                 estado = "after";
@@ -2864,7 +2864,7 @@ public class SupervisionActivity extends AppCompatActivity
         description= extras.getString("description");
         tools = extras.getStringArrayList("tools");
         deleted = extras.getBoolean("deleted");
-        porcentage = extras.getInt("porcentage");
+        percentage = extras.getInt("percentage");
         //active=false;
 
 

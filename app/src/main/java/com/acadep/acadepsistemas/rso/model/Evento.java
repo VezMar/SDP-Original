@@ -13,7 +13,7 @@ public class Evento {
     String description;
     String end;
     String id;
-    int porcentage;
+    int percentage;
     List<Recursos> staff;
     String start;
     int status;
@@ -32,14 +32,14 @@ public class Evento {
 
     public Evento(){}
 
-    public Evento(boolean active, String activity_id, boolean deleted, String description, String end, String id, int porcentage, List<Recursos> staff, String start, int status, String title, List<Recursos> tools, String type, String type_activity, String user_id) {
+    public Evento(boolean active, String activity_id, boolean deleted, String description, String end, String id, int percentage, List<Recursos> staff, String start, int status, String title, List<Recursos> tools, String type, String type_activity, String user_id) {
         this.active = active;
         this.activity_id = activity_id;
         this.deleted = deleted;
         this.description = description;
         this.end = end;
         this.id = id;
-        this.porcentage = porcentage;
+        this.percentage = percentage;
         this.staff = staff;
         this.start = start;
         this.status = status;
@@ -50,12 +50,12 @@ public class Evento {
         this.user_id = user_id;
     }
 
-    public int getPorcentage() {
-        return porcentage;
+    public int getPercentage() {
+        return percentage;
     }
 
-    public void setPorcentage(int porcentage) {
-        this.porcentage = porcentage;
+    public void setPercentage(int percentage) {
+        this.percentage = percentage;
     }
 
     public String getType() {

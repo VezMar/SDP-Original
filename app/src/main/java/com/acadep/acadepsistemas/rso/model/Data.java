@@ -8,6 +8,7 @@ public class Data {
     String created_at;
     String description;
     String header;
+    String event_id;
     private double Lat;
     private double Lng;
 //    private List<String> Foto1;
@@ -22,13 +23,22 @@ public class Data {
     public Data() {
     }
 
-    public Data(String created_at, String description, String header, double lat, double lng, List<Foto> multimedia) {
+    public Data(String created_at, String description, String header, String event_id, double lat, double lng, List<Foto> multimedia) {
         this.created_at = created_at;
         this.description = description;
         this.header = header;
+        this.event_id = event_id;
         Lat = lat;
         Lng = lng;
         this.multimedia = multimedia;
+    }
+
+    public String getEvent_id() {
+        return event_id;
+    }
+
+    public void setEvent_id(String event_id) {
+        this.event_id = event_id;
     }
 
     public List<Foto> getMultimedia() {

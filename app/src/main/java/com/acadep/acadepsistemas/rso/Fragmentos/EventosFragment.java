@@ -131,7 +131,7 @@ public class EventosFragment extends Fragment {
                 String idEvento = evento.getId();
                 String nameEvent = evento.getTitle();
 
-                int porcentage = evento.getPorcentage();
+                int percentage = evento.getPercentage();
 
                 List<Recursos> tools = evento.getTools();
                 boolean deleted = evento.isDeleted();
@@ -147,7 +147,7 @@ public class EventosFragment extends Fragment {
                 intent.putExtra("end", end);
                 intent.putExtra("description", description);
                 intent.putExtra("deleted", deleted);
-                intent.putExtra("porcentage", porcentage);
+                intent.putExtra("percentage", percentage);
 
                 if (evento.getType_activity().equals("supervision")) {
                     //mifragment = new SupervisionFragment();
