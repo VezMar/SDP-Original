@@ -51,12 +51,11 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.acadep.acadepsistemas.rso.Fragmentos.ActivitysFragment;
 import com.acadep.acadepsistemas.rso.Fragmentos.EventosFragment;
 //import com.example.acadepsistemas.seguimiento.Manifest;
 import com.acadep.acadepsistemas.rso.R;
 import com.acadep.acadepsistemas.rso.model.Data;
-import com.acadep.acadepsistemas.rso.model.Data2;
-import com.acadep.acadepsistemas.rso.model.Data3;
 import com.acadep.acadepsistemas.rso.model.Evento;
 import com.acadep.acadepsistemas.rso.model.Foto;
 import com.acadep.acadepsistemas.rso.model.Ubication;
@@ -90,8 +89,10 @@ import java.io.IOException;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
 import java.util.Random;
@@ -103,6 +104,9 @@ import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationSettingsRequest;
 import com.muddzdev.styleabletoast.StyleableToast;
+
+import org.joda.time.DateTime;
+import org.joda.time.JodaTimePermission;
 
 import ru.dimorinny.floatingtextbutton.FloatingTextButton;
 
@@ -142,6 +146,8 @@ public class SupervisionActivity extends AppCompatActivity
 
 
     static TextView mensaje1, mensaje2;
+
+    TextView txtFecha, txtHora;
 
     // location updates interval - 10sec
     private static final long UPDATE_INTERVAL_IN_MILLISECONDS = 10000;
@@ -441,6 +447,10 @@ public class SupervisionActivity extends AppCompatActivity
 
         mensaje1.setVisibility(View.INVISIBLE);
         mensaje2.setVisibility(View.INVISIBLE);
+
+        txtFecha  = (TextView) findViewById(R.id.txtFecha);
+        txtHora  = (TextView) findViewById(R.id.txtHora);
+
 
         // GPSSSSSSSSSSSSSSSSSSSSS
 
@@ -1114,9 +1124,12 @@ public class SupervisionActivity extends AppCompatActivity
 
     private void created_at_funct() {
         java.util.Date FecAct = new Date();
+        Calendar calendar = new GregorianCalendar();
+        DateTime dateTime = new DateTime();
 
 //        Fecha =   today.year + "-" + today.month + "-" + today.monthDay;
-        Fecha =   today.year + "-" + today.month + "-" + today.monthDay;
+        Fecha =   calendar.get(Calendar.YEAR) + "-" + dateTime.getMonthOfYear() + "-" + calendar.get(Calendar.DAY_OF_MONTH);
+
         Hora = today.hour +":" + today.minute;
 
         created_at = Fecha + "T" +Hora;
@@ -1576,6 +1589,11 @@ public class SupervisionActivity extends AppCompatActivity
         mlocManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, (LocationListener) Local);
         mensaje1.setText("Localización agregada");
         mensaje2.setText("");
+
+        created_at_funct();
+
+        txtFecha.setText(created_at.substring(0, 10));
+        txtHora.setText(created_at.substring(11, 15));
     }
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if(requestCode==9 && grantResults[0]==PackageManager.PERMISSION_GRANTED){
@@ -2923,12 +2941,16 @@ public class SupervisionActivity extends AppCompatActivity
             //finish();
 
         } else if (id == R.id.nav_ext) {
-            Intent intent= new Intent (this, ExtraActivity.class);
-            intent.putExtra("idEvento",idevent);
-            intent.putExtra("nameEvent",nameEvent);
-            //intent.putExtra("Lat",Lat);
-            //intent.putExtra("Lng",Lng);
-            startActivity(intent);
+
+            mifragment = new ActivitysFragment();
+            FragmentoSeleccionado=true;
+
+//            Intent intent= new Intent (this, ExtraActivity.class);
+//            intent.putExtra("idEvento",idevent);
+//            intent.putExtra("nameEvent",nameEvent);
+//            //intent.putExtra("Lat",Lat);
+//            //intent.putExtra("Lng",Lng);
+//            startActivity(intent);
 
         }else if(id == R.id.nav_conf) {
             Toast.makeText(getApplicationContext(),"Aún en proceso",Toast.LENGTH_SHORT).show();

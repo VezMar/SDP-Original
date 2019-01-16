@@ -54,7 +54,11 @@ public class ExtraActivity extends AppCompatActivity {
     static String idevent;
     static String nameEvent;
 
+    static String activity_id;
+    static String title;
+
     TextView txtname, txtidevent;
+
 
 
 
@@ -186,7 +190,7 @@ public class ExtraActivity extends AppCompatActivity {
         //Firebase Inicializacion
         mDatabase = FirebaseDatabase.getInstance().getReference();
         dbRef = FirebaseDatabase.getInstance();
-        ref = FirebaseDatabase.getInstance().getReference().child("Eventos").child(idevent).child("observation");
+//        ref = FirebaseDatabase.getInstance().getReference().child("Eventos").child(idevent).child("observation");
         //Instancias
         mAuth = FirebaseAuth.getInstance();
         storage = FirebaseStorage.getInstance();
@@ -760,8 +764,8 @@ public class ExtraActivity extends AppCompatActivity {
 
     private void recibirDatos() {
         Bundle extras = getIntent().getExtras();
-        idevent = extras.getString("idEvento");
-        nameEvent = extras.getString("nameEvent");
+        activity_id = extras.getString("idEvento");
+        title = extras.getString("nameEvent");
        // Lat = extras.getDouble("Lat");
         //Lng = extras.getDouble("Lng");
 

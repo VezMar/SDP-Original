@@ -15,6 +15,7 @@ import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.acadep.acadepsistemas.rso.Fragmentos.ActivitysFragment;
 import com.acadep.acadepsistemas.rso.Fragmentos.EventosFragment;
 import com.acadep.acadepsistemas.rso.R;
 import com.google.firebase.auth.FirebaseAuth;
@@ -175,7 +176,11 @@ public class Main2Activity extends AppCompatActivity
             startActivity(intent);]*/
            //finish();
 
-        } else if (id == R.id.nav_conf) {
+        }else if (id == R.id.nav_ext) {
+            mifragment = new ActivitysFragment();
+            FragmentoSeleccionado=true;
+
+        }else if (id == R.id.nav_conf) {
             Toast.makeText(getApplicationContext(),"Aún en proceso",Toast.LENGTH_SHORT).show();
         } else if (id == R.id.nav_signOut) {
             cerrarSesion();
