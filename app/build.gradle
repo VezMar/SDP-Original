@@ -96,6 +96,7 @@ dependencies {
     implementation 'com.beardedhen:androidbootstrap:2.3.2'
 
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
+    implementation 'org.jetbrains:annotations-java5:15.0'
 
 
 }
