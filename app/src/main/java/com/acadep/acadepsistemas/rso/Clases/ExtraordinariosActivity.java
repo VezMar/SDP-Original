@@ -130,16 +130,7 @@ public class ExtraordinariosActivity extends AppCompatActivity {
         btnArchivo = (FloatingTextButton) findViewById(R.id.btnArchivo);
 
         btnFoto = (FloatingTextButton) findViewById(R.id.btnFoto);
-        btnFoto2 = (FloatingTextButton) findViewById(R.id.btnFoto2);
-        btnFoto3 = (FloatingTextButton) findViewById(R.id.btnFoto3);
-        btnFoto4 = (FloatingTextButton) findViewById(R.id.btnFoto4);
-        btnFoto5 = (FloatingTextButton) findViewById(R.id.btnFoto5);
 
-        btnBorrar = (FloatingTextButton) findViewById(R.id.btnBorrar);
-        btnBorrar2 = (FloatingTextButton) findViewById(R.id.btnBorrar2);
-        btnBorrar3 = (FloatingTextButton) findViewById(R.id.btnBorrar3);
-        btnBorrar4 = (FloatingTextButton) findViewById(R.id.btnBorrar4);
-        btnBorrar5 = (FloatingTextButton) findViewById(R.id.btnBorrar5);
 
 
         imageView = (ImageView) findViewById(R.id.imgView);

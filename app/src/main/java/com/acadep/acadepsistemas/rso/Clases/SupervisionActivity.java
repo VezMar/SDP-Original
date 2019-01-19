@@ -12,7 +12,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
-import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -23,7 +22,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Parcel;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
@@ -65,7 +63,6 @@ import com.github.chrisbanes.photoview.PhotoView;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.SettingsClient;
-import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -76,8 +73,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
@@ -91,7 +86,6 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -107,7 +101,6 @@ import com.google.android.gms.location.LocationSettingsRequest;
 import com.muddzdev.styleabletoast.StyleableToast;
 
 import org.joda.time.DateTime;
-import org.joda.time.JodaTimePermission;
 
 import ru.dimorinny.floatingtextbutton.FloatingTextButton;
 
@@ -633,17 +626,12 @@ public class SupervisionActivity extends AppCompatActivity
                     if(fileimagen !=null && fileimagen2 !=null && fileimagen3 !=null && fileimagen4 !=null && fileimagen5 !=null && fileimagen6 !=null){
                         StyleableToast.makeText(getApplicationContext(), "Ya no puede añadir más fotos", Toast.LENGTH_SHORT, R.style.warningToast).show();
                     }else{
+                        locationStart();
+
                         GuardarInformacion();
                         takePhoto();
 
-                        locationStart();
-
                     }
-
-
-
-
-
                 }
             }
         });
@@ -1659,7 +1647,7 @@ public class SupervisionActivity extends AppCompatActivity
             Lng=loc.getLongitude();
 
             //mensaje1.setText(Text);
-            mensaje1.setText(Text);
+            //mensaje1.setText(Text);
             this.mainActivity3.setLocation(loc);
         }
         @Override
@@ -1685,6 +1673,9 @@ public class SupervisionActivity extends AppCompatActivity
                     Log.d("debug", "LocationProvider.TEMPORARILY_UNAVAILABLE");
                     break;
             }
+        }
+
+        public void setMainActivity() {
         }
     }
 
@@ -2885,7 +2876,6 @@ public class SupervisionActivity extends AppCompatActivity
 
             }
         }
-
     }
 
     private void SelecUri(Intent data) {
