@@ -197,6 +197,8 @@ public class SupervisionActivity extends AppCompatActivity
     static String description;
     static  List<String> tools;
 
+    static String Observation;
+
     static int percentage;
 
     static boolean deleted;
@@ -464,6 +466,8 @@ public class SupervisionActivity extends AppCompatActivity
         txtFecha  = (TextView) findViewById(R.id.txtFecha);
         txtHora  = (TextView) findViewById(R.id.txtHora);
 
+        txtFecha.setVisibility(View.INVISIBLE);
+        txtHora.setVisibility(View.INVISIBLE);
 
         // GPSSSSSSSSSSSSSSSSSSSSS
 
@@ -871,6 +875,8 @@ public class SupervisionActivity extends AppCompatActivity
                     StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT, R.style.warningToast).show();
                 }else {
 
+                    Observation = edObserv.getText().toString();
+                    if(!Observation.equals("")) {
                         AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
                         builder.setTitle("Confirmación");
                         builder.setMessage("¿Está seguro?");
@@ -879,9 +885,9 @@ public class SupervisionActivity extends AppCompatActivity
                         builder.setPositiveButton("Si", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                String Observation = edObserv.getText().toString();
 
-                                if(!Observation.equals("")) {
+
+
                                     if ((estado).equals("before")) {
 
 
@@ -921,27 +927,31 @@ public class SupervisionActivity extends AppCompatActivity
                                     }
 
                                     if ((estado).equals("during")) {
-                                        percentage = Integer.parseInt(String.valueOf(edpercentage.getText()));
-                                            cont2++;
-                                            boolean during = true;
-
-                                            //mDatabase.child("Eventos").child(idevent).child("observation").child("during").setValue(data2);
 
 
-                                            StyleableToast.makeText(getApplicationContext(), "Datos ingresados", Toast.LENGTH_LONG, R.style.sucessToast).show();
-                                            //Toast.makeText(getApplicationContext(), "Datos ingresados", Toast.LENGTH_SHORT).show();
+                                        if(percentage <= Integer.parseInt(String.valueOf(edpercentage.getText()))) {
+                                            if(Integer.parseInt(String.valueOf(edpercentage.getText()))<=100) {
 
-                                            edObserv.setText("");
+                                                percentage = Integer.parseInt(String.valueOf(edpercentage.getText()));
+                                                cont2++;
+                                                boolean during = true;
+
+                                                //mDatabase.child("Eventos").child(idevent).child("observation").child("during").setValue(data2);
+
+
+                                                StyleableToast.makeText(getApplicationContext(), "Datos ingresados", Toast.LENGTH_LONG, R.style.sucessToast).show();
+                                                //Toast.makeText(getApplicationContext(), "Datos ingresados", Toast.LENGTH_SHORT).show();
+
+                                                edObserv.setText("");
 //                                            uploadImage1();
 //                                            uploadImage2();
 //                                            uploadImage3();
 //                                            uploadImage4();
 //                                            uploadImage5();
 
-                                            uploadAllFiles();
+                                                uploadAllFiles();
 
-                                            uploadAllImages();
-
+                                                uploadAllImages();
 
 
 //                                            if (fileimagen != null) {
@@ -964,13 +974,19 @@ public class SupervisionActivity extends AppCompatActivity
 //                                            }
 
 
-                                            terminado = 2;
-                                            UUID uuid = UUID.randomUUID();
-                                            created_at_funct();
-                                            Data data = new Data(created_at, Observation, "during",idevent, Lat, Lng, evidence);
-                                            BDFireStore.collection("events").document(idevent).update("percentage", percentage);
-                                            BDFireStore.collection("evidence").document(""+uuid).set(data);
-                                            BorrarImagenes();
+                                                terminado = 2;
+                                                UUID uuid = UUID.randomUUID();
+                                                created_at_funct();
+                                                Data data = new Data(created_at, Observation, "during", idevent, Lat, Lng, evidence);
+                                                BDFireStore.collection("events").document(idevent).update("percentage", percentage);
+                                                BDFireStore.collection("evidence").document("" + uuid).set(data);
+                                                BorrarImagenes();
+                                            }else{
+                                                StyleableToast.makeText(getApplicationContext(), "El porcentage no puede ser mayor a 100%", Toast.LENGTH_LONG, R.style.warningToastMiddle).show();
+                                            }
+                                        }else{
+                                            StyleableToast.makeText(getApplicationContext(), "El porcentage no puede ser menor al anterior", Toast.LENGTH_LONG, R.style.warningToastMiddle).show();
+                                        }
 
 
                                     }
@@ -1019,13 +1035,13 @@ public class SupervisionActivity extends AppCompatActivity
                                         }
 
                                     }
-                                }else{
-                                    StyleableToast.makeText(getApplicationContext(), "El texto es necesario para poder enviar", Toast.LENGTH_SHORT, R.style.warningToastMiddle).show();
-                                }
+
 
                                 chequeoDevariables();
                             }
                         });
+
+
 
                         builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
                             @Override
@@ -1034,14 +1050,11 @@ public class SupervisionActivity extends AppCompatActivity
                             }
                         });
                         builder.create().show();
+                    }else{
+                        StyleableToast.makeText(getApplicationContext(), "El texto es necesario para poder enviar", Toast.LENGTH_SHORT, R.style.warningToastMiddle).show();
                     }
 
-
-
-
-
-
-
+                }
 
             }
 
@@ -1102,6 +1115,8 @@ public class SupervisionActivity extends AppCompatActivity
 //        Fecha =   today.year + "-" + today.month + "-" + today.monthDay;
         Fecha =   calendar.get(Calendar.YEAR) + "-" + dateTime.getMonthOfYear() + "-" + calendar.get(Calendar.DAY_OF_MONTH);
 
+
+
         Hora = today.hour +":" + calendar.get(Calendar.MINUTE);
 
         created_at = Fecha + "T" +Hora;
@@ -1116,8 +1131,8 @@ public class SupervisionActivity extends AppCompatActivity
         datatime.setDate(Fecha);
         datatime.setTime(Hora);
 
-        ubication.setLat(""+Lat);
-        ubication.setLng(""+Lng);
+        ubication.setLat(Lat);
+        ubication.setLng(Lng);
 
 
         for(int i=0; i<6; i++){
@@ -1589,8 +1604,8 @@ public class SupervisionActivity extends AppCompatActivity
 
         created_at_funct();
 
-        txtFecha.setText(created_at.substring(0, 9));
-        txtHora.setText(created_at.substring(10, 15));
+        //txtFecha.setText(created_at.substring(0, 9));
+        //txtHora.setText(created_at.substring(10, 15));
     }
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if(requestCode==9 && grantResults[0]==PackageManager.PERMISSION_GRANTED){
@@ -2220,7 +2235,7 @@ public class SupervisionActivity extends AppCompatActivity
 
         final String fileName= "Archivo" + UUID.randomUUID().toString();
         StorageReference srtreference = storage.getReference();
-        srtreference.child("Archivos").child("evidence").child(fileName).putFile(ArchivoUri)
+        srtreference.child("files").child("evidence").child(fileName).putFile(ArchivoUri)
                 .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
@@ -2270,7 +2285,7 @@ public class SupervisionActivity extends AppCompatActivity
 
         final String fileName= "Archivo" + UUID.randomUUID().toString();
         StorageReference srtreference = storage.getReference();
-        srtreference.child("Archivos").child("evidence").child(fileName).putFile(ArchivoUri)
+        srtreference.child("files").child("evidence").child(fileName).putFile(ArchivoUri)
                 .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
@@ -2319,7 +2334,7 @@ public class SupervisionActivity extends AppCompatActivity
 
         final String fileName= "Archivo" + UUID.randomUUID().toString();
         StorageReference srtreference = storage.getReference();
-        srtreference.child("Archivos").child("evidence").child(fileName).putFile(ArchivoUri)
+        srtreference.child("files").child("evidence").child(fileName).putFile(ArchivoUri)
                 .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
@@ -2368,7 +2383,7 @@ public class SupervisionActivity extends AppCompatActivity
 
         final String fileName= "Archivo" + UUID.randomUUID().toString();
         StorageReference srtreference = storage.getReference();
-        srtreference.child("Archivos").child("evidence").child(fileName).putFile(ArchivoUri)
+        srtreference.child("files").child("evidence").child(fileName).putFile(ArchivoUri)
                 .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
@@ -2417,7 +2432,7 @@ public class SupervisionActivity extends AppCompatActivity
 
         final String fileName= "Archivo" + UUID.randomUUID().toString();
         StorageReference srtreference = storage.getReference();
-        srtreference.child("Archivos").child("evidence").child(fileName).putFile(ArchivoUri)
+        srtreference.child("files").child("evidence").child(fileName).putFile(ArchivoUri)
                 .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
@@ -2466,7 +2481,7 @@ public class SupervisionActivity extends AppCompatActivity
 
         final String fileName= "Archivo" + UUID.randomUUID().toString();
         StorageReference srtreference = storage.getReference();
-        srtreference.child("Archivos").child("evidence").child(fileName).putFile(ArchivoUri)
+        srtreference.child("files").child("evidence").child(fileName).putFile(ArchivoUri)
                 .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
@@ -2516,7 +2531,7 @@ public class SupervisionActivity extends AppCompatActivity
 
         final String fileName= "Archivo" + UUID.randomUUID().toString();
         StorageReference srtreference = storage.getReference();
-        srtreference.child("Archivos").child("evidence").child(fileName).putFile(ArchivoUri)
+        srtreference.child("files").child("evidence").child(fileName).putFile(ArchivoUri)
                 .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
@@ -2566,7 +2581,7 @@ public class SupervisionActivity extends AppCompatActivity
 
         final String fileName= "Archivo" + UUID.randomUUID().toString();
         StorageReference srtreference = storage.getReference();
-        srtreference.child("Archivos").child("evidence").child(fileName).putFile(ArchivoUri)
+        srtreference.child("files").child("evidence").child(fileName).putFile(ArchivoUri)
                 .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
@@ -2616,7 +2631,7 @@ public class SupervisionActivity extends AppCompatActivity
 
         final String fileName= "Archivo" + UUID.randomUUID().toString();
         StorageReference srtreference = storage.getReference();
-        srtreference.child("Archivos").child("evidence").child(fileName).putFile(ArchivoUri)
+        srtreference.child("files").child("evidence").child(fileName).putFile(ArchivoUri)
                 .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
@@ -2666,7 +2681,7 @@ public class SupervisionActivity extends AppCompatActivity
 
         final String fileName= "Archivo" + UUID.randomUUID().toString();
         StorageReference srtreference = storage.getReference();
-        srtreference.child("Archivos").child("evidence").child(fileName).putFile(ArchivoUri)
+        srtreference.child("files").child("evidence").child(fileName).putFile(ArchivoUri)
                 .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
@@ -3229,16 +3244,9 @@ public class SupervisionActivity extends AppCompatActivity
         btnEnviar.setVisibility(View.INVISIBLE);
 
         btnFoto.setVisibility(View.INVISIBLE);
-        btnFoto2.setVisibility(View.INVISIBLE);
-        btnFoto3.setVisibility(View.INVISIBLE);
-        btnFoto4.setVisibility(View.INVISIBLE);
-        btnFoto5.setVisibility(View.INVISIBLE);
 
         btnBorrar.setVisibility(View.INVISIBLE);
-        btnBorrar2.setVisibility(View.INVISIBLE);
-        btnBorrar3.setVisibility(View.INVISIBLE);
-        btnBorrar4.setVisibility(View.INVISIBLE);
-        btnBorrar5.setVisibility(View.INVISIBLE);
+
 
         btnBorrarArchivo.setVisibility(View.INVISIBLE);
 

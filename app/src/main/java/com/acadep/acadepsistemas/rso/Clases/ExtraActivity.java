@@ -1,8 +1,10 @@
 package com.acadep.acadepsistemas.rso.Clases;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -41,6 +43,7 @@ import com.acadep.acadepsistemas.rso.model.Extra;
 import com.acadep.acadepsistemas.rso.model.Foto;
 import com.acadep.acadepsistemas.rso.model.Ubication;
 import com.acadep.acadepsistemas.rso.model.datetime;
+import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -66,8 +69,10 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
 
@@ -186,7 +191,26 @@ public class ExtraActivity extends AppCompatActivity {
     private static Ubication ubication = new Ubication();
     //FECHA Y HORA,
 
+    // FILES
 
+    static Uri ArchivoUri;
+    static Uri ArchivoUri2;
+    static Uri ArchivoUri3;
+    static Uri ArchivoUri4;
+    static Uri ArchivoUri5;
+    static Uri ArchivoUri6;
+    static Uri ArchivoUri7;
+    static Uri ArchivoUri8;
+    static Uri ArchivoUri9;
+    static Uri ArchivoUri10;
+
+    static int contUris=0;
+    static int restUris=9;
+
+    // FILES
+
+    static String u;
+    static String Observation;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -268,21 +292,29 @@ public class ExtraActivity extends AppCompatActivity {
         imageView5.setVisibility(View.INVISIBLE);
         imageView6.setVisibility(View.INVISIBLE);
 
-
+        locationStart();
         btnArchivo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                if (ContextCompat.checkSelfPermission(ExtraActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-                    selectPDF();
-                } else {
-                    ActivityCompat.requestPermissions(ExtraActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 9);
-                }
+                    if (ContextCompat.checkSelfPermission(ExtraActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                        mostrarDialogoOpciones();
+                    } else {
+                        ActivityCompat.requestPermissions(ExtraActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 9);
+                    }
+
             }
         });
 
 
+        btnBorrarArchivo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MostrarOpciones();
 
+
+            }
+        });
 
         btnBorrar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -299,6 +331,8 @@ public class ExtraActivity extends AppCompatActivity {
         btnFoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                locationStart();
+
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     if (checkSelfPermission(String.valueOf(Manifest.permission.CAMERA)) != PackageManager.PERMISSION_DENIED) {
                         ActivityCompat.requestPermissions(ExtraActivity.this, new String[]{Manifest.permission.CAMERA}, 1);
@@ -332,39 +366,78 @@ public class ExtraActivity extends AppCompatActivity {
         btnEnviar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String Observation = edObserv.getText().toString();
-                boolean statuss = true;
-
-                uploadAllImages();
+                Observation = edObserv.getText().toString();
 
 
+                if(!Observation.equals("")) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
+                    builder.setTitle("Confirmación");
+                    builder.setMessage("¿Está seguro?");
+                    StyleableToast.makeText(getApplicationContext(), "Una vez realizada, esta acción no se puede revertir", Toast.LENGTH_SHORT, R.style.warningToast).show();
+                    // builder.setCancelable(false);
+                    builder.setPositiveButton("Si", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                            boolean statuss = true;
+                            UUID uuid = UUID.randomUUID();
+                            u = ""+uuid;
+                            uploadAllImages();
+                            uploadAllFiles();
 
 
+                            BorrarImagenes();
+                            Toast.makeText(getApplicationContext(), "Datos ingresados", Toast.LENGTH_SHORT).show();
+                            edObserv.setText("");
 
-                UUID uuid = UUID.randomUUID();
-                created_at_funct();
-                Extra extra = new Extra(created_at, Observation, "extra", activity_id, Lat, Lng, evidence);
-                BDFireStore.collection("extra").document(""+uuid).set(extra);
+                        }
+                    });
 
-//                uploadImage1();
-//                uploadImage2();
-//                uploadImage3();
-//                uploadImage4();
-//                uploadImage5();
+                    builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
 
-                if (pdfUri != null) {
-                    uploadfile(pdfUri);
+                        }
+                    });
+                    builder.create().show();
+                }else{
+                    StyleableToast.makeText(getApplicationContext(), "El texto es necesario para poder enviar", Toast.LENGTH_SHORT, R.style.warningToastMiddle).show();
                 }
 
-                BorrarImagenes();
-                Toast.makeText(getApplicationContext(), "Datos ingresados", Toast.LENGTH_SHORT).show();
-                edObserv.setText("");
-
             }
-
-
         });
     }
+
+    private void mostrarDialogoOpciones() {
+
+
+            final CharSequence[] opciones = {"Elegir PDF", "Elegir Docx", "Elegir Video", "Elegir Audio", "Cancelar"};
+            final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+            if (contUris == 0) {
+                StyleableToast.makeText(getApplicationContext(), "Solo puede añadir 10 archivos diferentes", Toast.LENGTH_SHORT, R.style.warningToast).show();
+                //Toast.makeText(getApplicationContext(),"Solo puede añadir 10 archivos diferentes \nUna vez agregado un archivo este no puede ser eliminado",Toast.LENGTH_LONG).show();
+            }
+
+            builder.setTitle("Elige un Archivo");
+            builder.setItems(opciones, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    if (opciones[i].equals("Elegir PDF")) {
+                        selectPDF();
+                    } else if (opciones[i].equals("Elegir Docx")) {
+                        selectDocx();
+                    } else if (opciones[i].equals("Elegir Video")) {
+                        selectVideo();
+                    } else if (opciones[i].equals("Elegir Audio")) {
+                        selectAudio();
+                    } else {
+                        dialogInterface.dismiss();
+                    }
+                }
+            });
+            builder.show();
+        }
 
     private void BorrarFotos() {
         if(checkBox1.isChecked() || checkBox2.isChecked() || checkBox3.isChecked() || checkBox4.isChecked() || checkBox5.isChecked() || checkBox6.isChecked()) {
@@ -432,15 +505,44 @@ public class ExtraActivity extends AppCompatActivity {
 
     private void uploadAllImages() {
         for(int i=0; i<FileImagenArray.length; i++){
+
             if(FileImagenArray[i] != nula){
+                uploadImageGlobal(FileImagenArray[i], i);
                 evidence.add(PerFotoArray[i]);
-                uploadImageGlobal(FileImagenArray[i]);
             }
         }
     }
 
-    private void uploadImageGlobal(File fileimagenpos) {
+    private void uploadImageGlobal(File fileimagenpos, final int x) {
         if (fileimagenpos != null) {
+
+//            UUID uuid = UUID.randomUUID();
+//            final StorageReference ref = storageReference.child("images/"+ uuid);
+//            UploadTask uploadTask = ref.putFile(Uri.fromFile(fileimagenpos));
+//
+//            Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+//                @Override
+//                public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+//                    if (!task.isSuccessful()) {
+//                        throw task.getException();
+//                    }
+//
+//                    // Continue with the task to get the download URL
+//                    return ref.getDownloadUrl();
+//                }
+//            }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+//                @Override
+//                public void onComplete(@NonNull Task<Uri> task) {
+//                    if (task.isSuccessful()) {
+//                        Uri downloadUri = task.getResult();
+//                    } else {
+//                        // Handle failures
+//                        // ...
+//                    }
+//                }
+//            });
+
+
             final ProgressDialog progressDialog = new ProgressDialog(ExtraActivity.this);
             progressDialog.setTitle("Subiendo....");
 
@@ -449,93 +551,68 @@ public class ExtraActivity extends AppCompatActivity {
 
             final UploadTask uploadTask = ref.putFile(Uri.fromFile(fileimagenpos));
 
-//            uploadTask.addOnFailureListener(new OnFailureListener() {
-//                @Override
-//                public void onFailure(@NonNull Exception e) {
-//                    String message = e.toString();
-//                    Toast.makeText(getApplicationContext(), "Error: " + message, Toast.LENGTH_SHORT).show();
-//                }
-//            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-//                @Override
-//                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-//                    Toast.makeText(getApplicationContext(), "Exito al Subirse", Toast.LENGTH_SHORT).show();
-//
-//                    src1 = taskSnapshot.getMetadata().getPath();
-//
-//                    Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
-//                        @Override
-//                        public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
-//                            if (!task.isSuccessful()) {
-//                                throw task.getException();
-//                            }
-//
-//                            src1 = ref.getDownloadUrl().toString();
-//                            //PerFoto1.setSrc(src1);
-//                            // Continue with the task to get the download URL
-//                            return ref.getDownloadUrl();
-//                        }
-//                    }).addOnCompleteListener(new OnCompleteListener<Uri>() {
-//                        @Override
-//                        public void onComplete(@NonNull Task<Uri> task) {
-//                            if (task.isSuccessful()) {
-//                                Uri downloadUri = task.getResult();
-//
-//                                urls();
-//                            } else {
-//                                // Handle failures
-//                                // ...
-//                            }
-//                        }
-//                    });
-//                }
-//            });
-//
-//
-//
-//            ref.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-//                @Override
-//                public void onSuccess(Uri uri) {
-//                    PerFoto1.setSrc(uri.toString());
-//                }
-//            });
 
-
-
-            ref.putFile(Uri.fromFile(fileimagenpos))
-                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                            progressDialog.dismiss();
-
-
-                            // Toast.makeText(getApplicationContext(), "Exito al Subirse", Toast.LENGTH_SHORT).show();
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            progressDialog.dismiss();
-                            StyleableToast.makeText(getApplicationContext(), "Fallo al Subir", Toast.LENGTH_LONG, R.style.dangerToast).show();
-                            // Toast.makeText(getApplicationContext(), "Fallo al Subir", Toast.LENGTH_SHORT).show();
-                        }
-                    }).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+            ref.putFile(Uri.fromFile(fileimagenpos)).continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
                 @Override
-                public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                    if (!task.isSuccessful()) {
+                        throw task.getException();
+                    }
+                    //PerFotoArray[x].setSrc(ref.getDownloadUrl().toString());
+                    return ref.getDownloadUrl();
+                }
+            }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                @Override
+                public void onComplete(@NonNull Task<Uri> task) {
                     if (task.isSuccessful()) {
-                        String downloadUri = ""+task.getResult().toString();
+                        Uri downloadUri = task.getResult();
+                        PerFotoArray[x].setSrc(downloadUri.toString());
+                        Subirdatos();
 
-                    }else{
-                        StyleableToast.makeText(getApplicationContext(), "Ocurrio un error", Toast.LENGTH_LONG, R.style.dangerToast).show();
+                    } else {
+                        Toast.makeText(getApplicationContext(), "upload failed: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 }
-            })
-                    .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                            double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot.getTotalByteCount());
-                            progressDialog.setMessage("Subido " + (int) progress + "%");
-                        }
-                    });
+                });
+
+
+
+//            ref.putFile(Uri.fromFile(fileimagenpos))
+//                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+//                        @Override
+//                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+//                            progressDialog.dismiss();
+//
+//                            PerFotoArray[x].setSrc(ref.getDownloadUrl().toString());
+//
+//                            // Toast.makeText(getApplicationContext(), "Exito al Subirse", Toast.LENGTH_SHORT).show();
+//                        }
+//                    })
+//                    .addOnFailureListener(new OnFailureListener() {
+//                        @Override
+//                        public void onFailure(@NonNull Exception e) {
+//                            progressDialog.dismiss();
+//                            StyleableToast.makeText(getApplicationContext(), "Fallo al Subir", Toast.LENGTH_LONG, R.style.dangerToast).show();
+//                            // Toast.makeText(getApplicationContext(), "Fallo al Subir", Toast.LENGTH_SHORT).show();
+//                        }
+//                    }).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+//                        @Override
+//                        public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+//                            if (task.isSuccessful()) {
+//                                String downloadUri = ""+task.getResult().toString();
+//                                PerFotoArray[x].setSrc(downloadUri.toString());
+//                            }else{
+//                                StyleableToast.makeText(getApplicationContext(), "Ocurrio un error", Toast.LENGTH_LONG, R.style.dangerToast).show();
+//                            }
+//                        }
+//                    })
+//                    .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+//                        @Override
+//                        public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+//                            double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot.getTotalByteCount());
+//                            progressDialog.setMessage("Subido " + (int) progress + "%");
+//                        }
+//                    });
 
             //src1 = ""+ref.getDownloadUrl();
 
@@ -544,6 +621,13 @@ public class ExtraActivity extends AppCompatActivity {
 
 
         }
+    }
+
+    private void Subirdatos() {
+
+        created_at_funct();
+        Extra extra = new Extra(created_at, Observation, "extra", activity_id, Lat, Lng, evidence);
+        BDFireStore.collection("extra").document(u).set(extra);
     }
 
     private void inicializacionVariables() {
@@ -565,16 +649,17 @@ public class ExtraActivity extends AppCompatActivity {
         datatime.setDate(Fecha);
         datatime.setTime(Hora);
 
-        ubication.setLat("" + Lat);
-        ubication.setLng("" + Lng);
+        locationStart();
+        ubication.setLat( Lat);
+        ubication.setLng( Lng);
 
 
         for (int i = 0; i < 6; i++) {
-
             if (FileImagenArray[i] == nula) {
+                locationStart();
                 PerFotoArray[i].setCreated_at(created_at);
                 PerFotoArray[i].setUbicacion(ubication);
-                PerFotoArray[i].setType("Imagen");
+                PerFotoArray[i].setType("image");
                 break;
             }
         }
@@ -628,173 +713,6 @@ public class ExtraActivity extends AppCompatActivity {
         startActivityForResult(cameraIntent, CAPTURE_PHOTO);
     }
 
-//    private void uploadImage1() {
-//        if (fileimagen != null) {
-//            final ProgressDialog progressDialog = new ProgressDialog(ExtraActivity.this);
-//            progressDialog.setTitle("Subiendo....");
-//
-//            StorageReference ref = storageReference.child("images").child(idevent).child("extraordinario").child("Img" + UUID.randomUUID().toString());
-//            // StorageReference ref = storageReference.child("images/"+UUID.randomUUID().toString());
-//
-//            ref.putFile(Uri.fromFile(fileimagen))
-//                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-//                        @Override
-//                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-//                            progressDialog.dismiss();
-//                            // Toast.makeText(getApplicationContext(), "Exito al Subirse", Toast.LENGTH_SHORT).show();
-//                        }
-//                    })
-//                    .addOnFailureListener(new OnFailureListener() {
-//                        @Override
-//                        public void onFailure(@NonNull Exception e) {
-//                            progressDialog.dismiss();
-//                            Toast.makeText(getApplicationContext(), "Fallo al Subir", Toast.LENGTH_SHORT).show();
-//                        }
-//                    })
-//                    .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-//                        @Override
-//                        public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-//                            double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot.getTotalByteCount());
-//                            progressDialog.setMessage("Subido " + (int) progress + "%");
-//                        }
-//                    });
-//        }
-//    }
-//
-//    private void uploadImage2() {
-//        if (fileimagen2 != null) {
-//            final ProgressDialog progressDialog = new ProgressDialog(ExtraActivity.this);
-//            progressDialog.setTitle("Subiendo....");
-//
-//            StorageReference ref = storageReference.child("images").child(idevent).child("extraordinario").child("Img" + UUID.randomUUID().toString());
-//            // StorageReference ref = storageReference.child("images/"+UUID.randomUUID().toString());
-//
-//            ref.putFile(Uri.fromFile(fileimagen2))
-//                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-//                        @Override
-//                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-//                            progressDialog.dismiss();
-//                            // Toast.makeText(getApplicationContext(), "Exito al Subirse", Toast.LENGTH_SHORT).show();
-//                        }
-//                    })
-//                    .addOnFailureListener(new OnFailureListener() {
-//                        @Override
-//                        public void onFailure(@NonNull Exception e) {
-//                            progressDialog.dismiss();
-//                            Toast.makeText(getApplicationContext(), "Fallo al Subir", Toast.LENGTH_SHORT).show();
-//                        }
-//                    })
-//                    .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-//                        @Override
-//                        public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-//                            double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot.getTotalByteCount());
-//                            progressDialog.setMessage("Subido " + (int) progress + "%");
-//                        }
-//                    });
-//        }
-//    }
-//
-//    private void uploadImage3() {
-//        if (fileimagen3 != null) {
-//            final ProgressDialog progressDialog = new ProgressDialog(ExtraActivity.this);
-//            progressDialog.setTitle("Subiendo....");
-//
-//            StorageReference ref = storageReference.child("images").child(idevent).child("extraordinario").child("Img" + UUID.randomUUID().toString());
-//            // StorageReference ref = storageReference.child("images/"+UUID.randomUUID().toString());
-//
-//            ref.putFile(Uri.fromFile(fileimagen3))
-//                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-//                        @Override
-//                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-//                            progressDialog.dismiss();
-//                            // Toast.makeText(getApplicationContext(), "Exito al Subirse", Toast.LENGTH_SHORT).show();
-//                        }
-//                    })
-//                    .addOnFailureListener(new OnFailureListener() {
-//                        @Override
-//                        public void onFailure(@NonNull Exception e) {
-//                            progressDialog.dismiss();
-//                            Toast.makeText(getApplicationContext(), "Fallo al Subir", Toast.LENGTH_SHORT).show();
-//                        }
-//                    })
-//                    .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-//                        @Override
-//                        public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-//                            double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot.getTotalByteCount());
-//                            progressDialog.setMessage("Subido " + (int) progress + "%");
-//                        }
-//                    });
-//        }
-//    }
-//
-//    private void uploadImage4() {
-//        if (fileimagen4 != null) {
-//            final ProgressDialog progressDialog = new ProgressDialog(ExtraActivity.this);
-//            progressDialog.setTitle("Subiendo....");
-//
-//            StorageReference ref = storageReference.child("images").child(idevent).child("extraordinario").child("Img" + UUID.randomUUID().toString());
-//            // StorageReference ref = storageReference.child("images/"+UUID.randomUUID().toString());
-//
-//            ref.putFile(Uri.fromFile(fileimagen4))
-//                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-//                        @Override
-//                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-//                            progressDialog.dismiss();
-//                            // Toast.makeText(getApplicationContext(), "Exito al Subirse", Toast.LENGTH_SHORT).show();
-//                        }
-//                    })
-//                    .addOnFailureListener(new OnFailureListener() {
-//                        @Override
-//                        public void onFailure(@NonNull Exception e) {
-//                            progressDialog.dismiss();
-//                            Toast.makeText(getApplicationContext(), "Fallo al Subir", Toast.LENGTH_SHORT).show();
-//                        }
-//                    })
-//                    .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-//                        @Override
-//                        public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-//                            double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot.getTotalByteCount());
-//                            progressDialog.setMessage("Subido " + (int) progress + "%");
-//                        }
-//                    });
-//        }
-//    }
-//
-//
-//    private void uploadImage5() {
-//        if (fileimagen5 != null) {
-//            final ProgressDialog progressDialog = new ProgressDialog(ExtraActivity.this);
-//            progressDialog.setTitle("Subiendo....");
-//
-//            StorageReference ref = storageReference.child("images").child(idevent).child("extraordinario").child("Img" + UUID.randomUUID().toString());
-//            // StorageReference ref = storageReference.child("images/"+UUID.randomUUID().toString());
-//
-//            ref.putFile(Uri.fromFile(fileimagen5))
-//                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-//                        @Override
-//                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-//                            progressDialog.dismiss();
-//
-//                            // Toast.makeText(getApplicationContext(), "Exito al Subirse", Toast.LENGTH_SHORT).show();
-//                        }
-//                    })
-//                    .addOnFailureListener(new OnFailureListener() {
-//                        @Override
-//                        public void onFailure(@NonNull Exception e) {
-//                            progressDialog.dismiss();
-//                            Toast.makeText(getApplicationContext(), "Fallo al Subir", Toast.LENGTH_SHORT).show();
-//                        }
-//                    })
-//                    .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-//                        @Override
-//                        public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-//                            double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot.getTotalByteCount());
-//                            progressDialog.setMessage("Subido " + (int) progress + "%");
-//                        }
-//                    });
-//        }
-//    }
-
     private void uploadfile(Uri pdfUri) {
         progressDialog= new ProgressDialog(ExtraActivity.this);
         progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
@@ -804,7 +722,7 @@ public class ExtraActivity extends AppCompatActivity {
 
         final String fileName= "PDF" + UUID.randomUUID().toString();
         StorageReference srtreference = storage.getReference();
-        srtreference.child("Documents").child(idevent).child("extraordinario").child(fileName).putFile(pdfUri)
+        srtreference.child("files").child("extra").child(fileName).putFile(pdfUri)
                 .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
@@ -835,6 +753,449 @@ public class ExtraActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+
+
+    private void uploadfile2(Uri ArchivoUri) {
+        progressDialog= new ProgressDialog(ExtraActivity.this);
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        progressDialog.setTitle("Subiendo archivos...");
+        progressDialog.setProgress(0);
+        progressDialog.show();
+
+        final String fileName= "Archivo" + UUID.randomUUID().toString();
+        StorageReference srtreference = storage.getReference();
+        srtreference.child("files").child("extra").child(fileName).putFile(pdfUri)
+                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        String url = taskSnapshot.getUploadSessionUri().toString();
+                        DatabaseReference refDB = dbRef.getReference();
+
+                        refDB.child(fileName).setValue(url).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (task.isSuccessful()){
+                                    StyleableToast.makeText(getApplicationContext(), "Archivo Subido...", Toast.LENGTH_SHORT, R.style.doneToast).show();
+                                    //Toast.makeText(getApplicationContext(),"Archivo Subido...",Toast.LENGTH_SHORT).show();
+                                }else{
+                                    StyleableToast.makeText(getApplicationContext(), "¡Fallo al subirse!", Toast.LENGTH_SHORT, R.style.dangerToast).show();
+                                    //Toast.makeText(getApplicationContext(),"¡Fallo al subirse!",Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                StyleableToast.makeText(getApplicationContext(), "¡Fallo al subirse!", Toast.LENGTH_SHORT, R.style.dangerToast).show();
+                //Toast.makeText(getApplicationContext(),"¡Fallo al subirse!",Toast.LENGTH_SHORT).show();
+            }
+        }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                int currenProgress = (int) (100*taskSnapshot.getBytesTransferred()/taskSnapshot.getTotalByteCount());
+                progressDialog.setProgress(currenProgress);
+
+            }
+        });
+        if(contUris>2) {
+            progressDialog.hide();
+        }
+
+    }
+
+    private void uploadfile3(Uri ArchivoUri) {
+        progressDialog= new ProgressDialog(ExtraActivity.this);
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        progressDialog.setTitle("Subiendo archivos...");
+        progressDialog.setProgress(0);
+        progressDialog.show();
+
+        final String fileName= "Archivo" + UUID.randomUUID().toString();
+        StorageReference srtreference = storage.getReference();
+        srtreference.child("files").child("extra").child(fileName).putFile(pdfUri)
+                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        String url = taskSnapshot.getUploadSessionUri().toString();
+                        DatabaseReference refDB = dbRef.getReference();
+
+                        refDB.child(fileName).setValue(url).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (task.isSuccessful()){
+                                    StyleableToast.makeText(getApplicationContext(), "Archivo Subido...", Toast.LENGTH_SHORT, R.style.doneToast).show();
+                                    //Toast.makeText(getApplicationContext(),"Archivo Subido...",Toast.LENGTH_SHORT).show();
+                                }else{
+                                    StyleableToast.makeText(getApplicationContext(), "¡Fallo al subirse!", Toast.LENGTH_SHORT, R.style.dangerToast).show();
+                                    //Toast.makeText(getApplicationContext(),"¡Fallo al subirse!",Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                StyleableToast.makeText(getApplicationContext(), "¡Fallo al subirse!", Toast.LENGTH_SHORT, R.style.dangerToast).show();
+                //Toast.makeText(getApplicationContext(),"¡Fallo al subirse!",Toast.LENGTH_SHORT).show();
+            }
+        }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                int currenProgress = (int) (100*taskSnapshot.getBytesTransferred()/taskSnapshot.getTotalByteCount());
+                progressDialog.setProgress(currenProgress);
+
+            }
+        });
+        if(contUris>3) {
+            progressDialog.hide();
+        }
+
+    }
+
+    private void uploadfile4(Uri ArchivoUri) {
+        progressDialog= new ProgressDialog(ExtraActivity.this);
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        progressDialog.setTitle("Subiendo archivos...");
+        progressDialog.setProgress(0);
+        progressDialog.show();
+
+        final String fileName= "Archivo" + UUID.randomUUID().toString();
+        StorageReference srtreference = storage.getReference();
+        srtreference.child("files").child("extra").child(fileName).putFile(pdfUri)
+                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        String url = taskSnapshot.getUploadSessionUri().toString();
+                        DatabaseReference refDB = dbRef.getReference();
+
+                        refDB.child(fileName).setValue(url).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (task.isSuccessful()){
+                                    StyleableToast.makeText(getApplicationContext(), "Archivo Subido...", Toast.LENGTH_SHORT, R.style.doneToast).show();
+                                    //Toast.makeText(getApplicationContext(),"Archivo Subido...",Toast.LENGTH_SHORT).show();
+                                }else{
+                                    StyleableToast.makeText(getApplicationContext(), "¡Fallo al subirse!", Toast.LENGTH_SHORT, R.style.dangerToast).show();
+                                    //Toast.makeText(getApplicationContext(),"¡Fallo al subirse!",Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                StyleableToast.makeText(getApplicationContext(), "¡Fallo al subirse!", Toast.LENGTH_SHORT, R.style.dangerToast).show();
+                //Toast.makeText(getApplicationContext(),"¡Fallo al subirse!",Toast.LENGTH_SHORT).show();
+            }
+        }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                int currenProgress = (int) (100*taskSnapshot.getBytesTransferred()/taskSnapshot.getTotalByteCount());
+                progressDialog.setProgress(currenProgress);
+
+            }
+        });
+        if(contUris>4) {
+            progressDialog.hide();
+        }
+
+    }
+
+    private void uploadfile5(Uri ArchivoUri) {
+        progressDialog= new ProgressDialog(ExtraActivity.this);
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        progressDialog.setTitle("Subiendo archivos...");
+        progressDialog.setProgress(0);
+        progressDialog.show();
+
+        final String fileName= "Archivo" + UUID.randomUUID().toString();
+        StorageReference srtreference = storage.getReference();
+        srtreference.child("files").child("extra").child(fileName).putFile(pdfUri)
+                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        String url = taskSnapshot.getUploadSessionUri().toString();
+                        DatabaseReference refDB = dbRef.getReference();
+
+                        refDB.child(fileName).setValue(url).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (task.isSuccessful()){
+                                    StyleableToast.makeText(getApplicationContext(), "Archivo Subido...", Toast.LENGTH_SHORT, R.style.doneToast).show();
+                                    //Toast.makeText(getApplicationContext(),"Archivo Subido...",Toast.LENGTH_SHORT).show();
+                                }else{
+                                    StyleableToast.makeText(getApplicationContext(), "¡Fallo al subirse!", Toast.LENGTH_SHORT, R.style.dangerToast).show();
+                                    //Toast.makeText(getApplicationContext(),"¡Fallo al subirse!",Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                StyleableToast.makeText(getApplicationContext(), "¡Fallo al subirse!", Toast.LENGTH_SHORT, R.style.dangerToast).show();
+                //Toast.makeText(getApplicationContext(),"¡Fallo al subirse!",Toast.LENGTH_SHORT).show();
+            }
+        }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                int currenProgress = (int) (100*taskSnapshot.getBytesTransferred()/taskSnapshot.getTotalByteCount());
+                progressDialog.setProgress(currenProgress);
+
+            }
+        });
+        if(contUris>5) {
+            progressDialog.hide();
+        }
+
+    }
+
+    private void uploadfile6(Uri ArchivoUri) {
+        progressDialog= new ProgressDialog(ExtraActivity.this);
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        progressDialog.setTitle("Subiendo archivos...");
+        progressDialog.setProgress(0);
+        progressDialog.show();
+
+        final String fileName= "Archivo" + UUID.randomUUID().toString();
+        StorageReference srtreference = storage.getReference();
+        srtreference.child("files").child("extra").child(fileName).putFile(pdfUri)
+                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        String url = taskSnapshot.getUploadSessionUri().toString();
+                        DatabaseReference refDB = dbRef.getReference();
+
+                        refDB.child(fileName).setValue(url).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (task.isSuccessful()){
+                                    StyleableToast.makeText(getApplicationContext(), "Archivo Subido...", Toast.LENGTH_SHORT, R.style.doneToast).show();
+                                    //Toast.makeText(getApplicationContext(),"Archivo Subido...",Toast.LENGTH_SHORT).show();
+                                }else{
+                                    StyleableToast.makeText(getApplicationContext(), "¡Fallo al subirse!", Toast.LENGTH_SHORT, R.style.dangerToast).show();
+                                    //Toast.makeText(getApplicationContext(),"¡Fallo al subirse!",Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                StyleableToast.makeText(getApplicationContext(), "¡Fallo al subirse!", Toast.LENGTH_SHORT, R.style.dangerToast).show();
+                //Toast.makeText(getApplicationContext(),"¡Fallo al subirse!",Toast.LENGTH_SHORT).show();
+            }
+        }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                int currenProgress = (int) (100*taskSnapshot.getBytesTransferred()/taskSnapshot.getTotalByteCount());
+                progressDialog.setProgress(currenProgress);
+
+            }
+        });
+        if(contUris>6) {
+            progressDialog.hide();
+        }
+
+
+    }
+
+    private void uploadfile7(Uri ArchivoUri) {
+        progressDialog= new ProgressDialog(ExtraActivity.this);
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        progressDialog.setTitle("Subiendo archivos...");
+        progressDialog.setProgress(0);
+        progressDialog.show();
+
+        final String fileName= "Archivo" + UUID.randomUUID().toString();
+        StorageReference srtreference = storage.getReference();
+        srtreference.child("files").child("extra").child(fileName).putFile(pdfUri)
+                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        String url = taskSnapshot.getUploadSessionUri().toString();
+                        DatabaseReference refDB = dbRef.getReference();
+
+                        refDB.child(fileName).setValue(url).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (task.isSuccessful()){
+                                    StyleableToast.makeText(getApplicationContext(), "Archivo Subido...", Toast.LENGTH_SHORT, R.style.doneToast).show();
+                                    //Toast.makeText(getApplicationContext(),"Archivo Subido...",Toast.LENGTH_SHORT).show();
+                                }else{
+                                    StyleableToast.makeText(getApplicationContext(), "¡Fallo al subirse!", Toast.LENGTH_SHORT, R.style.dangerToast).show();
+                                    //Toast.makeText(getApplicationContext(),"¡Fallo al subirse!",Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                StyleableToast.makeText(getApplicationContext(), "¡Fallo al subirse!", Toast.LENGTH_SHORT, R.style.dangerToast).show();
+                //Toast.makeText(getApplicationContext(),"¡Fallo al subirse!",Toast.LENGTH_SHORT).show();
+            }
+        }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                int currenProgress = (int) (100*taskSnapshot.getBytesTransferred()/taskSnapshot.getTotalByteCount());
+                progressDialog.setProgress(currenProgress);
+
+            }
+        });
+        if(contUris>7) {
+            progressDialog.hide();
+        }
+
+
+    }
+
+    private void uploadfile8(Uri ArchivoUri) {
+        progressDialog= new ProgressDialog(ExtraActivity.this);
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        progressDialog.setTitle("Subiendo archivos...");
+        progressDialog.setProgress(0);
+        progressDialog.show();
+
+        final String fileName= "Archivo" + UUID.randomUUID().toString();
+        StorageReference srtreference = storage.getReference();
+        srtreference.child("files").child("extra").child(fileName).putFile(pdfUri)
+                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        String url = taskSnapshot.getUploadSessionUri().toString();
+                        DatabaseReference refDB = dbRef.getReference();
+
+                        refDB.child(fileName).setValue(url).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (task.isSuccessful()){
+                                    StyleableToast.makeText(getApplicationContext(), "Archivo Subido...", Toast.LENGTH_SHORT, R.style.doneToast).show();
+                                    //Toast.makeText(getApplicationContext(),"Archivo Subido...",Toast.LENGTH_SHORT).show();
+                                }else{
+                                    StyleableToast.makeText(getApplicationContext(), "¡Fallo al subirse!", Toast.LENGTH_SHORT, R.style.dangerToast).show();
+                                    //Toast.makeText(getApplicationContext(),"¡Fallo al subirse!",Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                StyleableToast.makeText(getApplicationContext(), "¡Fallo al subirse!", Toast.LENGTH_SHORT, R.style.dangerToast).show();
+                //Toast.makeText(getApplicationContext(),"¡Fallo al subirse!",Toast.LENGTH_SHORT).show();
+            }
+        }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                int currenProgress = (int) (100*taskSnapshot.getBytesTransferred()/taskSnapshot.getTotalByteCount());
+                progressDialog.setProgress(currenProgress);
+
+            }
+        });
+        if(contUris>8) {
+            progressDialog.hide();
+        }
+
+
+    }
+
+    private void uploadfile9(Uri ArchivoUri) {
+        progressDialog= new ProgressDialog(ExtraActivity.this);
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        progressDialog.setTitle("Subiendo archivos...");
+        progressDialog.setProgress(0);
+        progressDialog.show();
+
+        final String fileName= "Archivo" + UUID.randomUUID().toString();
+        StorageReference srtreference = storage.getReference();
+        srtreference.child("files").child("extra").child(fileName).putFile(pdfUri)
+                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        String url = taskSnapshot.getUploadSessionUri().toString();
+                        DatabaseReference refDB = dbRef.getReference();
+
+                        refDB.child(fileName).setValue(url).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (task.isSuccessful()){
+                                    StyleableToast.makeText(getApplicationContext(), "Archivo Subido...", Toast.LENGTH_SHORT, R.style.doneToast).show();
+                                    //Toast.makeText(getApplicationContext(),"Archivo Subido...",Toast.LENGTH_SHORT).show();
+                                }else{
+                                    StyleableToast.makeText(getApplicationContext(), "¡Fallo al subirse!", Toast.LENGTH_SHORT, R.style.dangerToast).show();
+                                    //Toast.makeText(getApplicationContext(),"¡Fallo al subirse!",Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                StyleableToast.makeText(getApplicationContext(), "¡Fallo al subirse!", Toast.LENGTH_SHORT, R.style.dangerToast).show();
+                //Toast.makeText(getApplicationContext(),"¡Fallo al subirse!",Toast.LENGTH_SHORT).show();
+            }
+        }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                int currenProgress = (int) (100*taskSnapshot.getBytesTransferred()/taskSnapshot.getTotalByteCount());
+                progressDialog.setProgress(currenProgress);
+
+            }
+        });
+        if(contUris>9) {
+            progressDialog.hide();
+        }
+
+
+    }
+
+    private void uploadfile10(Uri ArchivoUri) {
+        progressDialog= new ProgressDialog(ExtraActivity.this);
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        progressDialog.setTitle("Subiendo archivos...");
+        progressDialog.setProgress(0);
+        progressDialog.show();
+
+        final String fileName= "Archivo" + UUID.randomUUID().toString();
+        StorageReference srtreference = storage.getReference();
+        srtreference.child("files").child("extra").child(fileName).putFile(pdfUri)
+                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        String url = taskSnapshot.getUploadSessionUri().toString();
+                        DatabaseReference refDB = dbRef.getReference();
+
+                        refDB.child(fileName).setValue(url).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (task.isSuccessful()){
+                                    StyleableToast.makeText(getApplicationContext(), "Archivo Subido...", Toast.LENGTH_SHORT, R.style.doneToast).show();
+                                    //Toast.makeText(getApplicationContext(),"Archivo Subido...",Toast.LENGTH_SHORT).show();
+                                }else{
+                                    StyleableToast.makeText(getApplicationContext(), "¡Fallo al subirse!", Toast.LENGTH_SHORT, R.style.dangerToast).show();
+                                    //Toast.makeText(getApplicationContext(),"¡Fallo al subirse!",Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                StyleableToast.makeText(getApplicationContext(), "¡Fallo al subirse!", Toast.LENGTH_SHORT, R.style.dangerToast).show();
+                //Toast.makeText(getApplicationContext(),"¡Fallo al subirse!",Toast.LENGTH_SHORT).show();
+            }
+        }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                int currenProgress = (int) (100*taskSnapshot.getBytesTransferred()/taskSnapshot.getTotalByteCount());
+                progressDialog.setProgress(currenProgress);
+
+            }
+        });
 
 
 
@@ -848,46 +1209,66 @@ public class ExtraActivity extends AppCompatActivity {
         startActivityForResult(intent, 86);
     }
 
+    private void selectVideo() {
+        Intent intent = new Intent();
+        intent.setType("video/*");
+        intent.setAction(intent.ACTION_GET_CONTENT);
+        startActivityForResult(intent, 87);
+    }
+
+    private void selectAudio() {
+        Intent intent = new Intent();
+        intent.setType("audio/*");
+        intent.setAction(intent.ACTION_GET_CONTENT);
+        startActivityForResult(intent, 88);
+    }
+
+    private void selectDocx() {
+        Intent intent = new Intent();
+        intent.setType("docx/*");
+        intent.setAction(intent.ACTION_GET_CONTENT);
+        startActivityForResult(intent, 89);
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
 
-//        if (requestCode==86 && resultCode==RESULT_OK && data!=null) {
-//            if(contUris>9){
-//                StyleableToast.makeText(getApplicationContext(), "Limite de archivos alcanzado", Toast.LENGTH_LONG, R.style.warningToast).show();
-//            }else {
-//                SelecUri(data);
-//                contUris++;
-//            }
-//            //Toast.makeText(getApplicationContext(),"Tu archivo se ha guardado exitosamente",Toast.LENGTH_SHORT).show();
-//        }else if (requestCode==87 && resultCode==RESULT_OK && data!=null) {
-//            if(contUris>9){
-//                StyleableToast.makeText(getApplicationContext(), "Limite de archivos alcanzado", Toast.LENGTH_LONG, R.style.warningToast).show();
-//            }else {
-//                SelecUri(data);
-//                contUris++;
-//            }
-//            //Toast.makeText(getApplicationContext(),"Tu archivo se ha guardado exitosamente",Toast.LENGTH_SHORT).show();
-//        } if (requestCode==88 && resultCode==RESULT_OK && data!=null) {
-//            if(contUris>9){
-//                StyleableToast.makeText(getApplicationContext(), "Limite de archivos alcanzado", Toast.LENGTH_LONG, R.style.warningToast).show();
-//            }else {
-//                SelecUri(data);
-//                contUris++;
-//            }
-//            //Toast.makeText(getApplicationContext(),"Tu archivo se ha guardado exitosamente",Toast.LENGTH_SHORT).show();
-//        }
-//        if (requestCode==89 && resultCode==RESULT_OK && data!=null) {
-//            if(contUris>9){
-//                StyleableToast.makeText(getApplicationContext(), "Limite de archivos alcanzado", Toast.LENGTH_LONG, R.style.warningToast).show();
-//            }else {
-//                SelecUri(data);
-//                contUris++;
-//            }
-//            // Toast.makeText(getApplicationContext(),"Tu archivo se ha guardado exitosamente",Toast.LENGTH_SHORT).show();
-//        }
+        if (requestCode==86 && resultCode==RESULT_OK && data!=null) {
+            if(contUris>9){
+                StyleableToast.makeText(getApplicationContext(), "Limite de archivos alcanzado", Toast.LENGTH_LONG, R.style.warningToast).show();
+            }else {
+                SelecUri(data);
+                contUris++;
+            }
+            //Toast.makeText(getApplicationContext(),"Tu archivo se ha guardado exitosamente",Toast.LENGTH_SHORT).show();
+        }else if (requestCode==87 && resultCode==RESULT_OK && data!=null) {
+            if(contUris>9){
+                StyleableToast.makeText(getApplicationContext(), "Limite de archivos alcanzado", Toast.LENGTH_LONG, R.style.warningToast).show();
+            }else {
+                SelecUri(data);
+                contUris++;
+            }
+            //Toast.makeText(getApplicationContext(),"Tu archivo se ha guardado exitosamente",Toast.LENGTH_SHORT).show();
+        } if (requestCode==88 && resultCode==RESULT_OK && data!=null) {
+            if(contUris>9){
+                StyleableToast.makeText(getApplicationContext(), "Limite de archivos alcanzado", Toast.LENGTH_LONG, R.style.warningToast).show();
+            }else {
+                SelecUri(data);
+                contUris++;
+            }
+            //Toast.makeText(getApplicationContext(),"Tu archivo se ha guardado exitosamente",Toast.LENGTH_SHORT).show();
+        }
+        if (requestCode==89 && resultCode==RESULT_OK && data!=null) {
+            if(contUris>9){
+                StyleableToast.makeText(getApplicationContext(), "Limite de archivos alcanzado", Toast.LENGTH_LONG, R.style.warningToast).show();
+            }else {
+                SelecUri(data);
+                contUris++;
+            }
+            // Toast.makeText(getApplicationContext(),"Tu archivo se ha guardado exitosamente",Toast.LENGTH_SHORT).show();
+        }
 
         if (requestCode==104 && resultCode == RESULT_OK) {
             switch (requestCode) {
@@ -1059,6 +1440,284 @@ public class ExtraActivity extends AppCompatActivity {
         return Bitmap.createBitmap(mBitmap, 0, 0, width, height, matrix, false);
     }
 
+    private void MostrarOpciones() {
+
+
+            final CharSequence[] opciones = {"Borrar archivo anterior", "Cancelar"};
+            final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+
+            builder.setTitle("Borrar archivos");
+            builder.setItems(opciones, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    if (opciones[i].equals("Borrar archivo anterior")) {
+
+
+//                        for (int x=0; x<=9; x++){
+//                            if(ArchivosUrisArray[x]!= UriNula && contUris <= 10){
+//                                ArchivosUrisArray[x]
+//                            }
+//                        }
+
+
+                        if (contUris == 0) {
+                            StyleableToast.makeText(getApplicationContext(), "No hay ningún archivo para borrar", Toast.LENGTH_SHORT, R.style.warningToast).show();
+                        } else if (ArchivoUri != null && contUris == 1) {
+                            ArchivoUri = null;
+                            contUris--;
+                            StyleableToast.makeText(getApplicationContext(), "¡Archivo Borrado con exito!", Toast.LENGTH_SHORT, R.style.doneToast).show();
+                        } else if (ArchivoUri2 != null && contUris == 2) {
+                            ArchivoUri2 = null;
+                            contUris--;
+                            StyleableToast.makeText(getApplicationContext(), "¡Archivo Borrado con exito!", Toast.LENGTH_SHORT, R.style.doneToast).show();
+                        } else if (ArchivoUri3 != null && contUris == 3) {
+                            ArchivoUri3 = null;
+                            contUris--;
+                            StyleableToast.makeText(getApplicationContext(), "¡Archivo Borrado con exito!", Toast.LENGTH_SHORT, R.style.doneToast).show();
+                        } else if (ArchivoUri4 != null && contUris == 4) {
+                            ArchivoUri4 = null;
+                            contUris--;
+                            StyleableToast.makeText(getApplicationContext(), "¡Archivo Borrado con exito!", Toast.LENGTH_SHORT, R.style.doneToast).show();
+                        } else if (ArchivoUri5 != null && contUris == 5) {
+                            ArchivoUri5 = null;
+                            contUris--;
+                            StyleableToast.makeText(getApplicationContext(), "¡Archivo Borrado con exito!", Toast.LENGTH_SHORT, R.style.doneToast).show();
+                        } else if (ArchivoUri6 != null && contUris == 6) {
+                            ArchivoUri6 = null;
+                            contUris--;
+                            StyleableToast.makeText(getApplicationContext(), "¡Archivo Borrado con exito!", Toast.LENGTH_SHORT, R.style.doneToast).show();
+                        } else if (ArchivoUri7 != null && contUris == 7) {
+                            ArchivoUri7 = null;
+                            contUris--;
+                            StyleableToast.makeText(getApplicationContext(), "¡Archivo Borrado con exito!", Toast.LENGTH_SHORT, R.style.doneToast).show();
+                        } else if (ArchivoUri8 != null && contUris == 8) {
+                            ArchivoUri8 = null;
+                            contUris--;
+                            StyleableToast.makeText(getApplicationContext(), "¡Archivo Borrado con exito!", Toast.LENGTH_SHORT, R.style.doneToast).show();
+                        } else if (ArchivoUri9 != null && contUris == 9) {
+                            ArchivoUri9 = null;
+                            contUris--;
+                            StyleableToast.makeText(getApplicationContext(), "¡Archivo Borrado con exito!", Toast.LENGTH_SHORT, R.style.doneToast).show();
+                        } else if (ArchivoUri10 != null && contUris == 10) {
+                            ArchivoUri10 = null;
+                            contUris--;
+                            StyleableToast.makeText(getApplicationContext(), "¡Archivo Borrado con exito!", Toast.LENGTH_SHORT, R.style.doneToast).show();
+                        }
+                    } else {
+                        dialogInterface.dismiss();
+                    }
+                }
+
+            });
+            builder.show();
+
+    }
+
+    private void SelecUri(Intent data) {
+
+
+//        for (int i=0; i<=9; i++){
+//            if(contUris==i && ArchivosUrisArray[i] == UriNula){
+//                ArchivosUrisArray[i]=data.getData();
+//                StyleableToast.makeText(getApplicationContext(), "Archivo agregado con exito \nPuede subir " + (restUris-contUris) + " más", Toast.LENGTH_LONG, R.style.sucessToast).show();
+//                break;
+//            }
+//        }
+
+        if(contUris==0){
+            ArchivoUri=data.getData();
+            StyleableToast.makeText(getApplicationContext(), "Archivo agregado con exito \nPuede subir " + (restUris-contUris) + " más", Toast.LENGTH_LONG, R.style.sucessToast).show();
+            // Toast.makeText(getApplicationContext(),"Archivo agregado con exito \nPuede subir " + (restUris-contUris) + " más",Toast.LENGTH_SHORT).show();
+        }else if(contUris==1){
+            ArchivoUri2=data.getData();
+            StyleableToast.makeText(getApplicationContext(), "Archivo agregado con exito \nPuede subir " + (restUris-contUris) + " más", Toast.LENGTH_LONG, R.style.sucessToast).show();
+            //Toast.makeText(getApplicationContext(),"Archivo agregado con exito \nPuede subir " + (restUris-contUris) + " más",Toast.LENGTH_SHORT).show();
+        }else if(contUris==2){
+            ArchivoUri3=data.getData();
+            StyleableToast.makeText(getApplicationContext(), "Archivo agregado con exito \nPuede subir " + (restUris-contUris) + " más", Toast.LENGTH_LONG, R.style.sucessToast).show();
+            //Toast.makeText(getApplicationContext(),"Archivo agregado con exito /nPuede subir " + (restUris-contUris) + " más",Toast.LENGTH_SHORT).show();
+        }else if(contUris==3){
+            ArchivoUri4=data.getData();
+            StyleableToast.makeText(getApplicationContext(), "Archivo agregado con exito \nPuede subir " + (restUris-contUris) + " más", Toast.LENGTH_LONG, R.style.sucessToast).show();
+            //Toast.makeText(getApplicationContext(),"Archivo agregado con exito /nPuede subir " + (restUris-contUris) + " más",Toast.LENGTH_SHORT).show();
+        }else if(contUris==4){
+            ArchivoUri5=data.getData();
+            StyleableToast.makeText(getApplicationContext(), "Archivo agregado con exito \nPuede subir " + (restUris-contUris) + " más", Toast.LENGTH_LONG, R.style.sucessToast).show();
+            //Toast.makeText(getApplicationContext(),"Archivo agregado con exito /nPuede subir " + (restUris-contUris) + " más",Toast.LENGTH_SHORT).show();
+        }else if(contUris==5){
+            ArchivoUri6=data.getData();
+            StyleableToast.makeText(getApplicationContext(), "Archivo agregado con exito \nPuede subir " + (restUris-contUris) + " más", Toast.LENGTH_LONG, R.style.sucessToast).show();
+            //Toast.makeText(getApplicationContext(),"Archivo agregado con exito /nPuede subir " + (restUris-contUris) + " más",Toast.LENGTH_SHORT).show();
+        }else if(contUris==6){
+            ArchivoUri7=data.getData();
+            StyleableToast.makeText(getApplicationContext(), "Archivo agregado con exito \nPuede subir " + (restUris-contUris) + " más", Toast.LENGTH_LONG, R.style.sucessToast).show();
+            //Toast.makeText(getApplicationContext(),"Archivo agregado con exito /nPuede subir " + (restUris-contUris) + " más",Toast.LENGTH_SHORT).show();
+        }else if(contUris==7){
+            ArchivoUri8=data.getData();
+            StyleableToast.makeText(getApplicationContext(), "Archivo agregado con exito \nPuede subir " + (restUris-contUris) + " más", Toast.LENGTH_LONG, R.style.sucessToast).show();
+            //Toast.makeText(getApplicationContext(),"Archivo agregado con exito /nPuede subir " + (restUris-contUris) + " más",Toast.LENGTH_SHORT).show();
+        }else if(contUris==8){
+            ArchivoUri9=data.getData();
+            StyleableToast.makeText(getApplicationContext(), "Archivo agregado con exito \nPuede subir " + (restUris-contUris) + " más", Toast.LENGTH_LONG, R.style.sucessToast).show();
+            //Toast.makeText(getApplicationContext(),"Archivo agregado con exito /nPuede subir " + (restUris-contUris) + " más",Toast.LENGTH_SHORT).show();
+        }else if(contUris==9){
+            ArchivoUri10=data.getData();
+            StyleableToast.makeText(getApplicationContext(), "Archivo agregado con exito \nYa no puede subir más", Toast.LENGTH_LONG, R.style.sucessToast).show();
+            //Toast.makeText(getApplicationContext(),"Archivo agregado con exito /nPuede subir " + (restUris-contUris) + " más",Toast.LENGTH_SHORT).show();
+        }else{
+            StyleableToast.makeText(getApplicationContext(), "Limite de archivos alcanzado", Toast.LENGTH_LONG, R.style.warningToast).show();
+            //Toast.makeText(getApplicationContext(),"Ya no puede subir ningun archivo",Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void uploadAllFiles() {
+//        uploadfileGlobal(ArchivoUri);
+
+        if (ArchivoUri != null && contUris==1) {
+            uploadfile(ArchivoUri);
+
+            ArchivoUri=null;
+        }else if(ArchivoUri2 != null && contUris==2) {
+            uploadfile(ArchivoUri);
+            uploadfile2(ArchivoUri2);
+            contUris=0;
+
+            ArchivoUri=null;
+            ArchivoUri2=null;
+        }else if(ArchivoUri3 != null && contUris==3) {
+            uploadfile(ArchivoUri);
+            uploadfile2(ArchivoUri2);
+            uploadfile3(ArchivoUri3);
+            contUris=0;
+
+            ArchivoUri=null;
+            ArchivoUri2=null;
+            ArchivoUri3=null;
+        }else if(ArchivoUri4 != null && contUris==4) {
+            uploadfile(ArchivoUri);
+            uploadfile2(ArchivoUri2);
+            uploadfile3(ArchivoUri3);
+            uploadfile4(ArchivoUri4);
+            contUris=0;
+
+            ArchivoUri=null;
+            ArchivoUri2=null;
+            ArchivoUri3=null;
+            ArchivoUri4=null;
+        }else if(ArchivoUri5 != null && contUris==5) {
+            uploadfile(ArchivoUri);
+            uploadfile2(ArchivoUri2);
+            uploadfile3(ArchivoUri3);
+            uploadfile4(ArchivoUri4);
+            uploadfile5(ArchivoUri5);
+            contUris=0;
+
+            ArchivoUri=null;
+            ArchivoUri2=null;
+            ArchivoUri3=null;
+            ArchivoUri4=null;
+            ArchivoUri5=null;
+        }else if(ArchivoUri6 != null && contUris==6) {
+            uploadfile(ArchivoUri);
+            uploadfile2(ArchivoUri2);
+            uploadfile3(ArchivoUri3);
+            uploadfile4(ArchivoUri4);
+            uploadfile5(ArchivoUri5);
+            uploadfile6(ArchivoUri6);
+            contUris=0;
+
+            ArchivoUri=null;
+            ArchivoUri2=null;
+            ArchivoUri3=null;
+            ArchivoUri4=null;
+            ArchivoUri5=null;
+            ArchivoUri6=null;
+        }else if(ArchivoUri7 != null && contUris==7) {
+            uploadfile(ArchivoUri);
+            uploadfile2(ArchivoUri2);
+            uploadfile3(ArchivoUri3);
+            uploadfile4(ArchivoUri4);
+            uploadfile5(ArchivoUri5);
+            uploadfile6(ArchivoUri6);
+            uploadfile7(ArchivoUri7);
+            contUris=0;
+
+            ArchivoUri=null;
+            ArchivoUri2=null;
+            ArchivoUri3=null;
+            ArchivoUri4=null;
+            ArchivoUri5=null;
+            ArchivoUri6=null;
+            ArchivoUri7=null;
+        }else if(ArchivoUri8 != null && contUris==8) {
+            uploadfile(ArchivoUri);
+            uploadfile2(ArchivoUri2);
+            uploadfile3(ArchivoUri3);
+            uploadfile4(ArchivoUri4);
+            uploadfile5(ArchivoUri5);
+            uploadfile6(ArchivoUri6);
+            uploadfile7(ArchivoUri7);
+            uploadfile8(ArchivoUri8);
+            contUris=0;
+
+            ArchivoUri=null;
+            ArchivoUri2=null;
+            ArchivoUri3=null;
+            ArchivoUri4=null;
+            ArchivoUri5=null;
+            ArchivoUri6=null;
+            ArchivoUri7=null;
+            ArchivoUri8=null;
+        }else if(ArchivoUri9 != null && contUris==9) {
+            uploadfile(ArchivoUri);
+            uploadfile2(ArchivoUri2);
+            uploadfile3(ArchivoUri3);
+            uploadfile4(ArchivoUri4);
+            uploadfile5(ArchivoUri5);
+            uploadfile6(ArchivoUri6);
+            uploadfile7(ArchivoUri7);
+            uploadfile8(ArchivoUri8);
+            uploadfile9(ArchivoUri9);
+            contUris=0;
+
+            ArchivoUri=null;
+            ArchivoUri2=null;
+            ArchivoUri3=null;
+            ArchivoUri4=null;
+            ArchivoUri5=null;
+            ArchivoUri6=null;
+            ArchivoUri7=null;
+            ArchivoUri8=null;
+            ArchivoUri9=null;
+        }else if(ArchivoUri10 != null && contUris==10) {
+            uploadfile(ArchivoUri);
+            uploadfile2(ArchivoUri2);
+            uploadfile3(ArchivoUri3);
+            uploadfile4(ArchivoUri4);
+            uploadfile5(ArchivoUri5);
+            uploadfile6(ArchivoUri6);
+            uploadfile7(ArchivoUri7);
+            uploadfile8(ArchivoUri8);
+            uploadfile9(ArchivoUri9);
+            uploadfile10(ArchivoUri10);
+            contUris=0;
+
+            ArchivoUri=null;
+            ArchivoUri2=null;
+            ArchivoUri3=null;
+            ArchivoUri4=null;
+            ArchivoUri5=null;
+            ArchivoUri6=null;
+            ArchivoUri7=null;
+            ArchivoUri8=null;
+            ArchivoUri9=null;
+            ArchivoUri10=null;
+        }
+
+        contUris=0;
+    }
+
     private void locationStart() {
         LocationManager mlocManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         Localizacion Local = new Localizacion();
@@ -1175,7 +1834,7 @@ public class ExtraActivity extends AppCompatActivity {
 //        Fecha =   today.year + "-" + today.month + "-" + today.monthDay;
         Fecha =   calendar.get(Calendar.YEAR) + "-" + dateTime.getMonthOfYear() + "-" + calendar.get(Calendar.DAY_OF_MONTH);
 
-        Hora = today.hour +":" + calendar.get(Calendar.MINUTE);
+        Hora = calendar.get(Calendar.HOUR)+":" + calendar.get(Calendar.MINUTE);
 
         created_at = Fecha + "T" +Hora;
 
