@@ -124,7 +124,7 @@ public class EventosFragment extends Fragment {
 
                 String actividad = evento.getType_activity();
                 String user_id = evento.getUser_id();
-
+                String title = evento.getTitle();
                 String start = evento.getStart();
                 String end = evento.getEnd();
                 String description = evento.getDescription();
@@ -145,6 +145,7 @@ public class EventosFragment extends Fragment {
                 intent.putExtra("user_id", user_id);
                 intent.putExtra("start", start);
                 intent.putExtra("end", end);
+                intent.putExtra("title", title);
                 intent.putExtra("description", description);
                 intent.putExtra("deleted", deleted);
                 intent.putExtra("percentage", percentage);

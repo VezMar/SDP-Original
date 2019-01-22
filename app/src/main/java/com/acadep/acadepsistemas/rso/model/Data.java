@@ -8,37 +8,42 @@ public class Data {
     String created_at;
     String description;
     String header;
-    String event_id;
+    private Ref_event ref_event = new Ref_event();
     private double Lat;
     private double Lng;
-//    private List<String> Foto1;
-//    private List<String> Foto2;
-//    private List<String> Foto3;
-//    private List<String> Foto4;
-//    private List<String> Foto5;
+
 
     List<Foto> multimedia;
-    //private String datetime;
+    List<Files> files;
 
     public Data() {
     }
 
-    public Data(String created_at, String description, String header, String event_id, double lat, double lng, List<Foto> multimedia) {
+    public Data(String created_at, String description, String header, Ref_event ref_event, double lat, double lng, List<Foto> multimedia, List<Files> files) {
         this.created_at = created_at;
         this.description = description;
         this.header = header;
-        this.event_id = event_id;
+        this.ref_event = ref_event;
         Lat = lat;
         Lng = lng;
         this.multimedia = multimedia;
+        this.files = files;
     }
 
-    public String getEvent_id() {
-        return event_id;
+    public List<Files> getFiles() {
+        return files;
     }
 
-    public void setEvent_id(String event_id) {
-        this.event_id = event_id;
+    public void setFiles(List<Files> files) {
+        this.files = files;
+    }
+
+    public Ref_event getRef_event() {
+        return ref_event;
+    }
+
+    public void setRef_event(Ref_event ref_event) {
+        this.ref_event = ref_event;
     }
 
     public List<Foto> getMultimedia() {

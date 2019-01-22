@@ -200,18 +200,17 @@
                         <RelativeLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="10dp"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginTop="5dp"
                             android:orientation="horizontal">
 
-                            <com.beardedhen.androidbootstrap.BootstrapCircleThumbnail
+                            <ImageView
                                 android:id="@+id/imgView"
                                 android:layout_width="100dp"
                                 android:layout_height="100dp"
                                 android:layout_marginTop="10dp"
                                 android:layout_marginRight="10dp"
-                                android:src="@drawable/empty_image"
-                                app:bootstrapBrand="primary"
-                                app:hasBorder="false" />
+                                android:src="@drawable/empty_image" />
 
                             <CheckBox
                                 android:id="@+id/Check1"
@@ -226,19 +225,17 @@
                         <RelativeLayout
                             android:layout_width="110dp"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="15dp"
-                            android:layout_marginTop="10dp"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginTop="5dp"
                             android:orientation="horizontal">
 
-                            <com.beardedhen.androidbootstrap.BootstrapCircleThumbnail
+                            <ImageView
                                 android:id="@+id/imgView2"
                                 android:layout_width="100dp"
                                 android:layout_height="100dp"
                                 android:layout_marginTop="10dp"
                                 android:layout_marginRight="10dp"
-                                android:src="@drawable/empty_image"
-                                app:bootstrapBrand="primary"
-                                app:hasBorder="false" />
+                                android:src="@drawable/empty_image" />
 
                             <CheckBox
                                 android:id="@+id/Check2"
@@ -254,19 +251,17 @@
                         <RelativeLayout
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:layout_marginLeft="15dp"
-                            android:layout_marginTop="10dp"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginTop="5dp"
                             android:orientation="horizontal">
 
-                            <com.beardedhen.androidbootstrap.BootstrapCircleThumbnail
+                            <ImageView
                                 android:id="@+id/imgView3"
                                 android:layout_width="100dp"
                                 android:layout_height="100dp"
                                 android:layout_marginTop="10dp"
                                 android:layout_marginRight="10dp"
-                                android:src="@drawable/empty_image"
-                                app:bootstrapBrand="primary"
-                                app:hasBorder="false" />
+                                android:src="@drawable/empty_image" />
 
                             <CheckBox
                                 android:id="@+id/Check3"
@@ -289,18 +284,17 @@
                         <RelativeLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="10dp"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginTop="5dp"
                             android:orientation="horizontal">
 
-                            <com.beardedhen.androidbootstrap.BootstrapCircleThumbnail
+                            <ImageView
                                 android:id="@+id/imgView4"
                                 android:layout_width="100dp"
                                 android:layout_height="100dp"
                                 android:layout_marginTop="10dp"
                                 android:layout_marginRight="10dp"
-                                android:src="@drawable/empty_image"
-                                app:bootstrapBrand="primary"
-                                app:hasBorder="false" />
+                                android:src="@drawable/empty_image" />
 
                             <CheckBox
                                 android:id="@+id/Check4"
@@ -315,11 +309,11 @@
                         <RelativeLayout
                             android:layout_width="110dp"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="15dp"
-                            android:layout_marginTop="10dp"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginTop="5dp"
                             android:orientation="horizontal">
 
-                            <com.beardedhen.androidbootstrap.BootstrapCircleThumbnail
+                            <ImageView
                                 android:id="@+id/imgView5"
                                 android:layout_width="100dp"
                                 android:layout_height="100dp"
@@ -328,9 +322,7 @@
                                 android:layout_marginStart="0dp"
                                 android:layout_marginTop="10dp"
                                 android:layout_marginRight="10dp"
-                                android:src="@drawable/empty_image"
-                                app:bootstrapBrand="primary"
-                                app:hasBorder="false" />
+                                android:src="@drawable/empty_image" />
 
                             <CheckBox
                                 android:id="@+id/Check5"
@@ -346,19 +338,17 @@
                         <RelativeLayout
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:layout_marginLeft="15dp"
-                            android:layout_marginTop="10dp"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginTop="5dp"
                             android:orientation="horizontal">
 
-                            <com.beardedhen.androidbootstrap.BootstrapCircleThumbnail
+                            <ImageView
                                 android:id="@+id/imgView6"
                                 android:layout_width="100dp"
                                 android:layout_height="100dp"
                                 android:layout_marginTop="10dp"
                                 android:layout_marginRight="10dp"
-                                android:src="@drawable/empty_image"
-                                app:bootstrapBrand="primary"
-                                app:hasBorder="false" />
+                                android:src="@drawable/empty_image" />
 
                             <CheckBox
                                 android:id="@+id/Check6"

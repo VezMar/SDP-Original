@@ -516,33 +516,6 @@ public class ExtraActivity extends AppCompatActivity {
     private void uploadImageGlobal(File fileimagenpos, final int x) {
         if (fileimagenpos != null) {
 
-//            UUID uuid = UUID.randomUUID();
-//            final StorageReference ref = storageReference.child("images/"+ uuid);
-//            UploadTask uploadTask = ref.putFile(Uri.fromFile(fileimagenpos));
-//
-//            Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
-//                @Override
-//                public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
-//                    if (!task.isSuccessful()) {
-//                        throw task.getException();
-//                    }
-//
-//                    // Continue with the task to get the download URL
-//                    return ref.getDownloadUrl();
-//                }
-//            }).addOnCompleteListener(new OnCompleteListener<Uri>() {
-//                @Override
-//                public void onComplete(@NonNull Task<Uri> task) {
-//                    if (task.isSuccessful()) {
-//                        Uri downloadUri = task.getResult();
-//                    } else {
-//                        // Handle failures
-//                        // ...
-//                    }
-//                }
-//            });
-
-
             final ProgressDialog progressDialog = new ProgressDialog(ExtraActivity.this);
             progressDialog.setTitle("Subiendo....");
 
@@ -574,51 +547,6 @@ public class ExtraActivity extends AppCompatActivity {
                     }
                 }
                 });
-
-
-
-//            ref.putFile(Uri.fromFile(fileimagenpos))
-//                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-//                        @Override
-//                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-//                            progressDialog.dismiss();
-//
-//                            PerFotoArray[x].setSrc(ref.getDownloadUrl().toString());
-//
-//                            // Toast.makeText(getApplicationContext(), "Exito al Subirse", Toast.LENGTH_SHORT).show();
-//                        }
-//                    })
-//                    .addOnFailureListener(new OnFailureListener() {
-//                        @Override
-//                        public void onFailure(@NonNull Exception e) {
-//                            progressDialog.dismiss();
-//                            StyleableToast.makeText(getApplicationContext(), "Fallo al Subir", Toast.LENGTH_LONG, R.style.dangerToast).show();
-//                            // Toast.makeText(getApplicationContext(), "Fallo al Subir", Toast.LENGTH_SHORT).show();
-//                        }
-//                    }).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
-//                        @Override
-//                        public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-//                            if (task.isSuccessful()) {
-//                                String downloadUri = ""+task.getResult().toString();
-//                                PerFotoArray[x].setSrc(downloadUri.toString());
-//                            }else{
-//                                StyleableToast.makeText(getApplicationContext(), "Ocurrio un error", Toast.LENGTH_LONG, R.style.dangerToast).show();
-//                            }
-//                        }
-//                    })
-//                    .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-//                        @Override
-//                        public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-//                            double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot.getTotalByteCount());
-//                            progressDialog.setMessage("Subido " + (int) progress + "%");
-//                        }
-//                    });
-
-            //src1 = ""+ref.getDownloadUrl();
-
-
-
-
 
         }
     }
