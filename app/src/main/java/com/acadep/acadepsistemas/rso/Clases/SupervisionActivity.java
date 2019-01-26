@@ -558,67 +558,7 @@ public class SupervisionActivity extends AppCompatActivity
             @Override
             public void onClick(View v) {
 
-                if(checkBox1.isChecked() || checkBox2.isChecked() || checkBox3.isChecked() || checkBox4.isChecked() || checkBox5.isChecked() || checkBox6.isChecked()) {
-
-
-                    if (checkBox1.isChecked()) {
-
-                        imageView.setImageResource(R.drawable.empty_image);
-                        checkBox1.setChecked(false);
-                        fileimagen = null;
-
-
-                        imageView.setVisibility(View.INVISIBLE);
-                        checkBox1.setVisibility(View.INVISIBLE);
-                    }
-
-                    if (checkBox2.isChecked()) {
-                        imageView2.setImageResource(R.drawable.empty_image);
-                        checkBox2.setChecked(false);
-                        fileimagen2 = null;
-
-                        imageView2.setVisibility(View.INVISIBLE);
-                        checkBox2.setVisibility(View.INVISIBLE);
-                    }
-
-                    if (checkBox3.isChecked()) {
-                        imageView3.setImageResource(R.drawable.empty_image);
-                        checkBox3.setChecked(false);
-                        fileimagen3 = null;
-
-                        imageView3.setVisibility(View.INVISIBLE);
-                        checkBox3.setVisibility(View.INVISIBLE);
-                    }
-
-                    if (checkBox4.isChecked()) {
-                        imageView4.setImageResource(R.drawable.empty_image);
-                        checkBox4.setChecked(false);
-                        fileimagen4 = null;
-
-                        imageView4.setVisibility(View.INVISIBLE);
-                        checkBox4.setVisibility(View.INVISIBLE);
-                    }
-
-                    if (checkBox5.isChecked()) {
-                        imageView5.setImageResource(R.drawable.empty_image);
-                        checkBox5.setChecked(false);
-                        fileimagen5 = null;
-
-                        imageView5.setVisibility(View.INVISIBLE);
-                        checkBox5.setVisibility(View.INVISIBLE);
-                    }
-
-                    if (checkBox6.isChecked()) {
-                        imageView6.setImageResource(R.drawable.empty_image);
-                        checkBox6.setChecked(false);
-                        fileimagen6 = null;
-
-                        imageView6.setVisibility(View.INVISIBLE);
-                        checkBox6.setVisibility(View.INVISIBLE);
-                    }
-                }else{
-                    StyleableToast.makeText(getApplicationContext(), "No ha seleccionado ninguna foto", Toast.LENGTH_SHORT, R.style.warningToast).show();
-                }
+                BorrarImagenesCheckBoxs();
 
 
             }
@@ -629,6 +569,7 @@ public class SupervisionActivity extends AppCompatActivity
         btnFoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     if (checkSelfPermission(String.valueOf(Manifest.permission.CAMERA)) != PackageManager.PERMISSION_DENIED) {
                         ActivityCompat.requestPermissions(SupervisionActivity.this, new String[]{Manifest.permission.CAMERA}, 1);
@@ -702,12 +643,6 @@ public class SupervisionActivity extends AppCompatActivity
                                             uploadAllImages();
 
 
-
-
-
-
-
-
                                             BDFireStore.collection("events").document(idevent).update("status", 2);
 
                                             BDFireStore.collection("events").document(idevent).update("percentage", 1);
@@ -718,7 +653,7 @@ public class SupervisionActivity extends AppCompatActivity
                                             edObserv.setText("");
 
 
-                                            BorrarImagenes();
+
 
 
                                     }
@@ -740,7 +675,7 @@ public class SupervisionActivity extends AppCompatActivity
                                                 StyleableToast.makeText(getApplicationContext(), "Datos ingresados", Toast.LENGTH_LONG, R.style.sucessToast).show();
                                                 //Toast.makeText(getApplicationContext(), "Datos ingresados", Toast.LENGTH_SHORT).show();
 
-                                                edObserv.setText("");
+
 
 
                                                 uploadAllFiles();
@@ -750,7 +685,8 @@ public class SupervisionActivity extends AppCompatActivity
                                                 terminado = 2;
 
                                                 BDFireStore.collection("events").document(idevent).update("percentage", percentage);
-                                                BorrarImagenes();
+
+                                                edObserv.setText("");
                                             }else{
                                                 StyleableToast.makeText(getApplicationContext(), "El porcentage no puede ser mayor a 100%", Toast.LENGTH_LONG, R.style.warningToastMiddle).show();
                                             }
@@ -780,7 +716,7 @@ public class SupervisionActivity extends AppCompatActivity
 
                                             BDFireStore.collection("events").document(idevent).update("percentage", percentage);
 
-                                            BorrarImagenes();
+
 
 
 
@@ -852,6 +788,71 @@ public class SupervisionActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
     }
 
+    private void BorrarImagenesCheckBoxs() {
+
+        if(checkBox1.isChecked() || checkBox2.isChecked() || checkBox3.isChecked() || checkBox4.isChecked() || checkBox5.isChecked() || checkBox6.isChecked()) {
+
+
+            if (checkBox1.isChecked()) {
+
+                imageView.setImageResource(R.drawable.empty_image);
+                checkBox1.setChecked(false);
+                FileImagenArray[0]=nula;
+
+
+                imageView.setVisibility(View.INVISIBLE);
+                checkBox1.setVisibility(View.INVISIBLE);
+            }
+
+            if (checkBox2.isChecked()) {
+                imageView2.setImageResource(R.drawable.empty_image);
+                checkBox2.setChecked(false);
+                FileImagenArray[1]=nula;
+
+                imageView2.setVisibility(View.INVISIBLE);
+                checkBox2.setVisibility(View.INVISIBLE);
+            }
+
+            if (checkBox3.isChecked()) {
+                imageView3.setImageResource(R.drawable.empty_image);
+                checkBox3.setChecked(false);
+                FileImagenArray[2]=nula;
+
+                imageView3.setVisibility(View.INVISIBLE);
+                checkBox3.setVisibility(View.INVISIBLE);
+            }
+
+            if (checkBox4.isChecked()) {
+                imageView4.setImageResource(R.drawable.empty_image);
+                checkBox4.setChecked(false);
+                FileImagenArray[3]=nula;
+
+                imageView4.setVisibility(View.INVISIBLE);
+                checkBox4.setVisibility(View.INVISIBLE);
+            }
+
+            if (checkBox5.isChecked()) {
+                imageView5.setImageResource(R.drawable.empty_image);
+                checkBox5.setChecked(false);
+                FileImagenArray[4]=nula;
+
+                imageView5.setVisibility(View.INVISIBLE);
+                checkBox5.setVisibility(View.INVISIBLE);
+            }
+
+            if (checkBox6.isChecked()) {
+                imageView6.setImageResource(R.drawable.empty_image);
+                checkBox6.setChecked(false);
+                FileImagenArray[5]=nula;
+
+                imageView6.setVisibility(View.INVISIBLE);
+                checkBox6.setVisibility(View.INVISIBLE);
+            }
+        }else{
+            StyleableToast.makeText(getApplicationContext(), "No ha seleccionado ninguna foto", Toast.LENGTH_SHORT, R.style.warningToast).show();
+        }
+    }
+
     private void GuardarInformacionArchivos() {
         created_at_funct();
         PerFilesArray[contUris].setCreated_at(created_at);
@@ -859,9 +860,10 @@ public class SupervisionActivity extends AppCompatActivity
     }
 
     private void inicializacionVariables() {
+        contUris=0;
+
         for (int x=0; x<6; x++) {
             PerFotoArray[x] = new Foto();
-
             FileImagenArray[x] = nula;
         }
         for (int x=0; x<10;x++) {
@@ -876,10 +878,11 @@ public class SupervisionActivity extends AppCompatActivity
     private void uploadAllImages() {
         for(int i=0; i<FileImagenArray.length; i++){
             if(FileImagenArray[i] != nula){
-                evidence.add(PerFotoArray[i]);
                 uploadImageGlobal(FileImagenArray[i], i);
+                evidence.add(PerFotoArray[i]);
             }
         }
+
     }
 
 
@@ -908,6 +911,7 @@ public class SupervisionActivity extends AppCompatActivity
         datatime.setDate(Fecha);
         datatime.setTime(Hora);
 
+        locationStart();
         ubication.setLat(Lat);
         ubication.setLng(Lng);
 
@@ -915,7 +919,7 @@ public class SupervisionActivity extends AppCompatActivity
         for(int i=0; i<6; i++){
             if(FileImagenArray[i] == nula){
                 PerFotoArray[i].setCreated_at(created_at);
-                PerFotoArray[i].setUbicacion(ubication);
+                PerFotoArray[i].setUbication(ubication);
                 PerFotoArray[i].setType("Imagen");
                 break;
             }
@@ -1188,31 +1192,6 @@ public class SupervisionActivity extends AppCompatActivity
             });
             builder.show();
         }
-
-       // Toast.makeText(getApplicationContext(),"Mostrar dialogo opciones", Toast.LENGTH_SHORT).show();
-
-       /* final CharSequence [] opciones={"Elegir PDF", "Elegir Docx", "Elegir Video", "Elegir Audio","Cancelar"};
-        final AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
-
-        builder.setTitle("Elige una Opcion");
-        builder.setItems(opciones, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int i) {
-                if(opciones[i].equals("Elegir PDF")){
-                    selectPDF();
-                    }else if(opciones[i].equals("Elegir Docx")){
-                        selectDocx();
-                     }else if(opciones[i].equals("Elegir Video")){
-                         selectVideo();
-                        }else if(opciones[i].equals("Elegir Audio")){
-                            selectAudio();
-                            }else{
-                                dialog.dismiss();
-                            }
-            }
-        });
-        builder.show();*/
-
     }
 
     private void chequeoDevariables() {
@@ -1455,47 +1434,53 @@ public class SupervisionActivity extends AppCompatActivity
             }
 
     private void BorrarImagenes() {
-        descision=0;
-        evidence.removeAll(Foto);
-        imageView.setImageResource(R.drawable.empty_image);
-        checkBox1.setChecked(false);
-        fileimagen = null;
 
-        imageView2.setImageResource(R.drawable.empty_image);
-        checkBox2.setChecked(false);
-        fileimagen2 = null;
+//        for (int x=0; x<6; x++ ){
+//            FileImagenArray[x] = nula;
+//            PerFotoArray[x] = new Foto();
+//        }
 
-        imageView3.setImageResource(R.drawable.empty_image);
-        checkBox3.setChecked(false);
-        fileimagen3 = null;
+            descision=0;
+            evidence.removeAll(Foto);
+            imageView.setImageResource(R.drawable.empty_image);
+            checkBox1.setChecked(false);
+            fileimagen = null;
 
-        imageView4.setImageResource(R.drawable.empty_image);
-        checkBox4.setChecked(false);
-        fileimagen4 = null;
+            imageView2.setImageResource(R.drawable.empty_image);
+            checkBox2.setChecked(false);
+            fileimagen2 = null;
 
-        imageView5.setImageResource(R.drawable.empty_image);
-        checkBox5.setChecked(false);
-        fileimagen5 = null;
+            imageView3.setImageResource(R.drawable.empty_image);
+            checkBox3.setChecked(false);
+            fileimagen3 = null;
 
-        imageView6.setImageResource(R.drawable.empty_image);
-        checkBox6.setChecked(false);
-        fileimagen6 = null;
+            imageView4.setImageResource(R.drawable.empty_image);
+            checkBox4.setChecked(false);
+            fileimagen4 = null;
 
-        checkBox1.setVisibility(View.INVISIBLE);
-        checkBox2.setVisibility(View.INVISIBLE);
-        checkBox3.setVisibility(View.INVISIBLE);
-        checkBox4.setVisibility(View.INVISIBLE);
-        checkBox5.setVisibility(View.INVISIBLE);
-        checkBox6.setVisibility(View.INVISIBLE);
+            imageView5.setImageResource(R.drawable.empty_image);
+            checkBox5.setChecked(false);
+            fileimagen5 = null;
+
+            imageView6.setImageResource(R.drawable.empty_image);
+            checkBox6.setChecked(false);
+            fileimagen6 = null;
+
+            checkBox1.setVisibility(View.INVISIBLE);
+            checkBox2.setVisibility(View.INVISIBLE);
+            checkBox3.setVisibility(View.INVISIBLE);
+            checkBox4.setVisibility(View.INVISIBLE);
+            checkBox5.setVisibility(View.INVISIBLE);
+            checkBox6.setVisibility(View.INVISIBLE);
 
 
-        imageView.setVisibility(View.INVISIBLE);
-        imageView2.setVisibility(View.INVISIBLE);
-        imageView3.setVisibility(View.INVISIBLE);
-        imageView4.setVisibility(View.INVISIBLE);
-        imageView5.setVisibility(View.INVISIBLE);
-        imageView6.setVisibility(View.INVISIBLE);
-    }
+            imageView.setVisibility(View.INVISIBLE);
+            imageView2.setVisibility(View.INVISIBLE);
+            imageView3.setVisibility(View.INVISIBLE);
+            imageView4.setVisibility(View.INVISIBLE);
+            imageView5.setVisibility(View.INVISIBLE);
+            imageView6.setVisibility(View.INVISIBLE);
+        }
 
     public void takePhoto() {
         if((estado).equals("before") && percentage>=1){
@@ -1514,7 +1499,7 @@ public class SupervisionActivity extends AppCompatActivity
             final ProgressDialog progressDialog = new ProgressDialog(SupervisionActivity.this);
             progressDialog.setTitle("Subiendo....");
 
-            final StorageReference ref = storageReference.child("images").child("extra").child("Img" + UUID.randomUUID().toString());
+            final StorageReference ref = storageReference.child("images").child("evidence").child("Img" + UUID.randomUUID().toString());
             // StorageReference ref = storageReference.child("images/"+UUID.randomUUID().toString());
 
             final UploadTask uploadTask = ref.putFile(Uri.fromFile(fileimagenpos));
@@ -2271,7 +2256,7 @@ public class SupervisionActivity extends AppCompatActivity
                     int CamHegith = 800;
 
                     //Bitmap resizeImage = Bitmap.createScaledBitmap(capturedCoolerBitmap,CamWidth,CamHegith,false);
-                    Bitmap Bitnew = redimensionarImagenMaximo(capturedCoolerBitmap, 1200, 800);
+                    Bitmap Bitnew = redimensionarImagenMaximo(capturedCoolerBitmap, 1200 , 800);
 
 
                     seleccionImageView(Bitnew);

@@ -12,11 +12,12 @@ public class Extra {
     private double Lng;
 
     List<Foto> multimedia;
+    List<Files> files;
 
     public Extra() {
     }
 
-    public Extra(String created_at, String description, String header, String activity_id, double lat, double lng, List<Foto> multimedia) {
+    public Extra(String created_at, String description, String header, String activity_id, double lat, double lng, List<Foto> multimedia, List<Files> files) {
         this.created_at = created_at;
         this.description = description;
         this.header = header;
@@ -24,6 +25,15 @@ public class Extra {
         Lat = lat;
         Lng = lng;
         this.multimedia = multimedia;
+        this.files = files;
+    }
+
+    public List<Files> getFiles() {
+        return files;
+    }
+
+    public void setFiles(List<Files> files) {
+        this.files = files;
     }
 
     public List<Foto> getMultimedia() {
