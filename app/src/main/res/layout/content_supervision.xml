@@ -99,23 +99,20 @@
                             android:orientation="vertical"
                             android:layout_gravity="right">
 
-                            <TextView
-                                android:id="@+id/txtFecha"
-                                android:layout_width="wrap_content"
+                            <ru.dimorinny.floatingtextbutton.FloatingTextButton
+                                android:id="@+id/btnEnviar"
+                                android:layout_width="200dp"
                                 android:layout_height="wrap_content"
-                                android:text="Fecha"
-                                android:layout_gravity="right"
-                                android:textSize="18dp"/>
-
-                            <TextView
-                                android:id="@+id/txtHora"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Hora"
-                                android:layout_gravity="right"
-                                android:textSize="18dp"/>
+                                android:layout_marginLeft="10dp"
+                                android:layout_toEndOf="@+id/edObserv"
+                                app:floating_background_color="#1c8915"
+                                app:floating_left_icon="@drawable/ic_file_upload_black_24dp"
+                                app:floating_title="Enviar"
+                                app:floating_title_color="@android:color/white" />
                         </LinearLayout>
                     </LinearLayout>
+
+
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -162,7 +159,34 @@
 
                     </LinearLayout>
 
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp">
 
+                        <ru.dimorinny.floatingtextbutton.FloatingTextButton
+                            android:id="@+id/btnArchivo"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Archivo"
+                            android:layout_marginLeft="20sp"
+                            app:floating_background_color="#898987"
+                            app:floating_left_icon="@drawable/ic_insert_drive_file_black_24dp"
+                            app:floating_title="Archivo"
+                            app:floating_title_color="@android:color/white" />
+
+                        <ru.dimorinny.floatingtextbutton.FloatingTextButton
+                            android:id="@+id/btnBorrarArchivo"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_toEndOf="@+id/edObserv"
+                            app:floating_background_color="#c71d0d"
+                            app:floating_title="Borrar Archivos"
+                            app:floating_left_icon="@drawable/ic_delete_black_24dp"
+                            app:floating_title_color="@android:color/white" />
+
+
+                    </LinearLayout>
 
 
                     <LinearLayout
@@ -187,7 +211,7 @@
                             android:layout_marginLeft="20sp"
                             app:floating_background_color="#be4747"
                             app:floating_left_icon="@drawable/ic_delete_black_24dp"
-                            app:floating_title="Borrar"
+                            app:floating_title="Borrar Fotos"
                             app:floating_title_color="@android:color/white" />
                     </LinearLayout>
 
@@ -277,7 +301,7 @@
                     </LinearLayout>
 
                     <LinearLayout
-                        android:id="@+id/Lfotos2"
+                        android:id="@+id/Lfotos3"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
 
@@ -364,40 +388,695 @@
                     </LinearLayout>
 
                     <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp">
+                        android:id="@+id/Lfotos2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
 
-                        <ru.dimorinny.floatingtextbutton.FloatingTextButton
-                            android:id="@+id/btnArchivo"
+                        <RelativeLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Archivo"
-                            app:floating_background_color="#898987"
-                            app:floating_left_icon="@drawable/ic_insert_drive_file_black_24dp"
-                            app:floating_title="Archivo"
-                            app:floating_title_color="@android:color/white" />
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginTop="5dp"
+                            android:orientation="horizontal">
 
-                        <ru.dimorinny.floatingtextbutton.FloatingTextButton
-                            android:id="@+id/btnBorrarArchivo"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_toEndOf="@+id/edObserv"
-                            app:floating_background_color="#c71d0d"
-                            app:floating_left_icon="@drawable/ic_delete_black_24dp"
-                            app:floating_title_color="@android:color/white" />
+                            <ImageView
+                                android:id="@+id/imgView7"
+                                android:layout_width="100dp"
+                                android:layout_height="100dp"
+                                android:layout_marginTop="10dp"
+                                android:layout_marginRight="10dp"
+                                android:src="@drawable/empty_image" />
 
-                        <ru.dimorinny.floatingtextbutton.FloatingTextButton
-                            android:id="@+id/btnEnviar"
-                            android:layout_width="wrap_content"
+                            <CheckBox
+                                android:id="@+id/Check7"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignEnd="@+id/imgView7"
+                                android:layout_alignParentTop="true"
+                                android:layout_marginEnd="-10dp" />
+
+                        </RelativeLayout>
+
+                        <RelativeLayout
+                            android:layout_width="110dp"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="30sp"
-                            android:layout_toEndOf="@+id/edObserv"
-                            app:floating_background_color="#1c8915"
-                            app:floating_left_icon="@drawable/ic_file_upload_black_24dp"
-                            app:floating_title="Enviar"
-                            app:floating_title_color="@android:color/white" />
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginTop="5dp"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:id="@+id/imgView8"
+                                android:layout_width="100dp"
+                                android:layout_height="100dp"
+                                android:layout_alignParentStart="true"
+                                android:layout_alignParentTop="true"
+                                android:layout_marginStart="0dp"
+                                android:layout_marginTop="10dp"
+                                android:layout_marginRight="10dp"
+                                android:src="@drawable/empty_image" />
+
+                            <CheckBox
+                                android:id="@+id/Check8"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignEnd="@+id/imgView8"
+                                android:layout_alignParentTop="true"
+                                android:layout_marginEnd="-10dp" />
+
+
+                        </RelativeLayout>
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginTop="5dp"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:id="@+id/imgView9"
+                                android:layout_width="100dp"
+                                android:layout_height="100dp"
+                                android:layout_marginTop="10dp"
+                                android:layout_marginRight="10dp"
+                                android:src="@drawable/empty_image" />
+
+                            <CheckBox
+                                android:id="@+id/Check9"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignEnd="@+id/imgView9"
+                                android:layout_alignParentTop="true"
+                                android:layout_marginEnd="-10dp" />
+
+
+                        </RelativeLayout>
+
                     </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <RelativeLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginTop="5dp"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:id="@+id/imgView10"
+                                android:layout_width="100dp"
+                                android:layout_height="100dp"
+                                android:layout_marginTop="10dp"
+                                android:layout_marginRight="10dp"
+                                android:src="@drawable/empty_image" />
+
+                            <CheckBox
+                                android:id="@+id/Check10"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignEnd="@+id/imgView10"
+                                android:layout_alignParentTop="true"
+                                android:layout_marginEnd="-10dp" />
+
+                        </RelativeLayout>
+
+                        <RelativeLayout
+                            android:layout_width="110dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginTop="5dp"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:id="@+id/imgView11"
+                                android:layout_width="100dp"
+                                android:layout_height="100dp"
+                                android:layout_alignParentStart="true"
+                                android:layout_alignParentTop="true"
+                                android:layout_marginStart="0dp"
+                                android:layout_marginTop="10dp"
+                                android:layout_marginRight="10dp"
+                                android:src="@drawable/empty_image" />
+
+                            <CheckBox
+                                android:id="@+id/Check11"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignEnd="@+id/imgView11"
+                                android:layout_alignParentTop="true"
+                                android:layout_marginEnd="-10dp" />
+
+
+                        </RelativeLayout>
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginTop="5dp"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:id="@+id/imgView12"
+                                android:layout_width="100dp"
+                                android:layout_height="100dp"
+                                android:layout_marginTop="10dp"
+                                android:layout_marginRight="10dp"
+                                android:src="@drawable/empty_image" />
+
+                            <CheckBox
+                                android:id="@+id/Check12"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignEnd="@+id/imgView12"
+                                android:layout_alignParentTop="true"
+                                android:layout_marginEnd="-10dp" />
+
+
+                        </RelativeLayout>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <RelativeLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginTop="5dp"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:id="@+id/imgView13"
+                                android:layout_width="100dp"
+                                android:layout_height="100dp"
+                                android:layout_marginTop="10dp"
+                                android:layout_marginRight="10dp"
+                                android:src="@drawable/empty_image" />
+
+                            <CheckBox
+                                android:id="@+id/Check13"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignEnd="@+id/imgView13"
+                                android:layout_alignParentTop="true"
+                                android:layout_marginEnd="-10dp" />
+
+                        </RelativeLayout>
+
+                        <RelativeLayout
+                            android:layout_width="110dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginTop="5dp"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:id="@+id/imgView14"
+                                android:layout_width="100dp"
+                                android:layout_height="100dp"
+                                android:layout_alignParentStart="true"
+                                android:layout_alignParentTop="true"
+                                android:layout_marginStart="0dp"
+                                android:layout_marginTop="10dp"
+                                android:layout_marginRight="10dp"
+                                android:src="@drawable/empty_image" />
+
+                            <CheckBox
+                                android:id="@+id/Check14"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignEnd="@+id/imgView14"
+                                android:layout_alignParentTop="true"
+                                android:layout_marginEnd="-10dp" />
+
+
+                        </RelativeLayout>
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginTop="5dp"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:id="@+id/imgView15"
+                                android:layout_width="100dp"
+                                android:layout_height="100dp"
+                                android:layout_marginTop="10dp"
+                                android:layout_marginRight="10dp"
+                                android:src="@drawable/empty_image" />
+
+                            <CheckBox
+                                android:id="@+id/Check15"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignEnd="@+id/imgView15"
+                                android:layout_alignParentTop="true"
+                                android:layout_marginEnd="-10dp" />
+
+
+                        </RelativeLayout>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <RelativeLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginTop="5dp"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:id="@+id/imgView16"
+                                android:layout_width="100dp"
+                                android:layout_height="100dp"
+                                android:layout_marginTop="10dp"
+                                android:layout_marginRight="10dp"
+                                android:src="@drawable/empty_image" />
+
+                            <CheckBox
+                                android:id="@+id/Check16"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignEnd="@+id/imgView16"
+                                android:layout_alignParentTop="true"
+                                android:layout_marginEnd="-10dp" />
+
+                        </RelativeLayout>
+
+                        <RelativeLayout
+                            android:layout_width="110dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginTop="5dp"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:id="@+id/imgView17"
+                                android:layout_width="100dp"
+                                android:layout_height="100dp"
+                                android:layout_alignParentStart="true"
+                                android:layout_alignParentTop="true"
+                                android:layout_marginStart="0dp"
+                                android:layout_marginTop="10dp"
+                                android:layout_marginRight="10dp"
+                                android:src="@drawable/empty_image" />
+
+                            <CheckBox
+                                android:id="@+id/Check17"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignEnd="@+id/imgView17"
+                                android:layout_alignParentTop="true"
+                                android:layout_marginEnd="-10dp" />
+
+
+                        </RelativeLayout>
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginTop="5dp"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:id="@+id/imgView18"
+                                android:layout_width="100dp"
+                                android:layout_height="100dp"
+                                android:layout_marginTop="10dp"
+                                android:layout_marginRight="10dp"
+                                android:src="@drawable/empty_image" />
+
+                            <CheckBox
+                                android:id="@+id/Check18"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignEnd="@+id/imgView18"
+                                android:layout_alignParentTop="true"
+                                android:layout_marginEnd="-10dp" />
+
+
+                        </RelativeLayout>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <RelativeLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginTop="5dp"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:id="@+id/imgView19"
+                                android:layout_width="100dp"
+                                android:layout_height="100dp"
+                                android:layout_marginTop="10dp"
+                                android:layout_marginRight="10dp"
+                                android:src="@drawable/empty_image" />
+
+                            <CheckBox
+                                android:id="@+id/Check19"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignEnd="@+id/imgView19"
+                                android:layout_alignParentTop="true"
+                                android:layout_marginEnd="-10dp" />
+
+                        </RelativeLayout>
+
+                        <RelativeLayout
+                            android:layout_width="110dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginTop="5dp"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:id="@+id/imgView20"
+                                android:layout_width="100dp"
+                                android:layout_height="100dp"
+                                android:layout_alignParentStart="true"
+                                android:layout_alignParentTop="true"
+                                android:layout_marginStart="0dp"
+                                android:layout_marginTop="10dp"
+                                android:layout_marginRight="10dp"
+                                android:src="@drawable/empty_image" />
+
+                            <CheckBox
+                                android:id="@+id/Check20"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignEnd="@+id/imgView20"
+                                android:layout_alignParentTop="true"
+                                android:layout_marginEnd="-10dp" />
+
+
+                        </RelativeLayout>
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginTop="5dp"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:id="@+id/imgView21"
+                                android:layout_width="100dp"
+                                android:layout_height="100dp"
+                                android:layout_marginTop="10dp"
+                                android:layout_marginRight="10dp"
+                                android:src="@drawable/empty_image" />
+
+                            <CheckBox
+                                android:id="@+id/Check21"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignEnd="@+id/imgView21"
+                                android:layout_alignParentTop="true"
+                                android:layout_marginEnd="-10dp" />
+
+
+                        </RelativeLayout>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <RelativeLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginTop="5dp"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:id="@+id/imgView22"
+                                android:layout_width="100dp"
+                                android:layout_height="100dp"
+                                android:layout_marginTop="10dp"
+                                android:layout_marginRight="10dp"
+                                android:src="@drawable/empty_image" />
+
+                            <CheckBox
+                                android:id="@+id/Check22"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignEnd="@+id/imgView22"
+                                android:layout_alignParentTop="true"
+                                android:layout_marginEnd="-10dp" />
+
+                        </RelativeLayout>
+
+                        <RelativeLayout
+                            android:layout_width="110dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginTop="5dp"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:id="@+id/imgView23"
+                                android:layout_width="100dp"
+                                android:layout_height="100dp"
+                                android:layout_alignParentStart="true"
+                                android:layout_alignParentTop="true"
+                                android:layout_marginStart="0dp"
+                                android:layout_marginTop="10dp"
+                                android:layout_marginRight="10dp"
+                                android:src="@drawable/empty_image" />
+
+                            <CheckBox
+                                android:id="@+id/Check23"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignEnd="@+id/imgView23"
+                                android:layout_alignParentTop="true"
+                                android:layout_marginEnd="-10dp" />
+
+
+                        </RelativeLayout>
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginTop="5dp"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:id="@+id/imgView24"
+                                android:layout_width="100dp"
+                                android:layout_height="100dp"
+                                android:layout_marginTop="10dp"
+                                android:layout_marginRight="10dp"
+                                android:src="@drawable/empty_image" />
+
+                            <CheckBox
+                                android:id="@+id/Check24"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignEnd="@+id/imgView24"
+                                android:layout_alignParentTop="true"
+                                android:layout_marginEnd="-10dp" />
+
+
+                        </RelativeLayout>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <RelativeLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginTop="5dp"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:id="@+id/imgView25"
+                                android:layout_width="100dp"
+                                android:layout_height="100dp"
+                                android:layout_marginTop="10dp"
+                                android:layout_marginRight="10dp"
+                                android:src="@drawable/empty_image" />
+
+                            <CheckBox
+                                android:id="@+id/Check25"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignEnd="@+id/imgView25"
+                                android:layout_alignParentTop="true"
+                                android:layout_marginEnd="-10dp" />
+
+                        </RelativeLayout>
+
+                        <RelativeLayout
+                            android:layout_width="110dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginTop="5dp"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:id="@+id/imgView26"
+                                android:layout_width="100dp"
+                                android:layout_height="100dp"
+                                android:layout_alignParentStart="true"
+                                android:layout_alignParentTop="true"
+                                android:layout_marginStart="0dp"
+                                android:layout_marginTop="10dp"
+                                android:layout_marginRight="10dp"
+                                android:src="@drawable/empty_image" />
+
+                            <CheckBox
+                                android:id="@+id/Check26"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignEnd="@+id/imgView26"
+                                android:layout_alignParentTop="true"
+                                android:layout_marginEnd="-10dp" />
+
+
+                        </RelativeLayout>
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginTop="5dp"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:id="@+id/imgView27"
+                                android:layout_width="100dp"
+                                android:layout_height="100dp"
+                                android:layout_marginTop="10dp"
+                                android:layout_marginRight="10dp"
+                                android:src="@drawable/empty_image" />
+
+                            <CheckBox
+                                android:id="@+id/Check27"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignEnd="@+id/imgView27"
+                                android:layout_alignParentTop="true"
+                                android:layout_marginEnd="-10dp" />
+
+
+                        </RelativeLayout>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <RelativeLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginTop="5dp"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:id="@+id/imgView28"
+                                android:layout_width="100dp"
+                                android:layout_height="100dp"
+                                android:layout_marginTop="10dp"
+                                android:layout_marginRight="10dp"
+                                android:src="@drawable/empty_image" />
+
+                            <CheckBox
+                                android:id="@+id/Check28"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignEnd="@+id/imgView28"
+                                android:layout_alignParentTop="true"
+                                android:layout_marginEnd="-10dp" />
+
+                        </RelativeLayout>
+
+                        <RelativeLayout
+                            android:layout_width="110dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginTop="5dp"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:id="@+id/imgView29"
+                                android:layout_width="100dp"
+                                android:layout_height="100dp"
+                                android:layout_alignParentStart="true"
+                                android:layout_alignParentTop="true"
+                                android:layout_marginStart="0dp"
+                                android:layout_marginTop="10dp"
+                                android:layout_marginRight="10dp"
+                                android:src="@drawable/empty_image" />
+
+                            <CheckBox
+                                android:id="@+id/Check29"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignEnd="@+id/imgView29"
+                                android:layout_alignParentTop="true"
+                                android:layout_marginEnd="-10dp" />
+
+
+                        </RelativeLayout>
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginTop="5dp"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:id="@+id/imgView30"
+                                android:layout_width="100dp"
+                                android:layout_height="100dp"
+                                android:layout_marginTop="10dp"
+                                android:layout_marginRight="10dp"
+                                android:src="@drawable/empty_image" />
+
+                            <CheckBox
+                                android:id="@+id/Check30"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignEnd="@+id/imgView30"
+                                android:layout_alignParentTop="true"
+                                android:layout_marginEnd="-10dp" />
+
+
+                        </RelativeLayout>
+
+                    </LinearLayout>
+
+
 
 
 

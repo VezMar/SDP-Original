@@ -391,7 +391,7 @@ public class ExtraActivity extends AppCompatActivity {
                             UUID uuid = UUID.randomUUID();
                             u = ""+uuid;
 
-
+                            Subirdatos();
                             uploadAllImages();
                             uploadAllFiles();
 
@@ -540,8 +540,6 @@ public class ExtraActivity extends AppCompatActivity {
                 multimedia.add(PerFotoArray[i]);
             }
         }
-
-
     }
 
 
@@ -572,11 +570,13 @@ public class ExtraActivity extends AppCompatActivity {
                 public void onComplete(@NonNull Task<Uri> task) {
                     if (task.isSuccessful()) {
                         Uri downloadUri = task.getResult();
+
                         PerFotoArray[x].setSrc(downloadUri.toString());
 
                         Subirdatos();
 
-                        if(x == (contImg-1) && contUris==0){
+                        if(x == (contImg-1) && contUris == 0){
+
                             BorrarImagenes();
 
                         }
@@ -702,7 +702,7 @@ public class ExtraActivity extends AppCompatActivity {
 
         final String fileName= "Archivo" + UUID.randomUUID().toString();
         final StorageReference srtreference = storage.getReference();
-        srtreference.child("files").child("evidence").child(fileName).putFile(ArchivoUri)
+        srtreference.child("files").child("extra").child(fileName).putFile(ArchivoUri)
                 .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
@@ -714,12 +714,18 @@ public class ExtraActivity extends AppCompatActivity {
                                 if (task.isSuccessful()) {
                                     Uri downloadUri = task.getResult();
                                     PerFilesArray[i].setSrc(downloadUri.toString());
-                                    Subirdatos();
 
-                                    progressDialog.setProgress(0);
+                                   Subirdatos();
+
+
                                     progressDialog.hide();
-                                    
+
                                     if(i == (contUris-1)){
+                                        try {
+                                            Thread.sleep(10000);
+                                        } catch (InterruptedException e) {
+                                            e.printStackTrace();
+                                        }
                                         BorrarImagenes();
                                         BorrarFiles();
 
@@ -766,8 +772,6 @@ public class ExtraActivity extends AppCompatActivity {
 
             }
         });
-
-
     }
 
     private void BorrarFiles() {
@@ -1112,10 +1116,6 @@ public class ExtraActivity extends AppCompatActivity {
 
     private void uploadAllFiles() {
 //        uploadfileGlobal(ArchivoUri);
-
-
-
-
 
         if (ArchivoUri != null) {
             uploadfileGlobal(ArchivoUri, 0);
