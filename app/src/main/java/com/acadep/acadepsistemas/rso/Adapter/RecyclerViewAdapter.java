@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
@@ -17,12 +18,16 @@ import java.util.ArrayList;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
 
-    private ArrayList<String> mImages = new ArrayList<>();
     private Context mContext;
+    private ArrayList<String> mImages = new ArrayList<>();
+    private OnItemClickListener listener;
+    //private AdapterView.OnItemLongClickListener
 
-    public RecyclerViewAdapter( Context mContext, ArrayList<String> mImages) {
-        this.mImages = mImages;
+
+    public RecyclerViewAdapter(Context mContext, ArrayList<String> mImages, OnItemClickListener listener) {
         this.mContext = mContext;
+        this.mImages = mImages;
+        this.listener = listener;
     }
 
     @NonNull
@@ -40,12 +45,14 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 .load(mImages.get(i))
                 .into(viewHolder.image);
 
-        viewHolder.parent_layout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(mContext, "Pos " + i, Toast.LENGTH_SHORT).show();
-            }
-        });
+        viewHolder.bind(mImages.get(i), listener);
+
+//        viewHolder.parent_layout.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Toast.makeText(mContext, "Pos " + i, Toast.LENGTH_SHORT).show();
+//            }
+//        });
     }
 
     @Override
@@ -63,5 +70,21 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             image = itemView.findViewById(R.id.image_recycler);
             parent_layout = itemView.findViewById(R.id.parent_layout);
         }
+
+            public void bind(final String mImage, final OnItemClickListener listener){
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    listener.OnItemClick(mImage, getAdapterPosition());
+                }
+            });
+            }
     }
+
+    public interface OnItemClickListener{
+        void OnItemClick(String mImage, int position);
+    }
+
+
 }
