@@ -31,6 +31,9 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.format.Time;
 import android.util.Log;
 import android.view.View;
@@ -42,14 +45,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.acadep.acadepsistemas.rso.Adapter.RecyclerViewAdapter;
 import com.acadep.acadepsistemas.rso.Fragmentos.ActivitysFragment;
 import com.acadep.acadepsistemas.rso.Fragmentos.EventosFragment;
 //import com.example.acadepsistemas.seguimiento.Manifest;
@@ -57,13 +59,11 @@ import com.acadep.acadepsistemas.rso.R;
 import com.acadep.acadepsistemas.rso.model.Configuration;
 import com.acadep.acadepsistemas.rso.model.Data;
 import com.acadep.acadepsistemas.rso.model.Evento;
-import com.acadep.acadepsistemas.rso.model.Extra;
 import com.acadep.acadepsistemas.rso.model.Files;
 import com.acadep.acadepsistemas.rso.model.Foto;
 import com.acadep.acadepsistemas.rso.model.Ref_event;
 import com.acadep.acadepsistemas.rso.model.Ubication;
 import com.acadep.acadepsistemas.rso.model.datetime;
-import com.github.chrisbanes.photoview.PhotoView;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.SettingsClient;
@@ -119,14 +119,6 @@ public class SupervisionActivity extends AppCompatActivity
     private static final String CARPETA_IMAGEN = "Camera";
     private static final String DIRECTORIO_IMAGEN = CARPETA_PRINCIPAL + CARPETA_IMAGEN;
 
-    static File [] FileImagenArray = new File[6];
-
-    static File fileimagen = null;
-    static File fileimagen2 = null;
-    static File fileimagen3 = null;
-    static File fileimagen4 = null;
-    static File fileimagen5 = null;
-    static File fileimagen6 = null;
 
     static File nula = new File("/ada/");
 
@@ -173,18 +165,14 @@ public class SupervisionActivity extends AppCompatActivity
     private static final int CAPTURE_PHOTO = 104;
 
     //Varibales X
-    static int cont1=0;
-    static int cont2=0;
-    static int cont3=0;
+    static int cont1 = 0;
+    static int cont2 = 0;
+    static int cont3 = 0;
 
-    static int contImg=0;
+    static int contImg = 0;
 
     FloatingTextButton btnEnviar;
     private FloatingTextButton btnFoto;
-    private FloatingTextButton btnFoto2;
-    private FloatingTextButton btnFoto3;
-    private FloatingTextButton btnFoto4;
-    private FloatingTextButton btnFoto5;
 
 
 
@@ -192,7 +180,7 @@ public class SupervisionActivity extends AppCompatActivity
 
 
     static int conteo = 0;
-    static int descision= 0;
+    static int descision = 0;
 
     static String u;
 
@@ -207,7 +195,7 @@ public class SupervisionActivity extends AppCompatActivity
     static String idactivity;
     static String description;
     static String title;
-    static  List<String> tools;
+    static List<String> tools;
 
     static Ref_event ref_event = new Ref_event();
 
@@ -233,64 +221,29 @@ public class SupervisionActivity extends AppCompatActivity
 
     //Variables Fotos
     //private Uri filePath;
-    private static ImageView imageView;
-    private static ImageView imageView2;
-    private static ImageView imageView3;
-    private static ImageView imageView4;
-    private static ImageView imageView5;
-    private static ImageView imageView6;
-    private static ImageView imageView7;
-    private static ImageView imageView8;
-    private static ImageView imageView9;
-    private static ImageView imageView10;
-    private static ImageView imageView11;
-    private static ImageView imageView12;
-    private static ImageView imageView13;
-    private static ImageView imageView14;
-    private static ImageView imageView15;
-    private static ImageView imageView16;
-    private static ImageView imageView17;
-    private static ImageView imageView18;
-    private static ImageView imageView19;
-    private static ImageView imageView20;
-    private static ImageView imageView21;
-    private static ImageView imageView22;
-    private static ImageView imageView23;
-    private static ImageView imageView24;
-    private static ImageView imageView25;
-    private static ImageView imageView26;
-    private static ImageView imageView27;
-    private static ImageView imageView28;
-    private static ImageView imageView29;
-    private static ImageView imageView30;
-
-    private static ImageView noImage;
 
     FloatingTextButton btnBorrar;
-    FloatingTextButton btnBorrar2;
-    FloatingTextButton btnBorrar3;
-    FloatingTextButton btnBorrar4;
-    FloatingTextButton btnBorrar5;
-
+    FloatingTextButton btnArchivo;
     FloatingTextButton btnBorrarArchivo;
+
+    private Switch swtBorrar;
 
     static int max_photos;
     static int min_photos;
 
 
-    static List<String> Foto =  new ArrayList<>();
-    static List<String> Foto2 =  new ArrayList<>();
-    static List<String> Foto3 =  new ArrayList<>();
-    static List<String> Foto4 =  new ArrayList<>();
-    static List<String> Foto5 =  new ArrayList<>();
-
+    static List<String> Foto = new ArrayList<>();
+    static List<String> Foto2 = new ArrayList<>();
+    static List<String> Foto3 = new ArrayList<>();
+    static List<String> Foto4 = new ArrayList<>();
+    static List<String> Foto5 = new ArrayList<>();
 
 
 //Subir archivo
 
-    FloatingTextButton btnArchivo;
 
-    static Uri [] ArchivosUrisArray;
+
+    static Uri[] ArchivosUrisArray;
     static Uri UriNula = Uri.parse("1");
 
     static Uri ArchivoUri;
@@ -304,8 +257,8 @@ public class SupervisionActivity extends AppCompatActivity
     static Uri ArchivoUri9;
     static Uri ArchivoUri10;
 
-    static int contUris=0;
-    static int restUris=9;
+    static int contUris = 0;
+    static int restUris = 9;
 
     ProgressDialog progressDialog;
 
@@ -324,7 +277,7 @@ public class SupervisionActivity extends AppCompatActivity
     DatabaseReference refDuring;
     DatabaseReference refAfter;
 
-    FirebaseFirestore BDFireStore= FirebaseFirestore.getInstance();
+    FirebaseFirestore BDFireStore = FirebaseFirestore.getInstance();
     CollectionReference fireStoreReference;
 
 
@@ -343,15 +296,11 @@ public class SupervisionActivity extends AppCompatActivity
     private static List<Foto> multimedia = new ArrayList<>();
     private static List<Files> files = new ArrayList<>();
 
-    private static com.acadep.acadepsistemas.rso.model.Foto PerFotoArray[] = new Foto[50];
-    private static Files PerFilesArray[] = new Files[10];
+    //static File [] FileImagenArray = new File[6];
 
-    private static com.acadep.acadepsistemas.rso.model.Foto PerFoto1 = new Foto();
-    private static com.acadep.acadepsistemas.rso.model.Foto PerFoto2 = new Foto();
-    private static com.acadep.acadepsistemas.rso.model.Foto PerFoto3 = new Foto();
-    private static com.acadep.acadepsistemas.rso.model.Foto PerFoto4 = new Foto();
-    private static com.acadep.acadepsistemas.rso.model.Foto PerFoto5 = new Foto();
-    private static com.acadep.acadepsistemas.rso.model.Foto PerFoto6 = new Foto();
+    private static com.acadep.acadepsistemas.rso.model.Foto PerFotoArray[] = new Foto[1001];
+    private static Foto PhotoData = new Foto();
+    private static Files PerFilesArray[] = new Files[10];
 
     private static datetime datatime = new datetime();
     private static Ubication ubication = new Ubication();
@@ -360,49 +309,21 @@ public class SupervisionActivity extends AppCompatActivity
     private static String Fecha;
     private static String Hora;
 
-    private static String src1;
-    static String src2;
-    static String src3;
-    static String src4;
-    static String src5;
-    static String src6;
 
     int status=1;
     int terminado = 1;
 
     static String created_at;
 
-    CheckBox checkBox1;
-    CheckBox checkBox2;
-    CheckBox checkBox3;
-    CheckBox checkBox4;
-    CheckBox checkBox5;
-    CheckBox checkBox6;
-    CheckBox checkBox7;
-    CheckBox checkBox8;
-    CheckBox checkBox9;
-    CheckBox checkBox10;
-    CheckBox checkBox11;
-    CheckBox checkBox12;
-    CheckBox checkBox13;
-    CheckBox checkBox14;
-    CheckBox checkBox15;
-    CheckBox checkBox16;
-    CheckBox checkBox17;
-    CheckBox checkBox18;
-    CheckBox checkBox19;
-    CheckBox checkBox20;
-    CheckBox checkBox21;
-    CheckBox checkBox22;
-    CheckBox checkBox23;
-    CheckBox checkBox24;
-    CheckBox checkBox25;
-    CheckBox checkBox26;
-    CheckBox checkBox27;
-    CheckBox checkBox28;
-    CheckBox checkBox29;
-    CheckBox checkBox30;
-    LinearLayout Lfotos1, Lfotos2;
+    //    Imagenes
+    private ArrayList<Bitmap> mImageBitmap = new ArrayList<>();
+    private static List<File> ListImages = new ArrayList<>();
+
+    private RecyclerView mRecyclerView;
+    private RecyclerView.Adapter mAdapter;
+    private RecyclerView.LayoutManager mLayaoutManager;
+
+    //Imagenes
 
 
     static String header;
@@ -423,6 +344,7 @@ public class SupervisionActivity extends AppCompatActivity
 
         ChequeoConfiguration();
         inicializacionVariables();
+        initRecyclerView();
 
 
         //PerFotoArray[] = new Foto(context)
@@ -471,100 +393,14 @@ public class SupervisionActivity extends AppCompatActivity
         btnArchivo = (FloatingTextButton) findViewById(R.id.btnArchivo);
 
         btnFoto = (FloatingTextButton) findViewById(R.id.btnFoto);
-//
-        btnBorrar = (FloatingTextButton) findViewById(R.id.btnBorrar);
 
 
-        checkBox1 = (CheckBox) findViewById(R.id.Check1);
-        checkBox2 = (CheckBox) findViewById(R.id.Check2);
-        checkBox3 = (CheckBox) findViewById(R.id.Check3);
-        checkBox4 = (CheckBox) findViewById(R.id.Check4);
-        checkBox5 = (CheckBox) findViewById(R.id.Check5);
-        checkBox6 = (CheckBox) findViewById(R.id.Check6);
-        checkBox7 = (CheckBox) findViewById(R.id.Check7);
-        checkBox8 = (CheckBox) findViewById(R.id.Check8);
-        checkBox9 = (CheckBox) findViewById(R.id.Check9);
-        checkBox10 = (CheckBox) findViewById(R.id.Check10);
-        checkBox11 = (CheckBox) findViewById(R.id.Check11);
-        checkBox12 = (CheckBox) findViewById(R.id.Check12);
-        checkBox13 = (CheckBox) findViewById(R.id.Check13);
-        checkBox14 = (CheckBox) findViewById(R.id.Check14);
-        checkBox15 = (CheckBox) findViewById(R.id.Check15);
-        checkBox16 = (CheckBox) findViewById(R.id.Check16);
-        checkBox17 = (CheckBox) findViewById(R.id.Check17);
-        checkBox18 = (CheckBox) findViewById(R.id.Check18);
-        checkBox19 = (CheckBox) findViewById(R.id.Check19);
-        checkBox20 = (CheckBox) findViewById(R.id.Check20);
-        checkBox21 = (CheckBox) findViewById(R.id.Check21);
-        checkBox22 = (CheckBox) findViewById(R.id.Check22);
-        checkBox23 = (CheckBox) findViewById(R.id.Check23);
-        checkBox24 = (CheckBox) findViewById(R.id.Check24);
-        checkBox25 = (CheckBox) findViewById(R.id.Check25);
-        checkBox26 = (CheckBox) findViewById(R.id.Check26);
-        checkBox27 = (CheckBox) findViewById(R.id.Check27);
-        checkBox28 = (CheckBox) findViewById(R.id.Check28);
-        checkBox29 = (CheckBox) findViewById(R.id.Check29);
-        checkBox30 = (CheckBox) findViewById(R.id.Check30);
+        swtBorrar = findViewById(R.id.swtBorrar);
+
+
 
 
         btnBorrarArchivo = (FloatingTextButton) findViewById(R.id.btnBorrarArchivo);
-
-
-        imageView = (ImageView) findViewById(R.id.imgView);
-        imageView2 = (ImageView) findViewById(R.id.imgView2);
-        imageView3 = (ImageView) findViewById(R.id.imgView3);
-        imageView4 = (ImageView) findViewById(R.id.imgView4);
-        imageView5 = (ImageView) findViewById(R.id.imgView5);
-        imageView6 = (ImageView) findViewById(R.id.imgView6);
-        imageView7 = (ImageView) findViewById(R.id.imgView7);
-        imageView8 = (ImageView) findViewById(R.id.imgView8);
-        imageView9 = (ImageView) findViewById(R.id.imgView9);
-        imageView10 = (ImageView) findViewById(R.id.imgView10);
-        imageView11 = (ImageView) findViewById(R.id.imgView11);
-        imageView12 = (ImageView) findViewById(R.id.imgView12);
-        imageView13 = (ImageView) findViewById(R.id.imgView13);
-        imageView14 = (ImageView) findViewById(R.id.imgView14);
-        imageView15 = (ImageView) findViewById(R.id.imgView15);
-        imageView16 = (ImageView) findViewById(R.id.imgView16);
-        imageView17 = (ImageView) findViewById(R.id.imgView17);
-        imageView18 = (ImageView) findViewById(R.id.imgView18);
-        imageView19 = (ImageView) findViewById(R.id.imgView19);
-        imageView20 = (ImageView) findViewById(R.id.imgView20);
-        imageView21 = (ImageView) findViewById(R.id.imgView21);
-        imageView22 = (ImageView) findViewById(R.id.imgView22);
-        imageView23 = (ImageView) findViewById(R.id.imgView23);
-        imageView24 = (ImageView) findViewById(R.id.imgView24);
-        imageView25 = (ImageView) findViewById(R.id.imgView25);
-        imageView26 = (ImageView) findViewById(R.id.imgView26);
-        imageView27 = (ImageView) findViewById(R.id.imgView27);
-        imageView28 = (ImageView) findViewById(R.id.imgView28);
-        imageView29 = (ImageView) findViewById(R.id.imgView29);
-        imageView30 = (ImageView) findViewById(R.id.imgView30);
-
-
-
-        checkBox1.setVisibility(View.INVISIBLE);
-        checkBox2.setVisibility(View.INVISIBLE);
-        checkBox3.setVisibility(View.INVISIBLE);
-        checkBox4.setVisibility(View.INVISIBLE);
-        checkBox5.setVisibility(View.INVISIBLE);
-        checkBox6.setVisibility(View.INVISIBLE);
-
-
-        imageView.setVisibility(View.INVISIBLE);
-        imageView2.setVisibility(View.INVISIBLE);
-        imageView3.setVisibility(View.INVISIBLE);
-        imageView4.setVisibility(View.INVISIBLE);
-        imageView5.setVisibility(View.INVISIBLE);
-        imageView6.setVisibility(View.INVISIBLE);
-
-        Lfotos1 = (LinearLayout) findViewById(R.id.Lfotos1);
-        Lfotos2 = (LinearLayout) findViewById(R.id.Lfotos2);
-
-
-
-
-        noImage = imageView5;
 
         // GPSSSSSSSSSSSSSSSSSSSSS
 
@@ -651,15 +487,6 @@ public class SupervisionActivity extends AppCompatActivity
         });
 
 
-        btnBorrar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                BorrarImagenesCheckBoxs();
-
-
-            }
-        });
 
 
 
@@ -681,15 +508,13 @@ public class SupervisionActivity extends AppCompatActivity
                 } else {
                     locationStart();
 
-                    if(fileimagen !=null && fileimagen2 !=null && fileimagen3 !=null && fileimagen4 !=null && fileimagen5 !=null && fileimagen6 !=null){
-                        StyleableToast.makeText(getApplicationContext(), "Ya no puede añadir más fotos", Toast.LENGTH_SHORT, R.style.warningToast).show();
-                    }else{
                         locationStart();
 
-                        GuardarInformacionImagenes();
+                    GuardarInformacionImagenes();
                         takePhoto();
 
-                    }
+
+
                 }
             }
         });
@@ -883,6 +708,47 @@ public class SupervisionActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
     }
 
+    private void initRecyclerView(){
+        mRecyclerView = findViewById(R.id.images_recycler);
+        mLayaoutManager= new GridLayoutManager(this, 4);
+
+        mAdapter = new RecyclerViewAdapter(this, mImageBitmap, new RecyclerViewAdapter.OnItemClickListener() {
+            @Override
+            public void OnItemClick(Bitmap mImage, int position) {
+                Toast.makeText(SupervisionActivity.this, "posicion " + position, Toast.LENGTH_SHORT).show();
+                if (swtBorrar.isChecked()){
+                    deleteImage(position);
+                }else{
+
+                }
+
+            }
+        });
+
+        mRecyclerView.setHasFixedSize(true);
+        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+
+        mRecyclerView.setLayoutManager(mLayaoutManager);
+        mRecyclerView.setAdapter(mAdapter);
+    }
+
+    private void addImage(Bitmap bitmap,int position){
+
+        mImageBitmap.add(position, bitmap);
+        mAdapter.notifyItemInserted(position);
+        mLayaoutManager.scrollToPosition(position);
+    }
+
+    private void deleteImage(int position){
+
+        mImageBitmap.remove(position);
+        ListImages.remove(position);
+        multimedia.remove(position);
+        mAdapter.notifyItemRemoved(position);
+        contImg--;
+
+    }
+
     private void ChequeoConfiguration() {
 
         BDFireStore
@@ -902,67 +768,6 @@ public class SupervisionActivity extends AppCompatActivity
 
     private void BorrarImagenesCheckBoxs() {
 
-        if(checkBox1.isChecked() || checkBox2.isChecked() || checkBox3.isChecked() || checkBox4.isChecked() || checkBox5.isChecked() || checkBox6.isChecked()) {
-
-
-            if (checkBox1.isChecked()) {
-
-                imageView.setImageResource(R.drawable.empty_image);
-                checkBox1.setChecked(false);
-                FileImagenArray[0]=nula;
-
-
-                imageView.setVisibility(View.INVISIBLE);
-                checkBox1.setVisibility(View.INVISIBLE);
-            }
-
-            if (checkBox2.isChecked()) {
-                imageView2.setImageResource(R.drawable.empty_image);
-                checkBox2.setChecked(false);
-                FileImagenArray[1]=nula;
-
-                imageView2.setVisibility(View.INVISIBLE);
-                checkBox2.setVisibility(View.INVISIBLE);
-            }
-
-            if (checkBox3.isChecked()) {
-                imageView3.setImageResource(R.drawable.empty_image);
-                checkBox3.setChecked(false);
-                FileImagenArray[2]=nula;
-
-                imageView3.setVisibility(View.INVISIBLE);
-                checkBox3.setVisibility(View.INVISIBLE);
-            }
-
-            if (checkBox4.isChecked()) {
-                imageView4.setImageResource(R.drawable.empty_image);
-                checkBox4.setChecked(false);
-                FileImagenArray[3]=nula;
-
-                imageView4.setVisibility(View.INVISIBLE);
-                checkBox4.setVisibility(View.INVISIBLE);
-            }
-
-            if (checkBox5.isChecked()) {
-                imageView5.setImageResource(R.drawable.empty_image);
-                checkBox5.setChecked(false);
-                FileImagenArray[4]=nula;
-
-                imageView5.setVisibility(View.INVISIBLE);
-                checkBox5.setVisibility(View.INVISIBLE);
-            }
-
-            if (checkBox6.isChecked()) {
-                imageView6.setImageResource(R.drawable.empty_image);
-                checkBox6.setChecked(false);
-                FileImagenArray[5]=nula;
-
-                imageView6.setVisibility(View.INVISIBLE);
-                checkBox6.setVisibility(View.INVISIBLE);
-            }
-        }else{
-            StyleableToast.makeText(getApplicationContext(), "No ha seleccionado ninguna foto", Toast.LENGTH_SHORT, R.style.warningToast).show();
-        }
     }
 
     private void GuardarInformacionArchivos() {
@@ -981,18 +786,28 @@ public class SupervisionActivity extends AppCompatActivity
 
         multimedia = new ArrayList<>();
         contImg=0;
-        for (int x=0; x<6; x++) {
+
+        PhotoData = new Foto();
+        /*
+        for (int x=0; x<1001; x++) {
             PerFotoArray[x] = new Foto();
-            FileImagenArray[x] = nula;
-        }
+        }*/
     }
 
     private void uploadAllImages() {
 
-        for(int i=0; i<FileImagenArray.length; i++){
-            if(FileImagenArray[i] != nula){
-                uploadImageGlobal(FileImagenArray[i], i);
-                multimedia.add(PerFotoArray[i]);
+
+//        for(int i=0; i<FileImagenArray.length; i++){
+//            if(FileImagenArray[i] != nula){
+//                uploadImageGlobal(FileImagenArray[i], i);
+//                multimedia.add(PerFotoArray[i]);
+//            }
+//        }
+
+        for(int i=0; i<ListImages.size(); i++){
+            if(ListImages.get(i) != null){
+                uploadImageGlobal(ListImages.get(i), i);
+                //multimedia.add(PhotoData);
             }
         }
     }
@@ -1028,51 +843,17 @@ public class SupervisionActivity extends AppCompatActivity
         ubication.setLng(Lng);
 
 
-        for(int i=0; i<6; i++){
-            if(FileImagenArray[i] == nula){
-                PerFotoArray[i].setCreated_at(created_at);
-                PerFotoArray[i].setUbication(ubication);
-                PerFotoArray[i].setType("Imagen");
-                break;
-            }
-        }
 
-//
-//        if(fileimagen==null) {
-//            PerFoto1.setCreated_at(created_at);
-//            PerFoto1.setUbicacion(ubication);
-//            PerFoto1.setType("Imagen");
-//        }else
-//
-//        if (fileimagen2==null){
-//            PerFoto2.setCreated_at(created_at);
-//            PerFoto2.setUbicacion(ubication);
-//            PerFoto2.setType("Imagen");
-//        } else
-//
-//        if (fileimagen3==null){
-//            PerFoto3.setCreated_at(created_at);
-//            PerFoto3.setUbicacion(ubication);
-//            PerFoto3.setType("Imagen");
-//        }else
-//
-//        if (fileimagen4==null){
-//            PerFoto4.setCreated_at(created_at);
-//            PerFoto4.setUbicacion(ubication);
-//            PerFoto4.setType("Imagen");
-//        }else
-//
-//        if (fileimagen5==null){
-//            PerFoto5.setCreated_at(created_at);
-//            PerFoto5.setUbicacion(ubication);
-//            PerFoto5.setType("Imagen");
-//        }else
-//
-//        if (fileimagen6==null){
-//            PerFoto6.setCreated_at(created_at);
-//            PerFoto6.setUbicacion(ubication);
-//            PerFoto6.setType("Imagen");
-//        }
+
+        PhotoData.setCreated_at(created_at);
+        PhotoData.setUbication(ubication);
+        PhotoData.setType("Imagen");
+        PhotoData.setSrc("");
+
+        multimedia.add(0, PhotoData);
+
+
+
     }
 
     private void EventoTerminado() {
@@ -1437,6 +1218,17 @@ public class SupervisionActivity extends AppCompatActivity
             }
         }
     }
+
+    public void onClickSwitch(View view) {
+        if (view.getId() == R.id.swtBorrar) {
+            if (swtBorrar.isChecked()) {
+                StyleableToast.makeText(SupervisionActivity.this, "Al activar esta opción si da click sobre una imagen la borrará", Toast.LENGTH_SHORT, R.style.warningToastMiddle).show();
+            } else {
+                Toast.makeText(SupervisionActivity.this, "Borrado de fotos desactivado", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
     /* Aqui empieza la Clase Localizacion */
     public static class Localizacion implements LocationListener {
         SupervisionActivity mainActivity3;
@@ -1543,43 +1335,14 @@ public class SupervisionActivity extends AppCompatActivity
 
         multimedia = new ArrayList<>();
         contImg=0;
-        for (int x=0; x<6; x++) {
-            PerFotoArray[x] = new Foto();
-            FileImagenArray[x] = nula;
+
+        PhotoData = new Foto();
+
+        for (int x=0; x<ListImages.size(); x++) {
+            mImageBitmap.remove(0);
+            mAdapter.notifyItemRemoved(0);
         }
-
-        imageView.setImageResource(R.drawable.empty_image);
-        checkBox1.setChecked(false);
-
-        imageView2.setImageResource(R.drawable.empty_image);
-        checkBox2.setChecked(false);
-
-
-        imageView3.setImageResource(R.drawable.empty_image);
-        checkBox3.setChecked(false);
-
-        imageView4.setImageResource(R.drawable.empty_image);
-        checkBox4.setChecked(false);
-
-        imageView5.setImageResource(R.drawable.empty_image);
-        checkBox5.setChecked(false);
-
-        imageView6.setImageResource(R.drawable.empty_image);
-        checkBox6.setChecked(false);
-
-        checkBox1.setVisibility(View.INVISIBLE);
-        checkBox2.setVisibility(View.INVISIBLE);
-        checkBox3.setVisibility(View.INVISIBLE);
-        checkBox4.setVisibility(View.INVISIBLE);
-        checkBox5.setVisibility(View.INVISIBLE);
-        checkBox6.setVisibility(View.INVISIBLE);
-
-        imageView.setVisibility(View.INVISIBLE);
-        imageView2.setVisibility(View.INVISIBLE);
-        imageView3.setVisibility(View.INVISIBLE);
-        imageView4.setVisibility(View.INVISIBLE);
-        imageView5.setVisibility(View.INVISIBLE);
-        imageView6.setVisibility(View.INVISIBLE);
+        ListImages = new ArrayList<>();
     }
 
     public void takePhoto() {
@@ -1605,13 +1368,13 @@ public class SupervisionActivity extends AppCompatActivity
             final UploadTask uploadTask = ref.putFile(Uri.fromFile(fileimagenpos));
 
 
+//            ref.putFile().continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
             ref.putFile(Uri.fromFile(fileimagenpos)).continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
                 @Override
                 public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
                     if (!task.isSuccessful()) {
                         throw task.getException();
                     }
-                    //PerFotoArray[x].setSrc(ref.getDownloadUrl().toString());
                     return ref.getDownloadUrl();
                 }
             }).addOnCompleteListener(new OnCompleteListener<Uri>() {
@@ -1619,12 +1382,12 @@ public class SupervisionActivity extends AppCompatActivity
                 public void onComplete(@NonNull Task<Uri> task) {
                     if (task.isSuccessful()) {
                         Uri downloadUri = task.getResult();
-                        PerFotoArray[x].setSrc(downloadUri.toString());
+                        PhotoData = multimedia.get(x);
+                        PhotoData.setSrc(downloadUri.toString());
+                        multimedia.set(x, PhotoData);
 
                         Subirdatos();
-
                         if(x == (contImg-1) && contUris==0){
-
                             BorrarImagenes();
                         }
 
@@ -1638,8 +1401,6 @@ public class SupervisionActivity extends AppCompatActivity
     }
 
     private void Subirdatos() {
-
-
         created_at_funct();
         Data data = new Data(created_at, Observation, header,ref_event, Lat, Lng, multimedia, files);
         BDFireStore.collection("evidence").document(u).set(data, SetOptions.merge());
@@ -1831,7 +1592,8 @@ public class SupervisionActivity extends AppCompatActivity
                     Bitmap Bitnew = redimensionarImagenMaximo(capturedCoolerBitmap, 1200 , 800);
 
                     contImg++;
-                    seleccionImageView(Bitnew);
+                    saveImageToGallery(Bitnew);
+                    addImage(Bitnew, 0);
 
                     break;
 
@@ -1847,39 +1609,6 @@ public class SupervisionActivity extends AppCompatActivity
 
     }
 
-    private void seleccionImageView(Bitmap bitnew) {
-        for(int i=0; i<FileImagenArray.length; i++){
-            if(FileImagenArray[i] == nula){
-                descision=i;
-                saveImageToGallery(bitnew);
-                if(i==0){
-                    imageView.setImageBitmap(bitnew);
-                    break;
-                }
-                if(i==1){
-                    imageView2.setImageBitmap(bitnew);
-                    break;
-                }
-                if(i==2){
-                    imageView3.setImageBitmap(bitnew);
-                    break;
-                }
-                if(i==3){
-                    imageView4.setImageBitmap(bitnew);
-                    break;
-                }
-                if(i==4){
-                    imageView5.setImageBitmap(bitnew);
-                    break;
-                }
-                if(i==5){
-                    imageView6.setImageBitmap(bitnew);
-                    break;
-                }
-
-            }
-        }
-    }
 
     private void SelecUri(Intent data) {
 
@@ -1979,59 +1708,7 @@ public class SupervisionActivity extends AppCompatActivity
             Toast.makeText(getApplicationContext(),"Hubo un error",Toast.LENGTH_SHORT).show();
         }
 
-
-        if(descision==0) {
-            FileImagenArray[0] = file;
-            imageView.setVisibility(View.VISIBLE);
-            checkBox1.setVisibility(View.VISIBLE);
-        } else if (descision==1){
-            FileImagenArray[1] = file;
-            imageView2.setVisibility(View.VISIBLE);
-            checkBox2.setVisibility(View.VISIBLE);
-        } else if (descision==2){
-            FileImagenArray[2] = file;
-            imageView3.setVisibility(View.VISIBLE);
-            checkBox3.setVisibility(View.VISIBLE);
-        } else if (descision==3){
-            FileImagenArray[3] = file;
-            imageView4.setVisibility(View.VISIBLE);
-            checkBox4.setVisibility(View.VISIBLE);
-        } else if (descision==4){
-            FileImagenArray[4] = file;
-            imageView5.setVisibility(View.VISIBLE);
-            checkBox5.setVisibility(View.VISIBLE);
-        }else if (descision==5){
-            FileImagenArray[5] = file;
-            imageView6.setVisibility(View.VISIBLE);
-            checkBox6.setVisibility(View.VISIBLE);
-        }
-
-
-//        if(descision==0) {
-//            fileimagen = file;
-//            imageView.setVisibility(View.VISIBLE);
-//            checkBox1.setVisibility(View.VISIBLE);
-//        } else if (descision==1){
-//            fileimagen2 = file;
-//            imageView2.setVisibility(View.VISIBLE);
-//            checkBox2.setVisibility(View.VISIBLE);
-//        } else if (descision==2){
-//            fileimagen3 = file;
-//            imageView3.setVisibility(View.VISIBLE);
-//            checkBox3.setVisibility(View.VISIBLE);
-//        } else if (descision==3){
-//            fileimagen4 = file;
-//            imageView4.setVisibility(View.VISIBLE);
-//            checkBox4.setVisibility(View.VISIBLE);
-//        } else if (descision==4){
-//            fileimagen5 = file;
-//            imageView5.setVisibility(View.VISIBLE);
-//            checkBox5.setVisibility(View.VISIBLE);
-//        }else if (descision==5){
-//            fileimagen6 = file;
-//            imageView6.setVisibility(View.VISIBLE);
-//            checkBox6.setVisibility(View.VISIBLE);
-//        }
+        ListImages.add(0, file);
     }
 
 
@@ -2238,12 +1915,6 @@ public class SupervisionActivity extends AppCompatActivity
 
 
         btnBorrarArchivo.setVisibility(View.INVISIBLE);
-
-        imageView.setVisibility(View.INVISIBLE);
-        imageView2.setVisibility(View.INVISIBLE);
-        imageView3.setVisibility(View.INVISIBLE);
-        imageView4.setVisibility(View.INVISIBLE);
-        imageView5.setVisibility(View.INVISIBLE);
 
         btnArchivo.setVisibility(View.INVISIBLE);
 

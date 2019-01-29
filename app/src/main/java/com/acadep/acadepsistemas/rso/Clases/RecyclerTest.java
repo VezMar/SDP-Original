@@ -1,32 +1,52 @@
 package com.acadep.acadepsistemas.rso.Clases;
 
 import android.Manifest;
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Base64;
 import android.view.View;
-import android.widget.Button;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import com.acadep.acadepsistemas.rso.Adapter.RecyclerViewAdapter;
 import com.acadep.acadepsistemas.rso.R;
+import com.acadep.acadepsistemas.rso.model.Foto;
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.muddzdev.styleabletoast.StyleableToast;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import java.util.UUID;
 
 import ru.dimorinny.floatingtextbutton.FloatingTextButton;
 
@@ -38,13 +58,25 @@ public class RecyclerTest  extends AppCompatActivity {
     private static final int REQUEST_PERM_WRITE_STORAGE = 102;
     private static final int CAPTURE_PHOTO = 104;
 
-    //
-    private ArrayList<String> mImageBitmap = new ArrayList<>();
-    private RecyclerView mRecyclerView;
-    private RecyclerView.Adapter mAdapter;
-    private RecyclerView.LayoutManager mLayaoutManager;
+//    Imagenes
+        private ArrayList<Bitmap> mImageBitmap = new ArrayList<>();
+        private static List<File> ListImages = new ArrayList<>();
 
+        private RecyclerView mRecyclerView;
+        private RecyclerView.Adapter mAdapter;
+        private RecyclerView.LayoutManager mLayaoutManager;
+        //Imagenes
     private FloatingTextButton btnPhoto;
+    private FloatingTextButton btnEnviarTest;
+    private Switch swtBorrar;
+
+
+
+    //FireStore
+    StorageReference storageReference;
+    FirebaseStorage storage;
+    FirebaseFirestore BDFireStore = FirebaseFirestore.getInstance();
+
 
     private int counter;
     @Override
@@ -52,26 +84,18 @@ public class RecyclerTest  extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.recycler_test);
 
-        initImagesBitmap();
+        initRecyclerView();
+
+        storage = FirebaseStorage.getInstance();
+        storageReference = storage.getReference();
 
         btnPhoto = findViewById(R.id.btnPhoto);
+        btnEnviarTest = findViewById(R.id.btnEnviarTest);
+
+        swtBorrar = findViewById(R.id.swtBorrar);
 
 
-        mRecyclerView = findViewById(R.id.test_recycler);
-        mLayaoutManager= new GridLayoutManager(this, 3);
-        mAdapter = new RecyclerViewAdapter(this, mImageBitmap, new RecyclerViewAdapter.OnItemClickListener() {
-            @Override
-            public void OnItemClick(String mImage, int position) {
-                Toast.makeText(RecyclerTest.this, "posicion " + position, Toast.LENGTH_SHORT).show();
-                delateImage(position);
-            }
-        });
 
-        mRecyclerView.setHasFixedSize(true);
-        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-
-        mRecyclerView.setLayoutManager(mLayaoutManager);
-        mRecyclerView.setAdapter(mAdapter);
 
         btnPhoto.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -95,6 +119,83 @@ public class RecyclerTest  extends AppCompatActivity {
                 }
             }
         });
+
+
+        btnEnviarTest.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                uploadAllImages();
+            }
+        });
+
+    }
+
+    public void onClickSwitch(final View view) {
+                    if (view.getId() == R.id.swtBorrar) {
+                        if (swtBorrar.isChecked()) {
+                            StyleableToast.makeText(RecyclerTest.this, "Al activar esta opción si da click sobre una imagen la borrará", Toast.LENGTH_SHORT, R.style.warningToastMiddle).show();
+                            Toast.makeText(RecyclerTest.this, "Borrado de fotos activado", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(RecyclerTest.this, "Borrado de fotos desactivado", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+    }
+
+    private void uploadAllImages() {
+
+        for(int i=0; i<ListImages.size(); i++){
+            if(ListImages.get(i) != null){
+                uploadImageGlobal(ListImages.get(i), i);
+                //images.put(""+i, ListImages.indexOf(i));
+            }
+        }
+    }
+
+    private void uploadImageGlobal(File fileimagenpos, final int x) {
+        if (fileimagenpos != null) {
+
+            final ProgressDialog progressDialog = new ProgressDialog(this);
+            progressDialog.setTitle("Subiendo....");
+
+            final StorageReference ref = storageReference.child("pruebas").child("Img" + UUID.randomUUID().toString());
+            // StorageReference ref = storageReference.child("images/"+UUID.randomUUID().toString());
+
+
+
+
+//            ref.putFile().continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+            ref.putFile(Uri.fromFile(fileimagenpos)).continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                @Override
+                public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                    if (!task.isSuccessful()) {
+                        throw task.getException();
+                    }
+                    //PerFotoArray[x].setSrc(ref.getDownloadUrl().toString());
+                    return ref.getDownloadUrl();
+                }
+            }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                @Override
+                public void onComplete(@NonNull Task<Uri> task) {
+                    if (task.isSuccessful()) {
+                        Uri downloadUri = task.getResult();
+
+//                        PerFotoArray[x].setSrc(downloadUri.toString());
+//
+//                        Subirdatos();
+//
+//                        if(x == (contImg-1) && contUris==0){
+//
+//                            BorrarImagenes();
+//                        }
+
+                    } else {
+                        Toast.makeText(getApplicationContext(), "upload failed: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+
+        }
     }
 
     private void takePhoto() {
@@ -113,7 +214,6 @@ public class RecyclerTest  extends AppCompatActivity {
 
                     capturedCoolerBitmap = (Bitmap) data.getExtras().get("data");
 
-
                     int CamWidth = 1200;
                     int CamHegith = 800;
 
@@ -121,7 +221,10 @@ public class RecyclerTest  extends AppCompatActivity {
                     Bitmap Bitnew = redimensionarImagenMaximo(capturedCoolerBitmap, 1200 , 800);
 
                     //contImg++;
+
+                    saveImageToGallery(Bitnew);
                     addImage(Bitnew, 0);
+
 
                     break;
 
@@ -146,38 +249,84 @@ public class RecyclerTest  extends AppCompatActivity {
         return Bitmap.createBitmap(mBitmap, 0, 0, width, height, matrix, false);
     }
 
-    private void addImage(int position){
+    private void saveImageToGallery(Bitmap finalBitmap) {
+        String root = Environment.getExternalStorageDirectory().toString();
+        File myDir = new File(root + "/ImagenesSeguimiento");
+        myDir.mkdirs();
+        Random generator = new Random();
+        int n = 10000;
+        n = generator.nextInt(n);
+        String imageName = "Image-" + n + ".jpg";
+        File file = new File (myDir, imageName);
 
-//        ByteArrayOutputStream baos=new  ByteArrayOutputStream();
-//        bitmap.compress(Bitmap.CompressFormat.PNG,100, baos);
-//        byte [] b=baos.toByteArray();
-//        String temp=Base64.encodeToString(b, Base64.DEFAULT);
-//        Bitmap bitmap,
-        mImageBitmap.add(position, "https://concepto.de/wp-content/uploads/2015/03/naturaleza-medio-ambiente-e1505407093531.jpeg");
+
+
+
+        if (file.exists()) file.delete();
+        try {
+            FileOutputStream out = new FileOutputStream(file);
+            finalBitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
+            String resizeCoolerImagePath = file.getAbsolutePath();
+            out.flush();
+            out.close();
+
+            Toast.makeText(getApplicationContext(),"Tu foto se ha guardado exitosamente",Toast.LENGTH_SHORT).show();
+        }catch (Exception e){
+            e.printStackTrace();
+            Toast.makeText(getApplicationContext(),"Hubo un error",Toast.LENGTH_SHORT).show();
+        }
+
+        ListImages.add(0, file);
+
+
+    }
+
+    private void addImage(Bitmap bitmap,int position){
+
+        mImageBitmap.add(position, bitmap);
         mAdapter.notifyItemInserted(position);
         mLayaoutManager.scrollToPosition(position);
     }
 
     private void delateImage(int position){
         mImageBitmap.remove(position);
+        ListImages.remove(position);
         mAdapter.notifyItemRemoved(position);
 
     }
 
 
     private void initImagesBitmap(){
-        mImageBitmap.add("https://definicion.mx/wp-content/uploads/gral/Planicie.jpg");
-        mImageBitmap.add("https://s1.significados.com/foto/planicie_bg.jpg");
-        mImageBitmap.add("http://spmedia.s3.amazonaws.com/wp-content/uploads/2013/02/CCLAPLANICIE.jpg");
-        mImageBitmap.add("https://photo980x880.mnstatic.com/ebbe869f8b2d0336ec387685f1da6370/planicie-de-nardab_84091.jpg");
+//        mImageBitmap.add("https://definicion.mx/wp-content/uploads/gral/Planicie.jpg");
+//        mImageBitmap.add("https://s1.significados.com/foto/planicie_bg.jpg");
+//        mImageBitmap.add("http://spmedia.s3.amazonaws.com/wp-content/uploads/2013/02/CCLAPLANICIE.jpg");
+//        mImageBitmap.add("https://photo980x880.mnstatic.com/ebbe869f8b2d0336ec387685f1da6370/planicie-de-nardab_84091.jpg");
 
 //        initRecyclerView();
     }
 
     private void initRecyclerView(){
-//        RecyclerView recyclerView = findViewById(R.id.test_recycler);
-//        RecyclerViewAdapter adapter = new RecyclerViewAdapter(this, mImageBitmap);
-//        recyclerView.setAdapter(adapter);
-//        recyclerView.setLayoutManager(new GridLayoutManager(this, 3));
+        mRecyclerView = findViewById(R.id.test_recycler);
+        mLayaoutManager= new GridLayoutManager(this, 3);
+        mAdapter = new RecyclerViewAdapter(this, mImageBitmap, new RecyclerViewAdapter.OnItemClickListener() {
+            @Override
+            public void OnItemClick(Bitmap mImage, int position) {
+                Toast.makeText(RecyclerTest.this, "posicion " + position, Toast.LENGTH_SHORT).show();
+                if (swtBorrar.isChecked()){
+                    delateImage(position);
+                }else{
+
+                }
+
+            }
+        });
+
+        mRecyclerView.setHasFixedSize(true);
+        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+
+        mRecyclerView.setLayoutManager(mLayaoutManager);
+        mRecyclerView.setAdapter(mAdapter);
     }
+
+
 }

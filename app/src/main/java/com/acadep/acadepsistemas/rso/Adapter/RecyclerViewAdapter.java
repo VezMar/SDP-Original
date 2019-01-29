@@ -1,15 +1,14 @@
 package com.acadep.acadepsistemas.rso.Adapter;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 import com.acadep.acadepsistemas.rso.R;
 import com.bumptech.glide.Glide;
@@ -19,12 +18,12 @@ import java.util.ArrayList;
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
 
     private Context mContext;
-    private ArrayList<String> mImages = new ArrayList<>();
+    private ArrayList<Bitmap> mImages = new ArrayList<>();
     private OnItemClickListener listener;
     //private AdapterView.OnItemLongClickListener
 
 
-    public RecyclerViewAdapter(Context mContext, ArrayList<String> mImages, OnItemClickListener listener) {
+    public RecyclerViewAdapter(Context mContext, ArrayList<Bitmap> mImages, OnItemClickListener listener) {
         this.mContext = mContext;
         this.mImages = mImages;
         this.listener = listener;
@@ -40,10 +39,12 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, final int i) {
-        Glide.with(mContext)
-                .asBitmap()
-                .load(mImages.get(i))
-                .into(viewHolder.image);
+//        Glide.with(mContext)
+//                .asBitmap()
+//                .load(mImages.get(i))
+//                .into(viewHolder.image);
+
+        viewHolder.image.setImageBitmap(mImages.get(i));
 
         viewHolder.bind(mImages.get(i), listener);
 
@@ -71,7 +72,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             parent_layout = itemView.findViewById(R.id.parent_layout);
         }
 
-            public void bind(final String mImage, final OnItemClickListener listener){
+            public void bind(final Bitmap mImage, final OnItemClickListener listener){
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -83,7 +84,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     }
 
     public interface OnItemClickListener{
-        void OnItemClick(String mImage, int position);
+        void OnItemClick(Bitmap mImage, int position);
     }
 
 
