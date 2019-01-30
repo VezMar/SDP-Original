@@ -11,6 +11,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.location.Address;
 import android.location.Geocoder;
@@ -18,6 +19,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.location.LocationProvider;
+import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -31,6 +33,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -52,6 +55,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.acadep.acadepsistemas.rso.Adapter.RecyclerViewAdapter;
+import com.acadep.acadepsistemas.rso.BuildConfig;
 import com.acadep.acadepsistemas.rso.Fragmentos.ActivitysFragment;
 import com.acadep.acadepsistemas.rso.Fragmentos.EventosFragment;
 //import com.example.acadepsistemas.seguimiento.Manifest;
@@ -87,10 +91,14 @@ import com.google.firebase.storage.UploadTask;
 
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import java.io.InputStream;
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -110,6 +118,8 @@ import com.muddzdev.styleabletoast.StyleableToast;
 import org.joda.time.DateTime;
 
 import ru.dimorinny.floatingtextbutton.FloatingTextButton;
+
+import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
 public class SupervisionActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -163,6 +173,8 @@ public class SupervisionActivity extends AppCompatActivity
 
     private static final int REQUEST_PERM_WRITE_STORAGE = 102;
     private static final int CAPTURE_PHOTO = 104;
+    static final int REQUEST_VIDEO_CAPTURE = 1;
+
 
     //Varibales X
     static int cont1 = 0;
@@ -327,14 +339,16 @@ public class SupervisionActivity extends AppCompatActivity
 
 
     static String header;
-//-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    private String pictureImagePath;
+    private String mCurrentPhotoPath;
+
+    //-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_supervision);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
 
         today.setToNow();
 
@@ -501,21 +515,42 @@ public class SupervisionActivity extends AppCompatActivity
                 }
 
                 if (ActivityCompat.checkSelfPermission(getApplicationContext(),
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                        WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
 
                     ActivityCompat.requestPermissions(SupervisionActivity.this,
-                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_PERM_WRITE_STORAGE);
+                            new String[]{WRITE_EXTERNAL_STORAGE}, REQUEST_PERM_WRITE_STORAGE);
                 } else {
                     locationStart();
 
                         locationStart();
 
                     GuardarInformacionImagenes();
-                        takePhoto();
+                    final CharSequence[] opciones = {"Tomar foto", "Tomar video", "Cancelar"};
+                    final AlertDialog.Builder builder = new AlertDialog.Builder(SupervisionActivity.this);
 
 
+                    builder.setTitle("Borrar archivos");
+                    builder.setItems(opciones, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
 
+                                    if (opciones[i].equals("Tomar foto")) {
+                                        try {
+                                            takePhoto();
+                                        } catch (IOException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+
+                                    if (opciones[i].equals("Tomar video")) {
+                                        takeVideo();
+                                    }
+                    }
+
+                });
+                builder.show();
                 }
+
             }
         });
 
@@ -708,9 +743,15 @@ public class SupervisionActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
     }
 
+//    @Override
+//    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+//        MainActivityPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
+//    }
+
     private void initRecyclerView(){
         mRecyclerView = findViewById(R.id.images_recycler);
-        mLayaoutManager= new GridLayoutManager(this, 4);
+        mLayaoutManager= new GridLayoutManager(this, 3);
 
         mAdapter = new RecyclerViewAdapter(this, mImageBitmap, new RecyclerViewAdapter.OnItemClickListener() {
             @Override
@@ -1345,16 +1386,284 @@ public class SupervisionActivity extends AppCompatActivity
         ListImages = new ArrayList<>();
     }
 
-    public void takePhoto() {
+    public void takePhoto() throws IOException {
+
         if((estado).equals("before") && percentage>=1){
             StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT, R.style.warningToast).show();
         }else if ((estado).equals("during") && percentage>99){
             StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT, R.style.warningToast).show();
         }else {
+
+
+            //-------------------------------------------------------------------- Intengo 2
+//            String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+//            String imageFileName = "Image-" + timeStamp + ".jpg";
+//
+////            File storageDir = Environment.getExternalStoragePublicDirectory(
+////                    Environment.DIRECTORY_PICTURES);
+//
+//            String root = Environment.getExternalStorageDirectory().toString();
+//            File storageDir = new File(root + "/Imagenes-De-RSO");
+//
+//            pictureImagePath = storageDir.getAbsolutePath() + "/" + imageFileName;
+//
+//            File file = new File(pictureImagePath);
+//
+//            Uri outputFileUri = Uri.fromFile(file);
+//
+//            Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+//
+//            cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
+//
+//            startActivityForResult(cameraIntent, CAPTURE_PHOTO);
+            //-------------------------------------------------------------------- Intengo 2
+
+
+            //-------------------------------------------------------------------- Intengo 1
             Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
             startActivityForResult(cameraIntent, CAPTURE_PHOTO);
+            //-------------------------------------------------------------------- Intengo 1
+
         }
     }
+
+
+
+
+
+
+
+    private void takeVideo() {
+        Intent takeVideoIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+        if (takeVideoIntent.resolveActivity(getPackageManager()) != null) {
+            startActivityForResult(takeVideoIntent, REQUEST_VIDEO_CAPTURE);
+        }
+    }
+
+    private void BorrarFiles() {
+        files = new ArrayList<>();
+        contUris=0;
+        for (int x=0; x<10;x++) {
+            PerFilesArray[x] = new Files();
+        }
+    }
+
+    private void selectPDF() {
+        Intent intent = new Intent();
+        intent.setType("application/pdf");
+        intent.setAction(intent.ACTION_GET_CONTENT);
+        startActivityForResult(intent, 86);
+    }
+
+    private void selectVideo() {
+        Intent intent = new Intent();
+        intent.setType("video/*");
+        intent.setAction(intent.ACTION_GET_CONTENT);
+        startActivityForResult(intent, 87);
+    }
+
+    private void selectAudio() {
+        Intent intent = new Intent();
+        intent.setType("audio/*");
+        intent.setAction(intent.ACTION_GET_CONTENT);
+        startActivityForResult(intent, 88);
+    }
+
+    private void selectDocx() {
+        Intent intent = new Intent();
+        intent.setType("docx/*");
+        intent.setAction(intent.ACTION_GET_CONTENT);
+        startActivityForResult(intent, 89);
+    }
+
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+
+        if (requestCode==86 && resultCode==RESULT_OK && data!=null) {
+            if(contUris>9){
+                StyleableToast.makeText(getApplicationContext(), "Limite de archivos alcanzado", Toast.LENGTH_LONG, R.style.warningToast).show();
+            }else {
+                SelecUri(data);
+                contUris++;
+            }
+            //Toast.makeText(getApplicationContext(),"Tu archivo se ha guardado exitosamente",Toast.LENGTH_SHORT).show();
+        }else if (requestCode==87 && resultCode==RESULT_OK && data!=null) {
+            if(contUris>9){
+                StyleableToast.makeText(getApplicationContext(), "Limite de archivos alcanzado", Toast.LENGTH_LONG, R.style.warningToast).show();
+            }else {
+                SelecUri(data);
+
+                contUris++;
+            }
+            //Toast.makeText(getApplicationContext(),"Tu archivo se ha guardado exitosamente",Toast.LENGTH_SHORT).show();
+        } if (requestCode==88 && resultCode==RESULT_OK && data!=null) {
+            if(contUris>9){
+                StyleableToast.makeText(getApplicationContext(), "Limite de archivos alcanzado", Toast.LENGTH_LONG, R.style.warningToast).show();
+            }else {
+                SelecUri(data);
+                contUris++;
+            }
+            //Toast.makeText(getApplicationContext(),"Tu archivo se ha guardado exitosamente",Toast.LENGTH_SHORT).show();
+        }
+        if (requestCode==89 && resultCode==RESULT_OK && data!=null) {
+            if(contUris>9){
+                StyleableToast.makeText(getApplicationContext(), "Limite de archivos alcanzado", Toast.LENGTH_LONG, R.style.warningToast).show();
+            }else {
+                SelecUri(data);
+                contUris++;
+            }
+           // Toast.makeText(getApplicationContext(),"Tu archivo se ha guardado exitosamente",Toast.LENGTH_SHORT).show();
+        }
+
+        if (requestCode==1 && resultCode == RESULT_OK){
+            capturedCoolerBitmap = (Bitmap) data.getExtras().get("data");
+
+        }
+
+        if (requestCode==104 && resultCode == RESULT_OK) {
+
+
+
+//            File imgFile = new  File(pictureImagePath);
+//
+//            if(imgFile.exists()){
+//
+//                Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+//                contImg++;
+//                addImage(myBitmap, 0);
+//
+//            }
+
+            // ---------------
+                    capturedCoolerBitmap = (Bitmap) data.getExtras().get("data");
+                    //Bitmap resizeImage = Bitmap.createScaledBitmap(capturedCoolerBitmap,CamWidth,CamHegith,false);
+                    Bitmap Bitnew = redimensionarImagenMaximo(capturedCoolerBitmap, 3000 , 2000);
+//                    Bitmap Bitnew = capturedCoolerBitmap;
+
+                    contImg++;
+                    saveImageToGallery(Bitnew);
+                    addImage(Bitnew, 0);
+
+        }
+
+
+
+
+
+    }
+
+
+    private void SelecUri(Intent data) {
+
+
+//        for (int i=0; i<=9; i++){
+//            if(contUris==i && ArchivosUrisArray[i] == UriNula){
+//                ArchivosUrisArray[i]=data.getData();
+//                StyleableToast.makeText(getApplicationContext(), "Archivo agregado con exito \nPuede subir " + (restUris-contUris) + " más", Toast.LENGTH_LONG, R.style.sucessToast).show();
+//                break;
+//            }
+//        }
+
+        if(contUris==0){
+            ArchivoUri=data.getData();
+            StyleableToast.makeText(getApplicationContext(), "Archivo agregado con exito \nPuede subir " + (restUris-contUris) + " más", Toast.LENGTH_LONG, R.style.sucessToast).show();
+           // Toast.makeText(getApplicationContext(),"Archivo agregado con exito \nPuede subir " + (restUris-contUris) + " más",Toast.LENGTH_SHORT).show();
+        }else if(contUris==1){
+            ArchivoUri2=data.getData();
+            StyleableToast.makeText(getApplicationContext(), "Archivo agregado con exito \nPuede subir " + (restUris-contUris) + " más", Toast.LENGTH_LONG, R.style.sucessToast).show();
+            //Toast.makeText(getApplicationContext(),"Archivo agregado con exito \nPuede subir " + (restUris-contUris) + " más",Toast.LENGTH_SHORT).show();
+        }else if(contUris==2){
+            ArchivoUri3=data.getData();
+            StyleableToast.makeText(getApplicationContext(), "Archivo agregado con exito \nPuede subir " + (restUris-contUris) + " más", Toast.LENGTH_LONG, R.style.sucessToast).show();
+            //Toast.makeText(getApplicationContext(),"Archivo agregado con exito /nPuede subir " + (restUris-contUris) + " más",Toast.LENGTH_SHORT).show();
+        }else if(contUris==3){
+            ArchivoUri4=data.getData();
+            StyleableToast.makeText(getApplicationContext(), "Archivo agregado con exito \nPuede subir " + (restUris-contUris) + " más", Toast.LENGTH_LONG, R.style.sucessToast).show();
+            //Toast.makeText(getApplicationContext(),"Archivo agregado con exito /nPuede subir " + (restUris-contUris) + " más",Toast.LENGTH_SHORT).show();
+        }else if(contUris==4){
+            ArchivoUri5=data.getData();
+            StyleableToast.makeText(getApplicationContext(), "Archivo agregado con exito \nPuede subir " + (restUris-contUris) + " más", Toast.LENGTH_LONG, R.style.sucessToast).show();
+            //Toast.makeText(getApplicationContext(),"Archivo agregado con exito /nPuede subir " + (restUris-contUris) + " más",Toast.LENGTH_SHORT).show();
+        }else if(contUris==5){
+            ArchivoUri6=data.getData();
+            StyleableToast.makeText(getApplicationContext(), "Archivo agregado con exito \nPuede subir " + (restUris-contUris) + " más", Toast.LENGTH_LONG, R.style.sucessToast).show();
+            //Toast.makeText(getApplicationContext(),"Archivo agregado con exito /nPuede subir " + (restUris-contUris) + " más",Toast.LENGTH_SHORT).show();
+        }else if(contUris==6){
+            ArchivoUri7=data.getData();
+            StyleableToast.makeText(getApplicationContext(), "Archivo agregado con exito \nPuede subir " + (restUris-contUris) + " más", Toast.LENGTH_LONG, R.style.sucessToast).show();
+            //Toast.makeText(getApplicationContext(),"Archivo agregado con exito /nPuede subir " + (restUris-contUris) + " más",Toast.LENGTH_SHORT).show();
+        }else if(contUris==7){
+            ArchivoUri8=data.getData();
+            StyleableToast.makeText(getApplicationContext(), "Archivo agregado con exito \nPuede subir " + (restUris-contUris) + " más", Toast.LENGTH_LONG, R.style.sucessToast).show();
+            //Toast.makeText(getApplicationContext(),"Archivo agregado con exito /nPuede subir " + (restUris-contUris) + " más",Toast.LENGTH_SHORT).show();
+        }else if(contUris==8){
+            ArchivoUri9=data.getData();
+            StyleableToast.makeText(getApplicationContext(), "Archivo agregado con exito \nPuede subir " + (restUris-contUris) + " más", Toast.LENGTH_LONG, R.style.sucessToast).show();
+            //Toast.makeText(getApplicationContext(),"Archivo agregado con exito /nPuede subir " + (restUris-contUris) + " más",Toast.LENGTH_SHORT).show();
+        }else if(contUris==9){
+            ArchivoUri10=data.getData();
+            StyleableToast.makeText(getApplicationContext(), "Archivo agregado con exito \nYa no puede subir más", Toast.LENGTH_LONG, R.style.sucessToast).show();
+            //Toast.makeText(getApplicationContext(),"Archivo agregado con exito /nPuede subir " + (restUris-contUris) + " más",Toast.LENGTH_SHORT).show();
+        }else{
+            StyleableToast.makeText(getApplicationContext(), "Limite de archivos alcanzado", Toast.LENGTH_LONG, R.style.warningToast).show();
+            //Toast.makeText(getApplicationContext(),"Ya no puede subir ningun archivo",Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    // ------------------------------------------------------- Inicio de guardar foto en la galeria ------------------------------------------------------------------------------ //
+
+    public Bitmap redimensionarImagenMaximo(Bitmap mBitmap, float newWidth, float newHeigth){
+        //Redimensionamos
+        int width = mBitmap.getWidth();
+        int height = mBitmap.getHeight();
+        float scaleWidth = ((float) newWidth) / width;
+        float scaleHeight = ((float) newHeigth) / height;
+        // create a matrix for the manipulation
+        Matrix matrix = new Matrix();
+        // resize the bit map
+        matrix.postScale(scaleWidth, scaleHeight);
+        // recreate the new Bitmap
+        return Bitmap.createBitmap(mBitmap, 0, 0, width, height, matrix, false);
+    }
+
+    private void saveImageToGallery(Bitmap finalBitmap) {
+        String root = Environment.getExternalStorageDirectory().toString();
+        File myDir = new File(root + "/Imagenes-De-RSO");
+        myDir.mkdirs();
+        Random generator = new Random();
+        int n = 10000;
+        n = generator.nextInt(n);
+        String imageName = "Image-" + n + ".jpg";
+        File file = new File (myDir, imageName);
+
+
+
+
+        if (file.exists()) file.delete();
+        try {
+            FileOutputStream out = new FileOutputStream(file);
+            finalBitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
+            String resizeCoolerImagePath = file.getAbsolutePath();
+            out.flush();
+            out.close();
+
+            Toast.makeText(getApplicationContext(),"Tu foto se ha guardado exitosamente",Toast.LENGTH_SHORT).show();
+        }catch (Exception e){
+            e.printStackTrace();
+            Toast.makeText(getApplicationContext(),"Hubo un error",Toast.LENGTH_SHORT).show();
+        }
+
+        ListImages.add(0, file);
+    }
+
+    // ------------------------------------------------------- Final de guardar foto en la galeria ------------------------------------------------------------------------------ //
+
+
+    // ------------------------------------------------------- Inicio de Subir archivos ------------------------------------------------------------------------------ //
 
     private void uploadImageGlobal(File fileimagenpos, final int x) {
         if (fileimagenpos != null) {
@@ -1362,7 +1671,7 @@ public class SupervisionActivity extends AppCompatActivity
             final ProgressDialog progressDialog = new ProgressDialog(SupervisionActivity.this);
             progressDialog.setTitle("Subiendo....");
 
-            final StorageReference ref = storageReference.child("images").child("evidence").child("Img" + UUID.randomUUID().toString());
+            final StorageReference ref = storageReference.child("images").child("evidence").child("Img" + created_at + UUID.randomUUID().toString());
             // StorageReference ref = storageReference.child("images/"+UUID.randomUUID().toString());
 
             final UploadTask uploadTask = ref.putFile(Uri.fromFile(fileimagenpos));
@@ -1498,218 +1807,7 @@ public class SupervisionActivity extends AppCompatActivity
         });
     }
 
-    private void BorrarFiles() {
-        files = new ArrayList<>();
-        contUris=0;
-        for (int x=0; x<10;x++) {
-            PerFilesArray[x] = new Files();
-        }
-    }
-
-    private void selectPDF() {
-        Intent intent = new Intent();
-        intent.setType("application/pdf");
-        intent.setAction(intent.ACTION_GET_CONTENT);
-        startActivityForResult(intent, 86);
-    }
-
-    private void selectVideo() {
-        Intent intent = new Intent();
-        intent.setType("video/*");
-        intent.setAction(intent.ACTION_GET_CONTENT);
-        startActivityForResult(intent, 87);
-    }
-
-    private void selectAudio() {
-        Intent intent = new Intent();
-        intent.setType("audio/*");
-        intent.setAction(intent.ACTION_GET_CONTENT);
-        startActivityForResult(intent, 88);
-    }
-
-    private void selectDocx() {
-        Intent intent = new Intent();
-        intent.setType("docx/*");
-        intent.setAction(intent.ACTION_GET_CONTENT);
-        startActivityForResult(intent, 89);
-    }
-
-
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-
-        if (requestCode==86 && resultCode==RESULT_OK && data!=null) {
-            if(contUris>9){
-                StyleableToast.makeText(getApplicationContext(), "Limite de archivos alcanzado", Toast.LENGTH_LONG, R.style.warningToast).show();
-            }else {
-                SelecUri(data);
-                contUris++;
-            }
-            //Toast.makeText(getApplicationContext(),"Tu archivo se ha guardado exitosamente",Toast.LENGTH_SHORT).show();
-        }else if (requestCode==87 && resultCode==RESULT_OK && data!=null) {
-            if(contUris>9){
-                StyleableToast.makeText(getApplicationContext(), "Limite de archivos alcanzado", Toast.LENGTH_LONG, R.style.warningToast).show();
-            }else {
-                SelecUri(data);
-
-                contUris++;
-            }
-            //Toast.makeText(getApplicationContext(),"Tu archivo se ha guardado exitosamente",Toast.LENGTH_SHORT).show();
-        } if (requestCode==88 && resultCode==RESULT_OK && data!=null) {
-            if(contUris>9){
-                StyleableToast.makeText(getApplicationContext(), "Limite de archivos alcanzado", Toast.LENGTH_LONG, R.style.warningToast).show();
-            }else {
-                SelecUri(data);
-                contUris++;
-            }
-            //Toast.makeText(getApplicationContext(),"Tu archivo se ha guardado exitosamente",Toast.LENGTH_SHORT).show();
-        }
-        if (requestCode==89 && resultCode==RESULT_OK && data!=null) {
-            if(contUris>9){
-                StyleableToast.makeText(getApplicationContext(), "Limite de archivos alcanzado", Toast.LENGTH_LONG, R.style.warningToast).show();
-            }else {
-                SelecUri(data);
-                contUris++;
-            }
-           // Toast.makeText(getApplicationContext(),"Tu archivo se ha guardado exitosamente",Toast.LENGTH_SHORT).show();
-        }
-
-        if (requestCode==104 && resultCode == RESULT_OK) {
-            switch (requestCode) {
-
-                case CAPTURE_PHOTO:
-
-                    capturedCoolerBitmap = (Bitmap) data.getExtras().get("data");
-
-
-                    int CamWidth = 1200;
-                    int CamHegith = 800;
-
-                    //Bitmap resizeImage = Bitmap.createScaledBitmap(capturedCoolerBitmap,CamWidth,CamHegith,false);
-                    Bitmap Bitnew = redimensionarImagenMaximo(capturedCoolerBitmap, 1200 , 800);
-
-                    contImg++;
-                    saveImageToGallery(Bitnew);
-                    addImage(Bitnew, 0);
-
-                    break;
-
-                default:
-                    Toast.makeText(getApplicationContext(), "Error", Toast.LENGTH_SHORT).show();
-                    break;
-            }
-        }
-
-
-
-
-
-    }
-
-
-    private void SelecUri(Intent data) {
-
-
-//        for (int i=0; i<=9; i++){
-//            if(contUris==i && ArchivosUrisArray[i] == UriNula){
-//                ArchivosUrisArray[i]=data.getData();
-//                StyleableToast.makeText(getApplicationContext(), "Archivo agregado con exito \nPuede subir " + (restUris-contUris) + " más", Toast.LENGTH_LONG, R.style.sucessToast).show();
-//                break;
-//            }
-//        }
-
-        if(contUris==0){
-            ArchivoUri=data.getData();
-            StyleableToast.makeText(getApplicationContext(), "Archivo agregado con exito \nPuede subir " + (restUris-contUris) + " más", Toast.LENGTH_LONG, R.style.sucessToast).show();
-           // Toast.makeText(getApplicationContext(),"Archivo agregado con exito \nPuede subir " + (restUris-contUris) + " más",Toast.LENGTH_SHORT).show();
-        }else if(contUris==1){
-            ArchivoUri2=data.getData();
-            StyleableToast.makeText(getApplicationContext(), "Archivo agregado con exito \nPuede subir " + (restUris-contUris) + " más", Toast.LENGTH_LONG, R.style.sucessToast).show();
-            //Toast.makeText(getApplicationContext(),"Archivo agregado con exito \nPuede subir " + (restUris-contUris) + " más",Toast.LENGTH_SHORT).show();
-        }else if(contUris==2){
-            ArchivoUri3=data.getData();
-            StyleableToast.makeText(getApplicationContext(), "Archivo agregado con exito \nPuede subir " + (restUris-contUris) + " más", Toast.LENGTH_LONG, R.style.sucessToast).show();
-            //Toast.makeText(getApplicationContext(),"Archivo agregado con exito /nPuede subir " + (restUris-contUris) + " más",Toast.LENGTH_SHORT).show();
-        }else if(contUris==3){
-            ArchivoUri4=data.getData();
-            StyleableToast.makeText(getApplicationContext(), "Archivo agregado con exito \nPuede subir " + (restUris-contUris) + " más", Toast.LENGTH_LONG, R.style.sucessToast).show();
-            //Toast.makeText(getApplicationContext(),"Archivo agregado con exito /nPuede subir " + (restUris-contUris) + " más",Toast.LENGTH_SHORT).show();
-        }else if(contUris==4){
-            ArchivoUri5=data.getData();
-            StyleableToast.makeText(getApplicationContext(), "Archivo agregado con exito \nPuede subir " + (restUris-contUris) + " más", Toast.LENGTH_LONG, R.style.sucessToast).show();
-            //Toast.makeText(getApplicationContext(),"Archivo agregado con exito /nPuede subir " + (restUris-contUris) + " más",Toast.LENGTH_SHORT).show();
-        }else if(contUris==5){
-            ArchivoUri6=data.getData();
-            StyleableToast.makeText(getApplicationContext(), "Archivo agregado con exito \nPuede subir " + (restUris-contUris) + " más", Toast.LENGTH_LONG, R.style.sucessToast).show();
-            //Toast.makeText(getApplicationContext(),"Archivo agregado con exito /nPuede subir " + (restUris-contUris) + " más",Toast.LENGTH_SHORT).show();
-        }else if(contUris==6){
-            ArchivoUri7=data.getData();
-            StyleableToast.makeText(getApplicationContext(), "Archivo agregado con exito \nPuede subir " + (restUris-contUris) + " más", Toast.LENGTH_LONG, R.style.sucessToast).show();
-            //Toast.makeText(getApplicationContext(),"Archivo agregado con exito /nPuede subir " + (restUris-contUris) + " más",Toast.LENGTH_SHORT).show();
-        }else if(contUris==7){
-            ArchivoUri8=data.getData();
-            StyleableToast.makeText(getApplicationContext(), "Archivo agregado con exito \nPuede subir " + (restUris-contUris) + " más", Toast.LENGTH_LONG, R.style.sucessToast).show();
-            //Toast.makeText(getApplicationContext(),"Archivo agregado con exito /nPuede subir " + (restUris-contUris) + " más",Toast.LENGTH_SHORT).show();
-        }else if(contUris==8){
-            ArchivoUri9=data.getData();
-            StyleableToast.makeText(getApplicationContext(), "Archivo agregado con exito \nPuede subir " + (restUris-contUris) + " más", Toast.LENGTH_LONG, R.style.sucessToast).show();
-            //Toast.makeText(getApplicationContext(),"Archivo agregado con exito /nPuede subir " + (restUris-contUris) + " más",Toast.LENGTH_SHORT).show();
-        }else if(contUris==9){
-            ArchivoUri10=data.getData();
-            StyleableToast.makeText(getApplicationContext(), "Archivo agregado con exito \nYa no puede subir más", Toast.LENGTH_LONG, R.style.sucessToast).show();
-            //Toast.makeText(getApplicationContext(),"Archivo agregado con exito /nPuede subir " + (restUris-contUris) + " más",Toast.LENGTH_SHORT).show();
-        }else{
-            StyleableToast.makeText(getApplicationContext(), "Limite de archivos alcanzado", Toast.LENGTH_LONG, R.style.warningToast).show();
-            //Toast.makeText(getApplicationContext(),"Ya no puede subir ningun archivo",Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    public Bitmap redimensionarImagenMaximo(Bitmap mBitmap, float newWidth, float newHeigth){
-        //Redimensionamos
-        int width = mBitmap.getWidth();
-        int height = mBitmap.getHeight();
-        float scaleWidth = ((float) newWidth) / width;
-        float scaleHeight = ((float) newHeigth) / height;
-        // create a matrix for the manipulation
-        Matrix matrix = new Matrix();
-        // resize the bit map
-        matrix.postScale(scaleWidth, scaleHeight);
-        // recreate the new Bitmap
-        return Bitmap.createBitmap(mBitmap, 0, 0, width, height, matrix, false);
-    }
-
-    private void saveImageToGallery(Bitmap finalBitmap) {
-        String root = Environment.getExternalStorageDirectory().toString();
-        File myDir = new File(root + "/ImagenesSeguimiento");
-        myDir.mkdirs();
-        Random generator = new Random();
-        int n = 10000;
-        n = generator.nextInt(n);
-        String imageName = "Image-" + n + ".jpg";
-        File file = new File (myDir, imageName);
-
-
-
-
-        if (file.exists()) file.delete();
-        try {
-            FileOutputStream out = new FileOutputStream(file);
-            finalBitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
-            String resizeCoolerImagePath = file.getAbsolutePath();
-            out.flush();
-            out.close();
-
-            Toast.makeText(getApplicationContext(),"Tu foto se ha guardado exitosamente",Toast.LENGTH_SHORT).show();
-        }catch (Exception e){
-            e.printStackTrace();
-            Toast.makeText(getApplicationContext(),"Hubo un error",Toast.LENGTH_SHORT).show();
-        }
-
-        ListImages.add(0, file);
-    }
+    // ------------------------------------------------------- Final de Subir archivos  ------------------------------------------------------------------------------ //
 
 
     private BottomNavigationView.OnNavigationItemSelectedListener navListener =

@@ -16,16 +16,26 @@ import android.util.Log;
 import com.acadep.acadepsistemas.rso.Clases.MainActivity;
 import com.acadep.acadepsistemas.rso.Fragmentos.EventosFragment;
 import com.acadep.acadepsistemas.rso.R;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
+import com.google.firebase.storage.FirebaseStorage;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
 public class MiFirebaseMessagingService extends FirebaseMessagingService {
 
     public static final String TAG = "NOTICIAS";
+    private static String TokenCloudMessaging;
 
+    public static final String TOKEN_BROADCAST = "myfmctokenbroadcast";
+
+    FirebaseFirestore BDFireStore = FirebaseFirestore.getInstance();
+    FirebaseAuth mAuth = FirebaseAuth.getInstance();
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
@@ -38,6 +48,22 @@ public class MiFirebaseMessagingService extends FirebaseMessagingService {
         }
 
 
+    }
+
+    @Override
+    public void onNewToken(String token) {
+        Log.d(TAG, "Refreshed token: " + token);
+        TokenCloudMessaging = token;
+        // If you want to send messages to this application instance or
+        // manage this apps subscriptions on the server side, send the
+        // Instance ID token to your app server.
+        //sendRegistrationToServer(token);
+    }
+
+    private void sendRegistrationToServer(String token) {
+        Map<String, Object> Token = new HashMap<>();
+        Token.put("token", token);
+        BDFireStore.collection("users").document(mAuth.getUid()).set(Token, SetOptions.merge());
     }
 
     private void mostrarNotificacion(Map<String,String> data) {

@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Build;
@@ -16,16 +17,20 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.widget.Switch;
 import android.widget.Toast;
 
 import com.acadep.acadepsistemas.rso.Adapter.RecyclerViewAdapter;
+import com.acadep.acadepsistemas.rso.BuildConfig;
 import com.acadep.acadepsistemas.rso.R;
 import com.acadep.acadepsistemas.rso.model.Foto;
 import com.google.android.gms.tasks.Continuation;
@@ -41,6 +46,7 @@ import com.muddzdev.styleabletoast.StyleableToast;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -57,6 +63,9 @@ public class RecyclerTest  extends AppCompatActivity {
 
     private static final int REQUEST_PERM_WRITE_STORAGE = 102;
     private static final int CAPTURE_PHOTO = 104;
+
+    int TAKE_PHOTO_CODE = 0;
+    public static int count = 0;
 
 //    Imagenes
         private ArrayList<Bitmap> mImageBitmap = new ArrayList<>();
@@ -77,8 +86,17 @@ public class RecyclerTest  extends AppCompatActivity {
     FirebaseStorage storage;
     FirebaseFirestore BDFireStore = FirebaseFirestore.getInstance();
 
+    public static final int MULTIPLE_PERMISSIONS = 10; // code you want.
+
+    String[] permissions= new String[]{
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.CAMERA,
+            Manifest.permission.ACCESS_COARSE_LOCATION,
+            Manifest.permission.ACCESS_FINE_LOCATION};
 
     private int counter;
+    private String filePath;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -94,29 +112,64 @@ public class RecyclerTest  extends AppCompatActivity {
 
         swtBorrar = findViewById(R.id.swtBorrar);
 
+        if (checkPermissions()){
+            //  permissions  granted.
 
+        }
+
+        final String dir = Environment.getExternalStorageDirectory().toString() + "/Imagenes-De-RSO/";
+        File newdir = new File(dir);
+        if (!newdir.exists()) {
+            newdir.mkdir();
+        }
 
 
         btnPhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    if (checkSelfPermission(String.valueOf(Manifest.permission.CAMERA)) != PackageManager.PERMISSION_DENIED) {
-                        ActivityCompat.requestPermissions(RecyclerTest.this, new String[]{Manifest.permission.CAMERA}, 1);
-                    }
+
+                int n = 10000;
+                Random generator = new Random();
+                n = generator.nextInt(n);
+                String imageName = "Image-" + n + ".jpg";
+                String file = dir+imageName;
+                File newfile = new File(file);
+                try {
+                    newfile.createNewFile();
+                }
+                catch (IOException e)
+                {
                 }
 
-                if (ActivityCompat.checkSelfPermission(getApplicationContext(),
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                Uri outputFileUri = FileProvider.getUriForFile(RecyclerTest.this,"com.acadep.acadepsistemas.rso.fileprovider", newfile);
 
-                    ActivityCompat.requestPermissions(RecyclerTest.this,
-                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_PERM_WRITE_STORAGE);
-                } else {
+                Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
 
 
-                    takePhoto();
+                filePath = newfile.getPath();
 
-                }
+
+                startActivityForResult(cameraIntent, TAKE_PHOTO_CODE);
+
+
+//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//                    if (checkSelfPermission(String.valueOf(Manifest.permission.CAMERA)) != PackageManager.PERMISSION_DENIED) {
+//                        ActivityCompat.requestPermissions(RecyclerTest.this, new String[]{Manifest.permission.CAMERA}, 1);
+//                    }
+//                }
+//
+//                if (ActivityCompat.checkSelfPermission(getApplicationContext(),
+//                        Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+//
+//                    ActivityCompat.requestPermissions(RecyclerTest.this,
+//                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_PERM_WRITE_STORAGE);
+//                } else {
+//
+//
+//                    takePhoto();
+//
+//                }
             }
         });
 
@@ -128,6 +181,38 @@ public class RecyclerTest  extends AppCompatActivity {
             }
         });
 
+    }
+
+    private  boolean checkPermissions() {
+        int result;
+        List<String> listPermissionsNeeded = new ArrayList<>();
+        for (String p:permissions) {
+            result = ContextCompat.checkSelfPermission(RecyclerTest.this,p);
+            if (result != PackageManager.PERMISSION_GRANTED) {
+                listPermissionsNeeded.add(p);
+            }
+        }
+        if (!listPermissionsNeeded.isEmpty()) {
+            ActivityCompat.requestPermissions(this, listPermissionsNeeded.toArray(new String[listPermissionsNeeded.size()]),MULTIPLE_PERMISSIONS );
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case MULTIPLE_PERMISSIONS:{
+                if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                    // permissions granted.
+                } else {
+//                    Toast.makeText(this, "Go to settings and enable permissions", Toast.LENGTH_LONG)
+//                            .show();
+                }
+                // permissions list of don't granted permission
+            }
+            return;
+        }
     }
 
     public void onClickSwitch(final View view) {
@@ -207,31 +292,34 @@ public class RecyclerTest  extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
+        if (requestCode == TAKE_PHOTO_CODE && resultCode == RESULT_OK) {
+            Log.d("CameraDemo", "Pic saved");
+            Toast.makeText(this, "Pic saved", Toast.LENGTH_SHORT).show();
+
+            Bitmap bitmap = BitmapFactory.decodeFile(filePath);
+            addImage(bitmap, 0);
+            ListImages.add(0, new File(filePath));
+        }
+
         if (requestCode==104 && resultCode == RESULT_OK) {
-            switch (requestCode) {
-
-                case CAPTURE_PHOTO:
-
-                    capturedCoolerBitmap = (Bitmap) data.getExtras().get("data");
-
-                    int CamWidth = 1200;
-                    int CamHegith = 800;
-
-                    //Bitmap resizeImage = Bitmap.createScaledBitmap(capturedCoolerBitmap,CamWidth,CamHegith,false);
-                    Bitmap Bitnew = redimensionarImagenMaximo(capturedCoolerBitmap, 1200 , 800);
-
-                    //contImg++;
-
-                    saveImageToGallery(Bitnew);
-                    addImage(Bitnew, 0);
 
 
-                    break;
+            capturedCoolerBitmap = (Bitmap) data.getExtras().get("data");
 
-                default:
-                    Toast.makeText(getApplicationContext(), "Error", Toast.LENGTH_SHORT).show();
-                    break;
-            }
+            int CamWidth = 1200;
+            int CamHegith = 800;
+
+            //Bitmap resizeImage = Bitmap.createScaledBitmap(capturedCoolerBitmap,CamWidth,CamHegith,false);
+            Bitmap Bitnew = redimensionarImagenMaximo(capturedCoolerBitmap, 1200, 800);
+
+            //contImg++;
+
+            saveImageToGallery(Bitnew);
+            addImage(Bitnew, 0);
+
+
+
+
         }
     }
 

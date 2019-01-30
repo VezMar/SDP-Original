@@ -12,8 +12,14 @@ public class MiFirebaseInstanceIdService extends FirebaseInstanceIdService {
     public void onTokenRefresh() {
         super.onTokenRefresh();
 
-        String token = FirebaseInstanceId.getInstance().getToken();
+        String refreshedToken = FirebaseInstanceId.getInstance().getToken();
 
-        Log.d(TAG, "Token: " + token);
+        Log.i(TAG, "Refreshed token: " + refreshedToken);
+
+        storeToken(refreshedToken);
+    }
+
+    private void storeToken(String token) {
+        SharedPrefManager.getInstance(getApplicationContext()).storeToken(token);
     }
 }

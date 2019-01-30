@@ -1,8 +1,13 @@
 package com.acadep.acadepsistemas.rso.Clases;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -17,18 +22,32 @@ import android.widget.Toast;
 
 import com.acadep.acadepsistemas.rso.Fragmentos.ActivitysFragment;
 import com.acadep.acadepsistemas.rso.Fragmentos.EventosFragment;
+import com.acadep.acadepsistemas.rso.Notificaciones.MiFirebaseMessagingService;
+import com.acadep.acadepsistemas.rso.Notificaciones.SharedPrefManager;
 import com.acadep.acadepsistemas.rso.R;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 import com.muddzdev.styleabletoast.StyleableToast;
 
 import com.onesignal.OneSignal;
+
+import java.util.HashMap;
+import java.util.Map;
+
 public class Main2Activity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     Fragment currentFragment;
 
     FirebaseAuth mAuth;
+    FirebaseFirestore BDFireStore = FirebaseFirestore.getInstance();
+
     public String rolesUser;
     DatabaseReference mDatabase;
 
@@ -36,6 +55,8 @@ public class Main2Activity extends AppCompatActivity
 
 
     int cont=0;
+
+    private BroadcastReceiver broadcastReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +70,33 @@ public class Main2Activity extends AppCompatActivity
         setSupportActionBar(toolbar);
 
         mAuth = FirebaseAuth.getInstance();
+
+        FirebaseInstanceId.getInstance().getInstanceId()
+                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                        if (!task.isSuccessful()) {
+                            Log.w("MainActivity", "getInstanceId failed", task.getException());
+                            return;
+                        }
+
+                        // Get new Instance ID token
+                        String token = task.getResult().getToken();
+
+                        // Log and toast
+
+                        //Log.d("MainActivity", token);
+                        Map<String, Object> Token = new HashMap<>();
+                        Token.put("token", token);
+                        BDFireStore.collection("users").document(mAuth.getUid()).set(Token, SetOptions.merge());
+
+                        //Toast.makeText(Main2Activity.this, ""+token, Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+        registerReceiver(broadcastReceiver, new IntentFilter(MiFirebaseMessagingService.TOKEN_BROADCAST));
+//        Log.i("Token-Key", "Este es el token " + SharedPrefManager.getInstance(this).getToken());
+//        Log.i("Token-Key", "Este es el token " + );
 
         Fragment mifragment = null;
         mifragment = new EventosFragment();
