@@ -19,7 +19,6 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.location.LocationProvider;
-import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -55,7 +54,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.acadep.acadepsistemas.rso.Adapter.RecyclerViewAdapter;
-import com.acadep.acadepsistemas.rso.BuildConfig;
 import com.acadep.acadepsistemas.rso.Fragmentos.ActivitysFragment;
 import com.acadep.acadepsistemas.rso.Fragmentos.EventosFragment;
 //import com.example.acadepsistemas.seguimiento.Manifest;
@@ -90,15 +88,12 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import java.io.InputStream;
 import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -174,6 +169,7 @@ public class SupervisionActivity extends AppCompatActivity
     private static final int REQUEST_PERM_WRITE_STORAGE = 102;
     private static final int CAPTURE_PHOTO = 104;
     static final int REQUEST_VIDEO_CAPTURE = 1;
+    int TAKE_PHOTO_CODE = 0;
 
 
     //Varibales X
@@ -208,12 +204,16 @@ public class SupervisionActivity extends AppCompatActivity
     static String description;
     static String title;
     static List<String> tools;
+    static int advanced;
+    static int number;
+    static String unit;
+
 
     static Ref_event ref_event = new Ref_event();
 
     static String Observation;
 
-    static int percentage;
+
 
     static boolean deleted;
     static boolean active;
@@ -221,6 +221,7 @@ public class SupervisionActivity extends AppCompatActivity
     EditText edObserv;
     EditText edpercentage;
     TextView txtAvance;
+    TextView txtTotal;
 
     static TextView txtEstado;
 
@@ -335,6 +336,8 @@ public class SupervisionActivity extends AppCompatActivity
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayaoutManager;
 
+    private String filePath;
+
     //Imagenes
 
 
@@ -401,6 +404,8 @@ public class SupervisionActivity extends AppCompatActivity
         edObserv = (EditText) findViewById(R.id.edObserv);
         edpercentage = (EditText) findViewById(R.id.edit_porcentage);
         txtAvance = (TextView) findViewById(R.id.txtAvance);
+        txtTotal = (TextView) findViewById(R.id.txtTotal);
+        txtTotal.setText("/"+number+unit);
 
         btnEnviar = (FloatingTextButton) findViewById(R.id.btnEnviar);
 
@@ -467,7 +472,7 @@ public class SupervisionActivity extends AppCompatActivity
             locationStart();
         }
 
-        edpercentage.setText(""+percentage);
+        edpercentage.setText(""+ advanced);
         ChequeoDeVariables();
         /**/
 
@@ -535,11 +540,7 @@ public class SupervisionActivity extends AppCompatActivity
                                 public void onClick(DialogInterface dialogInterface, int i) {
 
                                     if (opciones[i].equals("Tomar foto")) {
-                                        try {
-                                            takePhoto();
-                                        } catch (IOException e) {
-                                            e.printStackTrace();
-                                        }
+                                        takePhoto_AltaCalidad();
                                     }
 
                                     if (opciones[i].equals("Tomar video")) {
@@ -572,7 +573,7 @@ public class SupervisionActivity extends AppCompatActivity
 
                     Observation = edObserv.getText().toString();
                     if(!Observation.equals("")) {
-                        if (contImg>min_photos) {
+                        if (contImg>=min_photos) {
                             if (contImg>max_photos){
                                 StyleableToast.makeText(getApplicationContext(), "El maximo de fotos es " + max_photos + "usted ha superado esa cantidad por " + (contImg-max_photos), Toast.LENGTH_SHORT, R.style.warningToast).show();
                             }else {
@@ -605,7 +606,7 @@ public class SupervisionActivity extends AppCompatActivity
 
                                             BDFireStore.collection("events").document(idevent).update("status", 2);
 
-                                            BDFireStore.collection("events").document(idevent).update("percentage", 1);
+                                            BDFireStore.collection("events").document(idevent).update("advanced", 1);
                                             StyleableToast.makeText(getApplicationContext(), "Datos ingresados", Toast.LENGTH_LONG, R.style.sucessToast).show();
                                             //Toast.makeText(getApplicationContext(), "Datos ingresados", Toast.LENGTH_SHORT).show();
 
@@ -618,10 +619,10 @@ public class SupervisionActivity extends AppCompatActivity
                                         if ((estado).equals("during")) {
 
 
-                                            if (percentage <= Integer.parseInt(String.valueOf(edpercentage.getText()))) {
-                                                if (Integer.parseInt(String.valueOf(edpercentage.getText())) <= 100) {
+                                            if (advanced <= Integer.parseInt(String.valueOf(edpercentage.getText()))) {
+                                                if (Integer.parseInt(String.valueOf(edpercentage.getText())) <= number) {
 
-                                                    percentage = Integer.parseInt(String.valueOf(edpercentage.getText()));
+                                                    advanced = Integer.parseInt(String.valueOf(edpercentage.getText()));
 
                                                     boolean during = true;
 
@@ -639,14 +640,14 @@ public class SupervisionActivity extends AppCompatActivity
 
                                                     terminado = 2;
 
-                                                    BDFireStore.collection("events").document(idevent).update("percentage", percentage);
+                                                    BDFireStore.collection("events").document(idevent).update("advanced", advanced);
 
                                                     edObserv.setText("");
                                                 } else {
-                                                    StyleableToast.makeText(getApplicationContext(), "El porcentage no puede ser mayor a 100%", Toast.LENGTH_LONG, R.style.warningToastMiddle).show();
+                                                    StyleableToast.makeText(getApplicationContext(), "El avance no puede ser mayor a 100%", Toast.LENGTH_LONG, R.style.warningToastMiddle).show();
                                                 }
                                             } else {
-                                                StyleableToast.makeText(getApplicationContext(), "El porcentage no puede ser menor al anterior", Toast.LENGTH_LONG, R.style.warningToastMiddle).show();
+                                                StyleableToast.makeText(getApplicationContext(), "El avance no puede ser menor al anterior", Toast.LENGTH_LONG, R.style.warningToastMiddle).show();
                                             }
 
 
@@ -669,10 +670,10 @@ public class SupervisionActivity extends AppCompatActivity
                                             uploadAllFiles();
                                             uploadAllImages();
 
-                                            BDFireStore.collection("events").document(idevent).update("percentage", percentage);
+                                            BDFireStore.collection("events").document(idevent).update("advanced", advanced);
 
 
-                                            if (percentage == 100) {
+                                            if (advanced == number) {
 
                                                 //mDatabase.child("Eventos").child(idevent).child("active").setValue(false);
                                                 BDFireStore.collection("events").document(idevent).update("active", false);
@@ -847,7 +848,7 @@ public class SupervisionActivity extends AppCompatActivity
 
         for(int i=0; i<ListImages.size(); i++){
             if(ListImages.get(i) != null){
-                uploadImageGlobal(ListImages.get(i), i);
+                uploadImageGlobal(ListImages.get(i),mImageBitmap.get(i), i);
                 //multimedia.add(PhotoData);
             }
         }
@@ -1125,12 +1126,13 @@ public class SupervisionActivity extends AppCompatActivity
     private void ChequeoDeVariables() {
 
 
-        if(percentage==0){
+        if(advanced ==0){
             txtAvance.setVisibility(View.INVISIBLE);
             edpercentage.setVisibility(View.INVISIBLE);
+            txtTotal.setVisibility(View.INVISIBLE);
         }
 
-        if(percentage>=1 && percentage<=99){
+        if(advanced >=1 && advanced <=99){
             txtAvance.setVisibility(View.VISIBLE);
             edpercentage.setVisibility(View.VISIBLE);
 
@@ -1141,7 +1143,7 @@ public class SupervisionActivity extends AppCompatActivity
             txtEstado.setText("Durante el Evento");
         }
 
-        if(percentage==100){
+        if(advanced ==100){
             txtAvance.setVisibility(View.INVISIBLE);
             edpercentage.setVisibility(View.INVISIBLE);
 
@@ -1386,11 +1388,44 @@ public class SupervisionActivity extends AppCompatActivity
         ListImages = new ArrayList<>();
     }
 
+    private void takePhoto_AltaCalidad() {
+        final String dir = Environment.getExternalStorageDirectory().toString() + "/Imagenes-De-RSO/";
+        File newdir = new File(dir);
+        if (!newdir.exists()) {
+            newdir.mkdir();
+        }
+
+        int n = 10000;
+        Random generator = new Random();
+        n = generator.nextInt(n);
+        String imageName = "Image-" + n + ".jpg";
+        String file = dir+imageName;
+        File newfile = new File(file);
+        try {
+            newfile.createNewFile();
+        }
+        catch (IOException e)
+        {
+        }
+
+        Uri outputFileUri = FileProvider.getUriForFile(SupervisionActivity.this,"com.acadep.acadepsistemas.rso.fileprovider", newfile);
+
+
+        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
+
+
+        filePath = newfile.getPath();
+
+
+        startActivityForResult(cameraIntent, TAKE_PHOTO_CODE);
+    }
+
     public void takePhoto() throws IOException {
 
-        if((estado).equals("before") && percentage>=1){
+        if((estado).equals("before") && advanced >=1){
             StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT, R.style.warningToast).show();
-        }else if ((estado).equals("during") && percentage>99){
+        }else if ((estado).equals("during") && advanced >99){
             StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT, R.style.warningToast).show();
         }else {
 
@@ -1483,6 +1518,22 @@ public class SupervisionActivity extends AppCompatActivity
         super.onActivityResult(requestCode, resultCode, data);
 
 
+        if (requestCode == TAKE_PHOTO_CODE && resultCode == RESULT_OK) {
+            Log.d("CameraDemo", "Pic saved");
+            //Toast.makeText(this, "Pic saved", Toast.LENGTH_SHORT).show();
+
+            Bitmap bitmap = BitmapFactory.decodeFile(filePath);
+
+            double heightd = bitmap.getHeight()*.1720430107526882;
+            double widthD = bitmap.getWidth()*.12903225806451612;
+            float heightf =  (float)heightd;
+            Toast.makeText(this, "El height es: " + 1024 + " y el width es: " + heightf, Toast.LENGTH_SHORT).show();
+            Bitmap Bitnew = redimensionarImagenMaximo(bitmap, 512 ,  heightf);
+            addImage(Bitnew, 0);
+            ListImages.add(0, new File(filePath));
+            contImg++;
+        }
+
         if (requestCode==86 && resultCode==RESULT_OK && data!=null) {
             if(contUris>9){
                 StyleableToast.makeText(getApplicationContext(), "Limite de archivos alcanzado", Toast.LENGTH_LONG, R.style.warningToast).show();
@@ -1541,7 +1592,7 @@ public class SupervisionActivity extends AppCompatActivity
             // ---------------
                     capturedCoolerBitmap = (Bitmap) data.getExtras().get("data");
                     //Bitmap resizeImage = Bitmap.createScaledBitmap(capturedCoolerBitmap,CamWidth,CamHegith,false);
-                    Bitmap Bitnew = redimensionarImagenMaximo(capturedCoolerBitmap, 3000 , 2000);
+                    Bitmap Bitnew = redimensionarImagenMaximo(capturedCoolerBitmap, 1200 , 800);
 //                    Bitmap Bitnew = capturedCoolerBitmap;
 
                     contImg++;
@@ -1665,20 +1716,24 @@ public class SupervisionActivity extends AppCompatActivity
 
     // ------------------------------------------------------- Inicio de Subir archivos ------------------------------------------------------------------------------ //
 
-    private void uploadImageGlobal(File fileimagenpos, final int x) {
+    private void uploadImageGlobal(File fileimagenpos, Bitmap bitmap, final int x) {
         if (fileimagenpos != null) {
+
+//            File fileimagenpos
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+            byte[] dato = baos.toByteArray();
+
 
             final ProgressDialog progressDialog = new ProgressDialog(SupervisionActivity.this);
             progressDialog.setTitle("Subiendo....");
 
+//            final StorageReference ref = storageReference.child("x").child("Img" + created_at + UUID.randomUUID().toString());
             final StorageReference ref = storageReference.child("images").child("evidence").child("Img" + created_at + UUID.randomUUID().toString());
             // StorageReference ref = storageReference.child("images/"+UUID.randomUUID().toString());
 
-            final UploadTask uploadTask = ref.putFile(Uri.fromFile(fileimagenpos));
 
-
-//            ref.putFile().continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
-            ref.putFile(Uri.fromFile(fileimagenpos)).continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+            ref.putBytes(dato).continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
                 @Override
                 public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
                     if (!task.isSuccessful()) {
@@ -1692,11 +1747,13 @@ public class SupervisionActivity extends AppCompatActivity
                     if (task.isSuccessful()) {
                         Uri downloadUri = task.getResult();
                         PhotoData = multimedia.get(x);
+                        multimedia.remove(x);
                         PhotoData.setSrc(downloadUri.toString());
-                        multimedia.set(x, PhotoData);
+                        multimedia.add(x, PhotoData);
 
                         Subirdatos();
                         if(x == (contImg-1) && contUris==0){
+//                            BDFireStore.collection("evidence").document(u).set(multimedia, SetOptions.merge());
                             BorrarImagenes();
                         }
 
@@ -1706,12 +1763,43 @@ public class SupervisionActivity extends AppCompatActivity
                 }
             });
 
+
+//            ref.putFile(Uri.fromFile(fileimagenpos)).continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+//                @Override
+//                public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+//                    if (!task.isSuccessful()) {
+//                        throw task.getException();
+//                    }
+//                    return ref.getDownloadUrl();
+//                }
+//            }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+//                @Override
+//                public void onComplete(@NonNull Task<Uri> task) {
+//                    if (task.isSuccessful()) {
+//                        Uri downloadUri = task.getResult();
+//                        PhotoData = multimedia.get(x);
+//                        multimedia.remove(x);
+//                        PhotoData.setSrc(downloadUri.toString());
+//                        multimedia.add(x, PhotoData);
+//
+//                        Subirdatos();
+//                        if(x == (contImg-1) && contUris==0){
+////                            BDFireStore.collection("evidence").document(u).set(multimedia, SetOptions.merge());
+//                            BorrarImagenes();
+//                        }
+//
+//                    } else {
+//                        Toast.makeText(getApplicationContext(), "upload failed: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+//                    }
+//                }
+//            });
+
         }
     }
 
     private void Subirdatos() {
         created_at_funct();
-        Data data = new Data(created_at, Observation, header,ref_event, Lat, Lng, multimedia, files);
+        Data data = new Data(created_at, Observation, header, advanced,ref_event, Lat, Lng, multimedia, files);
         BDFireStore.collection("evidence").document(u).set(data, SetOptions.merge());
 
     }
@@ -1817,7 +1905,7 @@ public class SupervisionActivity extends AppCompatActivity
                     boolean opcion = true;
 
                     if (menuItem.getItemId()==R.id.itemAntes) {
-                        if (percentage>=1) {
+                        if (advanced >=1) {
                             StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT, R.style.warningToast).show();
                             opcion = false;
                             menuItem.setEnabled(false);
@@ -1830,12 +1918,12 @@ public class SupervisionActivity extends AppCompatActivity
                     }
 
                     if (menuItem.getItemId()==R.id.itemDurante){
-                        if(percentage==100) {
+                        if(advanced ==100) {
                             StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT, R.style.warningToast).show();
                             opcion = false;
                             menuItem.setEnabled(false);
                         }else {
-                            if (percentage >= 1 && percentage <= 99) {
+                            if (advanced >= 1 && advanced <= 99) {
                                 StyleableToast.makeText(getApplicationContext(), "Seccion disponible", Toast.LENGTH_SHORT, R.style.doneToast).show();
                                 estado = "during";
                                 txtEstado.setText("Durante el Evento");
@@ -1849,7 +1937,7 @@ public class SupervisionActivity extends AppCompatActivity
 
                     if (menuItem.getItemId()==R.id.itemDespues){
 
-                            if (percentage == 100) {
+                            if (advanced == 100) {
 
                                 StyleableToast.makeText(getApplicationContext(), "Seccion disponible", Toast.LENGTH_SHORT, R.style.doneToast).show();
                                 estado = "after";
@@ -1897,7 +1985,9 @@ public class SupervisionActivity extends AppCompatActivity
         description= extras.getString("description");
         tools = extras.getStringArrayList("tools");
         deleted = extras.getBoolean("deleted");
-        percentage = extras.getInt("percentage");
+        advanced = extras.getInt("advanced");
+        number = extras.getInt("number");
+        unit = extras.getString("unit");
         //active=false;
 
 

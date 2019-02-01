@@ -9,16 +9,17 @@ public class Evento {
 
     boolean active;
     String activity_id;
+    int advanced;
     boolean deleted;
     String description;
     String end;
     String id;
-    int percentage;
     List<Recursos> staff;
     String start;
     int status;
     String title;
     List<Recursos> tools;
+    Total total = new Total();
     String type;
     String type_activity;
     String user_id;
@@ -32,38 +33,31 @@ public class Evento {
 
     public Evento(){}
 
-    public Evento(boolean active, String activity_id, boolean deleted, String description, String end, String id, int percentage, List<Recursos> staff, String start, int status, String title, List<Recursos> tools, String type, String type_activity, String user_id) {
+    public Evento(boolean active, String activity_id, int advanced, boolean deleted, String description, String end, String id, List<Recursos> staff, String start, int status, String title, List<Recursos> tools, Total total, String type, String type_activity, String user_id) {
         this.active = active;
         this.activity_id = activity_id;
+        this.advanced = advanced;
         this.deleted = deleted;
         this.description = description;
         this.end = end;
         this.id = id;
-        this.percentage = percentage;
         this.staff = staff;
         this.start = start;
         this.status = status;
         this.title = title;
         this.tools = tools;
+        this.total = total;
         this.type = type;
         this.type_activity = type_activity;
         this.user_id = user_id;
     }
 
-    public int getPercentage() {
-        return percentage;
+    public boolean isActive() {
+        return active;
     }
 
-    public void setPercentage(int percentage) {
-        this.percentage = percentage;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
+    public void setActive(boolean active) {
+        this.active = active;
     }
 
     public String getActivity_id() {
@@ -74,12 +68,12 @@ public class Evento {
         this.activity_id = activity_id;
     }
 
-    public boolean isActive() {
-        return active;
+    public int getAdvanced() {
+        return advanced;
     }
 
-    public void setActive(boolean active) {
-        this.active = active;
+    public void setAdvanced(int advanced) {
+        this.advanced = advanced;
     }
 
     public boolean isDeleted() {
@@ -152,6 +146,22 @@ public class Evento {
 
     public void setTools(List<Recursos> tools) {
         this.tools = tools;
+    }
+
+    public Total getTotal() {
+        return total;
+    }
+
+    public void setTotal(Total total) {
+        this.total = total;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public String getType_activity() {

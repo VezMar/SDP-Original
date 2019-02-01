@@ -35,7 +35,10 @@ import com.acadep.acadepsistemas.rso.R;
 import com.acadep.acadepsistemas.rso.model.Foto;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.storage.FirebaseStorage;
@@ -63,6 +66,7 @@ public class RecyclerTest  extends AppCompatActivity {
 
     private static final int REQUEST_PERM_WRITE_STORAGE = 102;
     private static final int CAPTURE_PHOTO = 104;
+    static final int REQUEST_VIDEO_CAPTURE = 1;
 
     int TAKE_PHOTO_CODE = 0;
     public static int count = 0;
@@ -82,6 +86,7 @@ public class RecyclerTest  extends AppCompatActivity {
 
 
     //FireStore
+    FirebaseDatabase dbRef;
     StorageReference storageReference;
     FirebaseStorage storage;
     FirebaseFirestore BDFireStore = FirebaseFirestore.getInstance();
@@ -104,6 +109,7 @@ public class RecyclerTest  extends AppCompatActivity {
 
         initRecyclerView();
 
+        dbRef = FirebaseDatabase.getInstance();
         storage = FirebaseStorage.getInstance();
         storageReference = storage.getReference();
 
@@ -113,44 +119,35 @@ public class RecyclerTest  extends AppCompatActivity {
         swtBorrar = findViewById(R.id.swtBorrar);
 
         if (checkPermissions()){
-            //  permissions  granted.
 
         }
 
-        final String dir = Environment.getExternalStorageDirectory().toString() + "/Imagenes-De-RSO/";
-        File newdir = new File(dir);
-        if (!newdir.exists()) {
-            newdir.mkdir();
-        }
 
 
         btnPhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                int n = 10000;
-                Random generator = new Random();
-                n = generator.nextInt(n);
-                String imageName = "Image-" + n + ".jpg";
-                String file = dir+imageName;
-                File newfile = new File(file);
-                try {
-                    newfile.createNewFile();
-                }
-                catch (IOException e)
-                {
-                }
-
-                Uri outputFileUri = FileProvider.getUriForFile(RecyclerTest.this,"com.acadep.acadepsistemas.rso.fileprovider", newfile);
-
-                Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
+                final CharSequence[] opciones = {"Tomar foto", "Tomar video", "Cancelar"};
+                final AlertDialog.Builder builder = new AlertDialog.Builder(RecyclerTest.this);
 
 
-                filePath = newfile.getPath();
+                builder.setTitle("Borrar archivos");
+                builder.setItems(opciones, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
 
+                        if (opciones[i].equals("Tomar foto")) {
+                            takePhoto_AltaCalidad();
+                        }
 
-                startActivityForResult(cameraIntent, TAKE_PHOTO_CODE);
+                        if (opciones[i].equals("Tomar video")) {
+                            takeVideo();
+                        }
+                    }
+
+                });
+                builder.show();
+
 
 
 //                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -167,7 +164,7 @@ public class RecyclerTest  extends AppCompatActivity {
 //                } else {
 //
 //
-//                    takePhoto();
+//                    takePhotoBajaCalidad();
 //
 //                }
             }
@@ -283,9 +280,48 @@ public class RecyclerTest  extends AppCompatActivity {
         }
     }
 
-    private void takePhoto() {
+    private void takePhoto_BajaCalidad() {
         Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         startActivityForResult(cameraIntent, CAPTURE_PHOTO);
+    }
+
+    private void takeVideo() {
+        Intent takeVideoIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+        if (takeVideoIntent.resolveActivity(getPackageManager()) != null) {
+            startActivityForResult(takeVideoIntent, REQUEST_VIDEO_CAPTURE);
+        }
+    }
+
+    private void takePhoto_AltaCalidad() {
+        final String dir = Environment.getExternalStorageDirectory().toString() + "/Imagenes-De-RSO/";
+        File newdir = new File(dir);
+        if (!newdir.exists()) {
+            newdir.mkdir();
+        }
+
+        int n = 10000;
+        Random generator = new Random();
+        n = generator.nextInt(n);
+        String imageName = "Image-" + n + ".jpg";
+        String file = dir+imageName;
+        File newfile = new File(file);
+        try {
+            newfile.createNewFile();
+        }
+        catch (IOException e)
+        {
+        }
+
+        Uri outputFileUri = FileProvider.getUriForFile(RecyclerTest.this,"com.acadep.acadepsistemas.rso.fileprovider", newfile);
+
+        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
+
+
+        filePath = newfile.getPath();
+
+
+        startActivityForResult(cameraIntent, TAKE_PHOTO_CODE);
     }
 
     @Override
@@ -299,6 +335,44 @@ public class RecyclerTest  extends AppCompatActivity {
             Bitmap bitmap = BitmapFactory.decodeFile(filePath);
             addImage(bitmap, 0);
             ListImages.add(0, new File(filePath));
+        }
+
+        if(requestCode == REQUEST_VIDEO_CAPTURE && resultCode == RESULT_OK) {
+            final StorageReference ref = storageReference.child("pruebas").child("video" + UUID.randomUUID().toString());
+            Uri videoUri  = data.getData();
+
+            ref.putFile(videoUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    String url = taskSnapshot.getUploadSessionUri().toString();
+                    DatabaseReference refDB = dbRef.getReference();
+                    taskSnapshot.getMetadata().getReference().getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Uri> task) {
+                            if (task.isSuccessful()) {
+                                Toast.makeText(getApplicationContext(), "Archivo subido", Toast.LENGTH_SHORT).show();
+                            }else{
+                                Toast.makeText(getApplicationContext(), "upload failed: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+
+                        }
+                    });
+                }
+            });
+
+//            Bitmap bitmap = BitmapFactory.decodeFile(videoUri.getPath());
+//            addImage(bitmap, 0);
+//            ListImages.add(0, new File(videoUri.getPath()));
+
+//            try {
+////                Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), videoUri);
+//
+//
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+
+
         }
 
         if (requestCode==104 && resultCode == RESULT_OK) {

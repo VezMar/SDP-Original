@@ -19,6 +19,7 @@ import com.acadep.acadepsistemas.rso.Clases.SupervisionActivity;
 import com.acadep.acadepsistemas.rso.R;
 import com.acadep.acadepsistemas.rso.model.Evento;
 import com.acadep.acadepsistemas.rso.model.Recursos;
+import com.acadep.acadepsistemas.rso.model.Total;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -123,6 +124,8 @@ public class EventosFragment extends Fragment {
             public void onItemClick(DocumentSnapshot documentSnapshot, int position) {
                 Evento evento = documentSnapshot.toObject(Evento.class);
 
+                Total total = new Total();
+                total = evento.getTotal();
                 String actividad = evento.getType_activity();
                 String user_id = evento.getUser_id();
                 String title = evento.getTitle();
@@ -132,7 +135,10 @@ public class EventosFragment extends Fragment {
                 String idEvento = evento.getId();
                 String nameEvent = evento.getTitle();
 
-                int percentage = evento.getPercentage();
+                int number = total.getNumber();
+                String unit = total.getUnit();
+
+                int advanced = evento.getAdvanced();
 
                 List<Recursos> tools = evento.getTools();
                 boolean deleted = evento.isDeleted();
@@ -149,44 +155,16 @@ public class EventosFragment extends Fragment {
                 intent.putExtra("title", title);
                 intent.putExtra("description", description);
                 intent.putExtra("deleted", deleted);
-                intent.putExtra("percentage", percentage);
+                intent.putExtra("advanced", advanced);
 
-                if (evento.getType_activity().equals("supervision")) {
-                    //mifragment = new SupervisionFragment();
+                intent.putExtra("number", number);
+                intent.putExtra("unit", unit);
+
 
                     startActivity(intent);
                     //Toast.makeText(getContext(), "Supervision", Toast.LENGTH_SHORT).show();
-                    StyleableToast.makeText(getContext(), "Supervision", Toast.LENGTH_SHORT, R.style.sucessToast).show();
+                    StyleableToast.makeText(getContext(), ""+actividad, Toast.LENGTH_SHORT, R.style.sucessToast).show();
 
-                }
-
-                if(evento.getType_activity().equals("servicio")){
-                    //mifragment = new SupervisionFragment();
-
-                    startActivity(intent);
-                    //Toast.makeText(getContext(), "Servicio", Toast.LENGTH_SHORT).show();
-                    StyleableToast.makeText(getContext(), "Servicio", Toast.LENGTH_SHORT, R.style.sucessToast).show();
-
-                }
-
-                if(evento.getType_activity().equals("revision")){
-                    // mifragment = new RevisionFragment();
-
-                    startActivity(intent);
-                    //Toast.makeText(getContext(), "Revision", Toast.LENGTH_SHORT).show();
-                    StyleableToast.makeText(getContext(), "Revision", Toast.LENGTH_SHORT, R.style.sucessToast).show();
-                }
-
-                if(evento.getType_activity().equals("auditoria")){
-                    // mifragment = new AuditoriaFragment();
-
-
-                    startActivity(intent);
-                    //Toast.makeText(getContext(), "Auditoria", Toast.LENGTH_SHORT).show();
-                    StyleableToast.makeText(getContext(), "Auditoria", Toast.LENGTH_SHORT, R.style.sucessToast).show();
-
-
-                }
 
 
             }

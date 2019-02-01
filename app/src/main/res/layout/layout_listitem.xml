@@ -10,8 +10,8 @@
             android:id="@+id/image_recycler"
             android:layout_width="100dp"
             android:layout_height="100dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginRight="10dp"
             android:src="@drawable/empty_image" />
+
+
 
 </RelativeLayout>
