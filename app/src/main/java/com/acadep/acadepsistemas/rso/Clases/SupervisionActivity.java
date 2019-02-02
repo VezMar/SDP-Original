@@ -23,6 +23,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
@@ -244,31 +245,12 @@ public class SupervisionActivity extends AppCompatActivity
     static int max_photos;
     static int min_photos;
 
-
-    static List<String> Foto = new ArrayList<>();
-    static List<String> Foto2 = new ArrayList<>();
-    static List<String> Foto3 = new ArrayList<>();
-    static List<String> Foto4 = new ArrayList<>();
-    static List<String> Foto5 = new ArrayList<>();
-
-
 //Subir archivo
 
 
 
     static Uri[] ArchivosUrisArray;
     static Uri UriNula = Uri.parse("1");
-
-    static Uri ArchivoUri;
-    static Uri ArchivoUri2;
-    static Uri ArchivoUri3;
-    static Uri ArchivoUri4;
-    static Uri ArchivoUri5;
-    static Uri ArchivoUri6;
-    static Uri ArchivoUri7;
-    static Uri ArchivoUri8;
-    static Uri ArchivoUri9;
-    static Uri ArchivoUri10;
 
     static int contUris = 0;
     static int restUris = 9;
@@ -308,12 +290,15 @@ public class SupervisionActivity extends AppCompatActivity
 
     private static List<Foto> multimedia = new ArrayList<>();
     private static List<Files> files = new ArrayList<>();
+    private static List<Uri> ArchivosUris = new ArrayList<>();
+
+    Files PerFile = new Files();
 
     //static File [] FileImagenArray = new File[6];
 
     private static com.acadep.acadepsistemas.rso.model.Foto PerFotoArray[] = new Foto[1001];
     private static Foto PhotoData = new Foto();
-    private static Files PerFilesArray[] = new Files[10];
+//    private static Files PerFilesArray[] = new Files[10];
 
     private static datetime datatime = new datetime();
     private static Ubication ubication = new Ubication();
@@ -814,7 +799,10 @@ public class SupervisionActivity extends AppCompatActivity
 
     private void GuardarInformacionArchivos() {
         created_at_funct();
-        PerFilesArray[contUris].setCreated_at(created_at);
+
+        PerFile.setCreated_at(created_at);
+        files.add(0,PerFile);
+        PerFile = new Files();
 
     }
 
@@ -822,9 +810,6 @@ public class SupervisionActivity extends AppCompatActivity
 
         files = new ArrayList<>();
         contUris=0;
-        for (int x=0; x<10;x++) {
-            PerFilesArray[x] = new Files();
-        }
 
         multimedia = new ArrayList<>();
         contImg=0;
@@ -846,9 +831,9 @@ public class SupervisionActivity extends AppCompatActivity
 //            }
 //        }
 
-        for(int i=0; i<ListImages.size(); i++){
-            if(ListImages.get(i) != null){
-                uploadImageGlobal(ListImages.get(i),mImageBitmap.get(i), i);
+        for(int i=0; i<mImageBitmap.size(); i++){
+            if(mImageBitmap.get(i) != null){
+                uploadImageGlobal(mImageBitmap.get(i), i);
                 //multimedia.add(PhotoData);
             }
         }
@@ -890,10 +875,11 @@ public class SupervisionActivity extends AppCompatActivity
         PhotoData.setCreated_at(created_at);
         PhotoData.setUbication(ubication);
         PhotoData.setType("Imagen");
-        PhotoData.setSrc("");
+        PhotoData.setSrc(""+contImg);
 
         multimedia.add(0, PhotoData);
 
+        PhotoData = new Foto();
 
 
     }
@@ -951,50 +937,64 @@ public class SupervisionActivity extends AppCompatActivity
 //                            }
 //                        }
 
-
-                        if (contUris == 0) {
+                        if (contUris==0) {
                             StyleableToast.makeText(getApplicationContext(), "No hay ningún archivo para borrar", Toast.LENGTH_SHORT, R.style.warningToast).show();
-                        } else if (ArchivoUri != null && contUris == 1) {
-                            ArchivoUri = null;
-                            contUris--;
-                            StyleableToast.makeText(getApplicationContext(), "¡Archivo Borrado con exito!", Toast.LENGTH_SHORT, R.style.doneToast).show();
-                        } else if (ArchivoUri2 != null && contUris == 2) {
-                            ArchivoUri2 = null;
-                            contUris--;
-                            StyleableToast.makeText(getApplicationContext(), "¡Archivo Borrado con exito!", Toast.LENGTH_SHORT, R.style.doneToast).show();
-                        } else if (ArchivoUri3 != null && contUris == 3) {
-                            ArchivoUri3 = null;
-                            contUris--;
-                            StyleableToast.makeText(getApplicationContext(), "¡Archivo Borrado con exito!", Toast.LENGTH_SHORT, R.style.doneToast).show();
-                        } else if (ArchivoUri4 != null && contUris == 4) {
-                            ArchivoUri4 = null;
-                            contUris--;
-                            StyleableToast.makeText(getApplicationContext(), "¡Archivo Borrado con exito!", Toast.LENGTH_SHORT, R.style.doneToast).show();
-                        } else if (ArchivoUri5 != null && contUris == 5) {
-                            ArchivoUri5 = null;
-                            contUris--;
-                            StyleableToast.makeText(getApplicationContext(), "¡Archivo Borrado con exito!", Toast.LENGTH_SHORT, R.style.doneToast).show();
-                        } else if (ArchivoUri6 != null && contUris == 6) {
-                            ArchivoUri6 = null;
-                            contUris--;
-                            StyleableToast.makeText(getApplicationContext(), "¡Archivo Borrado con exito!", Toast.LENGTH_SHORT, R.style.doneToast).show();
-                        } else if (ArchivoUri7 != null && contUris == 7) {
-                            ArchivoUri7 = null;
-                            contUris--;
-                            StyleableToast.makeText(getApplicationContext(), "¡Archivo Borrado con exito!", Toast.LENGTH_SHORT, R.style.doneToast).show();
-                        } else if (ArchivoUri8 != null && contUris == 8) {
-                            ArchivoUri8 = null;
-                            contUris--;
-                            StyleableToast.makeText(getApplicationContext(), "¡Archivo Borrado con exito!", Toast.LENGTH_SHORT, R.style.doneToast).show();
-                        } else if (ArchivoUri9 != null && contUris == 9) {
-                            ArchivoUri9 = null;
-                            contUris--;
-                            StyleableToast.makeText(getApplicationContext(), "¡Archivo Borrado con exito!", Toast.LENGTH_SHORT, R.style.doneToast).show();
-                        } else if (ArchivoUri10 != null && contUris == 10) {
-                            ArchivoUri10 = null;
-                            contUris--;
-                            StyleableToast.makeText(getApplicationContext(), "¡Archivo Borrado con exito!", Toast.LENGTH_SHORT, R.style.doneToast).show();
+                        }else{
+                            if(contUris<11){
+                                contUris--;
+                                ArchivosUris.remove(0);
+                                files.remove(0);
+                                StyleableToast.makeText(getApplicationContext(), "¡Archivo Borrado con exito!", Toast.LENGTH_SHORT, R.style.doneToast).show();
+                            }else{
+
+                            }
+
                         }
+
+
+//                        if (contUris == 0) {
+//
+//                        } else if (ArchivoUri != null && contUris == 1) {
+//                            ArchivoUri = null;
+//                            contUris--;
+//
+//                        } else if (ArchivoUri2 != null && contUris == 2) {
+//                            ArchivoUri2 = null;
+//                            contUris--;
+//                            StyleableToast.makeText(getApplicationContext(), "¡Archivo Borrado con exito!", Toast.LENGTH_SHORT, R.style.doneToast).show();
+//                        } else if (ArchivoUri3 != null && contUris == 3) {
+//                            ArchivoUri3 = null;
+//                            contUris--;
+//                            StyleableToast.makeText(getApplicationContext(), "¡Archivo Borrado con exito!", Toast.LENGTH_SHORT, R.style.doneToast).show();
+//                        } else if (ArchivoUri4 != null && contUris == 4) {
+//                            ArchivoUri4 = null;
+//                            contUris--;
+//                            StyleableToast.makeText(getApplicationContext(), "¡Archivo Borrado con exito!", Toast.LENGTH_SHORT, R.style.doneToast).show();
+//                        } else if (ArchivoUri5 != null && contUris == 5) {
+//                            ArchivoUri5 = null;
+//                            contUris--;
+//                            StyleableToast.makeText(getApplicationContext(), "¡Archivo Borrado con exito!", Toast.LENGTH_SHORT, R.style.doneToast).show();
+//                        } else if (ArchivoUri6 != null && contUris == 6) {
+//                            ArchivoUri6 = null;
+//                            contUris--;
+//                            StyleableToast.makeText(getApplicationContext(), "¡Archivo Borrado con exito!", Toast.LENGTH_SHORT, R.style.doneToast).show();
+//                        } else if (ArchivoUri7 != null && contUris == 7) {
+//                            ArchivoUri7 = null;
+//                            contUris--;
+//                            StyleableToast.makeText(getApplicationContext(), "¡Archivo Borrado con exito!", Toast.LENGTH_SHORT, R.style.doneToast).show();
+//                        } else if (ArchivoUri8 != null && contUris == 8) {
+//                            ArchivoUri8 = null;
+//                            contUris--;
+//                            StyleableToast.makeText(getApplicationContext(), "¡Archivo Borrado con exito!", Toast.LENGTH_SHORT, R.style.doneToast).show();
+//                        } else if (ArchivoUri9 != null && contUris == 9) {
+//                            ArchivoUri9 = null;
+//                            contUris--;
+//                            StyleableToast.makeText(getApplicationContext(), "¡Archivo Borrado con exito!", Toast.LENGTH_SHORT, R.style.doneToast).show();
+//                        } else if (ArchivoUri10 != null && contUris == 10) {
+//                            ArchivoUri10 = null;
+//                            contUris--;
+//                            StyleableToast.makeText(getApplicationContext(), "¡Archivo Borrado con exito!", Toast.LENGTH_SHORT, R.style.doneToast).show();
+//                        }
                     } else {
                         dialogInterface.dismiss();
                     }
@@ -1008,75 +1008,14 @@ public class SupervisionActivity extends AppCompatActivity
     private void uploadAllFiles() {
 //        uploadfileGlobal(ArchivoUri);
 
-        if (ArchivoUri != null) {
-            uploadfileGlobal(ArchivoUri, 0);
-            files.add(PerFilesArray[0]);
-            ArchivoUri=null;
 
-
-        }
-
-        if(ArchivoUri2 != null) {
-            uploadfileGlobal(ArchivoUri2, 1);
-            files.add(PerFilesArray[1]);
-            ArchivoUri2=null;
-        }
-
-        if(ArchivoUri3 != null) {
-            uploadfileGlobal(ArchivoUri3, 2);
-            files.add(PerFilesArray[2]);
-            ArchivoUri3=null;
-
-        } if(ArchivoUri4 != null) {
-
-            uploadfileGlobal(ArchivoUri4, 3);
-            files.add(PerFilesArray[3]);
-            ArchivoUri4=null;
+        for (int i = 0; i<ArchivosUris.size(); i++){
+            if ( ArchivosUris.get(i) != null){
+                uploadfileGlobal(ArchivosUris.get(i), i);
+            }
 
         }
 
-        if(ArchivoUri5 != null ) {
-            uploadfileGlobal(ArchivoUri5, 4);
-            files.add(PerFilesArray[4]);
-            ArchivoUri5=null;
-        }
-
-        if(ArchivoUri6 != null) {
-            uploadfileGlobal(ArchivoUri6, 5);
-            files.add(PerFilesArray[5]);
-            ArchivoUri6=null;
-        }
-
-        if(ArchivoUri7 != null) {
-
-            uploadfileGlobal(ArchivoUri7, 6);
-            files.add(PerFilesArray[6]);
-            ArchivoUri7=null;
-
-        }
-
-        if(ArchivoUri8 != null) {
-
-            uploadfileGlobal(ArchivoUri8, 7);
-            files.add(PerFilesArray[7]);
-            ArchivoUri8=null;
-
-        }
-
-        if(ArchivoUri9 != null) {
-
-            uploadfileGlobal(ArchivoUri9, 8);
-            files.add(PerFilesArray[8]);
-            ArchivoUri9=null;
-
-        }
-
-        if(ArchivoUri10 != null) {
-
-            uploadfileGlobal(ArchivoUri10, 9);
-            files.add(PerFilesArray[9]);
-            ArchivoUri10=null;
-        }
     }
 
 
@@ -1103,16 +1042,33 @@ public class SupervisionActivity extends AppCompatActivity
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
                     if (opciones[i].equals("Elegir PDF")) {
-                        PerFilesArray[contUris].setType("PDF");
+
+                        PerFile = files.get(0);
+                        PerFile.setType("PDF");
+                        files.set(0,PerFile);
+                        PerFile = new Files();
+
                         selectPDF();
                     } else if (opciones[i].equals("Elegir Docx")) {
-                        PerFilesArray[contUris].setType("Docx");
+                        PerFile = files.get(0);
+                        PerFile.setType("Docx");
+                        files.set(0,PerFile);
+                        PerFile = new Files();
+
                         selectDocx();
                     } else if (opciones[i].equals("Elegir Video")) {
-                        PerFilesArray[contUris].setType("video");
+                        PerFile = files.get(0);
+                        PerFile.setType("Video");
+                        files.set(0,PerFile);
+                        PerFile = new Files();
+
                         selectVideo();
                     } else if (opciones[i].equals("Elegir Audio")) {
-                        PerFilesArray[contUris].setType("Audio");
+                        PerFile = files.get(0);
+                        PerFile.setType("Audio");
+                        files.set(0,PerFile);
+                        PerFile = new Files();
+
                         selectAudio();
                     } else {
                         dialogInterface.dismiss();
@@ -1478,9 +1434,7 @@ public class SupervisionActivity extends AppCompatActivity
     private void BorrarFiles() {
         files = new ArrayList<>();
         contUris=0;
-        for (int x=0; x<10;x++) {
-            PerFilesArray[x] = new Files();
-        }
+        ArchivosUris = new ArrayList<>();
     }
 
     private void selectPDF() {
@@ -1611,58 +1565,14 @@ public class SupervisionActivity extends AppCompatActivity
     private void SelecUri(Intent data) {
 
 
-//        for (int i=0; i<=9; i++){
-//            if(contUris==i && ArchivosUrisArray[i] == UriNula){
-//                ArchivosUrisArray[i]=data.getData();
-//                StyleableToast.makeText(getApplicationContext(), "Archivo agregado con exito \nPuede subir " + (restUris-contUris) + " más", Toast.LENGTH_LONG, R.style.sucessToast).show();
-//                break;
-//            }
-//        }
+        if(contUris<10){
+            ArchivosUris.add(0, data.getData());
+            StyleableToast.makeText(getApplicationContext(), "Archivo agregado con exito \nPuede subir " + (restUris-contUris) + " más", Toast.LENGTH_LONG, R.style.sucessToast).show();
 
-        if(contUris==0){
-            ArchivoUri=data.getData();
-            StyleableToast.makeText(getApplicationContext(), "Archivo agregado con exito \nPuede subir " + (restUris-contUris) + " más", Toast.LENGTH_LONG, R.style.sucessToast).show();
-           // Toast.makeText(getApplicationContext(),"Archivo agregado con exito \nPuede subir " + (restUris-contUris) + " más",Toast.LENGTH_SHORT).show();
-        }else if(contUris==1){
-            ArchivoUri2=data.getData();
-            StyleableToast.makeText(getApplicationContext(), "Archivo agregado con exito \nPuede subir " + (restUris-contUris) + " más", Toast.LENGTH_LONG, R.style.sucessToast).show();
-            //Toast.makeText(getApplicationContext(),"Archivo agregado con exito \nPuede subir " + (restUris-contUris) + " más",Toast.LENGTH_SHORT).show();
-        }else if(contUris==2){
-            ArchivoUri3=data.getData();
-            StyleableToast.makeText(getApplicationContext(), "Archivo agregado con exito \nPuede subir " + (restUris-contUris) + " más", Toast.LENGTH_LONG, R.style.sucessToast).show();
-            //Toast.makeText(getApplicationContext(),"Archivo agregado con exito /nPuede subir " + (restUris-contUris) + " más",Toast.LENGTH_SHORT).show();
-        }else if(contUris==3){
-            ArchivoUri4=data.getData();
-            StyleableToast.makeText(getApplicationContext(), "Archivo agregado con exito \nPuede subir " + (restUris-contUris) + " más", Toast.LENGTH_LONG, R.style.sucessToast).show();
-            //Toast.makeText(getApplicationContext(),"Archivo agregado con exito /nPuede subir " + (restUris-contUris) + " más",Toast.LENGTH_SHORT).show();
-        }else if(contUris==4){
-            ArchivoUri5=data.getData();
-            StyleableToast.makeText(getApplicationContext(), "Archivo agregado con exito \nPuede subir " + (restUris-contUris) + " más", Toast.LENGTH_LONG, R.style.sucessToast).show();
-            //Toast.makeText(getApplicationContext(),"Archivo agregado con exito /nPuede subir " + (restUris-contUris) + " más",Toast.LENGTH_SHORT).show();
-        }else if(contUris==5){
-            ArchivoUri6=data.getData();
-            StyleableToast.makeText(getApplicationContext(), "Archivo agregado con exito \nPuede subir " + (restUris-contUris) + " más", Toast.LENGTH_LONG, R.style.sucessToast).show();
-            //Toast.makeText(getApplicationContext(),"Archivo agregado con exito /nPuede subir " + (restUris-contUris) + " más",Toast.LENGTH_SHORT).show();
-        }else if(contUris==6){
-            ArchivoUri7=data.getData();
-            StyleableToast.makeText(getApplicationContext(), "Archivo agregado con exito \nPuede subir " + (restUris-contUris) + " más", Toast.LENGTH_LONG, R.style.sucessToast).show();
-            //Toast.makeText(getApplicationContext(),"Archivo agregado con exito /nPuede subir " + (restUris-contUris) + " más",Toast.LENGTH_SHORT).show();
-        }else if(contUris==7){
-            ArchivoUri8=data.getData();
-            StyleableToast.makeText(getApplicationContext(), "Archivo agregado con exito \nPuede subir " + (restUris-contUris) + " más", Toast.LENGTH_LONG, R.style.sucessToast).show();
-            //Toast.makeText(getApplicationContext(),"Archivo agregado con exito /nPuede subir " + (restUris-contUris) + " más",Toast.LENGTH_SHORT).show();
-        }else if(contUris==8){
-            ArchivoUri9=data.getData();
-            StyleableToast.makeText(getApplicationContext(), "Archivo agregado con exito \nPuede subir " + (restUris-contUris) + " más", Toast.LENGTH_LONG, R.style.sucessToast).show();
-            //Toast.makeText(getApplicationContext(),"Archivo agregado con exito /nPuede subir " + (restUris-contUris) + " más",Toast.LENGTH_SHORT).show();
-        }else if(contUris==9){
-            ArchivoUri10=data.getData();
-            StyleableToast.makeText(getApplicationContext(), "Archivo agregado con exito \nYa no puede subir más", Toast.LENGTH_LONG, R.style.sucessToast).show();
-            //Toast.makeText(getApplicationContext(),"Archivo agregado con exito /nPuede subir " + (restUris-contUris) + " más",Toast.LENGTH_SHORT).show();
         }else{
             StyleableToast.makeText(getApplicationContext(), "Limite de archivos alcanzado", Toast.LENGTH_LONG, R.style.warningToast).show();
-            //Toast.makeText(getApplicationContext(),"Ya no puede subir ningun archivo",Toast.LENGTH_SHORT).show();
         }
+
     }
 
     // ------------------------------------------------------- Inicio de guardar foto en la galeria ------------------------------------------------------------------------------ //
@@ -1716,8 +1626,8 @@ public class SupervisionActivity extends AppCompatActivity
 
     // ------------------------------------------------------- Inicio de Subir archivos ------------------------------------------------------------------------------ //
 
-    private void uploadImageGlobal(File fileimagenpos, Bitmap bitmap, final int x) {
-        if (fileimagenpos != null) {
+    private void uploadImageGlobal(Bitmap bitmap, final int x) {
+
 
 //            File fileimagenpos
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -1747,9 +1657,10 @@ public class SupervisionActivity extends AppCompatActivity
                     if (task.isSuccessful()) {
                         Uri downloadUri = task.getResult();
                         PhotoData = multimedia.get(x);
-                        multimedia.remove(x);
                         PhotoData.setSrc(downloadUri.toString());
-                        multimedia.add(x, PhotoData);
+                        multimedia.set(x, PhotoData);
+
+                        PhotoData = new Foto();
 
                         Subirdatos();
                         if(x == (contImg-1) && contUris==0){
@@ -1794,7 +1705,7 @@ public class SupervisionActivity extends AppCompatActivity
 //                }
 //            });
 
-        }
+
     }
 
     private void Subirdatos() {
@@ -1813,7 +1724,18 @@ public class SupervisionActivity extends AppCompatActivity
 
         int Tpath = ArchivoUri.getPath().length();
         String nombre = ArchivoUri.getPath().substring(9, Tpath);
-        PerFilesArray[i].setName(ArchivoUri.getPath());
+
+         File filename = new File(ArchivoUri.getPath());
+
+//        PerFilesArray[i].setName(ArchivoUri.getPath());
+
+
+        PerFile = files.get(i);
+        PerFile.setName( filename.getName());
+//        PerFile.setName(ArchivoUri.getPath());
+        files.set(i,PerFile);
+        PerFile = new Files();
+
 
         final String fileName= "Archivo" + UUID.randomUUID().toString();
         final StorageReference srtreference = storage.getReference();
@@ -1828,7 +1750,11 @@ public class SupervisionActivity extends AppCompatActivity
                             public void onComplete(@NonNull Task<Uri> task) {
                                 if (task.isSuccessful()) {
                                     Uri downloadUri = task.getResult();
-                                    PerFilesArray[i].setSrc(downloadUri.toString());
+
+                                    PerFile = files.get(i);
+                                    PerFile.setSrc(downloadUri.toString());
+                                    files.set(i,PerFile);
+                                    PerFile = new Files();
 
                                     Subirdatos();
 
@@ -1836,7 +1762,7 @@ public class SupervisionActivity extends AppCompatActivity
 
                                     if(i == (contUris-1)){
                                         try {
-                                            Thread.sleep(10000);
+                                            Thread.sleep(8000);
                                         } catch (InterruptedException e) {
                                             e.printStackTrace();
                                         }
