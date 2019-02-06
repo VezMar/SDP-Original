@@ -97,6 +97,7 @@ dependencies {
 
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
     implementation 'org.jetbrains:annotations-java5:15.0'
+    implementation 'com.squareup.picasso:picasso:2.71828'
 
 
 

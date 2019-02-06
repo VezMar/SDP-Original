@@ -44,6 +44,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 //                .load(mImages.get(i))
 //                .into(viewHolder.image);
 
+//        if (mImages.get(i)== mImages.get(i-1)){
+//            viewHolder.image.setImageResource(R.drawable.reproductor_multimedia);
+//        }
+
         viewHolder.image.setImageBitmap(mImages.get(i));
 
         viewHolder.bind(mImages.get(i), listener);

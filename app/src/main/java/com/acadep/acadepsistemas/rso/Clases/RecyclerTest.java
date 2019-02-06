@@ -74,6 +74,8 @@ public class RecyclerTest  extends AppCompatActivity {
 //    Imagenes
         private ArrayList<Bitmap> mImageBitmap = new ArrayList<>();
         private static List<File> ListImages = new ArrayList<>();
+        private static List<File> ListVideos = new ArrayList<>();
+
 
         private RecyclerView mRecyclerView;
         private RecyclerView.Adapter mAdapter;
@@ -332,14 +334,27 @@ public class RecyclerTest  extends AppCompatActivity {
             Log.d("CameraDemo", "Pic saved");
             Toast.makeText(this, "Pic saved", Toast.LENGTH_SHORT).show();
 
+
             Bitmap bitmap = BitmapFactory.decodeFile(filePath);
-            addImage(bitmap, 0);
+
+
+
+            final int w = Math.max(300, 300);
+            final int h = Math.max(300, 300);
+            Bitmap bitmap1 = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
+
+            Bitmap icon = BitmapFactory.decodeResource(RecyclerTest.this.getResources(),
+                    R.drawable.reproductor_multimedia);
+            Log.i("RecyclerTest","Este es el nuevo bitmap "+bitmap1);
+
+            addImage(icon, 0);
             ListImages.add(0, new File(filePath));
         }
 
         if(requestCode == REQUEST_VIDEO_CAPTURE && resultCode == RESULT_OK) {
             final StorageReference ref = storageReference.child("pruebas").child("video" + UUID.randomUUID().toString());
             Uri videoUri  = data.getData();
+
 
             ref.putFile(videoUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
