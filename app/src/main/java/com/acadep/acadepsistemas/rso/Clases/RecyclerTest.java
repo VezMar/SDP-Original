@@ -32,7 +32,6 @@ import android.widget.Toast;
 import com.acadep.acadepsistemas.rso.Adapter.RecyclerViewAdapter;
 import com.acadep.acadepsistemas.rso.BuildConfig;
 import com.acadep.acadepsistemas.rso.R;
-import com.acadep.acadepsistemas.rso.model.Extra;
 import com.acadep.acadepsistemas.rso.model.Foto;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -265,11 +264,14 @@ public class RecyclerTest  extends AppCompatActivity {
                     if (task.isSuccessful()) {
                         Uri downloadUri = task.getResult();
 
-
-
+//                        PerFotoArray[x].setSrc(downloadUri.toString());
+//
 //                        Subirdatos();
-
-
+//
+//                        if(x == (contImg-1) && contUris==0){
+//
+//                            BorrarImagenes();
+//                        }
 
                     } else {
                         Toast.makeText(getApplicationContext(), "upload failed: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
@@ -279,13 +281,6 @@ public class RecyclerTest  extends AppCompatActivity {
 
         }
     }
-
-//    private void Subirdatos() {
-//
-//        created_at_funct();
-//        Extra extra = new Extra(created_at, Observation, "extra", activity_id, Lat, Lng, multimedia, files);
-//        BDFireStore.collection("extra").document(u).set(extra, SetOptions.merge());
-//    }
 
     private void takePhoto_BajaCalidad() {
         Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -344,15 +339,15 @@ public class RecyclerTest  extends AppCompatActivity {
 
 
 
-//            final int w = Math.max(300, 300);
-//            final int h = Math.max(300, 300);
-//            Bitmap bitmap1 = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
-//
-//            Bitmap icon = BitmapFactory.decodeResource(RecyclerTest.this.getResources(),
-//                    R.drawable.reproductor_multimedia);
-//            Log.i("RecyclerTest","Este es el nuevo bitmap "+bitmap1);
+            final int w = Math.max(300, 300);
+            final int h = Math.max(300, 300);
+            Bitmap bitmap1 = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
 
-            addImage(bitmap, 0);
+            Bitmap icon = BitmapFactory.decodeResource(RecyclerTest.this.getResources(),
+                    R.drawable.reproductor_multimedia);
+            Log.i("RecyclerTest","Este es el nuevo bitmap "+bitmap1);
+
+            addImage(icon, 0);
             ListImages.add(0, new File(filePath));
         }
 

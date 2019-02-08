@@ -1,28 +1,16 @@
 package com.acadep.acadepsistemas.rso.model;
 
-import java.util.List;
-
 public class Configuration {
 
-    List<Activity_types> activitys_types;
     int max_photos;
     int min_photos;
 
     public Configuration() {
     }
 
-    public Configuration(List<Activity_types> activity_types, int max_photos, int min_photos) {
-        this.activitys_types = activity_types;
+    public Configuration(int max_photos, int min_photos) {
         this.max_photos = max_photos;
         this.min_photos = min_photos;
-    }
-
-    public List<Activity_types> getActivitys_types() {
-        return activitys_types;
-    }
-
-    public void setActivitys_types(List<Activity_types> activitys_types) {
-        this.activitys_types = activitys_types;
     }
 
     public int getMax_photos() {
