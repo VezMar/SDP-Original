@@ -17,10 +17,13 @@ import android.widget.Toast;
 import com.acadep.acadepsistemas.rso.Adapter.EventoAdapter;
 import com.acadep.acadepsistemas.rso.Clases.SupervisionActivity;
 import com.acadep.acadepsistemas.rso.R;
+import com.acadep.acadepsistemas.rso.model.Activity_types;
+import com.acadep.acadepsistemas.rso.model.Configuration;
 import com.acadep.acadepsistemas.rso.model.Evento;
 import com.acadep.acadepsistemas.rso.model.Recursos;
 import com.acadep.acadepsistemas.rso.model.Total;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
@@ -40,6 +43,10 @@ public class EventosFragment extends Fragment {
 
     static int contEventos=0;
 
+    static  boolean Tbefore;
+    static  boolean Tduring;
+    static  boolean Tafter;
+    static List<Activity_types> activitys_types;
 
     public String uidUserGlobal;
     public String user_id;
@@ -103,6 +110,24 @@ public class EventosFragment extends Fragment {
 
 
     }
+    private void ChequeoConfiguration() {
+
+        BDFireStore
+                .collection("configuration")
+                .document("global")
+                .get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                Configuration configuration = documentSnapshot.toObject(Configuration.class);
+
+                activitys_types = configuration.getActivitys_types();
+
+            }
+        });
+
+
+
+    }
 
     private void setUpRecyclerView() {
         //com.google.firebase.firestore.Query query = eventsReference.orderBy("end", com.google.firebase.firestore.Query.Direction.DESCENDING);
@@ -134,6 +159,9 @@ public class EventosFragment extends Fragment {
                 String description = evento.getDescription();
                 String idEvento = evento.getId();
                 String nameEvent = evento.getTitle();
+
+
+
 
                 int number = total.getNumber();
                 String unit = total.getUnit();
