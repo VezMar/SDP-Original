@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -36,19 +36,7 @@
 
 
 
-            <TextView
-                android:id="@+id/txtEstado"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true"
-                android:layout_marginStart="10dp"
-                android:layout_marginLeft="5dp"
-                android:layout_marginTop="10dp"
-                android:text="Antes de la Actividad"
-                android:textSize="26dp"
-                android:textColor="@android:color/black"
-                android:textStyle="bold" />
+
 
             <TextView
                 android:id="@+id/location_result"
@@ -60,6 +48,7 @@
                 android:layout_marginTop="45dp"
                 android:textColor="#333"
                 android:textSize="18dp" />
+
             <!--ImageView
                 android:id="@+id/imgView"
                 android:layout_width="80dp"
@@ -72,215 +61,100 @@
                 android:visibility="invisible" /-->
 
             <ScrollView
+                android:id="@+id/scroll"
                 android:layout_width="match_parent"
-                android:layout_height="394dp"
+                android:layout_height="454dp"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentTop="true"
                 android:layout_marginStart="0dp"
-                android:layout_marginTop="63dp">
+                android:layout_marginTop="3dp">
 
                 <LinearLayout
+
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical">
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="horizontal"
-                        android:layout_marginTop="10dp">
+                        android:layout_height="wrap_content">
 
-                        <com.beardedhen.androidbootstrap.BootstrapCircleThumbnail
-                            android:id="@+id/imgView"
-                            android:layout_width="100dp"
-                            android:layout_height="100dp"
-                            android:src="@drawable/empty_image"
-                            app:bootstrapBrand="primary"
-                            app:hasBorder="true"
-
-                            />
-
-                        <ru.dimorinny.floatingtextbutton.FloatingTextButton
-                            android:id="@+id/btnBorrar"
+                        <TextView
+                            android:id="@+id/txtEstado"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="25dp"
-                            app:floating_background_color="#be4747"
-                            app:floating_left_icon="@drawable/ic_delete_black_24dp"
-                            app:floating_title="Borrar"
-                            app:floating_title_color="@android:color/white" />
+                            android:layout_alignParentStart="true"
+                            android:layout_alignParentTop="true"
+                            android:layout_marginStart="10dp"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginTop="10dp"
+                            android:text="Antes de la Actividad"
+                            android:textColor="@android:color/black"
+                            android:textSize="26dp"
+                            android:textStyle="bold" />
 
-                        <ru.dimorinny.floatingtextbutton.FloatingTextButton
-                            android:id="@+id/btnFoto"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="25dp"
-                            app:floating_background_color="@color/colorPrimary"
-                            app:floating_left_icon="@drawable/ic_add_a_photo_black_24dp"
-                            app:floating_title="Añadir"
-                            app:floating_title_color="@android:color/white"
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical"
+                            android:layout_gravity="right">
 
-
-                            />
+                            <ru.dimorinny.floatingtextbutton.FloatingTextButton
+                                android:id="@+id/btnEnviar"
+                                android:layout_width="200dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="10dp"
+                                android:layout_toEndOf="@+id/edObserv"
+                                app:floating_background_color="#1c8915"
+                                app:floating_left_icon="@drawable/ic_file_upload_black_24dp"
+                                app:floating_title="Enviar"
+                                app:floating_title_color="@android:color/white" />
+                        </LinearLayout>
                     </LinearLayout>
+
+
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="horizontal"
-                        android:layout_marginTop="10dp">
-
-                        <com.beardedhen.androidbootstrap.BootstrapCircleThumbnail
-                            android:id="@+id/imgView2"
-                            android:layout_width="100dp"
-                            android:layout_height="100dp"
-                            android:src="@drawable/empty_image"
-                            app:bootstrapBrand="primary"
-                            app:hasBorder="true"
-
-                            />
-
-                        <ru.dimorinny.floatingtextbutton.FloatingTextButton
-                            android:id="@+id/btnBorrar2"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="25sp"
-                            app:floating_background_color="#be4747"
-                            app:floating_left_icon="@drawable/ic_delete_black_24dp"
-                            app:floating_title="Borrar"
-                            app:floating_title_color="@android:color/white" />
-
-                        <ru.dimorinny.floatingtextbutton.FloatingTextButton
-                            android:id="@+id/btnFoto2"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="25dp"
-                            app:floating_background_color="@color/colorPrimary"
-                            app:floating_left_icon="@drawable/ic_add_a_photo_black_24dp"
-                            app:floating_title="Añadir"
-                            app:floating_title_color="@android:color/white" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="horizontal"
-                        android:layout_marginTop="10dp">
-
-                        <com.beardedhen.androidbootstrap.BootstrapCircleThumbnail
-                            android:id="@+id/imgView3"
-                            android:layout_width="100dp"
-                            android:layout_height="100dp"
-                            android:src="@drawable/empty_image"
-                            app:bootstrapBrand="primary"
-                            app:hasBorder="true"
-
-                            />
-
-                        <ru.dimorinny.floatingtextbutton.FloatingTextButton
-                            android:id="@+id/btnBorrar3"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="25dp"
-                            app:floating_background_color="#be4747"
-                            app:floating_left_icon="@drawable/ic_delete_black_24dp"
-                            app:floating_title="Borrar"
-                            app:floating_title_color="@android:color/white" />
-
-                        <ru.dimorinny.floatingtextbutton.FloatingTextButton
-                            android:id="@+id/btnFoto3"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="25dp"
-                            app:floating_background_color="@color/colorPrimary"
-                            app:floating_left_icon="@drawable/ic_add_a_photo_black_24dp"
-                            app:floating_title="Añadir"
-                            app:floating_title_color="@android:color/white" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="horizontal"
-                        android:layout_marginTop="10dp">
-
-                        <com.beardedhen.androidbootstrap.BootstrapCircleThumbnail
-                            android:id="@+id/imgView4"
-                            android:layout_width="100dp"
-                            android:layout_height="100dp"
-                            android:src="@drawable/empty_image"
-                            app:bootstrapBrand="primary"
-                            app:hasBorder="true"/>
-
-                        <ru.dimorinny.floatingtextbutton.FloatingTextButton
-                            android:id="@+id/btnBorrar4"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="25dp"
-                            app:floating_background_color="#be4747"
-                            app:floating_left_icon="@drawable/ic_delete_black_24dp"
-                            app:floating_title="Borrar"
-                            app:floating_title_color="@android:color/white" />
-
-                        <ru.dimorinny.floatingtextbutton.FloatingTextButton
-                            android:id="@+id/btnFoto4"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="25dp"
-                            app:floating_background_color="@color/colorPrimary"
-                            app:floating_left_icon="@drawable/ic_add_a_photo_black_24dp"
-                            app:floating_title="Añadir"
-                            app:floating_title_color="@android:color/white" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="horizontal"
-                        android:layout_marginTop="10dp">
-
-                        <com.beardedhen.androidbootstrap.BootstrapCircleThumbnail
-                            android:id="@+id/imgView5"
-                            android:layout_width="100dp"
-                            android:layout_height="100dp"
-                            android:src="@drawable/empty_image"
-                            app:bootstrapBrand="primary"
-                            app:hasBorder="true"/>
-
-                        <ru.dimorinny.floatingtextbutton.FloatingTextButton
-                            android:id="@+id/btnBorrar5"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="25dp"
-                            app:floating_background_color="#be4747"
-                            app:floating_left_icon="@drawable/ic_delete_black_24dp"
-                            app:floating_title="Borrar"
-                            app:floating_title_color="@android:color/white" />
-
-                        <ru.dimorinny.floatingtextbutton.FloatingTextButton
-                            android:id="@+id/btnFoto5"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="25dp"
-                            app:floating_background_color="@color/colorPrimary"
-                            app:floating_left_icon="@drawable/ic_add_a_photo_black_24dp"
-                            app:floating_title="Añadir"
-                            app:floating_title_color="@android:color/white" />
-                    </LinearLayout>
-
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp">
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <TextView
+                                android:id="@+id/txtAvance"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Total Avanzado"
+                                android:textSize="18dp"/>
+
+                            <EditText
+                                android:id="@+id/edit_porcentage"
+                                android:layout_width="50dp"
+                                android:layout_height="wrap_content"
+                                android:textSize="15dp"
+                                android:digits="0,1,2,3,4,5,6,7,8,9"
+                                android:lines="1"
+                                android:maxLength="3"/>
+
+                            <TextView
+                                android:id="@+id/txtTotal"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="/1000mtrs"
+                                android:textSize="18dp"/>
+
+                        </LinearLayout>
 
                         <EditText
                             android:id="@+id/edObserv"
-                            android:layout_width="200dp"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:ems="10"
                             android:gravity="top|left"
-                            android:hint="Observaciones"
+                            android:hint="Descripcion"
                             android:inputType="textMultiLine"
                             android:lines="6"
                             android:overScrollMode="always"
@@ -289,34 +163,76 @@
                             android:scrollHorizontally="false"
                             android:textColorHint="@android:color/darker_gray" />
 
-                        <LinearLayout
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp">
+
+                        <ru.dimorinny.floatingtextbutton.FloatingTextButton
+                            android:id="@+id/btnArchivo"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:orientation="vertical"
-                            android:layout_marginTop="10dp">
+                            android:text="Archivo"
+                            android:layout_marginLeft="20sp"
+                            app:floating_background_color="#898987"
+                            app:floating_left_icon="@drawable/ic_insert_drive_file_black_24dp"
+                            app:floating_title="Archivo"
+                            app:floating_title_color="@android:color/white" />
 
-                            <ru.dimorinny.floatingtextbutton.FloatingTextButton
-                                android:id="@+id/btnArchivo"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Archivo"
-                                app:floating_background_color="#898987"
-                                app:floating_left_icon="@drawable/ic_insert_drive_file_black_24dp"
-                                app:floating_title="Archivo"
-                                app:floating_title_color="@android:color/white" />
+                        <ru.dimorinny.floatingtextbutton.FloatingTextButton
+                            android:id="@+id/btnBorrarArchivo"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_toEndOf="@+id/edObserv"
+                            app:floating_background_color="#c71d0d"
+                            app:floating_title="Borrar Archivos"
+                            app:floating_left_icon="@drawable/ic_delete_black_24dp"
+                            app:floating_title_color="@android:color/white" />
 
-                            <ru.dimorinny.floatingtextbutton.FloatingTextButton
-                                android:id="@+id/btnEnviar"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
 
-                                android:layout_toEndOf="@+id/edObserv"
-                                app:floating_background_color="#1c8915"
-                                app:floating_left_icon="@drawable/ic_file_upload_black_24dp"
-                                app:floating_title="Enviar"
-                                app:floating_title_color="@android:color/white" />
-                        </LinearLayout>
                     </LinearLayout>
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <ru.dimorinny.floatingtextbutton.FloatingTextButton
+                            android:id="@+id/btnFoto"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="20sp"
+                            app:floating_background_color="@color/colorPrimary"
+                            app:floating_left_icon="@drawable/ic_add_a_photo_black_24dp"
+                            app:floating_title="Añadir"
+                            app:floating_title_color="@android:color/white" />
+
+
+                        <Switch
+                            android:id="@+id/swtBorrar"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Borrar Fotos"
+                            android:layout_toRightOf="@id/btnEnviarTest"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginLeft="10dp"
+                            android:onClick="onClickSwitch"/>
+                    </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+                    <android.support.v7.widget.RecyclerView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:id="@+id/images_recycler"/>
+
+                </LinearLayout>
+
+
 
 
                 </LinearLayout>
@@ -362,7 +278,6 @@
                 android:id="@+id/txtLat"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/txtEstado"
                 android:layout_centerHorizontal="true" />
 
             <TextView
@@ -397,4 +312,4 @@
 
 
 
-</FrameLayout>
+</RelativeLayout>

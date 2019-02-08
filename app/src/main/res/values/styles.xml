@@ -1,16 +1,92 @@
 <resources>
 
+
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <!--<item name="colorPrimary">@color/colorPrimary</item>-->
+        <!--<item name="colorPrimaryDark">@color/colorPrimaryDark</item>-->
+        <!--<item name="colorAccent">@color/colorAccent</item>-->
+
+        <item name="colorPrimary">#1565c0</item>
+        <item name="colorPrimaryDark">#003c8f</item>
+        <item name="colorAccent">#5e92f3</item>
     </style>
 
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="dangerToast">
+        <item name="stTextBold">true</item>
+        <item name="stTextColor">#ffffff</item>
+        <item name="stTextSize">14sp</item>
+        <item name="stColorBackground">#f55145</item>
+        <item name="stSolidBackground">true</item>
+        <item name="stStrokeWidth">3dp</item>
+        <item name="stStrokeColor">#f55145</item>
+        <item name="stIconStart">@drawable/ic_warning_black_24dp</item>
+        <item name="stIconEnd">@drawable/ic_warning_black_24dp</item>
+        <item name="stLength">LONG</item> LONG or SHORT
+        <item name="stGravity">top</item> top or center
+        <item name="stRadius">5dp</item>
+    </style>
+
+    <style name="warningToast">
+        <item name="stTextBold">true</item>
+        <item name="stTextColor">#ffffff</item>
+        <item name="stTextSize">14sp</item>
+        <item name="stColorBackground">#ffbf0f</item>
+        <item name="stSolidBackground">true</item>
+        <item name="stStrokeWidth">3dp</item>
+        <item name="stStrokeColor">#ffbf0f</item>
+        <item name="stIconStart">@drawable/ic_error_outline_black_24dp</item>
+        <item name="stLength">LONG</item> LONG or SHORT
+        <item name="stGravity">top</item> top or center
+        <item name="stRadius">5dp</item>
+    </style>
+
+    <style name="warningToastMiddle">
+        <item name="stTextBold">true</item>
+        <item name="stTextColor">#ffffff</item>
+        <item name="stTextSize">14sp</item>
+        <item name="stColorBackground">#ffbf0f</item>
+        <item name="stSolidBackground">true</item>
+        <item name="stStrokeWidth">3dp</item>
+        <item name="stStrokeColor">#ffbf0f</item>
+        <item name="stIconStart">@drawable/ic_error_outline_black_24dp</item>
+        <item name="stLength">LONG</item> LONG or SHORT
+        <item name="stGravity">center</item> top or center
+        <item name="stRadius">5dp</item>
+    </style>
+
+    <style name="sucessToast">
+        <item name="stTextBold">true</item>
+        <item name="stTextColor">#ffffff</item>
+        <item name="stTextSize">14sp</item>
+        <item name="stColorBackground">#00cae3</item>
+        <item name="stSolidBackground">true</item>
+        <item name="stStrokeWidth">3dp</item>
+        <item name="stStrokeColor">#00cae3</item>
+        <item name="stIconStart">@drawable/ic_check_circle_black_24dp</item>
+        <item name="stLength">LONG</item> LONG or SHORT
+        <item name="stGravity">top</item> top or center
+        <item name="stRadius">5dp</item>
+    </style>
+
+    <style name="doneToast">
+        <item name="stTextBold">true</item>
+        <item name="stTextColor">#ffffff</item>
+        <item name="stTextSize">14sp</item>
+        <item name="stColorBackground">#5ea949</item>
+        <item name="stSolidBackground">true</item>
+        <item name="stStrokeWidth">3dp</item>
+        <item name="stStrokeColor">#5ea949</item>
+        <item name="stIconStart">@drawable/ic_check_circle_black_24dp</item>
+        <item name="stLength">LONG</item> LONG or SHORT
+        <item name="stGravity">top</item> top or center
+        <item name="stRadius">5dp</item>
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />

@@ -21,11 +21,13 @@
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
-            android:layout_marginStart="116dp"
-            android:layout_marginTop="144dp"
+            android:layout_marginStart="103dp"
+            android:layout_marginTop="35dp"
             android:text="Bienvenido"
             android:textSize="30sp"
-            android:textStyle="bold"/>
+            android:textStyle="bold" />
+
+
     </RelativeLayout>
 
 

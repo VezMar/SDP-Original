@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.acadepsistemas.seguimiento">
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.acadep.acadepsistemas.rso">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-feature android:name="android.hardware.camera2" android:required="true"/>
 
     <!-- uses-permission android:name="android.permission.CAMERA"/ -->
     <application
@@ -31,9 +33,37 @@
         <activity
             android:name=".Clases.SupervisionActivity"
             android:label="Reporte"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".Clases.ExtraordinariosActivity" />
-        <activity android:name=".Clases.ExtraActivity"></activity>
+        <activity android:name=".Clases.ExtraActivity" />
+
+        <service android:name=".Notificaciones.MiFirebaseMessagingService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
+        <activity android:name=".Clases.RecuperacionContrasena"></activity>
+
+        <activity
+            android:name=".Clases.RecyclerTest"
+            android:screenOrientation="portrait" />
+
+
+
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="com.acadep.acadepsistemas.rso.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true"
+            tools:replace="android:authorities">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths"
+                tools:replace="android:resource"/>
+        </provider>
+
     </application>
 
 </manifest>

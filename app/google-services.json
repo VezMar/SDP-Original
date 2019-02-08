@@ -8,6 +8,50 @@
   "client": [
     {
       "client_info": {
+        "mobilesdk_app_id": "1:958208857248:android:25e2841bef6723d1",
+        "android_client_info": {
+          "package_name": "com.acadep.acadepsistemas.seguimiento"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "958208857248-1id7k8v96ghsgnggqe21r1liduinka7u.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.acadep.acadepsistemas.seguimiento",
+            "certificate_hash": "d9b2bab302a007950922697b85167043460d6832"
+          }
+        },
+        {
+          "client_id": "958208857248-f79qfvdvvm4cu31dibgfho9854nrcjtl.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDt8zWH8jERux3DVnhL4UFw4yRhdvDlRkA"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "958208857248-f79qfvdvvm4cu31dibgfho9854nrcjtl.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:958208857248:android:58343a17c4b79984",
         "android_client_info": {
           "package_name": "com.example.acadepsistemas.seguimiento"
