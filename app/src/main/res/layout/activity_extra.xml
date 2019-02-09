@@ -28,7 +28,7 @@
             android:layout_marginLeft="5dp"
             android:layout_marginTop="10dp"
             android:text="Nombre: "
-            android:textSize="26dp"
+            android:textSize="18dp"
             android:textColor="@android:color/black"
             android:textStyle="bold" />
 
@@ -41,7 +41,7 @@
             android:layout_marginStart="10dp"
             android:layout_marginTop="45dp"
             android:textColor="#333"
-            android:textSize="18dp"
+            android:textSize="13dp"
             android:text="ID del evento: "/>
         <!--ImageView
             android:id="@+id/imgView"
@@ -55,22 +55,43 @@
             android:visibility="invisible" /-->
 
         <ScrollView
+            android:id="@+id/scroll"
             android:layout_width="match_parent"
-            android:layout_height="426dp"
+            android:layout_height="454dp"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
-            android:layout_marginStart="0dp"
-            android:layout_marginTop="85dp">
+            android:layout_marginTop="60dp">
 
             <LinearLayout
+
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical">
 
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="right">
+
+
+                            <ru.dimorinny.floatingtextbutton.FloatingTextButton
+                                android:id="@+id/btnEnviar"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentTop="true"
+                                app:floating_background_color="#1c8915"
+                                app:floating_left_icon="@drawable/ic_file_upload_black_24dp"
+                                app:floating_title="Enviar"
+                                app:floating_title_color="@android:color/white" />
+
+                </LinearLayout>
+
+
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
 
                     <EditText
                         android:id="@+id/edObserv"
@@ -86,7 +107,39 @@
                         android:scrollbars="vertical"
                         android:scrollHorizontally="false"
                         android:textColorHint="@android:color/darker_gray" />
+
+
                 </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp">
+
+                    <ru.dimorinny.floatingtextbutton.FloatingTextButton
+                        android:id="@+id/btnArchivo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Archivo"
+                        android:layout_marginLeft="20sp"
+                        app:floating_background_color="#898987"
+                        app:floating_left_icon="@drawable/ic_insert_drive_file_black_24dp"
+                        app:floating_title="Archivo"
+                        app:floating_title_color="@android:color/white" />
+
+                    <ru.dimorinny.floatingtextbutton.FloatingTextButton
+                        android:id="@+id/btnBorrarArchivo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_toEndOf="@+id/edObserv"
+                        app:floating_background_color="#c71d0d"
+                        app:floating_title="Borrar Archivos"
+                        app:floating_left_icon="@drawable/ic_delete_black_24dp"
+                        app:floating_title_color="@android:color/white" />
+
+
+                </LinearLayout>
+
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -103,233 +156,28 @@
                         app:floating_title_color="@android:color/white" />
 
 
-                    <ru.dimorinny.floatingtextbutton.FloatingTextButton
-                        android:id="@+id/btnBorrar"
+                    <Switch
+                        android:id="@+id/swtBorrar"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="20sp"
-                        app:floating_background_color="#be4747"
-                        app:floating_left_icon="@drawable/ic_delete_black_24dp"
-                        app:floating_title="Borrar"
-                        app:floating_title_color="@android:color/white" />
+                        android:text="Borrar Fotos"
+                        android:layout_toRightOf="@id/btnEnviarTest"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginLeft="10dp"
+                        android:onClick="onClickSwitch"/>
                 </LinearLayout>
 
                 <LinearLayout
-                    android:id="@+id/Lfotos1"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <RelativeLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:orientation="horizontal">
-
-                        <com.beardedhen.androidbootstrap.BootstrapCircleThumbnail
-                            android:id="@+id/imgView"
-                            android:layout_width="100dp"
-                            android:layout_height="100dp"
-                            android:layout_marginTop="10dp"
-                            android:layout_marginRight="10dp"
-                            android:src="@drawable/empty_image"
-                            app:bootstrapBrand="primary"
-                            app:hasBorder="false" />
-
-                        <CheckBox
-                            android:id="@+id/Check1"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignEnd="@+id/imgView"
-                            android:layout_alignParentTop="true"
-                            android:layout_marginEnd="-10dp" />
-
-                    </RelativeLayout>
-
-                    <RelativeLayout
-                        android:layout_width="110dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="15dp"
-                        android:layout_marginTop="10dp"
-                        android:orientation="horizontal">
-
-                        <com.beardedhen.androidbootstrap.BootstrapCircleThumbnail
-                            android:id="@+id/imgView2"
-                            android:layout_width="100dp"
-                            android:layout_height="100dp"
-                            android:layout_marginTop="10dp"
-                            android:layout_marginRight="10dp"
-                            android:src="@drawable/empty_image"
-                            app:bootstrapBrand="primary"
-                            app:hasBorder="false" />
-
-                        <CheckBox
-                            android:id="@+id/Check2"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignEnd="@+id/imgView2"
-                            android:layout_alignParentTop="true"
-                            android:layout_marginEnd="-10dp" />
-
-
-                    </RelativeLayout>
-
-                    <RelativeLayout
+                    android:layout_height="match_parent">
+                    <android.support.v7.widget.RecyclerView
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginLeft="15dp"
-                        android:layout_marginTop="10dp"
-                        android:orientation="horizontal">
-
-                        <com.beardedhen.androidbootstrap.BootstrapCircleThumbnail
-                            android:id="@+id/imgView3"
-                            android:layout_width="100dp"
-                            android:layout_height="100dp"
-                            android:layout_marginTop="10dp"
-                            android:layout_marginRight="10dp"
-                            android:src="@drawable/empty_image"
-                            app:bootstrapBrand="primary"
-                            app:hasBorder="false" />
-
-                        <CheckBox
-                            android:id="@+id/Check3"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignEnd="@+id/imgView3"
-                            android:layout_alignParentTop="true"
-                            android:layout_marginEnd="-10dp" />
-
-
-                    </RelativeLayout>
+                        android:id="@+id/images_recycler_extra"/>
 
                 </LinearLayout>
 
-                <LinearLayout
-                    android:id="@+id/Lfotos2"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
 
-                    <RelativeLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:orientation="horizontal">
-
-                        <com.beardedhen.androidbootstrap.BootstrapCircleThumbnail
-                            android:id="@+id/imgView4"
-                            android:layout_width="100dp"
-                            android:layout_height="100dp"
-                            android:layout_marginTop="10dp"
-                            android:layout_marginRight="10dp"
-                            android:src="@drawable/empty_image"
-                            app:bootstrapBrand="primary"
-                            app:hasBorder="false" />
-
-                        <CheckBox
-                            android:id="@+id/Check4"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignEnd="@+id/imgView4"
-                            android:layout_alignParentTop="true"
-                            android:layout_marginEnd="-10dp" />
-
-                    </RelativeLayout>
-
-                    <RelativeLayout
-                        android:layout_width="110dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="15dp"
-                        android:layout_marginTop="10dp"
-                        android:orientation="horizontal">
-
-                        <com.beardedhen.androidbootstrap.BootstrapCircleThumbnail
-                            android:id="@+id/imgView5"
-                            android:layout_width="100dp"
-                            android:layout_height="100dp"
-                            android:layout_alignParentStart="true"
-                            android:layout_alignParentTop="true"
-                            android:layout_marginStart="0dp"
-                            android:layout_marginTop="10dp"
-                            android:layout_marginRight="10dp"
-                            android:src="@drawable/empty_image"
-                            app:bootstrapBrand="primary"
-                            app:hasBorder="false" />
-
-                        <CheckBox
-                            android:id="@+id/Check5"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignEnd="@+id/imgView5"
-                            android:layout_alignParentTop="true"
-                            android:layout_marginEnd="-10dp" />
-
-
-                    </RelativeLayout>
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_marginLeft="15dp"
-                        android:layout_marginTop="10dp"
-                        android:orientation="horizontal">
-
-                        <com.beardedhen.androidbootstrap.BootstrapCircleThumbnail
-                            android:id="@+id/imgView6"
-                            android:layout_width="100dp"
-                            android:layout_height="100dp"
-                            android:layout_marginTop="10dp"
-                            android:layout_marginRight="10dp"
-                            android:src="@drawable/empty_image"
-                            app:bootstrapBrand="primary"
-                            app:hasBorder="false" />
-
-                        <CheckBox
-                            android:id="@+id/Check6"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignEnd="@+id/imgView6"
-                            android:layout_alignParentTop="true"
-                            android:layout_marginEnd="-10dp" />
-
-
-                    </RelativeLayout>
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp">
-
-                    <ru.dimorinny.floatingtextbutton.FloatingTextButton
-                        android:id="@+id/btnArchivo"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Archivo"
-                        app:floating_background_color="#898987"
-                        app:floating_left_icon="@drawable/ic_insert_drive_file_black_24dp"
-                        app:floating_title="Archivo"
-                        app:floating_title_color="@android:color/white" />
-
-                    <ru.dimorinny.floatingtextbutton.FloatingTextButton
-                        android:id="@+id/btnBorrarArchivo"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_toEndOf="@+id/edObserv"
-                        app:floating_background_color="#c71d0d"
-                        app:floating_left_icon="@drawable/ic_delete_black_24dp"
-                        app:floating_title_color="@android:color/white" />
-
-                    <ru.dimorinny.floatingtextbutton.FloatingTextButton
-                        android:id="@+id/btnEnviar"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="30sp"
-                        android:layout_toEndOf="@+id/edObserv"
-                        app:floating_background_color="#1c8915"
-                        app:floating_left_icon="@drawable/ic_file_upload_black_24dp"
-                        app:floating_title="Enviar"
-                        app:floating_title_color="@android:color/white" />
-                </LinearLayout>
 
 
             </LinearLayout>

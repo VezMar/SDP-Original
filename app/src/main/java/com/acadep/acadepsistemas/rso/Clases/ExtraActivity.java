@@ -8,7 +8,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.location.Geocoder;
@@ -27,6 +29,10 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.format.Time;
 import android.util.Log;
 import android.view.View;
@@ -34,17 +40,22 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
 //import com.example.acadepsistemas.seguimiento.Manifest;
+import com.acadep.acadepsistemas.rso.Adapter.RecyclerViewAdapter;
 import com.acadep.acadepsistemas.rso.R;
+import com.acadep.acadepsistemas.rso.model.Activity;
+import com.acadep.acadepsistemas.rso.model.Configuration;
 import com.acadep.acadepsistemas.rso.model.Data;
 import com.acadep.acadepsistemas.rso.model.Extra;
 import com.acadep.acadepsistemas.rso.model.Files;
 import com.acadep.acadepsistemas.rso.model.Foto;
 import com.acadep.acadepsistemas.rso.model.Ubication;
 import com.acadep.acadepsistemas.rso.model.datetime;
+import com.github.chrisbanes.photoview.PhotoView;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -54,6 +65,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.storage.FirebaseStorage;
@@ -65,6 +77,7 @@ import com.muddzdev.styleabletoast.StyleableToast;
 
 import org.joda.time.DateTime;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -81,6 +94,8 @@ import java.util.UUID;
 
 
 import ru.dimorinny.floatingtextbutton.FloatingTextButton;
+
+import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
 public class ExtraActivity extends AppCompatActivity {
 
@@ -140,19 +155,38 @@ public class ExtraActivity extends AppCompatActivity {
 
     private static final int REQUEST_PERM_WRITE_STORAGE = 102;
     private static final int CAPTURE_PHOTO = 104;
+    static final int REQUEST_VIDEO_CAPTURE = 1;
+    int TAKE_PHOTO_CODE = 0;
 
 
-    private Uri filePath;
+
+    //    Imagenes
+    private ArrayList<Bitmap> mImageBitmap = new ArrayList<>();
+    private static List<File> ListImages = new ArrayList<>();
+    private static List<Uri> ListVideos = new ArrayList<>();
+
+
+
+    private RecyclerView mRecyclerView;
+    private RecyclerView.Adapter mAdapter;
+    private RecyclerView.LayoutManager mLayaoutManager;
+
+    private String filePath;
+
+    private Switch swtBorrar;
+
+    static int max_photos;
+    static int min_photos;
+
+
+    //Imagenes
+
+    private static Foto PhotoData = new Foto();
     static List<String> Foto =  new ArrayList<>();
     private static List<Foto> multimedia = new ArrayList<>();
     private static List<Files> files = new ArrayList<>();
+    private static List<Uri> ArchivosUris = new ArrayList<>();
 
-    private static ImageView imageView;
-    private static ImageView imageView2;
-    private static ImageView imageView3;
-    private static ImageView imageView4;
-    private static ImageView imageView5;
-    private static ImageView imageView6;
 
     private static ImageView noImage;
 
@@ -196,25 +230,17 @@ public class ExtraActivity extends AppCompatActivity {
     private static Ubication ubication = new Ubication();
     //FECHA Y HORA,
 
-    // FILES
-
-    static Uri ArchivoUri;
-    static Uri ArchivoUri2;
-    static Uri ArchivoUri3;
-    static Uri ArchivoUri4;
-    static Uri ArchivoUri5;
-    static Uri ArchivoUri6;
-    static Uri ArchivoUri7;
-    static Uri ArchivoUri8;
-    static Uri ArchivoUri9;
-    static Uri ArchivoUri10;
+    // Contadores
 
     static int contUris=0;
 
     static int restUris=9;
 
     static int contImg=0;
-    // FILES
+
+    int contT=0;
+    int contT2=0;
+    // Contadores
 
     static String u;
     static String Observation;
@@ -226,7 +252,7 @@ public class ExtraActivity extends AppCompatActivity {
 
         recibirDatos();
         inicializacionVariables();
-
+        initRecyclerView();
 
         txtname = (TextView) findViewById(R.id.txtname);
         txtidevent = (TextView) findViewById(R.id.txtidevent);
@@ -243,16 +269,12 @@ public class ExtraActivity extends AppCompatActivity {
         btnFoto = (FloatingTextButton) findViewById(R.id.btnFoto);
 
 
-        btnBorrar = (FloatingTextButton) findViewById(R.id.btnBorrar);
+
+
+        swtBorrar = findViewById(R.id.swtBorrar);
 
 
 
-        imageView = (ImageView) findViewById(R.id.imgView);
-        imageView2 = (ImageView) findViewById(R.id.imgView2);
-        imageView3 = (ImageView) findViewById(R.id.imgView3);
-        imageView4 = (ImageView) findViewById(R.id.imgView4);
-        imageView5 = (ImageView) findViewById(R.id.imgView5);
-        imageView6 = (ImageView) findViewById(R.id.imgView6);
 
         mensaje1  = (TextView) findViewById(R.id.txtLat);
         mensaje2  = (TextView) findViewById(R.id.txtLng);
@@ -277,27 +299,7 @@ public class ExtraActivity extends AppCompatActivity {
 
         // FireStore
 
-        checkBox1 = (CheckBox) findViewById(R.id.Check1);
-        checkBox2 = (CheckBox) findViewById(R.id.Check2);
-        checkBox3 = (CheckBox) findViewById(R.id.Check3);
-        checkBox4 = (CheckBox) findViewById(R.id.Check4);
-        checkBox5 = (CheckBox) findViewById(R.id.Check5);
-        checkBox6 = (CheckBox) findViewById(R.id.Check6);
 
-        checkBox1.setVisibility(View.INVISIBLE);
-        checkBox2.setVisibility(View.INVISIBLE);
-        checkBox3.setVisibility(View.INVISIBLE);
-        checkBox4.setVisibility(View.INVISIBLE);
-        checkBox5.setVisibility(View.INVISIBLE);
-        checkBox6.setVisibility(View.INVISIBLE);
-
-
-        imageView.setVisibility(View.INVISIBLE);
-        imageView2.setVisibility(View.INVISIBLE);
-        imageView3.setVisibility(View.INVISIBLE);
-        imageView4.setVisibility(View.INVISIBLE);
-        imageView5.setVisibility(View.INVISIBLE);
-        imageView6.setVisibility(View.INVISIBLE);
 
         locationStart();
         btnArchivo.setOnClickListener(new View.OnClickListener() {
@@ -324,15 +326,7 @@ public class ExtraActivity extends AppCompatActivity {
             }
         });
 
-        btnBorrar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
 
-                BorrarFotos();
-
-
-            }
-        });
 
 
 
@@ -348,22 +342,40 @@ public class ExtraActivity extends AppCompatActivity {
                 }
 
                 if (ActivityCompat.checkSelfPermission(getApplicationContext(),
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                        WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
 
                     ActivityCompat.requestPermissions(ExtraActivity.this,
-                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_PERM_WRITE_STORAGE);
+                            new String[]{WRITE_EXTERNAL_STORAGE}, REQUEST_PERM_WRITE_STORAGE);
                 } else {
                     locationStart();
 
-                    if(fileimagen !=null && fileimagen2 !=null && fileimagen3 !=null && fileimagen4 !=null && fileimagen5 !=null && fileimagen6 !=null){
-                        StyleableToast.makeText(getApplicationContext(), "Ya no puede añadir más fotos", Toast.LENGTH_SHORT, R.style.warningToast).show();
-                    }else{
-                        locationStart();
+                    locationStart();
 
-                        GuardarInformacion();
-                        takePhoto();
 
-                    }
+                    final CharSequence[] opciones = {"Tomar foto", "Tomar video", "Cancelar"};
+                    final AlertDialog.Builder builder = new AlertDialog.Builder(ExtraActivity.this);
+
+
+                    builder.setTitle("Borrar archivos");
+                    builder.setItems(opciones, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+
+                            if (opciones[i].equals("Tomar foto")) {
+
+                                GuardarInformacionImagenes();
+                                takePhoto_AltaCalidad();
+                            }
+
+                            if (opciones[i].equals("Tomar video")) {
+
+                                GuardarInformacionVideos();
+                                takeVideo();
+                            }
+                        }
+
+                    });
+                    builder.show();
                 }
             }
         });
@@ -418,6 +430,130 @@ public class ExtraActivity extends AppCompatActivity {
         });
     }
 
+    private void GuardarInformacionVideos() {
+
+        locationStart();
+        created_at_funct();
+
+        datatime.setDate(Fecha);
+        datatime.setTime(Hora);
+
+        locationStart();
+        ubication.setLat(Lat);
+        ubication.setLng(Lng);
+
+
+
+
+        PhotoData.setCreated_at(created_at);
+        PhotoData.setUbication(ubication);
+        PhotoData.setType("Video");
+        PhotoData.setSrc(""+contImg);
+
+        multimedia.add(0, PhotoData);
+
+        PhotoData = new Foto();
+
+    }
+
+    private void GuardarInformacionImagenes() {
+
+        locationStart();
+        created_at_funct();
+
+        datatime.setDate(Fecha);
+        datatime.setTime(Hora);
+
+        locationStart();
+        ubication.setLat(Lat);
+        ubication.setLng(Lng);
+
+
+
+
+        PhotoData.setCreated_at(created_at);
+        PhotoData.setUbication(ubication);
+        PhotoData.setType("Imagen");
+        PhotoData.setSrc(""+contImg);
+
+        multimedia.add(0, PhotoData);
+
+        PhotoData = new Foto();
+    }
+
+    public void onClickSwitch(View view) {
+        if (view.getId() == R.id.swtBorrar) {
+            if (swtBorrar.isChecked()) {
+                StyleableToast.makeText(ExtraActivity.this, "Al activar esta opción si da click sobre una imagen la borrará", Toast.LENGTH_SHORT, R.style.warningToastMiddle).show();
+            } else {
+                Toast.makeText(ExtraActivity.this, "Borrado de fotos desactivado", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    private void initRecyclerView(){
+        mRecyclerView = findViewById(R.id.images_recycler_extra);
+        mLayaoutManager= new GridLayoutManager(this, 3);
+
+        mAdapter = new RecyclerViewAdapter(this, mImageBitmap, new RecyclerViewAdapter.OnItemClickListener() {
+            @Override
+            public void OnItemClick(Bitmap mImage, int position) {
+
+                if (swtBorrar.isChecked()){
+                    deleteImage(position);
+                }else{
+                    AlertDialog.Builder mBuilder = new AlertDialog.Builder(ExtraActivity.this);
+                    View mView = getLayoutInflater().inflate(R.layout.dialog_custom_layout, null);
+                    PhotoView photoView = mView.findViewById(R.id.imageView);
+//                    photoView.setImageURI(Uri.fromFile(fileimagen));
+
+                    Drawable d = new BitmapDrawable(mImageBitmap.get(position));
+                    photoView.setImageDrawable(d);
+                    mBuilder.setView(mView);
+                    AlertDialog mDialog = mBuilder.create();
+                    mDialog.getWindow().setLayout(600, 400);
+                    mDialog.show();
+
+
+                }
+
+            }
+        });
+
+        mRecyclerView.setHasFixedSize(true);
+        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+
+        mRecyclerView.setLayoutManager(mLayaoutManager);
+        mRecyclerView.setAdapter(mAdapter);
+    }
+
+    private void addImage(Bitmap bitmap,int position){
+
+        mImageBitmap.add(position, bitmap);
+        mAdapter.notifyItemInserted(position);
+        mLayaoutManager.scrollToPosition(position);
+    }
+
+    private void deleteImage(int position){
+
+        PhotoData = multimedia.get(position);
+        if (PhotoData.getType()=="Video"){
+            mImageBitmap.remove(position);
+            ListVideos.remove(position);
+            multimedia.remove(position);
+            mAdapter.notifyItemRemoved(position);
+            contImg--;
+        }else {
+            mImageBitmap.remove(position);
+            ListVideos.remove(position);
+            multimedia.remove(position);
+            mAdapter.notifyItemRemoved(position);
+            contImg--;
+        }
+        PhotoData = new Foto();
+
+    }
+
     private void startAsyncTask() {
         ExampleAsyncTask task = new ExampleAsyncTask();
         task.execute((contImg+contUris));
@@ -465,129 +601,183 @@ public class ExtraActivity extends AppCompatActivity {
             builder.show();
         }
 
-    private void BorrarFotos() {
-
-
-            if(checkBox1.isChecked() || checkBox2.isChecked() || checkBox3.isChecked() || checkBox4.isChecked() || checkBox5.isChecked() || checkBox6.isChecked()) {
-
-
-                if (checkBox1.isChecked()) {
-
-                    imageView.setImageResource(R.drawable.empty_image);
-                    checkBox1.setChecked(false);
-                    FileImagenArray[0]=nula;
-
-
-                    imageView.setVisibility(View.INVISIBLE);
-                    checkBox1.setVisibility(View.INVISIBLE);
-                }
-
-                if (checkBox2.isChecked()) {
-                    imageView2.setImageResource(R.drawable.empty_image);
-                    checkBox2.setChecked(false);
-                    FileImagenArray[1]=nula;
-
-                    imageView2.setVisibility(View.INVISIBLE);
-                    checkBox2.setVisibility(View.INVISIBLE);
-                }
-
-                if (checkBox3.isChecked()) {
-                    imageView3.setImageResource(R.drawable.empty_image);
-                    checkBox3.setChecked(false);
-                    FileImagenArray[2]=nula;
-
-                    imageView3.setVisibility(View.INVISIBLE);
-                    checkBox3.setVisibility(View.INVISIBLE);
-                }
-
-                if (checkBox4.isChecked()) {
-                    imageView4.setImageResource(R.drawable.empty_image);
-                    checkBox4.setChecked(false);
-                    FileImagenArray[3]=nula;
-
-                    imageView4.setVisibility(View.INVISIBLE);
-                    checkBox4.setVisibility(View.INVISIBLE);
-                }
-
-                if (checkBox5.isChecked()) {
-                    imageView5.setImageResource(R.drawable.empty_image);
-                    checkBox5.setChecked(false);
-                    FileImagenArray[4]=nula;
-
-                    imageView5.setVisibility(View.INVISIBLE);
-                    checkBox5.setVisibility(View.INVISIBLE);
-                }
-
-                if (checkBox6.isChecked()) {
-                    imageView6.setImageResource(R.drawable.empty_image);
-                    checkBox6.setChecked(false);
-                    FileImagenArray[5]=nula;
-
-                    imageView6.setVisibility(View.INVISIBLE);
-                    checkBox6.setVisibility(View.INVISIBLE);
-                }
-            }else{
-                StyleableToast.makeText(getApplicationContext(), "No ha seleccionado ninguna foto", Toast.LENGTH_SHORT, R.style.warningToast).show();
-            }
-
-    }
 
     private void uploadAllImages() {
 
-        for(int i=0; i<FileImagenArray.length; i++){
-            if(FileImagenArray[i] != nula){
-                uploadImageGlobal(FileImagenArray[i], i);
-                multimedia.add(PerFotoArray[i]);
+        for(int i=0; i<mImageBitmap.size(); i++){
+            PhotoData = multimedia.get(i);
+            if (PhotoData.getType().equals("Video")){
+                uploadVideo(ListVideos.get(i), i);
+            }
+            if (PhotoData.getType().equals("Imagen")){
+                if(mImageBitmap.get(i) != null){
+                    uploadImageGlobal(mImageBitmap.get(i), i);
+                    //multimedia.add(PhotoData);
+                }
             }
         }
     }
 
+    private void uploadVideo(Uri videoUri, final int i) {
+        progressDialog= new ProgressDialog(ExtraActivity.this);
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        progressDialog.setTitle("Subiendo archivo...");
+        progressDialog.setProgress(0);
+        progressDialog.show();
+
+        final StorageReference ref = storageReference.child("extra").child("video" + UUID.randomUUID().toString());
+        final String fileName= "Archivo" + UUID.randomUUID().toString();
+
+        ref.putFile(videoUri)
+                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        String url = taskSnapshot.getUploadSessionUri().toString();
+                        DatabaseReference refDB = dbRef.getReference();
+                        taskSnapshot.getMetadata().getReference().getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Uri> task) {
+                                if (task.isSuccessful()) {
+
+                                    Uri downloadUri = task.getResult();
+                                    PhotoData = multimedia.get(i);
+                                    PhotoData.setSrc(downloadUri.toString());
+                                    multimedia.set(i, PhotoData);
+                                    PhotoData = new Foto();
+
+                                    contT++;
+                                    Subirdatos();
+                                    if(contT == contImg && contUris==0 ){
+
+                                        BorrarImagenes();
+                                    }
 
 
-    private void uploadImageGlobal(File fileimagenpos, final int x) {
-        if (fileimagenpos != null) {
+                                } else {
+                                    Toast.makeText(getApplicationContext(), "upload failed: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                                }
 
-            final ProgressDialog progressDialog = new ProgressDialog(ExtraActivity.this);
-            progressDialog.setTitle("Subiendo....");
+                            }
+                        });
 
-            final StorageReference ref = storageReference.child("images").child("extra").child("Img" + UUID.randomUUID().toString());
-            // StorageReference ref = storageReference.child("images/"+UUID.randomUUID().toString());
+                        refDB.child(fileName).setValue(url).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (task.isSuccessful()){
+                                    StyleableToast.makeText(getApplicationContext(), "Archivo Subido...", Toast.LENGTH_SHORT, R.style.doneToast).show();
+                                    //Toast.makeText(getApplicationContext(),"Archivo Subido...",Toast.LENGTH_SHORT).show();
 
-            final UploadTask uploadTask = ref.putFile(Uri.fromFile(fileimagenpos));
 
 
-            ref.putFile(Uri.fromFile(fileimagenpos)).continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
-                @Override
-                public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
-                    if (!task.isSuccessful()) {
-                        throw task.getException();
+
+                                }else{
+                                    StyleableToast.makeText(getApplicationContext(), "¡Fallo al subirse!", Toast.LENGTH_SHORT, R.style.dangerToast).show();
+                                    //Toast.makeText(getApplicationContext(),"¡Fallo al subirse!",Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
                     }
-                    //PerFotoArray[x].setSrc(ref.getDownloadUrl().toString());
-                    return ref.getDownloadUrl();
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                StyleableToast.makeText(getApplicationContext(), "¡Fallo al subirse!", Toast.LENGTH_SHORT, R.style.dangerToast).show();
+                //Toast.makeText(getApplicationContext(),"¡Fallo al subirse!",Toast.LENGTH_SHORT).show();
+            }
+        }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                int currenProgress = (int) (100*taskSnapshot.getBytesTransferred()/taskSnapshot.getTotalByteCount());
+                progressDialog.setProgress(currenProgress);
+
+            }
+        }).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+
+            }
+        });
+    }
+
+    private void uploadImageGlobal(Bitmap bitmap, final int x) {
+
+
+//            File fileimagenpos
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        byte[] dato = baos.toByteArray();
+
+
+        final ProgressDialog progressDialog = new ProgressDialog(ExtraActivity.this);
+        progressDialog.setTitle("Subiendo....");
+
+//            final StorageReference ref = storageReference.child("x").child("Img" + created_at + UUID.randomUUID().toString());
+        final StorageReference ref = storageReference.child("images").child("evidence").child("Img" + created_at + UUID.randomUUID().toString());
+        // StorageReference ref = storageReference.child("images/"+UUID.randomUUID().toString());
+
+
+        ref.putBytes(dato).continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+            @Override
+            public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                if (!task.isSuccessful()) {
+                    throw task.getException();
                 }
-            }).addOnCompleteListener(new OnCompleteListener<Uri>() {
-                @Override
-                public void onComplete(@NonNull Task<Uri> task) {
-                    if (task.isSuccessful()) {
-                        Uri downloadUri = task.getResult();
+                return ref.getDownloadUrl();
+            }
+        }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+            @Override
+            public void onComplete(@NonNull Task<Uri> task) {
+                if (task.isSuccessful()) {
+                    Uri downloadUri = task.getResult();
+                    PhotoData = multimedia.get(x);
+                    PhotoData.setSrc(downloadUri.toString());
+                    multimedia.set(x, PhotoData);
 
-                        PerFotoArray[x].setSrc(downloadUri.toString());
+                    PhotoData = new Foto();
 
-                        Subirdatos();
-
-                        if(x == (contImg-1) && contUris == 0){
-
-                            BorrarImagenes();
-
-                        }
-
-                    } else {
-                        Toast.makeText(getApplicationContext(), "upload failed: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                    contT++;
+                    Subirdatos();
+                    if(contT == contImg && contUris==0 ){
+                        BorrarImagenes();
                     }
-                }
-                });
 
-        }
+                } else {
+                    Toast.makeText(getApplicationContext(), "upload failed: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+
+//            ref.putFile(Uri.fromFile(fileimagenpos)).continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+//                @Override
+//                public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+//                    if (!task.isSuccessful()) {
+//                        throw task.getException();
+//                    }
+//                    return ref.getDownloadUrl();
+//                }
+//            }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+//                @Override
+//                public void onComplete(@NonNull Task<Uri> task) {
+//                    if (task.isSuccessful()) {
+//                        Uri downloadUri = task.getResult();
+//                        PhotoData = multimedia.get(x);
+//                        multimedia.remove(x);
+//                        PhotoData.setSrc(downloadUri.toString());
+//                        multimedia.add(x, PhotoData);
+//
+//                        Subirdatos();
+//                        if(x == (contImg-1) && contUris==0){
+////                            BDFireStore.collection("evidence").document(u).set(multimedia, SetOptions.merge());
+//                            BorrarImagenes();
+//                        }
+//
+//                    } else {
+//                        Toast.makeText(getApplicationContext(), "upload failed: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+//                    }
+//                }
+//            });
+
+
     }
 
     private void Subirdatos() {
@@ -650,43 +840,51 @@ public class ExtraActivity extends AppCompatActivity {
             FileImagenArray[x] = nula;
         }
 
-        imageView.setImageResource(R.drawable.empty_image);
-        checkBox1.setChecked(false);
-
-        imageView2.setImageResource(R.drawable.empty_image);
-        checkBox2.setChecked(false);
-
-
-        imageView3.setImageResource(R.drawable.empty_image);
-        checkBox3.setChecked(false);
-
-        imageView4.setImageResource(R.drawable.empty_image);
-        checkBox4.setChecked(false);
-
-        imageView5.setImageResource(R.drawable.empty_image);
-        checkBox5.setChecked(false);
-
-        imageView6.setImageResource(R.drawable.empty_image);
-        checkBox6.setChecked(false);
-
-        checkBox1.setVisibility(View.INVISIBLE);
-        checkBox2.setVisibility(View.INVISIBLE);
-        checkBox3.setVisibility(View.INVISIBLE);
-        checkBox4.setVisibility(View.INVISIBLE);
-        checkBox5.setVisibility(View.INVISIBLE);
-        checkBox6.setVisibility(View.INVISIBLE);
-
-        imageView.setVisibility(View.INVISIBLE);
-        imageView2.setVisibility(View.INVISIBLE);
-        imageView3.setVisibility(View.INVISIBLE);
-        imageView4.setVisibility(View.INVISIBLE);
-        imageView5.setVisibility(View.INVISIBLE);
-        imageView6.setVisibility(View.INVISIBLE);
     }
 
     public void takePhoto() {
         Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         startActivityForResult(cameraIntent, CAPTURE_PHOTO);
+    }
+
+    private void takePhoto_AltaCalidad() {
+        final String dir = Environment.getExternalStorageDirectory().toString() + "/Imagenes-De-RSO/";
+        File newdir = new File(dir);
+        if (!newdir.exists()) {
+            newdir.mkdir();
+        }
+
+        int n = 10000;
+        Random generator = new Random();
+        n = generator.nextInt(n);
+        String imageName = "Image-" + n + ".jpg";
+        String file = dir+imageName;
+        File newfile = new File(file);
+        try {
+            newfile.createNewFile();
+        }
+        catch (IOException e)
+        {
+        }
+
+        Uri outputFileUri = FileProvider.getUriForFile(ExtraActivity.this,"com.acadep.acadepsistemas.rso.fileprovider", newfile);
+
+
+        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
+
+
+        filePath = newfile.getPath();
+
+
+        startActivityForResult(cameraIntent, TAKE_PHOTO_CODE);
+    }
+
+    private void takeVideo() {
+        Intent takeVideoIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+        if (takeVideoIntent.resolveActivity(getPackageManager()) != null) {
+            startActivityForResult(takeVideoIntent, REQUEST_VIDEO_CAPTURE);
+        }
     }
 
     private void uploadfileGlobal(Uri ArchivoUri, final int i) {
@@ -815,6 +1013,37 @@ public class ExtraActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
+        if (requestCode == TAKE_PHOTO_CODE && resultCode == RESULT_OK) {
+            Log.d("CameraDemo", "Pic saved");
+            //Toast.makeText(this, "Pic saved", Toast.LENGTH_SHORT).show();
+
+            Bitmap bitmap = BitmapFactory.decodeFile(filePath);
+
+            double heightd = bitmap.getHeight()*.1720430107526882;
+            double widthD = bitmap.getWidth()*.12903225806451612;
+            float heightf =  (float)heightd;
+//            Toast.makeText(this, "El height es: " + 1024 + " y el width es: " + heightf, Toast.LENGTH_SHORT).show();
+            Bitmap Bitnew = redimensionarImagenMaximo(bitmap, 512 ,  heightf);
+
+            addImage(Bitnew, 0);
+            ListVideos.add(0, Uri.fromFile(new File(filePath)));
+            contImg++;
+        }
+
+        if(requestCode == REQUEST_VIDEO_CAPTURE && resultCode == RESULT_OK) {
+
+
+            Bitmap icon = BitmapFactory.decodeResource(ExtraActivity.this.getResources(),
+                    R.drawable.reproductor_multimedia);
+
+
+            addImage(icon, 0);
+
+            Uri videoUri = data.getData();
+            ListVideos.add(0, videoUri);
+            contImg++;
+
+        }
 
         if (requestCode==86 && resultCode==RESULT_OK && data!=null) {
             if(contUris>9){
@@ -866,7 +1095,7 @@ public class ExtraActivity extends AppCompatActivity {
                     Bitmap Bitnew = redimensionarImagenMaximo(capturedCoolerBitmap, 1600, 1200);
 
                     contImg++;
-                    seleccionImageView(Bitnew);
+
 
                     break;
 
@@ -878,53 +1107,20 @@ public class ExtraActivity extends AppCompatActivity {
 
 
 
-
-
     }
 
-    private void seleccionImageView(Bitmap bitnew) {
-        for(int i=0; i<FileImagenArray.length; i++){
-            if(FileImagenArray[i] == nula){
-                descision=i;
-                saveImageToGallery(bitnew);
-                if(i==0){
-                    imageView.setImageBitmap(bitnew);
-                    break;
-                }
-                if(i==1){
-                    imageView2.setImageBitmap(bitnew);
-                    break;
-                }
-                if(i==2){
-                    imageView3.setImageBitmap(bitnew);
-                    break;
-                }
-                if(i==3){
-                    imageView4.setImageBitmap(bitnew);
-                    break;
-                }
-                if(i==4){
-                    imageView5.setImageBitmap(bitnew);
-                    break;
-                }
-                if(i==5){
-                    imageView6.setImageBitmap(bitnew);
-                    break;
-                }
-
-            }
-        }
-    }
 
     private void saveImageToGallery(Bitmap finalBitmap) {
         String root = Environment.getExternalStorageDirectory().toString();
-        File myDir = new File(root + "/ImagenesSeguimiento");
+        File myDir = new File(root + "/Imagenes-De-RSO");
         myDir.mkdirs();
         Random generator = new Random();
         int n = 10000;
         n = generator.nextInt(n);
         String imageName = "Image-" + n + ".jpg";
-        File file = new File(myDir, imageName);
+        File file = new File (myDir, imageName);
+
+
 
 
         if (file.exists()) file.delete();
@@ -935,38 +1131,13 @@ public class ExtraActivity extends AppCompatActivity {
             out.flush();
             out.close();
 
-            Toast.makeText(getApplicationContext(), "Tu foto se ha guardado exitosamente", Toast.LENGTH_SHORT).show();
-        } catch (Exception e) {
+            Toast.makeText(getApplicationContext(),"Tu foto se ha guardado exitosamente",Toast.LENGTH_SHORT).show();
+        }catch (Exception e){
             e.printStackTrace();
-            Toast.makeText(getApplicationContext(), "Hubo un error", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(),"Hubo un error",Toast.LENGTH_SHORT).show();
         }
 
-
-        if (descision == 0) {
-            FileImagenArray[0] = file;
-            imageView.setVisibility(View.VISIBLE);
-            checkBox1.setVisibility(View.VISIBLE);
-        } else if (descision == 1) {
-            FileImagenArray[1] = file;
-            imageView2.setVisibility(View.VISIBLE);
-            checkBox2.setVisibility(View.VISIBLE);
-        } else if (descision == 2) {
-            FileImagenArray[2] = file;
-            imageView3.setVisibility(View.VISIBLE);
-            checkBox3.setVisibility(View.VISIBLE);
-        } else if (descision == 3) {
-            FileImagenArray[3] = file;
-            imageView4.setVisibility(View.VISIBLE);
-            checkBox4.setVisibility(View.VISIBLE);
-        } else if (descision == 4) {
-            FileImagenArray[4] = file;
-            imageView5.setVisibility(View.VISIBLE);
-            checkBox5.setVisibility(View.VISIBLE);
-        } else if (descision == 5) {
-            FileImagenArray[5] = file;
-            imageView6.setVisibility(View.VISIBLE);
-            checkBox6.setVisibility(View.VISIBLE);
-        }
+        ListImages.add(0, file);
     }
 
     public Bitmap redimensionarImagenMaximo(Bitmap mBitmap, float newWidth, float newHeigth){
@@ -986,15 +1157,15 @@ public class ExtraActivity extends AppCompatActivity {
     private void MostrarOpciones() {
 
 
-            final CharSequence[] opciones = {"Borrar archivo anterior", "Cancelar"};
-            final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        final CharSequence[] opciones = {"Borrar archivo anterior", "Cancelar"};
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
 
-            builder.setTitle("Borrar archivos");
-            builder.setItems(opciones, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    if (opciones[i].equals("Borrar archivo anterior")) {
+        builder.setTitle("Borrar archivos");
+        builder.setItems(opciones, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                if (opciones[i].equals("Borrar archivo anterior")) {
 
 
 //                        for (int x=0; x<=9; x++){
@@ -1003,189 +1174,55 @@ public class ExtraActivity extends AppCompatActivity {
 //                            }
 //                        }
 
+                    if (contUris==0) {
+                        StyleableToast.makeText(getApplicationContext(), "No hay ningún archivo para borrar", Toast.LENGTH_SHORT, R.style.warningToast).show();
+                    }else{
+                        if(contUris<11){
+                            contUris--;
+                            ArchivosUris.remove(0);
+                            files.remove(0);
+                            StyleableToast.makeText(getApplicationContext(), "¡Archivo Borrado con exito!", Toast.LENGTH_SHORT, R.style.doneToast).show();
+                        }else{
 
-                        if (contUris == 0) {
-                            StyleableToast.makeText(getApplicationContext(), "No hay ningún archivo para borrar", Toast.LENGTH_SHORT, R.style.warningToast).show();
-                        } else if (ArchivoUri != null && contUris == 1) {
-                            ArchivoUri = null;
-                            contUris--;
-                            StyleableToast.makeText(getApplicationContext(), "¡Archivo Borrado con exito!", Toast.LENGTH_SHORT, R.style.doneToast).show();
-                        } else if (ArchivoUri2 != null && contUris == 2) {
-                            ArchivoUri2 = null;
-                            contUris--;
-                            StyleableToast.makeText(getApplicationContext(), "¡Archivo Borrado con exito!", Toast.LENGTH_SHORT, R.style.doneToast).show();
-                        } else if (ArchivoUri3 != null && contUris == 3) {
-                            ArchivoUri3 = null;
-                            contUris--;
-                            StyleableToast.makeText(getApplicationContext(), "¡Archivo Borrado con exito!", Toast.LENGTH_SHORT, R.style.doneToast).show();
-                        } else if (ArchivoUri4 != null && contUris == 4) {
-                            ArchivoUri4 = null;
-                            contUris--;
-                            StyleableToast.makeText(getApplicationContext(), "¡Archivo Borrado con exito!", Toast.LENGTH_SHORT, R.style.doneToast).show();
-                        } else if (ArchivoUri5 != null && contUris == 5) {
-                            ArchivoUri5 = null;
-                            contUris--;
-                            StyleableToast.makeText(getApplicationContext(), "¡Archivo Borrado con exito!", Toast.LENGTH_SHORT, R.style.doneToast).show();
-                        } else if (ArchivoUri6 != null && contUris == 6) {
-                            ArchivoUri6 = null;
-                            contUris--;
-                            StyleableToast.makeText(getApplicationContext(), "¡Archivo Borrado con exito!", Toast.LENGTH_SHORT, R.style.doneToast).show();
-                        } else if (ArchivoUri7 != null && contUris == 7) {
-                            ArchivoUri7 = null;
-                            contUris--;
-                            StyleableToast.makeText(getApplicationContext(), "¡Archivo Borrado con exito!", Toast.LENGTH_SHORT, R.style.doneToast).show();
-                        } else if (ArchivoUri8 != null && contUris == 8) {
-                            ArchivoUri8 = null;
-                            contUris--;
-                            StyleableToast.makeText(getApplicationContext(), "¡Archivo Borrado con exito!", Toast.LENGTH_SHORT, R.style.doneToast).show();
-                        } else if (ArchivoUri9 != null && contUris == 9) {
-                            ArchivoUri9 = null;
-                            contUris--;
-                            StyleableToast.makeText(getApplicationContext(), "¡Archivo Borrado con exito!", Toast.LENGTH_SHORT, R.style.doneToast).show();
-                        } else if (ArchivoUri10 != null && contUris == 10) {
-                            ArchivoUri10 = null;
-                            contUris--;
-                            StyleableToast.makeText(getApplicationContext(), "¡Archivo Borrado con exito!", Toast.LENGTH_SHORT, R.style.doneToast).show();
                         }
-                    } else {
-                        dialogInterface.dismiss();
+
                     }
+
+                } else {
+                    dialogInterface.dismiss();
                 }
+            }
 
-            });
-            builder.show();
-
+        });
+        builder.show();
     }
+
+
 
     private void SelecUri(Intent data) {
 
 
-//        for (int i=0; i<=9; i++){
-//            if(contUris==i && ArchivosUrisArray[i] == UriNula){
-//                ArchivosUrisArray[i]=data.getData();
-//                StyleableToast.makeText(getApplicationContext(), "Archivo agregado con exito \nPuede subir " + (restUris-contUris) + " más", Toast.LENGTH_LONG, R.style.sucessToast).show();
-//                break;
-//            }
-//        }
+        if(contUris<10){
+            ArchivosUris.add(0, data.getData());
+            StyleableToast.makeText(getApplicationContext(), "Archivo agregado con exito \nPuede subir " + (restUris-contUris) + " más", Toast.LENGTH_LONG, R.style.sucessToast).show();
 
-        if(contUris==0){
-            ArchivoUri=data.getData();
-            StyleableToast.makeText(getApplicationContext(), "Archivo agregado con exito \nPuede subir " + (restUris-contUris) + " más", Toast.LENGTH_LONG, R.style.sucessToast).show();
-            // Toast.makeText(getApplicationContext(),"Archivo agregado con exito \nPuede subir " + (restUris-contUris) + " más",Toast.LENGTH_SHORT).show();
-        }else if(contUris==1){
-            ArchivoUri2=data.getData();
-            StyleableToast.makeText(getApplicationContext(), "Archivo agregado con exito \nPuede subir " + (restUris-contUris) + " más", Toast.LENGTH_LONG, R.style.sucessToast).show();
-            //Toast.makeText(getApplicationContext(),"Archivo agregado con exito \nPuede subir " + (restUris-contUris) + " más",Toast.LENGTH_SHORT).show();
-        }else if(contUris==2){
-            ArchivoUri3=data.getData();
-            StyleableToast.makeText(getApplicationContext(), "Archivo agregado con exito \nPuede subir " + (restUris-contUris) + " más", Toast.LENGTH_LONG, R.style.sucessToast).show();
-            //Toast.makeText(getApplicationContext(),"Archivo agregado con exito /nPuede subir " + (restUris-contUris) + " más",Toast.LENGTH_SHORT).show();
-        }else if(contUris==3){
-            ArchivoUri4=data.getData();
-            StyleableToast.makeText(getApplicationContext(), "Archivo agregado con exito \nPuede subir " + (restUris-contUris) + " más", Toast.LENGTH_LONG, R.style.sucessToast).show();
-            //Toast.makeText(getApplicationContext(),"Archivo agregado con exito /nPuede subir " + (restUris-contUris) + " más",Toast.LENGTH_SHORT).show();
-        }else if(contUris==4){
-            ArchivoUri5=data.getData();
-            StyleableToast.makeText(getApplicationContext(), "Archivo agregado con exito \nPuede subir " + (restUris-contUris) + " más", Toast.LENGTH_LONG, R.style.sucessToast).show();
-            //Toast.makeText(getApplicationContext(),"Archivo agregado con exito /nPuede subir " + (restUris-contUris) + " más",Toast.LENGTH_SHORT).show();
-        }else if(contUris==5){
-            ArchivoUri6=data.getData();
-            StyleableToast.makeText(getApplicationContext(), "Archivo agregado con exito \nPuede subir " + (restUris-contUris) + " más", Toast.LENGTH_LONG, R.style.sucessToast).show();
-            //Toast.makeText(getApplicationContext(),"Archivo agregado con exito /nPuede subir " + (restUris-contUris) + " más",Toast.LENGTH_SHORT).show();
-        }else if(contUris==6){
-            ArchivoUri7=data.getData();
-            StyleableToast.makeText(getApplicationContext(), "Archivo agregado con exito \nPuede subir " + (restUris-contUris) + " más", Toast.LENGTH_LONG, R.style.sucessToast).show();
-            //Toast.makeText(getApplicationContext(),"Archivo agregado con exito /nPuede subir " + (restUris-contUris) + " más",Toast.LENGTH_SHORT).show();
-        }else if(contUris==7){
-            ArchivoUri8=data.getData();
-            StyleableToast.makeText(getApplicationContext(), "Archivo agregado con exito \nPuede subir " + (restUris-contUris) + " más", Toast.LENGTH_LONG, R.style.sucessToast).show();
-            //Toast.makeText(getApplicationContext(),"Archivo agregado con exito /nPuede subir " + (restUris-contUris) + " más",Toast.LENGTH_SHORT).show();
-        }else if(contUris==8){
-            ArchivoUri9=data.getData();
-            StyleableToast.makeText(getApplicationContext(), "Archivo agregado con exito \nPuede subir " + (restUris-contUris) + " más", Toast.LENGTH_LONG, R.style.sucessToast).show();
-            //Toast.makeText(getApplicationContext(),"Archivo agregado con exito /nPuede subir " + (restUris-contUris) + " más",Toast.LENGTH_SHORT).show();
-        }else if(contUris==9){
-            ArchivoUri10=data.getData();
-            StyleableToast.makeText(getApplicationContext(), "Archivo agregado con exito \nYa no puede subir más", Toast.LENGTH_LONG, R.style.sucessToast).show();
-            //Toast.makeText(getApplicationContext(),"Archivo agregado con exito /nPuede subir " + (restUris-contUris) + " más",Toast.LENGTH_SHORT).show();
         }else{
             StyleableToast.makeText(getApplicationContext(), "Limite de archivos alcanzado", Toast.LENGTH_LONG, R.style.warningToast).show();
-            //Toast.makeText(getApplicationContext(),"Ya no puede subir ningun archivo",Toast.LENGTH_SHORT).show();
         }
+
     }
 
     private void uploadAllFiles() {
 //        uploadfileGlobal(ArchivoUri);
 
-        if (ArchivoUri != null) {
-            uploadfileGlobal(ArchivoUri, 0);
-            files.add(PerFilesArray[0]);
-            ArchivoUri=null;
 
-
-        }
-
-        if(ArchivoUri2 != null) {
-            uploadfileGlobal(ArchivoUri2, 1);
-            files.add(PerFilesArray[1]);
-            ArchivoUri2=null;
-        }
-
-        if(ArchivoUri3 != null) {
-            uploadfileGlobal(ArchivoUri3, 2);
-            files.add(PerFilesArray[2]);
-            ArchivoUri3=null;
-
-        } if(ArchivoUri4 != null) {
-
-            uploadfileGlobal(ArchivoUri4, 3);
-            files.add(PerFilesArray[3]);
-            ArchivoUri4=null;
+        for (int i = 0; i<ArchivosUris.size(); i++){
+            if ( ArchivosUris.get(i) != null){
+                uploadfileGlobal(ArchivosUris.get(i), i);
+            }
 
         }
 
-        if(ArchivoUri5 != null ) {
-            uploadfileGlobal(ArchivoUri5, 4);
-            files.add(PerFilesArray[4]);
-            ArchivoUri5=null;
-        }
-
-        if(ArchivoUri6 != null) {
-            uploadfileGlobal(ArchivoUri6, 5);
-            files.add(PerFilesArray[5]);
-            ArchivoUri6=null;
-        }
-
-        if(ArchivoUri7 != null) {
-
-            uploadfileGlobal(ArchivoUri7, 6);
-            files.add(PerFilesArray[6]);
-            ArchivoUri7=null;
-
-        }
-
-        if(ArchivoUri8 != null) {
-
-            uploadfileGlobal(ArchivoUri8, 7);
-            files.add(PerFilesArray[7]);
-            ArchivoUri8=null;
-
-        }
-
-        if(ArchivoUri9 != null) {
-
-            uploadfileGlobal(ArchivoUri9, 8);
-            files.add(PerFilesArray[8]);
-            ArchivoUri9=null;
-
-        }
-
-        if(ArchivoUri10 != null) {
-
-            uploadfileGlobal(ArchivoUri10, 9);
-            files.add(PerFilesArray[9]);
-            ArchivoUri10=null;
-        }
     }
 
     private void locationStart() {
@@ -1313,7 +1350,30 @@ public class ExtraActivity extends AppCompatActivity {
     private void recibirDatos() {
         Bundle extras = getIntent().getExtras();
         activity_id = extras.getString("activity_id");
-        title = extras.getString("title");
+
+        BDFireStore
+                .collection("activities")
+                .document(activity_id)
+                .get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                Activity activity = documentSnapshot.toObject(Activity.class);
+
+                title = activity.getTitle();
+
+
+            }
+        }).addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                int Tletra = title.length();
+                if(Tletra > 23){
+                    title = title.substring(0, 22) + "...";
+                }
+                txtname.setText("Actividad: "+ title);
+                txtidevent.setText("ID: "+ activity_id);
+            }
+        });
 
        // Lat = extras.getDouble("Lat");
         //Lng = extras.getDouble("Lng");

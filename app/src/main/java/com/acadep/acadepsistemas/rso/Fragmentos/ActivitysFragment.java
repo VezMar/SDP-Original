@@ -16,6 +16,7 @@ import com.acadep.acadepsistemas.rso.Clases.ExtraActivity;
 import com.acadep.acadepsistemas.rso.Clases.SupervisionActivity;
 import com.acadep.acadepsistemas.rso.R;
 import com.acadep.acadepsistemas.rso.model.Activity;
+import com.acadep.acadepsistemas.rso.model.Evento;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -50,7 +51,7 @@ public class ActivitysFragment extends Fragment {
     }
 
     private void setUpRecyclerView() {
-        com.google.firebase.firestore.Query query = BDFireStore.collection("activities");
+        com.google.firebase.firestore.Query query = BDFireStore.collection("events").whereEqualTo("user_id", mAuth.getUid()).whereEqualTo("active",true);
 
         FirestoreRecyclerOptions<Activity> options = new FirestoreRecyclerOptions.Builder<Activity>()
                 .setQuery(query, Activity.class)
@@ -61,13 +62,11 @@ public class ActivitysFragment extends Fragment {
         activityAdapter.setOnItemClickListener(new ActivityAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(DocumentSnapshot documentSnapshot, int position) {
-                Activity activity = documentSnapshot.toObject(Activity.class);
+                Evento evento = documentSnapshot.toObject(Evento.class);
 
-                String title = activity.getTitle();
-                String activity_id = activity.getId();
+                String activity_id = evento.getActivity_id();
 
                 Intent intent = new Intent(getActivity(), ExtraActivity.class);
-                intent.putExtra("title", title);
                 intent.putExtra("activity_id", activity_id);
 
                 startActivity(intent);

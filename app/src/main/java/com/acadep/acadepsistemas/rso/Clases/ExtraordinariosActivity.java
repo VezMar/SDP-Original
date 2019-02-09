@@ -133,12 +133,6 @@ public class ExtraordinariosActivity extends AppCompatActivity {
 
 
 
-        imageView = (ImageView) findViewById(R.id.imgView);
-        imageView2 = (ImageView) findViewById(R.id.imgView2);
-        imageView3 = (ImageView) findViewById(R.id.imgView3);
-        imageView4 = (ImageView) findViewById(R.id.imgView4);
-        imageView5 = (ImageView) findViewById(R.id.imgView5);
-
         noImage = imageView5;
 
         // GPSSSSSSSSSSSSSSSSSSSSS

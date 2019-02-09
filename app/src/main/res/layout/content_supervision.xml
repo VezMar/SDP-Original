@@ -137,7 +137,7 @@
                                 android:textSize="15dp"
                                 android:digits="0,1,2,3,4,5,6,7,8,9"
                                 android:lines="1"
-                                android:maxLength="3"/>
+                                android:maxLength="5"/>
 
                             <TextView
                                 android:id="@+id/txtTotal"
@@ -239,39 +239,6 @@
 
 
             </ScrollView>
-
-
-
-
-
-            <!--ImageView
-                android:id="@+id/imgView"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:layout_alignStart="@+id/txtEstado"
-                android:layout_alignParentTop="true"
-                android:layout_marginStart="-6dp"
-                android:layout_marginTop="51dp"
-                android:scaleType="centerCrop"
-                android:visibility="invisible" /-->
-
-
-            <!--Button
-                android:id="@+id/btnFoto"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignEnd="@+id/txtEstado"
-                android:layout_alignParentTop="true"
-                android:layout_marginTop="66dp"
-                android:layout_marginEnd="-105dp"
-                android:text="Añadir foto" /-->
-
-
-
-
-
-
-
 
 
             <TextView

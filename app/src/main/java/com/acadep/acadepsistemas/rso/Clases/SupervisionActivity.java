@@ -61,12 +61,14 @@ import com.acadep.acadepsistemas.rso.Fragmentos.ActivitysFragment;
 import com.acadep.acadepsistemas.rso.Fragmentos.EventosFragment;
 //import com.example.acadepsistemas.seguimiento.Manifest;
 import com.acadep.acadepsistemas.rso.R;
+import com.acadep.acadepsistemas.rso.model.Activity_types;
 import com.acadep.acadepsistemas.rso.model.Configuration;
 import com.acadep.acadepsistemas.rso.model.Data;
 import com.acadep.acadepsistemas.rso.model.Evento;
 import com.acadep.acadepsistemas.rso.model.Files;
 import com.acadep.acadepsistemas.rso.model.Foto;
 import com.acadep.acadepsistemas.rso.model.Ref_event;
+import com.acadep.acadepsistemas.rso.model.Total;
 import com.acadep.acadepsistemas.rso.model.Ubication;
 import com.acadep.acadepsistemas.rso.model.datetime;
 import com.github.chrisbanes.photoview.PhotoView;
@@ -339,6 +341,14 @@ public class SupervisionActivity extends AppCompatActivity
     int contT=0;
     int contT2=0;
 
+
+    static List<Activity_types> activitys_types;
+
+    static boolean Tbefore;
+    static boolean Tduring;
+    static boolean Tafter;
+
+
     //-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -352,7 +362,7 @@ public class SupervisionActivity extends AppCompatActivity
         //init();
 
         // Inializacion de variables
-
+        recibirDatos();
         ChequeoConfiguration();
         inicializacionVariables();
         initRecyclerView();
@@ -366,7 +376,7 @@ public class SupervisionActivity extends AppCompatActivity
 
     // Inializacion de variables
 
-        recibirDatos();
+
 
 
         final Evento nEvent = new Evento();
@@ -521,7 +531,7 @@ public class SupervisionActivity extends AppCompatActivity
                 } else {
                     locationStart();
 
-                        locationStart();
+                    locationStart();
 
 
                     final CharSequence[] opciones = {"Tomar foto", "Tomar video", "Cancelar"};
@@ -530,24 +540,24 @@ public class SupervisionActivity extends AppCompatActivity
 
                     builder.setTitle("Borrar archivos");
                     builder.setItems(opciones, new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
 
-                                    if (opciones[i].equals("Tomar foto")) {
+                            if (opciones[i].equals("Tomar foto")) {
 
-                                        GuardarInformacionImagenes();
-                                        takePhoto_AltaCalidad();
-                                    }
+                                GuardarInformacionImagenes();
+                                takePhoto_AltaCalidad();
+                            }
 
-                                    if (opciones[i].equals("Tomar video")) {
+                            if (opciones[i].equals("Tomar video")) {
 
-                                        GuardarInformacionVideos();
-                                        takeVideo();
-                                    }
-                    }
+                                GuardarInformacionVideos();
+                                takeVideo();
+                            }
+                        }
 
-                });
-                builder.show();
+                    });
+                    builder.show();
                 }
 
             }
@@ -849,6 +859,21 @@ public class SupervisionActivity extends AppCompatActivity
 
                 max_photos = configuration.getMax_photos();
                 min_photos = configuration.getMin_photos();
+
+                for (int i=0; i< activitys_types.size(); i++){
+                    String name = activitys_types.get(i).getActivity_name();
+                    if (name.equals(actividad)){
+                        Tbefore = activitys_types.get(i).isBefore();
+                        Tduring =activitys_types.get(i).isDuring();
+                        Tafter = activitys_types.get(i).isAfter();
+                        break;
+                    }
+                }
+            }
+        }).addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                ChequeoDeVariables();
             }
         });
 
@@ -883,16 +908,6 @@ public class SupervisionActivity extends AppCompatActivity
     }
 
     private void uploadAllImages() {
-
-
-//        for(int i=0; i<FileImagenArray.length; i++){
-//            if(FileImagenArray[i] != nula){
-//                uploadImageGlobal(FileImagenArray[i], i);
-//                multimedia.add(PerFotoArray[i]);
-//            }
-//        }
-
-
 
         for(int i=0; i<mImageBitmap.size(); i++){
             PhotoData = multimedia.get(i);
@@ -1513,7 +1528,7 @@ public class SupervisionActivity extends AppCompatActivity
             double heightd = bitmap.getHeight()*.1720430107526882;
             double widthD = bitmap.getWidth()*.12903225806451612;
             float heightf =  (float)heightd;
-            Toast.makeText(this, "El height es: " + 1024 + " y el width es: " + heightf, Toast.LENGTH_SHORT).show();
+//            Toast.makeText(this, "El height es: " + 1024 + " y el width es: " + heightf, Toast.LENGTH_SHORT).show();
             Bitmap Bitnew = redimensionarImagenMaximo(bitmap, 512 ,  heightf);
 
             addImage(Bitnew, 0);
@@ -1840,7 +1855,10 @@ public class SupervisionActivity extends AppCompatActivity
 
     private void Subirdatos() {
         created_at_funct();
-        Data data = new Data(created_at, Observation, header, advanced,ref_event, Lat, Lng, multimedia, files);
+        Total total = new Total();
+        total.setNumber(advanced);
+        total.setUnit(unit);
+        Data data = new Data(created_at, Observation, header, total,ref_event, Lat, Lng, multimedia, files);
         BDFireStore.collection("evidence").document(u).set(data, SetOptions.merge());
 
     }

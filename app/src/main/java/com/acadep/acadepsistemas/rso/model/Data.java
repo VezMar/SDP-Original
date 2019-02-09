@@ -8,7 +8,7 @@ public class Data {
     String created_at;
     String description;
     String header;
-    int advanced;
+    Total total;
     private Ref_event ref_event = new Ref_event();
     private double Lat;
     private double Lng;
@@ -20,11 +20,11 @@ public class Data {
     public Data() {
     }
 
-    public Data(String created_at, String description, String header, int advanced, Ref_event ref_event, double lat, double lng, List<Foto> multimedia, List<Files> files) {
+    public Data(String created_at, String description, String header, Total total, Ref_event ref_event, double lat, double lng, List<Foto> multimedia, List<Files> files) {
         this.created_at = created_at;
         this.description = description;
         this.header = header;
-        this.advanced = advanced;
+        this.total = total;
         this.ref_event = ref_event;
         Lat = lat;
         Lng = lng;
@@ -56,12 +56,12 @@ public class Data {
         this.header = header;
     }
 
-    public int getAdvanced() {
-        return advanced;
+    public Total getTotal() {
+        return total;
     }
 
-    public void setAdvanced(int advanced) {
-        this.advanced = advanced;
+    public void setTotal(Total total) {
+        this.total = total;
     }
 
     public Ref_event getRef_event() {
