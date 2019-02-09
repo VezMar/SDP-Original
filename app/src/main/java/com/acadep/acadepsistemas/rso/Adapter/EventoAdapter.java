@@ -2,7 +2,10 @@ package com.acadep.acadepsistemas.rso.Adapter;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.text.format.DateFormat;
 import android.text.format.Time;
+import android.util.EventLog;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,16 +17,36 @@ import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.firestore.DocumentSnapshot;
 
+import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
+import org.joda.time.LocalDateTime;
+import org.joda.time.Period;
+import org.joda.time.format.DateTimeFormatter;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.temporal.ChronoUnit;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.Locale;
+import java.util.concurrent.TimeUnit;
+
 public class EventoAdapter extends FirestoreRecyclerAdapter<Evento, EventoAdapter.EventoHolder>{
+
     private OnItemClickListener listener;
     static Time today = new Time(Time.getCurrentTimezone());
 
+//    static Date start, end;
+    static Date firstDate, secondDate;
+    static String start, end;
     /**
      * Create a new RecyclerView adapter that listens to a Firestore Query.  See {@link
      * FirestoreRecyclerOptions} for configuration options.
      *
      * @param options
      */
+
     public EventoAdapter(@NonNull FirestoreRecyclerOptions<Evento> options) {
         super(options);
 
@@ -33,27 +56,67 @@ public class EventoAdapter extends FirestoreRecyclerAdapter<Evento, EventoAdapte
     @Override
     protected void onBindViewHolder(@NonNull EventoHolder holder, int position, @NonNull Evento evento) {
 
-       String start, end;
+        Calendar calendar = new GregorianCalendar();
+        DateTime dateTime = new DateTime();
 
-       start = evento.getStart().substring(0,10);
+//        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy", Locale.ENGLISH);
+////        Date firstDate = null;
+//        try {
+//            firstDate = sdf.parse(calendar.get(Calendar.YEAR) + "-" + dateTime.getMonthOfYear() + "-" + calendar.get(Calendar.DAY_OF_MONTH));
+//        } catch (ParseException e) {
+//            e.printStackTrace();
+//        }
+//
+////        Date secondDate = null;
+//        try {
+//            secondDate = sdf.parse(evento.getEnd().substring(0,10));
+//        } catch (ParseException e) {
+//            e.printStackTrace();
+//        }
+//
+//        long diffInMillies = Math.abs(secondDate.getTime() - firstDate.getTime());
+//        Log.i("Prueba horas: ", ""+diffInMillies);
+//        long diff = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
+//        Log.i("Prueba horas: ", ""+diff);
+
+        String string = evento.getEnd();
+        SimpleDateFormat format = new SimpleDateFormat("MMMM d, yyyy", Locale.ENGLISH);
+        Date date = null;
+        try {
+            date = format.parse(string);
+            holder.txtview_end.setText(""+date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        System.out.println(date); // Sat Jan 02 00:00:00 GMT 2010
+
+
+        LocalDateTime timeNow = LocalDateTime.now();
+        int mni = evento.getEnd().length();
+        LocalDateTime timeEnd = LocalDateTime.parse(evento.getEnd().substring(0, (mni-1)));
+
+        Period p = new Period(timeNow, timeEnd);
+        long hours = p.getHours();
+        long minutes = p.getMinutes();
+
+        String formato = String.format("%%0%dd", 2);
+
+//        return Long.toString(hours)+":"+String.format(formato, minutes);
+
+        Log.i("Prueba horas : ", Long.toString(hours)+":"+String.format(formato, minutes));
+        Log.i("Prueba horas : ", ""+timeNow);
+        Log.i("Prueba horas : ", ""+timeEnd);
+        start = evento.getStart().substring(0,10);
+        holder.txtview_start.setText(""+start);
         end = evento.getEnd().substring(0,10);
+        holder.txtview_end.setText(""+end);
 
 
-//        int HorasFinal = Integer.parseInt(diaFinal)*24;
-//        int HorasActual = Integer.parseInt(diaActual)*24;
 
 
         holder.txtview_actividad.setText(evento.getType_activity());
-         //holder.txtview_uid.setText(evento.get(position).getUid());
-        //holder.txtview_trabajador.setText(evento.get(position).getTrabajador());
-
-        //holder.txtview_start.setText(evento.getStart());
-        //holder.txtview_end.setText(evento.getEnd());
-        holder.txtview_start.setText(start);
-        holder.txtview_end.setText(end);
         holder.txtview_name.setText(evento.getTitle());
-        //holder.txtDescripcion.setText(evento.getDescription());
-        //holder.txtHrs.setText(""+diaRestante);
+
     }
 
     @NonNull

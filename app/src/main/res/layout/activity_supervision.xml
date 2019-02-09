@@ -18,6 +18,43 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+       <com.getbase.floatingactionbutton.FloatingActionsMenu
+           android:id="@+id/FtAcMnu"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:layout_alignParentEnd="true"
+           android:layout_alignParentBottom="true"
+           app:fab_addButtonColorNormal="@color/pink"
+           app:fab_addButtonColorPressed="@color/pink_pressed"
+           app:fab_addButtonPlusIconColor="#FFFFFFFF"
+           app:fab_labelStyle="@style/customfab"
+           android:layout_marginBottom="50dp"
+           >
+
+           <com.getbase.floatingactionbutton.FloatingActionButton
+               android:id="@+id/fab_action_1"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               app:fab_colorNormal="@color/white"
+               app:fab_colorPressed="@color/white_pressed"
+               app:fab_size="mini"
+               app:fab_icon="@drawable/ic_add_a_photo_black_24dp"
+               app:fab_title="Tomar Foto"/>
+
+           <com.getbase.floatingactionbutton.FloatingActionButton
+               android:id="@+id/fab_action_2"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               app:fab_colorNormal="@color/white"
+               app:fab_colorPressed="@color/white_pressed"
+               app:fab_size="mini"
+               app:fab_icon="@drawable/ic_videocam_black_24dp"
+               app:fab_title="Tomar Video"/>
+
+       </com.getbase.floatingactionbutton.FloatingActionsMenu>
+
+
+
     </RelativeLayout>
 
 
@@ -29,6 +66,7 @@
         android:layout_gravity="start"
         android:fitsSystemWindows="true"
         app:headerLayout="@layout/nav_header_main2"
-        app:menu="@menu/activity_supervision_drawer" />
+        app:menu="@menu/activity_supervision_drawer"
+        />
 
 </android.support.v4.widget.DrawerLayout>
