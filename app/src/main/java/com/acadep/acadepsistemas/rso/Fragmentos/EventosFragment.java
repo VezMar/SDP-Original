@@ -165,7 +165,7 @@ public class EventosFragment extends Fragment {
                 int advanced = evento.getAdvanced();
 
                 List<Recursos> tools = evento.getTools();
-                boolean deleted = evento.isDeleted();
+                String deleted = evento.getDeleted();
                 activeStatus = evento.isActive();
 
 

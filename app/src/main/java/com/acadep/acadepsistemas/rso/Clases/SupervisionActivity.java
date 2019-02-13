@@ -1,6 +1,10 @@
 package com.acadep.acadepsistemas.rso.Clases;
 
 import android.Manifest;
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.app.AlertDialog;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -43,6 +47,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.format.Time;
 import android.util.Log;
+import android.view.TextureView;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -57,6 +62,7 @@ import android.widget.ListView;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.VideoView;
 
 import com.acadep.acadepsistemas.rso.Adapter.RecyclerViewAdapter;
 import com.acadep.acadepsistemas.rso.Fragmentos.ActivitysFragment;
@@ -74,6 +80,8 @@ import com.acadep.acadepsistemas.rso.model.Total;
 import com.acadep.acadepsistemas.rso.model.Ubication;
 import com.acadep.acadepsistemas.rso.model.datetime;
 
+//import com.getbase.floatingactionbutton.FloatingActionsMenu;
+import com.github.clans.fab.FloatingActionMenu;
 import com.github.chrisbanes.photoview.PhotoView;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationRequest;
@@ -225,7 +233,7 @@ public class SupervisionActivity extends AppCompatActivity
 
 
 
-    static boolean deleted;
+    static String deleted;
     static boolean active;
 
     EditText edObserv;
@@ -295,6 +303,13 @@ public class SupervisionActivity extends AppCompatActivity
 
 
     private BottomNavigationView bottomNavigationView;
+    private FloatingActionMenu floatingActionsMenu;
+    private com.github.clans.fab.FloatingActionButton actionButton_1;
+    private com.github.clans.fab.FloatingActionButton actionButton_2;
+    private com.github.clans.fab.FloatingActionButton actionButton_3;
+    private com.github.clans.fab.FloatingActionButton actionButton_4;
+    private com.github.clans.fab.FloatingActionButton actionButton_5;
+    private com.github.clans.fab.FloatingActionButton actionButton_6;
 
 
     private static List<Foto> multimedia = new ArrayList<>();
@@ -323,7 +338,10 @@ public class SupervisionActivity extends AppCompatActivity
     static String created_at;
 
     //    Imagenes
-    private ArrayList<Bitmap> mImageBitmap = new ArrayList<>();
+    private ArrayList<Uri> mImageBitmap = new ArrayList<>();
+    private ArrayList<String> mTypeAdapter = new ArrayList<>();
+
+
     private static List<File> ListImages = new ArrayList<>();
     private static List<Uri> ListVideos = new ArrayList<>();
 
@@ -392,17 +410,23 @@ public class SupervisionActivity extends AppCompatActivity
         nEvent.setId(idevent);
         //nEvent.setStart(start);
         nEvent.setUser_id(user_id);
-        nEvent.setDeleted(deleted);
+//        nEvent.setDeleted(deleted);
         // nEvent.setTools(tools);
 
         //Inicializacion de varibales
         bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottomNavigationView);
         bottomNavigationView.setOnNavigationItemSelectedListener(navListener);
 
-//        FloatingActionsMenu floatingActionsMenu = (FloatingActionsMenu) findViewById(R.id.FtAcMnu);
+        floatingActionsMenu =  findViewById(R.id.FloatingActionMenuPrincipal);
+//        floatingActionsMenu.setIconAnimated(false);
 
-        com.getbase.floatingactionbutton.FloatingActionButton actionButton_1 = findViewById(R.id.fab_action_1);
-        com.getbase.floatingactionbutton.FloatingActionButton actionButton_2 =  findViewById(R.id.fab_action_2);
+         actionButton_1 = findViewById(R.id.fab_action_1);
+         actionButton_2 =  findViewById(R.id.fab_action_2);
+         actionButton_3 =  findViewById(R.id.fab_action_3);
+         actionButton_4 =  findViewById(R.id.fab_action_4);
+         actionButton_5 =  findViewById(R.id.fab_action_5);
+         actionButton_6 =  findViewById(R.id.fab_action_6);
+
 
         txtEstado = (TextView) findViewById(R.id.txtEstado);
 
@@ -425,14 +449,19 @@ public class SupervisionActivity extends AppCompatActivity
         btnArchivo = (FloatingTextButton) findViewById(R.id.btnArchivo);
 
         btnFoto = (FloatingTextButton) findViewById(R.id.btnFoto);
-
+        btnBorrarArchivo = (FloatingTextButton) findViewById(R.id.btnBorrarArchivo);
 
         swtBorrar = findViewById(R.id.swtBorrar);
 
+        swtBorrar.setVisibility(View.INVISIBLE);
+        btnBorrarArchivo.setVisibility(View.INVISIBLE);
 
 
 
-        btnBorrarArchivo = (FloatingTextButton) findViewById(R.id.btnBorrarArchivo);
+
+
+
+
 
         // GPSSSSSSSSSSSSSSSSSSSSS
 
@@ -492,31 +521,37 @@ public class SupervisionActivity extends AppCompatActivity
 
 
 
-        btnArchivo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (estado.equals("before") && cont1<1 || estado.equals("during") && cont2<1 || estado.equals("after") && cont3<1) {
-                    if (ContextCompat.checkSelfPermission(SupervisionActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-
-                        GuardarInformacionArchivos();
-                        mostrarDialogoOpciones();
-                    } else {
-                        ActivityCompat.requestPermissions(SupervisionActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 9);
-                    }
-                }else{
-                    StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT, R.style.warningToast).show();
-                }
-            }
-        });
-
-        btnBorrarArchivo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-               MostrarOpciones();
+//        btnArchivo.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if (estado.equals("before") && cont1<1 || estado.equals("during") && cont2<1 || estado.equals("after") && cont3<1) {
+//                    if (ContextCompat.checkSelfPermission(SupervisionActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+//
+//                        GuardarInformacionArchivos();
+//                        mostrarDialogoOpciones();
+//                    } else {
+//                        ActivityCompat.requestPermissions(SupervisionActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 9);
+//                    }
+//                }else{
+//                    StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT, R.style.warningToast).show();
+//                }
+//            }
+//        });
+//
 
 
-            }
-        });
+
+
+
+//
+//        btnBorrarArchivo.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//               MostrarOpciones();
+//
+//
+//            }
+//        });
 
 
 
@@ -536,56 +571,118 @@ public class SupervisionActivity extends AppCompatActivity
             }
         });
 
-
-        btnFoto.setOnClickListener(new View.OnClickListener() {
+        actionButton_3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                GuardarInformacionArchivos();
 
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    if (checkSelfPermission(String.valueOf(Manifest.permission.CAMERA)) != PackageManager.PERMISSION_DENIED) {
-                        ActivityCompat.requestPermissions(SupervisionActivity.this, new String[]{Manifest.permission.CAMERA}, 1);
-                    }
-                }
+                PerFile = files.get(0);
+                PerFile.setType("PDF");
+                PerFile.setSrc("" + contUris);
+                files.set(0, PerFile);
+                PerFile = new Files();
 
-                if (ActivityCompat.checkSelfPermission(getApplicationContext(),
-                        WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                selectPDF();
 
-                    ActivityCompat.requestPermissions(SupervisionActivity.this,
-                            new String[]{WRITE_EXTERNAL_STORAGE}, REQUEST_PERM_WRITE_STORAGE);
-                } else {
-                    locationStart();
-
-                    locationStart();
-
-
-                    final CharSequence[] opciones = {"Tomar foto", "Tomar video", "Cancelar"};
-                    final AlertDialog.Builder builder = new AlertDialog.Builder(SupervisionActivity.this);
-
-
-                    builder.setTitle("Borrar archivos");
-                    builder.setItems(opciones, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-
-                            if (opciones[i].equals("Tomar foto")) {
-
-                                GuardarInformacionImagenes();
-                                takePhoto_AltaCalidad();
-                            }
-
-                            if (opciones[i].equals("Tomar video")) {
-
-                                GuardarInformacionVideos();
-                                takeVideo();
-                            }
-                        }
-
-                    });
-                    builder.show();
-                }
 
             }
         });
+
+        actionButton_4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                GuardarInformacionArchivos();
+
+                PerFile = files.get(0);
+                PerFile.setType("Docx");
+                PerFile.setSrc(""+contUris);
+                files.set(0,PerFile);
+                PerFile = new Files();
+
+                selectDocx();
+            }
+        });
+
+        actionButton_5.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                GuardarInformacionArchivos();
+
+                PerFile = files.get(0);
+                PerFile.setType("Video");
+                PerFile.setSrc(""+contUris);
+                files.set(0,PerFile);
+                PerFile = new Files();
+
+                selectVideo();
+            }
+        });
+
+        actionButton_6.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                GuardarInformacionArchivos();
+
+                PerFile = files.get(0);
+                PerFile.setType("Audio");
+                PerFile.setSrc("" + contUris);
+                files.set(0, PerFile);
+                PerFile = new Files();
+
+                selectAudio();
+            }
+        });
+
+
+//        btnFoto.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//
+//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//                    if (checkSelfPermission(String.valueOf(Manifest.permission.CAMERA)) != PackageManager.PERMISSION_DENIED) {
+//                        ActivityCompat.requestPermissions(SupervisionActivity.this, new String[]{Manifest.permission.CAMERA}, 1);
+//                    }
+//                }
+//
+//                if (ActivityCompat.checkSelfPermission(getApplicationContext(),
+//                        WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+//
+//                    ActivityCompat.requestPermissions(SupervisionActivity.this,
+//                            new String[]{WRITE_EXTERNAL_STORAGE}, REQUEST_PERM_WRITE_STORAGE);
+//                } else {
+//                    locationStart();
+//
+//                    locationStart();
+//
+//
+//                    final CharSequence[] opciones = {"Tomar foto", "Tomar video", "Cancelar"};
+//                    final AlertDialog.Builder builder = new AlertDialog.Builder(SupervisionActivity.this);
+//
+//
+//                    builder.setTitle("Borrar archivos");
+//                    builder.setItems(opciones, new DialogInterface.OnClickListener() {
+//                        @Override
+//                        public void onClick(DialogInterface dialogInterface, int i) {
+//
+//                            if (opciones[i].equals("Tomar foto")) {
+//
+//                                GuardarInformacionImagenes();
+//                                takePhoto_AltaCalidad();
+//                            }
+//
+//                            if (opciones[i].equals("Tomar video")) {
+//
+//                                GuardarInformacionVideos();
+//                                takeVideo();
+//                            }
+//                        }
+//
+//                    });
+//                    builder.show();
+//                }
+//
+//            }
+//        });
 
 
 
@@ -767,6 +864,36 @@ public class SupervisionActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
     }
 
+//    private void createCustomAnimation() {
+//        AnimatorSet set = new AnimatorSet();
+//
+//        ObjectAnimator scaleOutX = ObjectAnimator.ofFloat(floatingActionsMenu.getMenuIconView(), "scaleX", 1.0f, 0.2f);
+//        ObjectAnimator scaleOutY = ObjectAnimator.ofFloat(floatingActionsMenu.getMenuIconView(), "scaleY", 1.0f, 0.2f);
+//
+//        ObjectAnimator scaleInX = ObjectAnimator.ofFloat(floatingActionsMenu.getMenuIconView(), "scaleX", 0.2f, 1.0f);
+//        ObjectAnimator scaleInY = ObjectAnimator.ofFloat(floatingActionsMenu.getMenuIconView(), "scaleY", 0.2f, 1.0f);
+//
+//        scaleOutX.setDuration(50);
+//        scaleOutY.setDuration(50);
+//
+//        scaleInX.setDuration(150);
+//        scaleInY.setDuration(150);
+//
+//        scaleInX.addListener(new AnimatorListenerAdapter() {
+//            @Override
+//            public void onAnimationStart(Animator animation) {
+//                floatingActionsMenu.getMenuIconView().setImageResource(menuGreen.isOpened()
+//                        ? R.drawable.ic_close : R.drawable.ic_star);
+//            }
+//        });
+//
+//        set.play(scaleOutX).with(scaleOutY);
+//        set.play(scaleInX).with(scaleInY).after(scaleOutX);
+//        set.setInterpolator(new OvershootInterpolator(2));
+//
+//        floatingActionsMenu.setIconToggleAnimatorSet(set);
+//    }
+
     private void GuardarInformacionVideos() {
 
             locationStart();
@@ -803,26 +930,53 @@ public class SupervisionActivity extends AppCompatActivity
         mRecyclerView = findViewById(R.id.images_recycler);
         mLayaoutManager= new GridLayoutManager(this, 3);
 
-        mAdapter = new RecyclerViewAdapter(this, mImageBitmap, new RecyclerViewAdapter.OnItemClickListener() {
+        mAdapter = new RecyclerViewAdapter(this,mTypeAdapter, mImageBitmap, new RecyclerViewAdapter.OnItemClickListener() {
             @Override
-            public void OnItemClick(Bitmap mImage, int position) {
+            public void OnItemClick(Uri mImage, int position) {
                
                 if (swtBorrar.isChecked()){
                     deleteImage(position);
                 }else{
-                    AlertDialog.Builder mBuilder = new AlertDialog.Builder(SupervisionActivity.this);
-                    View mView = getLayoutInflater().inflate(R.layout.dialog_custom_layout, null);
-                    PhotoView photoView = mView.findViewById(R.id.imageView);
+                    if(mTypeAdapter.get(position).equals("Photo")) {
+//                        AlertDialog.Builder mBuilder = new AlertDialog.Builder(SupervisionActivity.this);
+//                        View mView = getLayoutInflater().inflate(R.layout.dialog_custom_layout, null);
+//                        PhotoView photoView = mView.findViewById(R.id.imageView);
+////                    photoView.setImageURI(Uri.fromFile(fileimagen));
+//
+//                        Drawable d = new BitmapDrawable(String.valueOf(mImageBitmap.get(position)));
+//                        photoView.setImageDrawable(d);
+//                        mBuilder.setView(mView);
+//                        AlertDialog mDialog = mBuilder.create();
+//                        mDialog.getWindow().setLayout(600, 400);
+//                        mDialog.show();
+
+
+
+                        AlertDialog.Builder mBuilder = new AlertDialog.Builder(SupervisionActivity.this);
+                        View mView = getLayoutInflater().inflate(R.layout.layout_videoview, null);
+                        VideoView videoView = mView.findViewById(R.id.video_recycler);
 //                    photoView.setImageURI(Uri.fromFile(fileimagen));
 
-                    Drawable d = new BitmapDrawable(mImageBitmap.get(position));
-                    photoView.setImageDrawable(d);
-                    mBuilder.setView(mView);
-                    AlertDialog mDialog = mBuilder.create();
-                    mDialog.getWindow().setLayout(600, 400);
-                    mDialog.show();
+//                        videoView.setVideoURI(Uri.fromFile(mImageBitmap.get(1)));
+                        mBuilder.setView(mView);
+                        AlertDialog mDialog = mBuilder.create();
+                        mDialog.getWindow().setLayout(600, 400);
+                        mDialog.show();
 
 
+                    }
+                    if(mTypeAdapter.get(position).equals("Video")) {
+                        AlertDialog.Builder mBuilder = new AlertDialog.Builder(SupervisionActivity.this);
+                        View mView = getLayoutInflater().inflate(R.layout.layout_videoview, null);
+                        VideoView videoView = mView.findViewById(R.id.video_recycler);
+//                    photoView.setImageURI(Uri.fromFile(fileimagen));
+
+//                        videoView.setVideoURI(Uri.fromFile(mImageBitmap.get(position)));
+                        mBuilder.setView(mView);
+                        AlertDialog mDialog = mBuilder.create();
+                        mDialog.getWindow().setLayout(600, 400);
+                        mDialog.show();
+                    }
                 }
 
             }
@@ -835,9 +989,10 @@ public class SupervisionActivity extends AppCompatActivity
         mRecyclerView.setAdapter(mAdapter);
     }
 
-    private void addImage(Bitmap bitmap,int position){
+    private void addImage(Uri bitmap,int position, String type){
 
         mImageBitmap.add(position, bitmap);
+        mTypeAdapter.add(position, type);
         mAdapter.notifyItemInserted(position);
         mLayaoutManager.scrollToPosition(position);
     }
@@ -932,7 +1087,7 @@ public class SupervisionActivity extends AppCompatActivity
             }
             if (PhotoData.getType().equals("Imagen")){
                 if(mImageBitmap.get(i) != null){
-                    uploadImageGlobal(mImageBitmap.get(i), i);
+//                    uploadImageGlobal(mImageBitmap.get(i), i);
                     //multimedia.add(PhotoData);
                 }
             }
@@ -1591,12 +1746,11 @@ public class SupervisionActivity extends AppCompatActivity
             Bitmap bitmap = BitmapFactory.decodeFile(filePath);
 
             double heightd = bitmap.getHeight()*.1720430107526882;
-            double widthD = bitmap.getWidth()*.12903225806451612;
             float heightf =  (float)heightd;
 //            Toast.makeText(this, "El height es: " + 1024 + " y el width es: " + heightf, Toast.LENGTH_SHORT).show();
             Bitmap Bitnew = redimensionarImagenMaximo(bitmap, 512 ,  heightf);
 
-            addImage(Bitnew, 0);
+//            addImage(new File(filePath), 0, "Photo");
             ListVideos.add(0, Uri.fromFile(new File(filePath)));
             contImg++;
         }
@@ -1607,10 +1761,11 @@ public class SupervisionActivity extends AppCompatActivity
             Bitmap icon = BitmapFactory.decodeResource(SupervisionActivity.this.getResources(),
                     R.drawable.reproductor_multimedia);
 
-
-            addImage(icon, 0);
-
             Uri videoUri = data.getData();
+//            addImage(new File(videoUri.getPath()), 0, "Video");
+            addImage(videoUri, 0, "Video");
+
+
             ListVideos.add(0, videoUri);
             contImg++;
 
@@ -1680,7 +1835,7 @@ public class SupervisionActivity extends AppCompatActivity
 
                     contImg++;
                     saveImageToGallery(Bitnew);
-                    addImage(Bitnew, 0);
+//                    addImage(Bitnew, 0);
 
         }
 
@@ -1762,7 +1917,7 @@ public class SupervisionActivity extends AppCompatActivity
         progressDialog.setProgress(0);
         progressDialog.show();
 
-        final StorageReference ref = storageReference.child("images").child("extra").child("video" + UUID.randomUUID().toString());
+        final StorageReference ref = storageReference.child("images").child("evidence").child("video" + UUID.randomUUID().toString());
         final String fileName= "Archivo" + UUID.randomUUID().toString();
 
         ref.putFile(videoUri)
@@ -2136,7 +2291,7 @@ public class SupervisionActivity extends AppCompatActivity
         idactivity= extras.getString("idactivity");
         description= extras.getString("description");
         tools = extras.getStringArrayList("tools");
-        deleted = extras.getBoolean("deleted");
+        deleted = extras.getString("deleted");
         advanced = extras.getInt("advanced");
         number = extras.getInt("number");
         unit = extras.getString("unit");

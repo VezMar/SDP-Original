@@ -2,62 +2,107 @@ package com.acadep.acadepsistemas.rso.Adapter;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
+import android.media.MediaExtractor;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
+import android.widget.MediaController;
+import android.widget.VideoView;
 
 import com.acadep.acadepsistemas.rso.R;
-import com.bumptech.glide.Glide;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 
-public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
+public class RecyclerViewAdapter extends RecyclerView.Adapter{
 
     private Context mContext;
-    private ArrayList<Bitmap> mImages = new ArrayList<>();
+    private ArrayList<String> mTypeAdapter;
+    private ArrayList<Uri> mImages = new ArrayList<>();
     private OnItemClickListener listener;
     //private AdapterView.OnItemLongClickListener
 
-
-    public RecyclerViewAdapter(Context mContext, ArrayList<Bitmap> mImages, OnItemClickListener listener) {
+    public RecyclerViewAdapter(Context mContext, ArrayList<String> mTypeAdapter, ArrayList<Uri> mImages, OnItemClickListener listener) {
         this.mContext = mContext;
+        this.mTypeAdapter = mTypeAdapter;
         this.mImages = mImages;
         this.listener = listener;
     }
 
+
+//    public RecyclerViewAdapter(Context mContext, ArrayList<File> mImages, OnItemClickListener listener) {
+//        this.mContext = mContext;
+//        this.mImages = mImages;
+//        this.listener = listener;
+//    }
+
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.layout_listitem, viewGroup, false);
-        ViewHolder holder = new ViewHolder(view);
-        return holder;
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+        View view;
+        if (mTypeAdapter.get(i).equals("Photo")){
+            view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.layout_listitem, viewGroup, false);
+            return new ImageTypeViewHolder(view);
+        }
+
+        if (mTypeAdapter.get(i).equals("Video")){
+            view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.layout_videoview, viewGroup, false);
+            return new VideoTypeViewHolder(view);
+        }
+
+        return null;
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder viewHolder, final int i) {
-//        Glide.with(mContext)
-//                .asBitmap()
-//                .load(mImages.get(i))
-//                .into(viewHolder.image);
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, final int i) {
 
-//        if (mImages.get(i)== mImages.get(i-1)){
-//            viewHolder.image.setImageResource(R.drawable.reproductor_multimedia);
-//        }
 
-        viewHolder.image.setImageBitmap(mImages.get(i));
 
-        viewHolder.bind(mImages.get(i), listener);
+//        Bitmap bitmap = BitmapFactory.decodeFile(String.valueOf(mImages.get(i)));
+//        double heightd = bitmap.getHeight()*.1720430107526882;
+//        float heightf =  (float)heightd;
+//        Bitmap Bitnew = redimensionarImagenMaximo(bitmap, 512 ,  heightf);
+//
+//        viewHolder.image.setImageBitmap(Bitnew);
 
-//        viewHolder.parent_layout.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Toast.makeText(mContext, "Pos " + i, Toast.LENGTH_SHORT).show();
-//            }
-//        });
+        if (mTypeAdapter.get(i).equals("Photo")){
+            Picasso.get()
+                    .load(mImages.get(i))
+                    .resize(512, 683)
+                    .centerCrop()
+                    .into(((ImageTypeViewHolder) viewHolder).image);
+
+//            ((ImageTypeViewHolder) viewHolder).bind(mImages.get(i), listener);
+        }
+
+        if (mTypeAdapter.get(i).equals("Video")){
+//            ((VideoTypeViewHolder) viewHolder).videoView.setVideoPath(String.valueOf(mImages.get(i)));
+            ((VideoTypeViewHolder) viewHolder).videoView.setVideoURI((mImages.get(i)));
+//            ((VideoTypeViewHolder) viewHolder).videoView.setVideoURI(Uri.parse("https://www.youtube.com/watch?v=dbB-mICjkQM"));
+            MediaController mediaController = new MediaController(mContext);
+            mediaController.setAnchorView(((VideoTypeViewHolder) viewHolder).videoView);
+            ((VideoTypeViewHolder) viewHolder).videoView.setMediaController(mediaController);
+            ((VideoTypeViewHolder) viewHolder).videoView.seekTo(100);
+//            ((VideoTypeViewHolder) viewHolder).videoView.requestFocus();
+            ((VideoTypeViewHolder) viewHolder).videoView.start();
+        }
+
+
+
+
+
     }
 
     @Override
@@ -65,18 +110,19 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         return mImages.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    // Clase y funciones para la imagen
+    public class ImageTypeViewHolder extends RecyclerView.ViewHolder {
 
         ImageView image;
-        RelativeLayout parent_layout;
-        public ViewHolder(@NonNull View itemView) {
+//        RelativeLayout parent_layout;
+        public ImageTypeViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            image = itemView.findViewById(R.id.image_recycler);
-            parent_layout = itemView.findViewById(R.id.parent_layout);
+            this.image = itemView.findViewById(R.id.image_recycler);
+//            parent_layout = itemView.findViewById(R.id.parent_layout);
         }
 
-            public void bind(final Bitmap mImage, final OnItemClickListener listener){
+            public void bind(final Uri mImage, final OnItemClickListener listener){
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -88,8 +134,56 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     }
 
     public interface OnItemClickListener{
-        void OnItemClick(Bitmap mImage, int position);
+        void OnItemClick(Uri mImage, int position);
     }
+
+    public Bitmap redimensionarImagenMaximo(Bitmap mBitmap, float newWidth, float newHeigth){
+        //Redimensionamos
+        int width = mBitmap.getWidth();
+        int height = mBitmap.getHeight();
+        float scaleWidth = ((float) newWidth) / width;
+        float scaleHeight = ((float) newHeigth) / height;
+        // create a matrix for the manipulation
+        Matrix matrix = new Matrix();
+        // resize the bit map
+        matrix.postScale(scaleWidth, scaleHeight);
+        // recreate the new Bitmap
+        return Bitmap.createBitmap(mBitmap, 0, 0, width, height, matrix, false);
+    }
+
+    // Clase y funciones para la imagen
+
+    // ------------------------------------------------------------------
+
+    // Clase y funciones para la video
+    public class VideoTypeViewHolder extends RecyclerView.ViewHolder {
+        VideoView videoView;
+
+
+        public VideoTypeViewHolder(@NonNull View itemView) {
+            super(itemView);
+
+            this.videoView = itemView.findViewById(R.id.video_recycler);
+        }
+    }
+
+
+
+    // Clase y funciones para la video
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 }

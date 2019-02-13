@@ -26,8 +26,10 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
+import android.widget.MediaController;
 import android.widget.Switch;
 import android.widget.Toast;
+import android.widget.VideoView;
 
 import com.acadep.acadepsistemas.rso.Adapter.RecyclerViewAdapter;
 import com.acadep.acadepsistemas.rso.BuildConfig;
@@ -111,176 +113,182 @@ public class RecyclerTest  extends AppCompatActivity {
 
         initRecyclerView();
 
+        VideoView videoView = findViewById(R.id.video_test);
         dbRef = FirebaseDatabase.getInstance();
         storage = FirebaseStorage.getInstance();
         storageReference = storage.getReference();
 
-        btnPhoto = findViewById(R.id.btnPhoto);
-        btnEnviarTest = findViewById(R.id.btnEnviarTest);
 
-        swtBorrar = findViewById(R.id.swtBorrar);
-
-        if (checkPermissions()){
-
-        }
-
-
-
-        btnPhoto.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                final CharSequence[] opciones = {"Tomar foto", "Tomar video", "Cancelar"};
-                final AlertDialog.Builder builder = new AlertDialog.Builder(RecyclerTest.this);
-
-
-                builder.setTitle("Borrar archivos");
-                builder.setItems(opciones, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-
-                        if (opciones[i].equals("Tomar foto")) {
-                            takePhoto_AltaCalidad();
-                        }
-
-                        if (opciones[i].equals("Tomar video")) {
-                            takeVideo();
-                        }
-                    }
-
-                });
-                builder.show();
+        videoView.setMediaController(new MediaController(this));
+        videoView.setVideoURI(Uri.parse("https://firebasestorage.googleapis.com/v0/b/seguimiento-de-proyectos-4fa3c.appspot.com/o/evidence%2Fvideo09ba5b36-8f27-41af-a4b8-b0265236e12f?alt=media&token=d081f696-005c-4de6-80f8-9be1cc6973ea"));
+        videoView.requestFocus();
+        videoView.start();
+//        btnPhoto = findViewById(R.id.btnPhoto);
+//        btnEnviarTest = findViewById(R.id.btnEnviarTest);
+//
+//        swtBorrar = findViewById(R.id.swtBorrar);
+//
+//        if (checkPermissions()){
+//
+//        }
 
 
 
-//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-//                    if (checkSelfPermission(String.valueOf(Manifest.permission.CAMERA)) != PackageManager.PERMISSION_DENIED) {
-//                        ActivityCompat.requestPermissions(RecyclerTest.this, new String[]{Manifest.permission.CAMERA}, 1);
+//        btnPhoto.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                final CharSequence[] opciones = {"Tomar foto", "Tomar video", "Cancelar"};
+//                final AlertDialog.Builder builder = new AlertDialog.Builder(RecyclerTest.this);
+//
+//
+//                builder.setTitle("Borrar archivos");
+//                builder.setItems(opciones, new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialogInterface, int i) {
+//
+//                        if (opciones[i].equals("Tomar foto")) {
+//                            takePhoto_AltaCalidad();
+//                        }
+//
+//                        if (opciones[i].equals("Tomar video")) {
+//                            takeVideo();
+//                        }
+//                    }
+//
+//                });
+//                builder.show();
+//
+//
+//
+////                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+////                    if (checkSelfPermission(String.valueOf(Manifest.permission.CAMERA)) != PackageManager.PERMISSION_DENIED) {
+////                        ActivityCompat.requestPermissions(RecyclerTest.this, new String[]{Manifest.permission.CAMERA}, 1);
+////                    }
+////                }
+////
+////                if (ActivityCompat.checkSelfPermission(getApplicationContext(),
+////                        Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+////
+////                    ActivityCompat.requestPermissions(RecyclerTest.this,
+////                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_PERM_WRITE_STORAGE);
+////                } else {
+////
+////
+////                    takePhotoBajaCalidad();
+////
+////                }
+//            }
+//        });
+//
+//
+//        btnEnviarTest.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                uploadAllImages();
+//            }
+//        });
+//
+    }
+
+//    private  boolean checkPermissions() {
+//        int result;
+//        List<String> listPermissionsNeeded = new ArrayList<>();
+//        for (String p:permissions) {
+//            result = ContextCompat.checkSelfPermission(RecyclerTest.this,p);
+//            if (result != PackageManager.PERMISSION_GRANTED) {
+//                listPermissionsNeeded.add(p);
+//            }
+//        }
+//        if (!listPermissionsNeeded.isEmpty()) {
+//            ActivityCompat.requestPermissions(this, listPermissionsNeeded.toArray(new String[listPermissionsNeeded.size()]),MULTIPLE_PERMISSIONS );
+//            return false;
+//        }
+//        return true;
+//    }
+
+//    @Override
+//    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+//        switch (requestCode) {
+//            case MULTIPLE_PERMISSIONS:{
+//                if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+//                    // permissions granted.
+//                } else {
+////                    Toast.makeText(this, "Go to settings and enable permissions", Toast.LENGTH_LONG)
+////                            .show();
+//                }
+//                // permissions list of don't granted permission
+//            }
+//            return;
+//        }
+//    }
+
+//    public void onClickSwitch(final View view) {
+//                    if (view.getId() == R.id.swtBorrar) {
+//                        if (swtBorrar.isChecked()) {
+//                            StyleableToast.makeText(RecyclerTest.this, "Al activar esta opción si da click sobre una imagen la borrará", Toast.LENGTH_SHORT, R.style.warningToastMiddle).show();
+//                            Toast.makeText(RecyclerTest.this, "Borrado de fotos activado", Toast.LENGTH_SHORT).show();
+//                        } else {
+//                            Toast.makeText(RecyclerTest.this, "Borrado de fotos desactivado", Toast.LENGTH_SHORT).show();
+//                        }
+//                    }
+//
+//    }
+//
+//    private void uploadAllImages() {
+//
+//        for(int i=0; i<ListImages.size(); i++){
+//            if(ListImages.get(i) != null){
+//                uploadImageGlobal(ListImages.get(i), i);
+//                //images.put(""+i, ListImages.indexOf(i));
+//            }
+//        }
+//    }
+//
+//    private void uploadImageGlobal(File fileimagenpos, final int x) {
+//        if (fileimagenpos != null) {
+//
+//            final ProgressDialog progressDialog = new ProgressDialog(this);
+//            progressDialog.setTitle("Subiendo....");
+//
+//            final StorageReference ref = storageReference.child("pruebas").child("Img" + UUID.randomUUID().toString());
+//            // StorageReference ref = storageReference.child("images/"+UUID.randomUUID().toString());
+//
+//
+//
+//
+////            ref.putFile().continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+//            ref.putFile(Uri.fromFile(fileimagenpos)).continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+//                @Override
+//                public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+//                    if (!task.isSuccessful()) {
+//                        throw task.getException();
+//                    }
+//                    //PerFotoArray[x].setSrc(ref.getDownloadUrl().toString());
+//                    return ref.getDownloadUrl();
+//                }
+//            }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+//                @Override
+//                public void onComplete(@NonNull Task<Uri> task) {
+//                    if (task.isSuccessful()) {
+//                        Uri downloadUri = task.getResult();
+//
+////                        PerFotoArray[x].setSrc(downloadUri.toString());
+////
+////                        Subirdatos();
+////
+////                        if(x == (contImg-1) && contUris==0){
+////
+////                            BorrarImagenes();
+////                        }
+//
+//                    } else {
+//                        Toast.makeText(getApplicationContext(), "upload failed: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
 //                    }
 //                }
+//            });
 //
-//                if (ActivityCompat.checkSelfPermission(getApplicationContext(),
-//                        Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-//
-//                    ActivityCompat.requestPermissions(RecyclerTest.this,
-//                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_PERM_WRITE_STORAGE);
-//                } else {
-//
-//
-//                    takePhotoBajaCalidad();
-//
-//                }
-            }
-        });
-
-
-        btnEnviarTest.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                uploadAllImages();
-            }
-        });
-
-    }
-
-    private  boolean checkPermissions() {
-        int result;
-        List<String> listPermissionsNeeded = new ArrayList<>();
-        for (String p:permissions) {
-            result = ContextCompat.checkSelfPermission(RecyclerTest.this,p);
-            if (result != PackageManager.PERMISSION_GRANTED) {
-                listPermissionsNeeded.add(p);
-            }
-        }
-        if (!listPermissionsNeeded.isEmpty()) {
-            ActivityCompat.requestPermissions(this, listPermissionsNeeded.toArray(new String[listPermissionsNeeded.size()]),MULTIPLE_PERMISSIONS );
-            return false;
-        }
-        return true;
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
-        switch (requestCode) {
-            case MULTIPLE_PERMISSIONS:{
-                if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
-                    // permissions granted.
-                } else {
-//                    Toast.makeText(this, "Go to settings and enable permissions", Toast.LENGTH_LONG)
-//                            .show();
-                }
-                // permissions list of don't granted permission
-            }
-            return;
-        }
-    }
-
-    public void onClickSwitch(final View view) {
-                    if (view.getId() == R.id.swtBorrar) {
-                        if (swtBorrar.isChecked()) {
-                            StyleableToast.makeText(RecyclerTest.this, "Al activar esta opción si da click sobre una imagen la borrará", Toast.LENGTH_SHORT, R.style.warningToastMiddle).show();
-                            Toast.makeText(RecyclerTest.this, "Borrado de fotos activado", Toast.LENGTH_SHORT).show();
-                        } else {
-                            Toast.makeText(RecyclerTest.this, "Borrado de fotos desactivado", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-
-    }
-
-    private void uploadAllImages() {
-
-        for(int i=0; i<ListImages.size(); i++){
-            if(ListImages.get(i) != null){
-                uploadImageGlobal(ListImages.get(i), i);
-                //images.put(""+i, ListImages.indexOf(i));
-            }
-        }
-    }
-
-    private void uploadImageGlobal(File fileimagenpos, final int x) {
-        if (fileimagenpos != null) {
-
-            final ProgressDialog progressDialog = new ProgressDialog(this);
-            progressDialog.setTitle("Subiendo....");
-
-            final StorageReference ref = storageReference.child("pruebas").child("Img" + UUID.randomUUID().toString());
-            // StorageReference ref = storageReference.child("images/"+UUID.randomUUID().toString());
-
-
-
-
-//            ref.putFile().continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
-            ref.putFile(Uri.fromFile(fileimagenpos)).continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
-                @Override
-                public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
-                    if (!task.isSuccessful()) {
-                        throw task.getException();
-                    }
-                    //PerFotoArray[x].setSrc(ref.getDownloadUrl().toString());
-                    return ref.getDownloadUrl();
-                }
-            }).addOnCompleteListener(new OnCompleteListener<Uri>() {
-                @Override
-                public void onComplete(@NonNull Task<Uri> task) {
-                    if (task.isSuccessful()) {
-                        Uri downloadUri = task.getResult();
-
-//                        PerFotoArray[x].setSrc(downloadUri.toString());
-//
-//                        Subirdatos();
-//
-//                        if(x == (contImg-1) && contUris==0){
-//
-//                            BorrarImagenes();
-//                        }
-
-                    } else {
-                        Toast.makeText(getApplicationContext(), "upload failed: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                }
-            });
-
-        }
-    }
+//        }
+//    }
 
     private void takePhoto_BajaCalidad() {
         Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -483,26 +491,26 @@ public class RecyclerTest  extends AppCompatActivity {
     }
 
     private void initRecyclerView(){
-        mRecyclerView = findViewById(R.id.test_recycler);
-        mLayaoutManager= new GridLayoutManager(this, 3);
-        mAdapter = new RecyclerViewAdapter(this, mImageBitmap, new RecyclerViewAdapter.OnItemClickListener() {
-            @Override
-            public void OnItemClick(Bitmap mImage, int position) {
-                Toast.makeText(RecyclerTest.this, "posicion " + position, Toast.LENGTH_SHORT).show();
-                if (swtBorrar.isChecked()){
-                    delateImage(position);
-                }else{
-
-                }
-
-            }
-        });
-
-        mRecyclerView.setHasFixedSize(true);
-        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-
-        mRecyclerView.setLayoutManager(mLayaoutManager);
-        mRecyclerView.setAdapter(mAdapter);
+//        mRecyclerView = findViewById(R.id.test_recycler);
+//        mLayaoutManager= new GridLayoutManager(this, 3);
+//        mAdapter = new RecyclerViewAdapter(this, mImageBitmap, new RecyclerViewAdapter.OnItemClickListener() {
+//            @Override
+//            public void OnItemClick(Bitmap mImage, int position) {
+//                Toast.makeText(RecyclerTest.this, "posicion " + position, Toast.LENGTH_SHORT).show();
+//                if (swtBorrar.isChecked()){
+//                    delateImage(position);
+//                }else{
+//
+//                }
+//
+//            }
+//        });
+//
+//        mRecyclerView.setHasFixedSize(true);
+//        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+//
+//        mRecyclerView.setLayoutManager(mLayaoutManager);
+//        mRecyclerView.setAdapter(mAdapter);
     }
 
 

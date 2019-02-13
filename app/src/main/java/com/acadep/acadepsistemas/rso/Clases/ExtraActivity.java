@@ -252,7 +252,7 @@ public class ExtraActivity extends AppCompatActivity {
 
         recibirDatos();
         inicializacionVariables();
-        initRecyclerView();
+//        initRecyclerView();
 
         txtname = (TextView) findViewById(R.id.txtname);
         txtidevent = (TextView) findViewById(R.id.txtidevent);
@@ -492,39 +492,39 @@ public class ExtraActivity extends AppCompatActivity {
     }
 
     private void initRecyclerView(){
-        mRecyclerView = findViewById(R.id.images_recycler_extra);
-        mLayaoutManager= new GridLayoutManager(this, 3);
-
-        mAdapter = new RecyclerViewAdapter(this, mImageBitmap, new RecyclerViewAdapter.OnItemClickListener() {
-            @Override
-            public void OnItemClick(Bitmap mImage, int position) {
-
-                if (swtBorrar.isChecked()){
-                    deleteImage(position);
-                }else{
-                    AlertDialog.Builder mBuilder = new AlertDialog.Builder(ExtraActivity.this);
-                    View mView = getLayoutInflater().inflate(R.layout.dialog_custom_layout, null);
-                    PhotoView photoView = mView.findViewById(R.id.imageView);
-//                    photoView.setImageURI(Uri.fromFile(fileimagen));
-
-                    Drawable d = new BitmapDrawable(mImageBitmap.get(position));
-                    photoView.setImageDrawable(d);
-                    mBuilder.setView(mView);
-                    AlertDialog mDialog = mBuilder.create();
-                    mDialog.getWindow().setLayout(600, 400);
-                    mDialog.show();
-
-
-                }
-
-            }
-        });
-
-        mRecyclerView.setHasFixedSize(true);
-        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-
-        mRecyclerView.setLayoutManager(mLayaoutManager);
-        mRecyclerView.setAdapter(mAdapter);
+//        mRecyclerView = findViewById(R.id.images_recycler_extra);
+//        mLayaoutManager= new GridLayoutManager(this, 3);
+//
+//        mAdapter = new RecyclerViewAdapter(this, mImageBitmap, new RecyclerViewAdapter.OnItemClickListener() {
+//            @Override
+//            public void OnItemClick(Bitmap mImage, int position) {
+//
+//                if (swtBorrar.isChecked()){
+//                    deleteImage(position);
+//                }else{
+//                    AlertDialog.Builder mBuilder = new AlertDialog.Builder(ExtraActivity.this);
+//                    View mView = getLayoutInflater().inflate(R.layout.dialog_custom_layout, null);
+//                    PhotoView photoView = mView.findViewById(R.id.imageView);
+////                    photoView.setImageURI(Uri.fromFile(fileimagen));
+//
+//                    Drawable d = new BitmapDrawable(mImageBitmap.get(position));
+//                    photoView.setImageDrawable(d);
+//                    mBuilder.setView(mView);
+//                    AlertDialog mDialog = mBuilder.create();
+//                    mDialog.getWindow().setLayout(600, 400);
+//                    mDialog.show();
+//
+//
+//                }
+//
+//            }
+//        });
+//
+//        mRecyclerView.setHasFixedSize(true);
+//        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+//
+//        mRecyclerView.setLayoutManager(mLayaoutManager);
+//        mRecyclerView.setAdapter(mAdapter);
     }
 
     private void addImage(Bitmap bitmap,int position){

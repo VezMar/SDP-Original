@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:design="http://schemas.android.com/apk/res-auto"
+    xmlns:fab="http://schemas.android.com/apk/res-auto"
     android:id="@+id/drawer_layout2"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -18,40 +19,134 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-       <com.getbase.floatingactionbutton.FloatingActionsMenu
-           android:id="@+id/FtAcMnu"
+
+       <com.github.clans.fab.FloatingActionMenu
            android:layout_width="wrap_content"
            android:layout_height="wrap_content"
            android:layout_alignParentEnd="true"
            android:layout_alignParentBottom="true"
-           app:fab_addButtonColorNormal="@color/pink"
-           app:fab_addButtonColorPressed="@color/pink_pressed"
-           app:fab_addButtonPlusIconColor="#FFFFFFFF"
-           app:fab_labelStyle="@style/customfab"
-           android:layout_marginBottom="50dp"
+           android:layout_marginBottom="140dp"
+           fab:menu_colorNormal="#c71d0d"
+           fab:menu_colorPressed="#ff1700"
+           app:menu_icon="@drawable/ic_delete_black_24dp"
+           fab:menu_openDirection="up"
+
+           fab:menu_showShadow="true"
+           fab:menu_shadowColor="#4d000000"
+           fab:menu_shadowRadius="4dp"
+           fab:menu_shadowXOffset="1dp"
+           fab:menu_shadowYOffset="3dp"
+
+           fab:menu_animationDelayPerItem="50"
            >
 
-           <com.getbase.floatingactionbutton.FloatingActionButton
+
+           <com.github.clans.fab.FloatingActionButton
+               android:id="@+id/fab_action_2_1"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:src="@drawable/ic_menu_camera"
+               fab:fab_colorNormal="@color/white"
+               fab:fab_colorPressed="@color/white_pressed"
+               app:fab_size="mini"
+               app:fab_label="Borrar Seleccionados"
+               />
+
+
+
+       </com.github.clans.fab.FloatingActionMenu>
+
+       <com.github.clans.fab.FloatingActionMenu
+           android:id="@+id/FloatingActionMenuPrincipal"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:layout_alignParentEnd="true"
+           android:layout_alignParentBottom="true"
+           fab:menu_colorNormal="@color/colorPrimary"
+           fab:menu_colorPressed="@color/colorPrimaryDark"
+           app:fab_addButtonPlusIconColor="#FFFFFFFF"
+           app:fab_labelStyle="@style/customfab"
+           android:layout_marginBottom="60dp"
+           app:menu_icon="@drawable/ic_camera_black_24dp"
+
+           fab:menu_showShadow="true"
+           fab:menu_shadowColor="#4d000000"
+           fab:menu_shadowRadius="4dp"
+           fab:menu_shadowXOffset="1dp"
+           fab:menu_shadowYOffset="3dp"
+
+
+           fab:menu_animationDelayPerItem="50"
+           >
+
+           <com.github.clans.fab.FloatingActionButton
                android:id="@+id/fab_action_1"
                android:layout_width="wrap_content"
                android:layout_height="wrap_content"
-               app:fab_colorNormal="@color/white"
-               app:fab_colorPressed="@color/white_pressed"
+               android:src="@drawable/ic_menu_camera"
+               fab:fab_colorNormal="@color/white"
+               fab:fab_colorPressed="@color/white_pressed"
                app:fab_size="mini"
-               app:fab_icon="@drawable/ic_add_a_photo_black_24dp"
-               app:fab_title="Tomar Foto"/>
+               app:fab_label="Tomar Foto"
+               />
 
-           <com.getbase.floatingactionbutton.FloatingActionButton
+           <com.github.clans.fab.FloatingActionButton
                android:id="@+id/fab_action_2"
                android:layout_width="wrap_content"
                android:layout_height="wrap_content"
-               app:fab_colorNormal="@color/white"
-               app:fab_colorPressed="@color/white_pressed"
+               android:src="@drawable/ic_videocam_black_24dp"
+               fab:fab_colorNormal="@color/white"
+               fab:fab_colorPressed="@color/white_pressed"
                app:fab_size="mini"
-               app:fab_icon="@drawable/ic_videocam_black_24dp"
-               app:fab_title="Tomar Video"/>
+               app:fab_label="Tomar Video"/>
 
-       </com.getbase.floatingactionbutton.FloatingActionsMenu>
+           <com.github.clans.fab.FloatingActionButton
+               android:id="@+id/fab_action_3"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:src="@drawable/ic_picture_as_pdf_black_24dp"
+               fab:fab_colorNormal="@color/white"
+               fab:fab_colorPressed="@color/white_pressed"
+               app:fab_size="mini"
+               app:fab_label="Subir PDF"
+               />
+
+           <com.github.clans.fab.FloatingActionButton
+               android:id="@+id/fab_action_4"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:src="@drawable/ic_insert_drive_file_black_24dp"
+               fab:fab_colorNormal="@color/white"
+               fab:fab_colorPressed="@color/white_pressed"
+               app:fab_size="mini"
+               app:fab_label="Subir Docx"
+               />
+
+           <com.github.clans.fab.FloatingActionButton
+               android:id="@+id/fab_action_5"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:src="@drawable/ic_video_call_black_24dp"
+               fab:fab_colorNormal="@color/white"
+               fab:fab_colorPressed="@color/white_pressed"
+               app:fab_size="mini"
+               app:fab_label="Subir Video"
+               />
+
+           <com.github.clans.fab.FloatingActionButton
+               android:id="@+id/fab_action_6"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:src="@drawable/ic_keyboard_voice_black_24dp"
+               fab:fab_colorNormal="@color/white"
+               fab:fab_colorPressed="@color/white_pressed"
+               app:fab_size="mini"
+               app:fab_label="Subir Audio"
+               />
+
+
+
+       </com.github.clans.fab.FloatingActionMenu>
 
 
 

@@ -10,7 +10,7 @@ public class Evento {
     boolean active;
     String activity_id;
     int advanced;
-    boolean deleted;
+    String deleted;
     String description;
     String end;
     String id;
@@ -31,9 +31,10 @@ public class Evento {
     //  List<String> tools;
 
 
-    public Evento(){}
+    public Evento() {
+    }
 
-    public Evento(boolean active, String activity_id, int advanced, boolean deleted, String description, String end, String id, List<Recursos> staff, String start, int status, String title, List<Recursos> tools, Total total, String type, String type_activity, String user_id) {
+    public Evento(boolean active, String activity_id, int advanced, String deleted, String description, String end, String id, List<Recursos> staff, String start, int status, String title, List<Recursos> tools, Total total, String type, String type_activity, String user_id) {
         this.active = active;
         this.activity_id = activity_id;
         this.advanced = advanced;
@@ -50,6 +51,14 @@ public class Evento {
         this.type = type;
         this.type_activity = type_activity;
         this.user_id = user_id;
+    }
+
+    public String getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(String deleted) {
+        this.deleted = deleted;
     }
 
     public boolean isActive() {
@@ -74,14 +83,6 @@ public class Evento {
 
     public void setAdvanced(int advanced) {
         this.advanced = advanced;
-    }
-
-    public boolean isDeleted() {
-        return deleted;
-    }
-
-    public void setDeleted(boolean deleted) {
-        this.deleted = deleted;
     }
 
     public String getDescription() {
