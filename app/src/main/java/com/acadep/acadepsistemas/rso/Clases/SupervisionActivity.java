@@ -45,6 +45,7 @@ import android.support.v4.content.FileProvider;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.text.format.Time;
 import android.util.Log;
 import android.view.TextureView;
@@ -57,6 +58,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Switch;
@@ -338,12 +340,12 @@ public class SupervisionActivity extends AppCompatActivity
     static String created_at;
 
     //    Imagenes
-    private ArrayList<Uri> mImageBitmap = new ArrayList<>();
+    private ArrayList<Bitmap> mImageBitmap = new ArrayList<>();
     private ArrayList<String> mTypeAdapter = new ArrayList<>();
 
 
     private static List<File> ListImages = new ArrayList<>();
-    private static List<Uri> ListVideos = new ArrayList<>();
+    private static ArrayList<Uri> ListVideos = new ArrayList<>();
 
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
@@ -560,6 +562,9 @@ public class SupervisionActivity extends AppCompatActivity
             public void onClick(View v) {
                 GuardarInformacionImagenes();
                 takePhoto_AltaCalidad();
+
+                floatingActionsMenu.close(true);
+
             }
         });
 
@@ -568,6 +573,8 @@ public class SupervisionActivity extends AppCompatActivity
             public void onClick(View v) {
                 GuardarInformacionVideos();
                 takeVideo();
+
+                floatingActionsMenu.close(true);
             }
         });
 
@@ -583,7 +590,7 @@ public class SupervisionActivity extends AppCompatActivity
                 PerFile = new Files();
 
                 selectPDF();
-
+                floatingActionsMenu.close(true);
 
             }
         });
@@ -600,6 +607,8 @@ public class SupervisionActivity extends AppCompatActivity
                 PerFile = new Files();
 
                 selectDocx();
+
+                floatingActionsMenu.close(true);
             }
         });
 
@@ -615,6 +624,8 @@ public class SupervisionActivity extends AppCompatActivity
                 PerFile = new Files();
 
                 selectVideo();
+
+                floatingActionsMenu.close(true);
             }
         });
 
@@ -630,6 +641,8 @@ public class SupervisionActivity extends AppCompatActivity
                 PerFile = new Files();
 
                 selectAudio();
+
+                floatingActionsMenu.close(true);
             }
         });
 
@@ -704,7 +717,7 @@ public class SupervisionActivity extends AppCompatActivity
                     if(!Observation.equals("")) {
                         if (contImg>=min_photos) {
                             if (contImg>max_photos){
-                                StyleableToast.makeText(getApplicationContext(), "El maximo de fotos es " + max_photos + "usted ha superado esa cantidad por " + (contImg-max_photos), Toast.LENGTH_SHORT, R.style.warningToast).show();
+                                StyleableToast.makeText(getApplicationContext(), "El maximo de fotos es " + max_photos + " usted ha superado esa cantidad por " + (contImg-max_photos), Toast.LENGTH_SHORT, R.style.warningToast).show();
                             }else {
                                 AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
                                 builder.setTitle("Confirmación");
@@ -737,7 +750,7 @@ public class SupervisionActivity extends AppCompatActivity
                                             BDFireStore.collection("events").document(idevent).update("status", 2);
 
                                             BDFireStore.collection("events").document(idevent).update("advanced", 1);
-                                            StyleableToast.makeText(getApplicationContext(), "Datos ingresados", Toast.LENGTH_LONG, R.style.sucessToast).show();
+
                                             //Toast.makeText(getApplicationContext(), "Datos ingresados", Toast.LENGTH_SHORT).show();
 
 
@@ -761,8 +774,7 @@ public class SupervisionActivity extends AppCompatActivity
                                                     UUID uuid = UUID.randomUUID();
                                                     u = "" + uuid;
 
-                                                    StyleableToast.makeText(getApplicationContext(), "Datos ingresados", Toast.LENGTH_LONG, R.style.sucessToast).show();
-                                                    //Toast.makeText(getApplicationContext(), "Datos ingresados", Toast.LENGTH_SHORT).show();
+
 
                                                     uploadAllImages();
                                                     uploadAllFiles();
@@ -794,8 +806,8 @@ public class SupervisionActivity extends AppCompatActivity
                                             UUID uuid = UUID.randomUUID();
                                             u = "" + uuid;
 
-                                            StyleableToast.makeText(getApplicationContext(), "Datos ingresados", Toast.LENGTH_LONG, R.style.sucessToast).show();
-                                            // Toast.makeText(getApplicationContext(), "Datos ingresados", Toast.LENGTH_SHORT).show();
+//                                            StyleableToast.makeText(getApplicationContext(), "Datos ingresados", Toast.LENGTH_LONG, R.style.sucessToast).show();
+
 
                                             edObserv.setText("");
 
@@ -928,9 +940,9 @@ public class SupervisionActivity extends AppCompatActivity
 
     private void initRecyclerView(){
         mRecyclerView = findViewById(R.id.images_recycler);
-        mLayaoutManager= new GridLayoutManager(this, 3);
-
-        mAdapter = new RecyclerViewAdapter(this,mTypeAdapter, mImageBitmap, new RecyclerViewAdapter.OnItemClickListener() {
+//        mLayaoutManager= new GridLayoutManager(this, 4);
+        mLayaoutManager= new GridLayoutManager(this,3);
+        mAdapter = new RecyclerViewAdapter(this,mTypeAdapter, ListVideos, new RecyclerViewAdapter.OnItemClickListener() {
             @Override
             public void OnItemClick(Uri mImage, int position) {
                
@@ -938,44 +950,34 @@ public class SupervisionActivity extends AppCompatActivity
                     deleteImage(position);
                 }else{
                     if(mTypeAdapter.get(position).equals("Photo")) {
-//                        AlertDialog.Builder mBuilder = new AlertDialog.Builder(SupervisionActivity.this);
-//                        View mView = getLayoutInflater().inflate(R.layout.dialog_custom_layout, null);
-//                        PhotoView photoView = mView.findViewById(R.id.imageView);
-////                    photoView.setImageURI(Uri.fromFile(fileimagen));
-//
-//                        Drawable d = new BitmapDrawable(String.valueOf(mImageBitmap.get(position)));
-//                        photoView.setImageDrawable(d);
-//                        mBuilder.setView(mView);
-//                        AlertDialog mDialog = mBuilder.create();
-//                        mDialog.getWindow().setLayout(600, 400);
-//                        mDialog.show();
-
-
-
-                        AlertDialog.Builder mBuilder = new AlertDialog.Builder(SupervisionActivity.this);
-                        View mView = getLayoutInflater().inflate(R.layout.layout_videoview, null);
-                        VideoView videoView = mView.findViewById(R.id.video_recycler);
-//                    photoView.setImageURI(Uri.fromFile(fileimagen));
-
-//                        videoView.setVideoURI(Uri.fromFile(mImageBitmap.get(1)));
+                        final AlertDialog.Builder mBuilder = new AlertDialog.Builder(SupervisionActivity.this);
+                        View mView = getLayoutInflater().inflate(R.layout.dialog_custom_layout, null);
+                        PhotoView photoView = mView.findViewById(R.id.imageView);
+                        Drawable d = new BitmapDrawable(mImageBitmap.get(position));
+                        photoView.setImageDrawable(d);
                         mBuilder.setView(mView);
-                        AlertDialog mDialog = mBuilder.create();
+                        final AlertDialog mDialog = mBuilder.create();
                         mDialog.getWindow().setLayout(600, 400);
                         mDialog.show();
+
+
+
+
+
 
 
                     }
                     if(mTypeAdapter.get(position).equals("Video")) {
-                        AlertDialog.Builder mBuilder = new AlertDialog.Builder(SupervisionActivity.this);
-                        View mView = getLayoutInflater().inflate(R.layout.layout_videoview, null);
-                        VideoView videoView = mView.findViewById(R.id.video_recycler);
-//                    photoView.setImageURI(Uri.fromFile(fileimagen));
-
-//                        videoView.setVideoURI(Uri.fromFile(mImageBitmap.get(position)));
-                        mBuilder.setView(mView);
-                        AlertDialog mDialog = mBuilder.create();
-                        mDialog.getWindow().setLayout(600, 400);
-                        mDialog.show();
+//                        AlertDialog.Builder mBuilder = new AlertDialog.Builder(SupervisionActivity.this);
+//                        View mView = getLayoutInflater().inflate(R.layout.layout_videoview, null);
+//                        VideoView videoView = mView.findViewById(R.id.video_recycler);
+////                    photoView.setImageURI(Uri.fromFile(fileimagen));
+//
+//                        videoView.setVideoURI(ListVideos.get(position));
+//                        mBuilder.setView(mView);
+//                        AlertDialog mDialog = mBuilder.create();
+//                        mDialog.getWindow().setLayout(600, 400);
+//                        mDialog.show();
                     }
                 }
 
@@ -989,9 +991,9 @@ public class SupervisionActivity extends AppCompatActivity
         mRecyclerView.setAdapter(mAdapter);
     }
 
-    private void addImage(Uri bitmap,int position, String type){
+    private void addImage(Uri uri,int position, String type){
 
-        mImageBitmap.add(position, bitmap);
+        ListVideos.add(position, uri);
         mTypeAdapter.add(position, type);
         mAdapter.notifyItemInserted(position);
         mLayaoutManager.scrollToPosition(position);
@@ -1087,7 +1089,7 @@ public class SupervisionActivity extends AppCompatActivity
             }
             if (PhotoData.getType().equals("Imagen")){
                 if(mImageBitmap.get(i) != null){
-//                    uploadImageGlobal(mImageBitmap.get(i), i);
+                    uploadImageGlobal(mImageBitmap.get(i), i);
                     //multimedia.add(PhotoData);
                 }
             }
@@ -1491,6 +1493,8 @@ public class SupervisionActivity extends AppCompatActivity
         }
     }
 
+
+
     /* Aqui empieza la Clase Localizacion */
     public static class Localizacion implements LocationListener {
         SupervisionActivity mainActivity3;
@@ -1601,12 +1605,13 @@ public class SupervisionActivity extends AppCompatActivity
         PhotoData = new Foto();
 
         for (int x=0; x<contImg; x++) {
-            mImageBitmap.remove(0);
+            ListVideos.remove(0);
             mAdapter.notifyItemRemoved(0);
         }
         contImg=0;
         contT=0;
         contT2=0;
+        mImageBitmap = new ArrayList<>();
         ListImages = new ArrayList<>();
         ListVideos = new ArrayList<>();
     }
@@ -1743,30 +1748,31 @@ public class SupervisionActivity extends AppCompatActivity
             Log.d("CameraDemo", "Pic saved");
             //Toast.makeText(this, "Pic saved", Toast.LENGTH_SHORT).show();
 
+
             Bitmap bitmap = BitmapFactory.decodeFile(filePath);
 
             double heightd = bitmap.getHeight()*.1720430107526882;
             float heightf =  (float)heightd;
 //            Toast.makeText(this, "El height es: " + 1024 + " y el width es: " + heightf, Toast.LENGTH_SHORT).show();
             Bitmap Bitnew = redimensionarImagenMaximo(bitmap, 512 ,  heightf);
+            mImageBitmap.add(0, Bitnew);
 
-//            addImage(new File(filePath), 0, "Photo");
-            ListVideos.add(0, Uri.fromFile(new File(filePath)));
+            addImage( Uri.fromFile(new File(filePath)), 0, "Photo");
+//            ListVideos.add(0, Uri.fromFile(new File(filePath)));
             contImg++;
         }
 
         if(requestCode == REQUEST_VIDEO_CAPTURE && resultCode == RESULT_OK) {
 
-
-            Bitmap icon = BitmapFactory.decodeResource(SupervisionActivity.this.getResources(),
-                    R.drawable.reproductor_multimedia);
-
             Uri videoUri = data.getData();
 //            addImage(new File(videoUri.getPath()), 0, "Video");
             addImage(videoUri, 0, "Video");
 
+            Bitmap icon = BitmapFactory.decodeResource(SupervisionActivity.this.getResources(),
+                    R.drawable.reproductor_multimedia);
 
-            ListVideos.add(0, videoUri);
+            mImageBitmap.add(0, icon);
+//            ListVideos.add(0, videoUri);
             contImg++;
 
         }
@@ -1938,10 +1944,10 @@ public class SupervisionActivity extends AppCompatActivity
                                     PhotoData = new Foto();
 
                                     contT++;
-                                    Subirdatos();
-                                    if(contT == contImg && contUris==0 ){
 
-                                        BorrarImagenes();
+                                    if(contT == contImg && contUris==0 ){
+                                        Subirdatos();
+//                                        BorrarImagenes();
                                         EventoTerminado();
                                         ChequeoDeVariables();
 
@@ -1994,24 +2000,21 @@ public class SupervisionActivity extends AppCompatActivity
     }
 
 
-    private void uploadImageGlobal(Bitmap bitmap, final int x) {
+    private void uploadImageGlobal(Bitmap bitnew, final int x) {
 
 
-//            File fileimagenpos
+
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+            bitnew.compress(Bitmap.CompressFormat.JPEG, 100, baos);
             byte[] dato = baos.toByteArray();
 
 
-            final ProgressDialog progressDialog = new ProgressDialog(SupervisionActivity.this);
-            progressDialog.setTitle("Subiendo....");
-
-//            final StorageReference ref = storageReference.child("x").child("Img" + created_at + UUID.randomUUID().toString());
-            final StorageReference ref = storageReference.child("images").child("extra").child("Img" + created_at + UUID.randomUUID().toString());
-            // StorageReference ref = storageReference.child("images/"+UUID.randomUUID().toString());
 
 
-            ref.putBytes(dato).continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+            final StorageReference ref = storageReference.child("images").child("pru").child("Img" + created_at + UUID.randomUUID().toString());
+
+//        ref.putFile(uri).continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+        ref.putBytes(dato).continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
                 @Override
                 public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
                     if (!task.isSuccessful()) {
@@ -2031,9 +2034,9 @@ public class SupervisionActivity extends AppCompatActivity
                         PhotoData = new Foto();
 
                         contT++;
-                        Subirdatos();
                         if(contT == contImg && contUris==0 ){
-                            BorrarImagenes();
+                            Subirdatos();
+//                            BorrarImagenes();
                             EventoTerminado();
                             ChequeoDeVariables();
                         }
@@ -2043,8 +2046,6 @@ public class SupervisionActivity extends AppCompatActivity
                     }
                 }
             });
-
-
 //            ref.putFile(Uri.fromFile(fileimagenpos)).continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
 //                @Override
 //                public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
@@ -2084,7 +2085,13 @@ public class SupervisionActivity extends AppCompatActivity
         total.setNumber(advanced);
         total.setUnit(unit);
         Data data = new Data(created_at, Observation, header, total,ref_event, Lat, Lng, multimedia, files);
-        BDFireStore.collection("evidence").document(u).set(data, SetOptions.merge());
+        BDFireStore.collection("evidence").document(u).set(data, SetOptions.merge()).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                BorrarFiles();
+                BorrarImagenes();
+            }
+        });
 
     }
 
@@ -2129,14 +2136,14 @@ public class SupervisionActivity extends AppCompatActivity
                                     files.set(i,PerFile);
                                     PerFile = new Files();
 
-                                    Subirdatos();
 
 
                                     contT2++;
                                     if(contT2 == contUris){
 
-                                        BorrarImagenes();
-                                        BorrarFiles();
+                                        Subirdatos();
+//                                        BorrarImagenes();
+//                                        BorrarFiles();
 
                                         progressDialog.setProgress(100);
                                         progressDialog.setMessage("Click para salir...");
@@ -2303,12 +2310,23 @@ public class SupervisionActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout2);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage("Estás seguro de salir?")
+                    .setCancelable(false)
+                    .setPositiveButton("Si", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            SupervisionActivity.this.finish();
+                        }
+                    })
+                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            dialog.cancel();
+                        }
+                    });
+            AlertDialog alert = builder.create();
+            alert.show();
+
+
     }
 
     @Override

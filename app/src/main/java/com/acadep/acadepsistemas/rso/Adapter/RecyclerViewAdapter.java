@@ -16,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.MediaController;
 import android.widget.VideoView;
 
+import com.acadep.acadepsistemas.rso.Clases.SupervisionActivity;
 import com.acadep.acadepsistemas.rso.R;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
@@ -51,14 +52,14 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter{
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View view;
+
         if (mTypeAdapter.get(i).equals("Photo")){
-            view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.layout_listitem, viewGroup, false);
+            View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.layout_listitem, viewGroup, false);
             return new ImageTypeViewHolder(view);
         }
 
         if (mTypeAdapter.get(i).equals("Video")){
-            view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.layout_videoview, viewGroup, false);
+            View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.layout_videoview, viewGroup, false);
             return new VideoTypeViewHolder(view);
         }
 
@@ -80,11 +81,11 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter{
         if (mTypeAdapter.get(i).equals("Photo")){
             Picasso.get()
                     .load(mImages.get(i))
-                    .resize(512, 683)
+                    .resize(500, 700)
                     .centerCrop()
                     .into(((ImageTypeViewHolder) viewHolder).image);
 
-//            ((ImageTypeViewHolder) viewHolder).bind(mImages.get(i), listener);
+            ((ImageTypeViewHolder) viewHolder).bind(mImages.get(i), listener);
         }
 
         if (mTypeAdapter.get(i).equals("Video")){
@@ -93,10 +94,12 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter{
 //            ((VideoTypeViewHolder) viewHolder).videoView.setVideoURI(Uri.parse("https://www.youtube.com/watch?v=dbB-mICjkQM"));
             MediaController mediaController = new MediaController(mContext);
             mediaController.setAnchorView(((VideoTypeViewHolder) viewHolder).videoView);
+//            mediaController.setMediaPlayer(((VideoTypeViewHolder) viewHolder).videoView);
             ((VideoTypeViewHolder) viewHolder).videoView.setMediaController(mediaController);
-            ((VideoTypeViewHolder) viewHolder).videoView.seekTo(100);
+
+//            ((VideoTypeViewHolder) viewHolder).videoView.seekTo(100);
 //            ((VideoTypeViewHolder) viewHolder).videoView.requestFocus();
-            ((VideoTypeViewHolder) viewHolder).videoView.start();
+//            ((VideoTypeViewHolder) viewHolder).videoView.start();
         }
 
 
