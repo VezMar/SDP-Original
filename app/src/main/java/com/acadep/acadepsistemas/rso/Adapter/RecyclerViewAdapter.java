@@ -4,11 +4,13 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.media.Image;
 import android.media.MediaExtractor;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +20,7 @@ import android.widget.VideoView;
 
 import com.acadep.acadepsistemas.rso.Clases.SupervisionActivity;
 import com.acadep.acadepsistemas.rso.R;
+import com.onesignal.OneSignal;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
@@ -28,6 +31,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter{
+
+
+    private static final int TYPE_IMAGE = 0;
+    private static final int TYPE_VIDEO = 2;
 
     private Context mContext;
     private ArrayList<String> mTypeAdapter;
@@ -49,26 +56,35 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter{
 //        this.listener = listener;
 //    }
 
+    @Override
+    public int getItemViewType(int position) {
+        if (mTypeAdapter.get(position).equals("Photo")){
+            return TYPE_IMAGE;
+        }else{
+            return TYPE_VIDEO;
+        }
+    }
+
     @NonNull
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup,int i) {
 
-        if (mTypeAdapter.get(i).equals("Photo")){
+
+
+        if (i==TYPE_IMAGE){
             View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.layout_listitem, viewGroup, false);
-            return new ImageTypeViewHolder(view);
-        }
-
-        if (mTypeAdapter.get(i).equals("Video")){
+            ImageTypeViewHolder imageTypeViewHolder =  new ImageTypeViewHolder(view);
+            return imageTypeViewHolder;
+        }else{
             View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.layout_videoview, viewGroup, false);
-            return new VideoTypeViewHolder(view);
+            VideoTypeViewHolder videoTypeViewHolder = new VideoTypeViewHolder(view);
+            return videoTypeViewHolder;
         }
-
-        return null;
     }
+
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, final int i) {
-
 
 
 //        Bitmap bitmap = BitmapFactory.decodeFile(String.valueOf(mImages.get(i)));
@@ -78,35 +94,74 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter{
 //
 //        viewHolder.image.setImageBitmap(Bitnew);
 
-        if (mTypeAdapter.get(i).equals("Photo")){
-            Picasso.get()
-                    .load(mImages.get(i))
-                    .resize(500, 700)
-                    .centerCrop()
-                    .into(((ImageTypeViewHolder) viewHolder).image);
 
-            ((ImageTypeViewHolder) viewHolder).bind(mImages.get(i), listener);
-        }
+        switch (viewHolder.getItemViewType()){
+            case TYPE_IMAGE:
+                Picasso.get()
+                        .load(mImages.get(i))
+                        .resize(500, 700)
+                        .centerCrop()
+                        .into(((ImageTypeViewHolder) viewHolder).image);
 
-        if (mTypeAdapter.get(i).equals("Video")){
-//            ((VideoTypeViewHolder) viewHolder).videoView.setVideoPath(String.valueOf(mImages.get(i)));
-            ((VideoTypeViewHolder) viewHolder).videoView.setVideoURI((mImages.get(i)));
-//            ((VideoTypeViewHolder) viewHolder).videoView.setVideoURI(Uri.parse("https://www.youtube.com/watch?v=dbB-mICjkQM"));
-            MediaController mediaController = new MediaController(mContext);
-            mediaController.setAnchorView(((VideoTypeViewHolder) viewHolder).videoView);
-//            mediaController.setMediaPlayer(((VideoTypeViewHolder) viewHolder).videoView);
-            ((VideoTypeViewHolder) viewHolder).videoView.setMediaController(mediaController);
+                ((ImageTypeViewHolder) viewHolder).bind(mImages.get(i), listener);
+                break;
 
-//            ((VideoTypeViewHolder) viewHolder).videoView.seekTo(100);
+
+
+
+
+            case TYPE_VIDEO:
+
+                ((VideoTypeViewHolder) viewHolder).videoView.setVideoURI((mImages.get(i)));
+                MediaController mediaController = new MediaController(mContext);
+                mediaController.setAnchorView(((VideoTypeViewHolder) viewHolder).videoView);
+                ((VideoTypeViewHolder) viewHolder).videoView.setMediaController(mediaController);
+                ((VideoTypeViewHolder) viewHolder).bind(mImages.get(i), listener);
+                ((VideoTypeViewHolder) viewHolder).videoView.seekTo(100);
 //            ((VideoTypeViewHolder) viewHolder).videoView.requestFocus();
 //            ((VideoTypeViewHolder) viewHolder).videoView.start();
+                break;
+            default:
+                Log.i("SomethingWrong", " Has ocurred a error");
+                break;
+
         }
 
 
 
+//        if (mTypeAdapter.get(i).equals("Photo")) {
+//            Picasso.get()
+//                    .load(mImages.get(i))
+//                    .resize(500, 700)
+//                    .centerCrop()
+//                    .into(((ImageTypeViewHolder) viewHolder).image);
+//
+//            ((ImageTypeViewHolder) viewHolder).bind(mImages.get(i), listener);
+//
+//        }
+//
+//
+//
+//        if (mTypeAdapter.get(i).equals("Video")) {
+//
+//            ((VideoTypeViewHolder) viewHolder).videoView.setVideoURI((mImages.get(i)));
+//            MediaController mediaController = new MediaController(mContext);
+//            mediaController.setAnchorView(((VideoTypeViewHolder) viewHolder).videoView);
+//            ((VideoTypeViewHolder) viewHolder).videoView.setMediaController(mediaController);
+//            ((VideoTypeViewHolder) viewHolder).bind(mImages.get(i), listener);
+//            ((VideoTypeViewHolder) viewHolder).videoView.seekTo(100);
+////            ((VideoTypeViewHolder) viewHolder).videoView.requestFocus();
+////            ((VideoTypeViewHolder) viewHolder).videoView.start();
+//        }
 
-
+        Log.i("Adapter", "- "+viewHolder.getItemViewType());
     }
+
+
+
+
+
+
 
     @Override
     public int getItemCount() {
@@ -115,13 +170,14 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter{
 
     // Clase y funciones para la imagen
     public class ImageTypeViewHolder extends RecyclerView.ViewHolder {
-
+        VideoView videoView;
         ImageView image;
 //        RelativeLayout parent_layout;
         public ImageTypeViewHolder(@NonNull View itemView) {
             super(itemView);
 
             this.image = itemView.findViewById(R.id.image_recycler);
+            this.videoView = itemView.findViewById(R.id.video_recycler);
 //            parent_layout = itemView.findViewById(R.id.parent_layout);
         }
 
@@ -161,12 +217,23 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter{
     // Clase y funciones para la video
     public class VideoTypeViewHolder extends RecyclerView.ViewHolder {
         VideoView videoView;
-
+        ImageView image;
 
         public VideoTypeViewHolder(@NonNull View itemView) {
             super(itemView);
 
             this.videoView = itemView.findViewById(R.id.video_recycler);
+            this.image = itemView.findViewById(R.id.image_recycler);
+        }
+
+        public void bind(final Uri mImage, final OnItemClickListener listener){
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    listener.OnItemClick(mImage, getAdapterPosition());
+                }
+            });
         }
     }
 

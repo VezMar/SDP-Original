@@ -92,6 +92,7 @@ public class EventoAdapter extends FirestoreRecyclerAdapter<Evento, EventoAdapte
 
 
         LocalDateTime timeNow = LocalDateTime.now();
+
         int mni = evento.getEnd().length();
         LocalDateTime timeEnd = LocalDateTime.parse(evento.getEnd().substring(0, (mni-1)));
 
@@ -103,9 +104,9 @@ public class EventoAdapter extends FirestoreRecyclerAdapter<Evento, EventoAdapte
 
 //        return Long.toString(hours)+":"+String.format(formato, minutes);
 
-        Log.i("Prueba horas : ", Long.toString(hours)+":"+String.format(formato, minutes));
-        Log.i("Prueba horas : ", ""+timeNow);
-        Log.i("Prueba horas : ", ""+timeEnd);
+        Log.i("Prueba horas as1: ", Long.toString(hours)+":"+String.format(formato, minutes));
+        Log.i("Prueba horas as2: ", ""+timeNow);
+        Log.i("Prueba horas as3: ", ""+timeEnd);
         start = evento.getStart().substring(0,10);
         holder.txtview_start.setText(""+start);
         end = evento.getEnd().substring(0,10);

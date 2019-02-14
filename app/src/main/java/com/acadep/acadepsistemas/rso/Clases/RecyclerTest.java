@@ -128,9 +128,9 @@ public class RecyclerTest  extends AppCompatActivity {
 //
 //        swtBorrar = findViewById(R.id.swtBorrar);
 //
-//        if (checkPermissions()){
-//
-//        }
+        if (checkPermissions()){
+
+        }
 
 
 
@@ -190,37 +190,37 @@ public class RecyclerTest  extends AppCompatActivity {
 //
     }
 
-//    private  boolean checkPermissions() {
-//        int result;
-//        List<String> listPermissionsNeeded = new ArrayList<>();
-//        for (String p:permissions) {
-//            result = ContextCompat.checkSelfPermission(RecyclerTest.this,p);
-//            if (result != PackageManager.PERMISSION_GRANTED) {
-//                listPermissionsNeeded.add(p);
-//            }
-//        }
-//        if (!listPermissionsNeeded.isEmpty()) {
-//            ActivityCompat.requestPermissions(this, listPermissionsNeeded.toArray(new String[listPermissionsNeeded.size()]),MULTIPLE_PERMISSIONS );
-//            return false;
-//        }
-//        return true;
-//    }
+    private  boolean checkPermissions() {
+        int result;
+        List<String> listPermissionsNeeded = new ArrayList<>();
+        for (String p:permissions) {
+            result = ContextCompat.checkSelfPermission(RecyclerTest.this,p);
+            if (result != PackageManager.PERMISSION_GRANTED) {
+                listPermissionsNeeded.add(p);
+            }
+        }
+        if (!listPermissionsNeeded.isEmpty()) {
+            ActivityCompat.requestPermissions(this, listPermissionsNeeded.toArray(new String[listPermissionsNeeded.size()]),MULTIPLE_PERMISSIONS );
+            return false;
+        }
+        return true;
+    }
 
-//    @Override
-//    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
-//        switch (requestCode) {
-//            case MULTIPLE_PERMISSIONS:{
-//                if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
-//                    // permissions granted.
-//                } else {
-////                    Toast.makeText(this, "Go to settings and enable permissions", Toast.LENGTH_LONG)
-////                            .show();
-//                }
-//                // permissions list of don't granted permission
-//            }
-//            return;
-//        }
-//    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case MULTIPLE_PERMISSIONS:{
+                if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                    // permissions granted.
+                } else {
+//                    Toast.makeText(this, "Go to settings and enable permissions", Toast.LENGTH_LONG)
+//                            .show();
+                }
+                // permissions list of don't granted permission
+            }
+            return;
+        }
+    }
 
 //    public void onClickSwitch(final View view) {
 //                    if (view.getId() == R.id.swtBorrar) {
