@@ -196,45 +196,43 @@
                             <!--app:floating_title="Añadir"-->
                             <!--app:floating_title_color="@android:color/white" />-->
 
-
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Multimedia"
+                            android:textStyle="bold"
+                            android:textSize="20dp"
+                            android:textColor="@color/bootstrap_gray_dark"
+                            android:layout_marginBottom="3dp"/>
 
                     </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="300dp"
+                    android:layout_height="400dp"
                     android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Multimedia"
-                        android:textStyle="bold"
-                        android:textSize="20dp"
-                        android:textColor="@color/bootstrap_gray_dark"
-                        android:layout_marginBottom="10dp"/>
 
                     <android.support.v7.widget.RecyclerView
                         android:layout_width="match_parent"
-                        android:layout_height="200dp"
+                        android:layout_height="match_parent"
                         android:id="@+id/images_recycler"/>
                 </LinearLayout>
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
-                        android:layout_gravity="right">
+                        android:layout_gravity="left">
 
 
-                        <Switch
-                            android:id="@+id/swtBorrar"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Borrar Fotos"
-                            android:layout_marginTop="10dp"
-                            android:layout_marginRight="10dp"
-                            android:onClick="onClickSwitch"
-                            />
+                        <!--<Switch-->
+                            <!--android:id="@+id/swtBorrar"-->
+                            <!--android:layout_width="wrap_content"-->
+                            <!--android:layout_height="wrap_content"-->
+                            <!--android:text="Borrar Fotos"-->
+                            <!--android:layout_marginTop="10dp"-->
+                            <!--android:layout_marginRight="10dp"-->
+                            <!--android:onClick="onClickSwitch"-->
+                            <!--/>-->
 
 
                         <!--<ru.dimorinny.floatingtextbutton.FloatingTextButton-->

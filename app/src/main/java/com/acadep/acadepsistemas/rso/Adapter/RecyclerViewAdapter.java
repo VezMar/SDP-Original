@@ -2,11 +2,7 @@ package com.acadep.acadepsistemas.rso.Adapter;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
-import android.media.Image;
-import android.media.MediaExtractor;
-import android.media.MediaPlayer;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -14,20 +10,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.MediaController;
 import android.widget.VideoView;
 
-import com.acadep.acadepsistemas.rso.Clases.SupervisionActivity;
 import com.acadep.acadepsistemas.rso.R;
-import com.onesignal.OneSignal;
 import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.ArrayList;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter{
@@ -39,22 +29,26 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter{
     private Context mContext;
     private ArrayList<String> mTypeAdapter;
     private ArrayList<Uri> mImages = new ArrayList<>();
+    private ArrayList<Boolean> mItemChecked;
     private OnItemClickListener listener;
     //private AdapterView.OnItemLongClickListener
 
-    public RecyclerViewAdapter(Context mContext, ArrayList<String> mTypeAdapter, ArrayList<Uri> mImages, OnItemClickListener listener) {
+    public RecyclerViewAdapter(Context mContext, ArrayList<String> mTypeAdapter, ArrayList<Uri> mImages, ArrayList<Boolean> mCheckedItem, OnItemClickListener listener) {
         this.mContext = mContext;
         this.mTypeAdapter = mTypeAdapter;
         this.mImages = mImages;
+        this.mItemChecked = mCheckedItem;
         this.listener = listener;
     }
 
 
-//    public RecyclerViewAdapter(Context mContext, ArrayList<File> mImages, OnItemClickListener listener) {
+//    public RecyclerViewAdapter(Context mContext, ArrayList<String> mTypeAdapter, ArrayList<Uri> mImages, OnItemClickListener listener) {
 //        this.mContext = mContext;
+//        this.mTypeAdapter = mTypeAdapter;
 //        this.mImages = mImages;
 //        this.listener = listener;
 //    }
+
 
     @Override
     public int getItemViewType(int position) {
@@ -97,13 +91,18 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter{
 
         switch (viewHolder.getItemViewType()){
             case TYPE_IMAGE:
+//                Picasso.get()
+//                        .load(mImages.get(i))
+//                        .resize(500, 700)
+//                        .centerCrop()
+//                        .into(((ImageTypeViewHolder) viewHolder).image);
                 Picasso.get()
                         .load(mImages.get(i))
-                        .resize(500, 700)
-                        .centerCrop()
+                        .fit()
                         .into(((ImageTypeViewHolder) viewHolder).image);
-
                 ((ImageTypeViewHolder) viewHolder).bind(mImages.get(i), listener);
+
+                ((ImageTypeViewHolder) viewHolder).myCheckBox.setChecked(mItemChecked.get(i));
                 break;
 
 
@@ -118,41 +117,18 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter{
                 ((VideoTypeViewHolder) viewHolder).videoView.setMediaController(mediaController);
                 ((VideoTypeViewHolder) viewHolder).bind(mImages.get(i), listener);
                 ((VideoTypeViewHolder) viewHolder).videoView.seekTo(100);
-//            ((VideoTypeViewHolder) viewHolder).videoView.requestFocus();
+                ((VideoTypeViewHolder) viewHolder).videoView.requestFocus();
+                ((VideoTypeViewHolder) viewHolder).myCheckBox.setChecked(mItemChecked.get(i));
+//                ((VideoTypeViewHolder) viewHolder).setItem
+
 //            ((VideoTypeViewHolder) viewHolder).videoView.start();
                 break;
             default:
-                Log.i("SomethingWrong", " Has ocurred a error");
+                Log.i("SomethingWrong ", " Has ocurred a error");
                 break;
 
         }
 
-
-
-//        if (mTypeAdapter.get(i).equals("Photo")) {
-//            Picasso.get()
-//                    .load(mImages.get(i))
-//                    .resize(500, 700)
-//                    .centerCrop()
-//                    .into(((ImageTypeViewHolder) viewHolder).image);
-//
-//            ((ImageTypeViewHolder) viewHolder).bind(mImages.get(i), listener);
-//
-//        }
-//
-//
-//
-//        if (mTypeAdapter.get(i).equals("Video")) {
-//
-//            ((VideoTypeViewHolder) viewHolder).videoView.setVideoURI((mImages.get(i)));
-//            MediaController mediaController = new MediaController(mContext);
-//            mediaController.setAnchorView(((VideoTypeViewHolder) viewHolder).videoView);
-//            ((VideoTypeViewHolder) viewHolder).videoView.setMediaController(mediaController);
-//            ((VideoTypeViewHolder) viewHolder).bind(mImages.get(i), listener);
-//            ((VideoTypeViewHolder) viewHolder).videoView.seekTo(100);
-////            ((VideoTypeViewHolder) viewHolder).videoView.requestFocus();
-////            ((VideoTypeViewHolder) viewHolder).videoView.start();
-//        }
 
         Log.i("Adapter", "- "+viewHolder.getItemViewType());
     }
@@ -168,18 +144,42 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter{
         return mImages.size();
     }
 
+    public void deleteCheckedItems(){
+        for (int i=mImages.size(); 0<=i; i--){
+            if (mItemChecked.get(i)==true){
+                Log.i("mItemChecked - ", "Borrado" + i);
+            }else{
+                Log.i("mItemChecked - ", "Es false" + i);
+            }
+        }
+    }
+
     // Clase y funciones para la imagen
     public class ImageTypeViewHolder extends RecyclerView.ViewHolder {
         VideoView videoView;
         ImageView image;
+        CheckBox myCheckBox;
 //        RelativeLayout parent_layout;
         public ImageTypeViewHolder(@NonNull View itemView) {
             super(itemView);
 
             this.image = itemView.findViewById(R.id.image_recycler);
             this.videoView = itemView.findViewById(R.id.video_recycler);
-//            parent_layout = itemView.findViewById(R.id.parent_layout);
+            this.myCheckBox = itemView.findViewById(R.id.myCheckBox_Recycler);
+
+            myCheckBox.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (myCheckBox.isChecked()) {
+                        mItemChecked.set(getAdapterPosition(), true);
+                    } else {
+                        mItemChecked.set(getAdapterPosition(), false);
+                    }
+                    Log.i("checkBoxs", "" + mItemChecked.get(getAdapterPosition()));
+                }
+            });
         }
+
 
             public void bind(final Uri mImage, final OnItemClickListener listener){
 
@@ -187,14 +187,22 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter{
                 @Override
                 public void onClick(View v) {
                     listener.OnItemClick(mImage, getAdapterPosition());
+
+
                 }
             });
-            }
+        }
     }
 
     public interface OnItemClickListener{
         void OnItemClick(Uri mImage, int position);
     }
+
+//    public void setItemClickListener()
+//
+//    public void onClick(View v){
+//        this.item
+//    }
 
     public Bitmap redimensionarImagenMaximo(Bitmap mBitmap, float newWidth, float newHeigth){
         //Redimensionamos
@@ -218,20 +226,34 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter{
     public class VideoTypeViewHolder extends RecyclerView.ViewHolder {
         VideoView videoView;
         ImageView image;
-
+        CheckBox myCheckBox;
         public VideoTypeViewHolder(@NonNull View itemView) {
             super(itemView);
 
             this.videoView = itemView.findViewById(R.id.video_recycler);
             this.image = itemView.findViewById(R.id.image_recycler);
+            this.myCheckBox = itemView.findViewById(R.id.myCheckBox_Recycler);
+
+            myCheckBox.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (myCheckBox.isChecked()) {
+                        mItemChecked.set(getAdapterPosition(), true);
+                    } else {
+                        mItemChecked.set(getAdapterPosition(), false);
+                    }
+                    Log.i("checkBoxs", "" + mItemChecked.get(getAdapterPosition()));
+                }
+            });
         }
 
         public void bind(final Uri mImage, final OnItemClickListener listener){
-
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     listener.OnItemClick(mImage, getAdapterPosition());
+
+
                 }
             });
         }
