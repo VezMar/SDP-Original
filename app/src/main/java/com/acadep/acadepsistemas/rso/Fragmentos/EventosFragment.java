@@ -187,7 +187,7 @@ public class EventosFragment extends Fragment {
 
                     startActivity(intent);
                     //Toast.makeText(getContext(), "Supervision", Toast.LENGTH_SHORT).show();
-                    StyleableToast.makeText(getContext(), ""+actividad, Toast.LENGTH_SHORT, R.style.sucessToast).show();
+//                    StyleableToast.makeText(getContext(), ""+actividad, Toast.LENGTH_SHORT, R.style.sucessToast).show();
 
 
 

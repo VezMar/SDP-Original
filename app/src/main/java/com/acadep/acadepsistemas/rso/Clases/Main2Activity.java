@@ -213,7 +213,8 @@ public class Main2Activity extends AppCompatActivity
         if (id == R.id.nav_perfil) {
             Toast.makeText(getApplicationContext(),"Aún en proceso",Toast.LENGTH_SHORT).show();
         }else if (id == R.id.nav_acty) {
-                        startActivity(new Intent(this, com.acadep.acadepsistemas.rso.Clases.RecyclerTest.class));
+                        startActivity(new Intent(this, com.acadep.acadepsistemas.rso.Clases.MaterialsCheckList.class));
+//                        startActivity(new Intent(this, com.acadep.acadepsistemas.rso.Clases.RecyclerTest.class));
         } else if (id == R.id.nav_event) {
             mifragment = new EventosFragment();
             FragmentoSeleccionado=true;

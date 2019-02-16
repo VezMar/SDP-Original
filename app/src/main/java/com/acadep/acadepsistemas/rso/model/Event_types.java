@@ -1,27 +1,27 @@
 package com.acadep.acadepsistemas.rso.model;
 
-public class Activity_types {
-    String activity_name;
+public class Event_types {
+    String name;
     boolean after;
     boolean before;
     boolean during;
 
-    public Activity_types() {
+    public Event_types() {
     }
 
-    public Activity_types(String activity_name, boolean after, boolean before, boolean during) {
-        this.activity_name = activity_name;
+    public Event_types(String activity_name, boolean after, boolean before, boolean during) {
+        this.name = activity_name;
         this.after = after;
         this.before = before;
         this.during = during;
     }
 
-    public String getActivity_name() {
-        return activity_name;
+    public String getName() {
+        return name;
     }
 
-    public void setActivity_name(String activity_name) {
-        this.activity_name = activity_name;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public boolean isAfter() {

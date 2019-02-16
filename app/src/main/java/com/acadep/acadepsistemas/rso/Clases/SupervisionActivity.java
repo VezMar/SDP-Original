@@ -1,10 +1,6 @@
 package com.acadep.acadepsistemas.rso.Clases;
 
 import android.Manifest;
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.AnimatorSet;
-import android.animation.ObjectAnimator;
 import android.app.AlertDialog;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -26,16 +22,13 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.location.LocationProvider;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
-import com.getbase.floatingactionbutton.FloatingActionButton;
 //import com.github.clans.fab.FloatingActionButton
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -44,12 +37,11 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.text.format.Time;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.TextureView;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -59,21 +51,19 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.VideoView;
 
+import com.acadep.acadepsistemas.rso.Adapter.ArchivosAdapter;
 import com.acadep.acadepsistemas.rso.Adapter.RecyclerViewAdapter;
 import com.acadep.acadepsistemas.rso.Fragmentos.ActivitysFragment;
 import com.acadep.acadepsistemas.rso.Fragmentos.EventosFragment;
 //import com.example.acadepsistemas.seguimiento.Manifest;
 import com.acadep.acadepsistemas.rso.R;
-import com.acadep.acadepsistemas.rso.model.Activity_types;
+import com.acadep.acadepsistemas.rso.model.Event_types;
 import com.acadep.acadepsistemas.rso.model.Configuration;
 import com.acadep.acadepsistemas.rso.model.Data;
 import com.acadep.acadepsistemas.rso.model.Evento;
@@ -130,13 +120,10 @@ import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationSettingsRequest;
 import com.muddzdev.styleabletoast.StyleableToast;
-import com.squareup.picasso.Picasso;
 
 import org.joda.time.DateTime;
 
 import ru.dimorinny.floatingtextbutton.FloatingTextButton;
-
-import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
 public class SupervisionActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -327,7 +314,11 @@ public class SupervisionActivity extends AppCompatActivity
 
     private static List<Foto> multimedia = new ArrayList<>();
     private static List<Files> files = new ArrayList<>();
+
     private static List<Uri> ArchivosUris = new ArrayList<>();
+    private static List<String> Type_Archivo = new ArrayList<>();
+    private static List<String> Name_Archivo = new ArrayList<>();
+    private ArrayList<Boolean> archivoChecked= new ArrayList<>();
 
     Files PerFile = new Files();
 
@@ -356,12 +347,17 @@ public class SupervisionActivity extends AppCompatActivity
     private ArrayList<Boolean> mItemChecked = new ArrayList<>();
 
 
+
     private static List<File> ListImages = new ArrayList<>();
     private static ArrayList<Uri> ListVideos = new ArrayList<>();
 
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayaoutManager;
+
+    private RecyclerView mRecyclerViewFiles;
+    private RecyclerView.Adapter mAdapterFiles;
+    private RecyclerView.LayoutManager mLayaoutManagerFiles;
 
     private String filePath;
 
@@ -377,7 +373,7 @@ public class SupervisionActivity extends AppCompatActivity
     int contT2=0;
 
 
-    static List<Activity_types> activitys_types;
+    static List<Event_types> event_types;
 
     static boolean Tbefore;
     static boolean Tduring;
@@ -401,6 +397,7 @@ public class SupervisionActivity extends AppCompatActivity
         ChequeoConfiguration();
         inicializacionVariables();
         initRecyclerView();
+        initRecyclerViewFiles();
 
 
         //PerFotoArray[] = new Foto(context)
@@ -460,10 +457,7 @@ public class SupervisionActivity extends AppCompatActivity
 
         btnEnviar = (FloatingTextButton) findViewById(R.id.btnEnviar);
 
-        btnArchivo = (FloatingTextButton) findViewById(R.id.btnArchivo);
-
-        btnFoto = (FloatingTextButton) findViewById(R.id.btnFoto);
-        btnBorrarArchivo = (FloatingTextButton) findViewById(R.id.btnBorrarArchivo);
+    
 
 //        swtBorrar = findViewById(R.id.swtBorrar);
 
@@ -552,14 +546,6 @@ public class SupervisionActivity extends AppCompatActivity
 
 
 
-        btnBorrarArchivo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-               MostrarOpciones();
-
-
-            }
-        });
 
 
 
@@ -595,6 +581,8 @@ public class SupervisionActivity extends AppCompatActivity
                 files.set(0, PerFile);
                 PerFile = new Files();
 
+                Type_Archivo.add(0, "PDF");
+
                 selectPDF();
                 floatingActionsMenu.close(true);
 
@@ -612,6 +600,8 @@ public class SupervisionActivity extends AppCompatActivity
                 files.set(0,PerFile);
                 PerFile = new Files();
 
+                Type_Archivo.add(0, "Docx");
+
                 selectDocx();
 
                 floatingActionsMenu.close(true);
@@ -628,6 +618,8 @@ public class SupervisionActivity extends AppCompatActivity
                 PerFile.setSrc(""+contUris);
                 files.set(0,PerFile);
                 PerFile = new Files();
+
+                Type_Archivo.add(0, "Video");
 
                 selectVideo();
 
@@ -648,6 +640,9 @@ public class SupervisionActivity extends AppCompatActivity
 
                 selectAudio();
 
+                Type_Archivo.add(0, "Audio");
+
+
                 floatingActionsMenu.close(true);
             }
         });
@@ -667,8 +662,18 @@ public class SupervisionActivity extends AppCompatActivity
                                                                 if (mItemChecked.get(i)==true){
                                                                     Log.i("mItemChecked - ", "Borrado" + i);
                                                                     deleteImage(i);
+
                                                                 }else{
                                                                     Log.i("mItemChecked - ", "Es false" + i);
+                                                                }
+                                                            }
+
+                                                            for (int i=(ArchivosUris.size()-1); 0<=i ;i--){
+                                                                if (archivoChecked.get(i)==true){
+                                                                    deleteFile(i);
+                                                                    Log.i("mArchivoChecked - ", "Borrado" + i);
+                                                                }else{
+                                                                    Log.i("mArchivoChecked - ", "Es false" + i);
                                                                 }
                                                             }
                                                         }
@@ -758,7 +763,7 @@ public class SupervisionActivity extends AppCompatActivity
                                             } else {
                                                 AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
                                                 builder.setTitle("Confirmación");
-                                                builder.setMessage("¿Está seguro?");
+                                                builder.setMessage("¿Está seguro de enviar? \n\n" + "Enviará " + contImg + " de " + max_photos + " elementos disponibles");
                                                 StyleableToast.makeText(getApplicationContext(), "Una vez realizada, esta acción no se puede revertir", Toast.LENGTH_SHORT, R.style.warningToast).show();
                                                 // builder.setCancelable(false);
                                                 builder.setPositiveButton("Si", new DialogInterface.OnClickListener() {
@@ -988,7 +993,7 @@ public class SupervisionActivity extends AppCompatActivity
                 if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
                     Toast.makeText(this, "Permisos otorgados...", Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(this, "Aplicacion sin permisos...", Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(this, "Aplicacion sin permisos...", Toast.LENGTH_SHORT).show();
                 }
                 // permissions list of don't granted permission
             }
@@ -1070,6 +1075,38 @@ public class SupervisionActivity extends AppCompatActivity
         contImg--;
     }
 
+    private void initRecyclerViewFiles(){
+
+
+        mRecyclerViewFiles = findViewById(R.id.archivos_recycler);
+        mLayaoutManagerFiles = new LinearLayoutManager(this);
+        mAdapterFiles = new ArchivosAdapter(this, ArchivosUris, Type_Archivo, Name_Archivo, archivoChecked);
+
+        mRecyclerViewFiles.setHasFixedSize(true);
+        mRecyclerViewFiles.setItemAnimator(new DefaultItemAnimator());
+
+        mRecyclerViewFiles.setLayoutManager(mLayaoutManagerFiles);
+        mRecyclerViewFiles.setAdapter(mAdapterFiles);
+    }
+
+    private void addFile(){
+
+        File filename = new File(ArchivosUris.get(0).getPath());
+        Name_Archivo.add(0, filename.getName());
+        archivoChecked.add(0, false);
+        mAdapterFiles.notifyItemInserted(0);
+        mLayaoutManagerFiles.scrollToPosition(0);
+    }
+
+    private void deleteFile(int position){
+        ArchivosUris.remove(position);
+        Name_Archivo.remove(position);
+        Type_Archivo.remove(position);
+        archivoChecked.remove(position);
+        mAdapterFiles.notifyItemRemoved(position);
+        contUris--;
+    }
+
     private void ChequeoConfiguration() {
 
         BDFireStore
@@ -1080,16 +1117,16 @@ public class SupervisionActivity extends AppCompatActivity
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 Configuration configuration = documentSnapshot.toObject(Configuration.class);
 
-                activitys_types = configuration.getActivitys_types();
+                event_types = configuration.getEvent_types();
                 max_photos = configuration.getMax_photos();
                 min_photos = configuration.getMin_photos();
 
-                for (int i=0; i< activitys_types.size(); i++){
-                    String name = activitys_types.get(i).getActivity_name();
+                for (int i = 0; i< event_types.size(); i++){
+                    String name = event_types.get(i).getName();
                     if (name.equals(actividad)){
-                        Tbefore = activitys_types.get(i).isBefore();
-                        Tduring =activitys_types.get(i).isDuring();
-                        Tafter = activitys_types.get(i).isAfter();
+                        Tbefore = event_types.get(i).isBefore();
+                        Tduring = event_types.get(i).isDuring();
+                        Tafter = event_types.get(i).isAfter();
                         break;
                     }
                 }
@@ -1835,6 +1872,7 @@ public class SupervisionActivity extends AppCompatActivity
                 StyleableToast.makeText(getApplicationContext(), "Limite de archivos alcanzado", Toast.LENGTH_LONG, R.style.warningToast).show();
             }else {
                 SelecUri(data);
+                addFile();
                 contUris++;
             }
             //Toast.makeText(getApplicationContext(),"Tu archivo se ha guardado exitosamente",Toast.LENGTH_SHORT).show();
@@ -1843,7 +1881,7 @@ public class SupervisionActivity extends AppCompatActivity
                 StyleableToast.makeText(getApplicationContext(), "Limite de archivos alcanzado", Toast.LENGTH_LONG, R.style.warningToast).show();
             }else {
                 SelecUri(data);
-
+                addFile();
                 contUris++;
             }
             //Toast.makeText(getApplicationContext(),"Tu archivo se ha guardado exitosamente",Toast.LENGTH_SHORT).show();
@@ -1852,6 +1890,7 @@ public class SupervisionActivity extends AppCompatActivity
                 StyleableToast.makeText(getApplicationContext(), "Limite de archivos alcanzado", Toast.LENGTH_LONG, R.style.warningToast).show();
             }else {
                 SelecUri(data);
+                addFile();
                 contUris++;
             }
             //Toast.makeText(getApplicationContext(),"Tu archivo se ha guardado exitosamente",Toast.LENGTH_SHORT).show();
@@ -1861,6 +1900,7 @@ public class SupervisionActivity extends AppCompatActivity
                 StyleableToast.makeText(getApplicationContext(), "Limite de archivos alcanzado", Toast.LENGTH_LONG, R.style.warningToast).show();
             }else {
                 SelecUri(data);
+                addFile();
                 contUris++;
             }
            // Toast.makeText(getApplicationContext(),"Tu archivo se ha guardado exitosamente",Toast.LENGTH_SHORT).show();
@@ -2266,12 +2306,12 @@ public class SupervisionActivity extends AppCompatActivity
 
                     if (menuItem.getItemId()==R.id.itemAntes) {
                         if (advanced >=1 ) {
-                            StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT, R.style.warningToast).show();
+//                            StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT, R.style.warningToast).show();
                             opcion = false;
                             menuItem.setEnabled(false);
                         } else {
                             if(advanced == 0 && Tbefore==true) {
-                                StyleableToast.makeText(getApplicationContext(), "Seccion disponible", Toast.LENGTH_SHORT, R.style.doneToast).show();
+//                                StyleableToast.makeText(getApplicationContext(), "Seccion disponible", Toast.LENGTH_SHORT, R.style.doneToast).show();
                                 estado = "before";
                                 txtEstado.setText("Antes del Evento");
                             }else{
@@ -2283,18 +2323,18 @@ public class SupervisionActivity extends AppCompatActivity
 
                     if (menuItem.getItemId()==R.id.itemDurante){
                         if(advanced ==number) {
-                            StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT, R.style.warningToast).show();
+//                            StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT, R.style.warningToast).show();
                             opcion = false;
                             menuItem.setEnabled(false);
                         }else {
                             if (advanced >=1 && advanced <=number  && Tduring==true|| Tbefore == false && Tduring == true) {
-                                StyleableToast.makeText(getApplicationContext(), "Seccion disponible", Toast.LENGTH_SHORT, R.style.doneToast).show();
+//                                StyleableToast.makeText(getApplicationContext(), "Seccion disponible", Toast.LENGTH_SHORT, R.style.doneToast).show();
                                 estado = "during";
                                 txtEstado.setText("Durante el Evento");
                             }else{
                                 opcion = false;
                                 menuItem.setEnabled(false);
-                                StyleableToast.makeText(getApplicationContext(), "Te faltan secciones por realizar", Toast.LENGTH_SHORT, R.style.warningToast).show();
+//                                StyleableToast.makeText(getApplicationContext(), "Te faltan secciones por realizar", Toast.LENGTH_SHORT, R.style.warningToast).show();
                             }
 
                         }
@@ -2304,13 +2344,13 @@ public class SupervisionActivity extends AppCompatActivity
 
                             if (advanced == number && Tafter==true || Tduring==false && Tafter==true && advanced != 0) {
 
-                                StyleableToast.makeText(getApplicationContext(), "Seccion disponible", Toast.LENGTH_SHORT, R.style.doneToast).show();
+//                                StyleableToast.makeText(getApplicationContext(), "Seccion disponible", Toast.LENGTH_SHORT, R.style.doneToast).show();
                                 estado = "after";
                                 txtEstado.setText("Después del Evento");
                             }else{
                                 opcion = false;
                                 menuItem.setEnabled(false);
-                                StyleableToast.makeText(getApplicationContext(), "Te faltan secciones por realizar", Toast.LENGTH_SHORT, R.style.warningToast).show();
+//                                StyleableToast.makeText(getApplicationContext(), "Te faltan secciones por realizar", Toast.LENGTH_SHORT, R.style.warningToast).show();
                             }
 
                     }
@@ -2474,14 +2514,9 @@ public class SupervisionActivity extends AppCompatActivity
         edObserv.setVisibility(View.INVISIBLE);
         btnEnviar.setVisibility(View.INVISIBLE);
 
-        btnFoto.setVisibility(View.INVISIBLE);
-
-        btnBorrar.setVisibility(View.INVISIBLE);
 
 
-        btnBorrarArchivo.setVisibility(View.INVISIBLE);
 
-        btnArchivo.setVisibility(View.INVISIBLE);
 
 
     }
