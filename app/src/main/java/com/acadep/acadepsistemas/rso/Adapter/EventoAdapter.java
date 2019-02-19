@@ -2,10 +2,7 @@ package com.acadep.acadepsistemas.rso.Adapter;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.text.format.DateFormat;
 import android.text.format.Time;
-import android.util.EventLog;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,19 +15,10 @@ import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.firestore.DocumentSnapshot;
 
 import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
-import org.joda.time.LocalDateTime;
-import org.joda.time.Period;
-import org.joda.time.format.DateTimeFormatter;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.Locale;
-import java.util.concurrent.TimeUnit;
 
 public class EventoAdapter extends FirestoreRecyclerAdapter<Evento, EventoAdapter.EventoHolder>{
 
@@ -79,34 +67,34 @@ public class EventoAdapter extends FirestoreRecyclerAdapter<Evento, EventoAdapte
 //        long diff = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
 //        Log.i("Prueba horas: ", ""+diff);
 
-        String string = evento.getEnd();
-        SimpleDateFormat format = new SimpleDateFormat("MMMM d, yyyy", Locale.ENGLISH);
-        Date date = null;
-        try {
-            date = format.parse(string);
-            holder.txtview_end.setText(""+date);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        System.out.println(date); // Sat Jan 02 00:00:00 GMT 2010
-
-
-        LocalDateTime timeNow = LocalDateTime.now();
-
-        int mni = evento.getEnd().length();
-        LocalDateTime timeEnd = LocalDateTime.parse(evento.getEnd().substring(0, (mni-1)));
-
-        Period p = new Period(timeNow, timeEnd);
-        long hours = p.getHours();
-        long minutes = p.getMinutes();
-
-        String formato = String.format("%%0%dd", 2);
+//        String string = evento.getEnd();
+//        SimpleDateFormat format = new SimpleDateFormat("MMMM d, yyyy", Locale.ENGLISH);
+//        Date date = null;
+//        try {
+//            date = format.parse(string);
+//            holder.txtview_end.setText(""+date);
+//        } catch (ParseException e) {
+//            e.printStackTrace();
+//        }
+//        System.out.println(date); // Sat Jan 02 00:00:00 GMT 2010
+//
+//
+//        LocalDateTime timeNow = LocalDateTime.now();
+//
+//        int mni = evento.getEnd().length();
+//        LocalDateTime timeEnd = LocalDateTime.parse(evento.getEnd().substring(0, (mni-1)));
+//
+//        Period p = new Period(timeNow, timeEnd);
+//        long hours = p.getHours();
+//        long minutes = p.getMinutes();
+//
+//        String formato = String.format("%%0%dd", 2);
 
 //        return Long.toString(hours)+":"+String.format(formato, minutes);
-
-        Log.i("Prueba horas as1: ", Long.toString(hours)+":"+String.format(formato, minutes));
-        Log.i("Prueba horas as2: ", ""+timeNow);
-        Log.i("Prueba horas as3: ", ""+timeEnd);
+//
+//        Log.i("Prueba horas as1: ", Long.toString(hours)+":"+String.format(formato, minutes));
+//        Log.i("Prueba horas as2: ", ""+timeNow);
+//        Log.i("Prueba horas as3: ", ""+timeEnd);
         start = evento.getStart().substring(0,10);
         holder.txtview_start.setText(""+start);
         end = evento.getEnd().substring(0,10);

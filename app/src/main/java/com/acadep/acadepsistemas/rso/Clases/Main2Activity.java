@@ -1,7 +1,6 @@
 package com.acadep.acadepsistemas.rso.Clases;
 
 import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
@@ -20,10 +19,8 @@ import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.acadep.acadepsistemas.rso.Fragmentos.ActivitysFragment;
 import com.acadep.acadepsistemas.rso.Fragmentos.EventosFragment;
 import com.acadep.acadepsistemas.rso.Notificaciones.MiFirebaseMessagingService;
-import com.acadep.acadepsistemas.rso.Notificaciones.SharedPrefManager;
 import com.acadep.acadepsistemas.rso.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -33,7 +30,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
-import com.muddzdev.styleabletoast.StyleableToast;
 
 import com.onesignal.OneSignal;
 
@@ -206,31 +202,42 @@ public class Main2Activity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
+        boolean status = true;
 
         Fragment mifragment = null;
         Boolean FragmentoSeleccionado=false;
 
         if (id == R.id.nav_perfil) {
             Toast.makeText(getApplicationContext(),"Aún en proceso",Toast.LENGTH_SHORT).show();
+            status = false;
         }else if (id == R.id.nav_acty) {
-                        startActivity(new Intent(this, com.acadep.acadepsistemas.rso.Clases.MaterialsCheckList.class));
+            Toast.makeText(getApplicationContext(),"Aún en proceso",Toast.LENGTH_SHORT).show();
+            status = false;
+//                        startActivity(new Intent(this, com.acadep.acadepsistemas.rso.Clases.MaterialsCheckList.class));
 //                        startActivity(new Intent(this, com.acadep.acadepsistemas.rso.Clases.RecyclerTest.class));
         } else if (id == R.id.nav_event) {
             mifragment = new EventosFragment();
             FragmentoSeleccionado=true;
 
+
            /*Intent intent= new Intent (Main2Activity.this, EventosActivity.class);
             startActivity(intent);]*/
            //finish();
-
+            status = true;
         }else if (id == R.id.nav_ext) {
-            mifragment = new ActivitysFragment();
-            FragmentoSeleccionado=true;
+            Toast.makeText(getApplicationContext(),"Aún en proceso",Toast.LENGTH_SHORT).show();
+            item.setChecked(false);
+            status = false;
+//            mifragment = new ActivitysFragment();
+//            FragmentoSeleccionado=true;
 
         }else if (id == R.id.nav_conf) {
             Toast.makeText(getApplicationContext(),"Aún en proceso",Toast.LENGTH_SHORT).show();
+            item.setChecked(false);
+            status = false;
         } else if (id == R.id.nav_signOut) {
             cerrarSesion();
+
         }
 
 
@@ -248,7 +255,7 @@ public class Main2Activity extends AppCompatActivity
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
-        return true;
+        return status;
     }
 
     private void map(){

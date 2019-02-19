@@ -127,9 +127,6 @@ public class ExtraordinariosActivity extends AppCompatActivity {
         edObserv = (EditText) findViewById(R.id.edObserv);
         btnEnviar = (FloatingTextButton) findViewById(R.id.btnEnviar);
 
-        btnArchivo = (FloatingTextButton) findViewById(R.id.btnArchivo);
-
-        btnFoto = (FloatingTextButton) findViewById(R.id.btnFoto);
 
 
 

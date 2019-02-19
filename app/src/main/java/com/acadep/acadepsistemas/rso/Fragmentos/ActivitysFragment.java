@@ -13,7 +13,6 @@ import android.view.ViewGroup;
 
 import com.acadep.acadepsistemas.rso.Adapter.ActivityAdapter;
 import com.acadep.acadepsistemas.rso.Clases.ExtraActivity;
-import com.acadep.acadepsistemas.rso.Clases.SupervisionActivity;
 import com.acadep.acadepsistemas.rso.R;
 import com.acadep.acadepsistemas.rso.model.Activity;
 import com.acadep.acadepsistemas.rso.model.Evento;

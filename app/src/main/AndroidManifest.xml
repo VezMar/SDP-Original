@@ -20,36 +20,36 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Clases.Login">
+        <activity android:name="com.acadep.acadepsistemas.rso.Clases.Login">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Clases.MainActivity" />
+        <activity android:name="com.acadep.acadepsistemas.rso.Clases.MainActivity" />
         <activity
-            android:name=".Clases.Main2Activity"
+            android:name="com.acadep.acadepsistemas.rso.Clases.Main2Activity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".Clases.EventosActivity" />
+        <activity android:name="com.acadep.acadepsistemas.rso.Clases.EventosActivity" />
         <activity
-            android:name=".Clases.SupervisionActivity"
+            android:name="com.acadep.acadepsistemas.rso.Clases.SupervisionActivity"
             android:label="Reporte"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".Clases.ExtraordinariosActivity" />
-        <activity android:name=".Clases.ExtraActivity" />
+        <activity android:name="com.acadep.acadepsistemas.rso.Clases.ExtraordinariosActivity" />
+        <activity android:name="com.acadep.acadepsistemas.rso.Clases.ExtraActivity" />
 
-        <service android:name=".Notificaciones.MiFirebaseMessagingService">
+        <service android:name="com.acadep.acadepsistemas.rso.Notificaciones.MiFirebaseMessagingService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
 
-        <activity android:name=".Clases.RecuperacionContrasena" />
+        <activity android:name="com.acadep.acadepsistemas.rso.Clases.RecuperacionContrasena" />
         <activity
-            android:name=".Clases.RecyclerTest"
+            android:name="com.acadep.acadepsistemas.rso.Clases.RecyclerTest"
             android:screenOrientation="portrait" />
 
         <provider
@@ -64,7 +64,7 @@
                 tools:replace="android:resource" />
         </provider>
 
-        <activity android:name=".Clases.MaterialsCheckList"></activity>
+        <activity android:name="com.acadep.acadepsistemas.rso.Clases.MaterialsCheckList"></activity>
     </application>
 
 </manifest>

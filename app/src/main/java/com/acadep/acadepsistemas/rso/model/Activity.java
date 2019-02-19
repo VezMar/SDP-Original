@@ -4,7 +4,7 @@ import java.util.List;
 
 public class Activity {
 
-    boolean deleted;
+    String deleted;
     String description;
     String end;
     String id;
@@ -19,7 +19,7 @@ public class Activity {
     public Activity() {
     }
 
-    public Activity(boolean deleted, String description, String end, String id, List<Recursos> insumos, String project_id, String start, String subproject, String title, List<String> users) {
+    public Activity(String deleted, String description, String end, String id, List<Recursos> insumos, String project_id, String start, String subproject, String title, List<String> users) {
         this.deleted = deleted;
         this.description = description;
         this.end = end;
@@ -32,20 +32,20 @@ public class Activity {
         this.users = users;
     }
 
+    public String getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(String deleted) {
+        this.deleted = deleted;
+    }
+
     public String getId() {
         return id;
     }
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    public boolean isDeleted() {
-        return deleted;
-    }
-
-    public void setDeleted(boolean deleted) {
-        this.deleted = deleted;
     }
 
     public String getDescription() {

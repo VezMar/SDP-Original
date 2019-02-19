@@ -20,18 +20,19 @@ import android.location.LocationManager;
 import android.location.LocationProvider;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.format.Time;
 import android.util.Log;
@@ -45,17 +46,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 //import com.example.acadepsistemas.seguimiento.Manifest;
+import com.acadep.acadepsistemas.rso.Adapter.ArchivosAdapter;
 import com.acadep.acadepsistemas.rso.Adapter.RecyclerViewAdapter;
 import com.acadep.acadepsistemas.rso.R;
 import com.acadep.acadepsistemas.rso.model.Activity;
-import com.acadep.acadepsistemas.rso.model.Configuration;
-import com.acadep.acadepsistemas.rso.model.Data;
 import com.acadep.acadepsistemas.rso.model.Extra;
 import com.acadep.acadepsistemas.rso.model.Files;
 import com.acadep.acadepsistemas.rso.model.Foto;
 import com.acadep.acadepsistemas.rso.model.Ubication;
 import com.acadep.acadepsistemas.rso.model.datetime;
 import com.github.chrisbanes.photoview.PhotoView;
+import com.github.clans.fab.FloatingActionMenu;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -85,17 +86,13 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
 
 
 import ru.dimorinny.floatingtextbutton.FloatingTextButton;
-
-import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
 public class ExtraActivity extends AppCompatActivity {
 
@@ -114,6 +111,13 @@ public class ExtraActivity extends AppCompatActivity {
     private static final String CARPETA_PRINCIPAL = "DCIM/";
     private static final String CARPETA_IMAGEN = "Camera";
     private static final String DIRECTORIO_IMAGEN = CARPETA_PRINCIPAL + CARPETA_IMAGEN;
+    public static final int MULTIPLE_PERMISSIONS = 10;
+    String[] permissions= new String[]{
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.CAMERA,
+            Manifest.permission.ACCESS_COARSE_LOCATION,
+            Manifest.permission.ACCESS_FINE_LOCATION};
+
 
     static File [] FileImagenArray = new File[6];
     private static Files PerFilesArray[] = new Files[10];
@@ -122,12 +126,16 @@ public class ExtraActivity extends AppCompatActivity {
     static File nula = new File("/ada/");
 
 
-    static File fileimagen;
-    static File fileimagen2;
-    static File fileimagen3;
-    static File fileimagen4;
-    static File fileimagen5;
-    static File fileimagen6;
+    private BottomNavigationView bottomNavigationView;
+    private FloatingActionMenu floatingActionsMenu;
+    private com.github.clans.fab.FloatingActionButton actionButton_1;
+    private com.github.clans.fab.FloatingActionButton actionButton_2;
+    private com.github.clans.fab.FloatingActionButton actionButton_3;
+    private com.github.clans.fab.FloatingActionButton actionButton_4;
+    private com.github.clans.fab.FloatingActionButton actionButton_5;
+    private com.github.clans.fab.FloatingActionButton actionButton_6;
+
+    private com.github.clans.fab.FloatingActionButton actionButton_2_1;
 
 
     static Bitmap capturedCoolerBitmap;
@@ -162,14 +170,22 @@ public class ExtraActivity extends AppCompatActivity {
 
     //    Imagenes
     private ArrayList<Bitmap> mImageBitmap = new ArrayList<>();
+    private ArrayList<String> mTypeAdapter = new ArrayList<>();
+    private ArrayList<Boolean> mItemChecked = new ArrayList<>();
+
     private static List<File> ListImages = new ArrayList<>();
-    private static List<Uri> ListVideos = new ArrayList<>();
+
+    private static ArrayList<Uri> ListVideos = new ArrayList<>();
 
 
 
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayaoutManager;
+
+    private RecyclerView mRecyclerViewFiles;
+    private RecyclerView.Adapter mAdapterFiles;
+    private RecyclerView.LayoutManager mLayaoutManagerFiles;
 
     private String filePath;
 
@@ -185,7 +201,13 @@ public class ExtraActivity extends AppCompatActivity {
     static List<String> Foto =  new ArrayList<>();
     private static List<Foto> multimedia = new ArrayList<>();
     private static List<Files> files = new ArrayList<>();
+
+    Files PerFile = new Files();
+
     private static List<Uri> ArchivosUris = new ArrayList<>();
+    private static List<String> Type_Archivo = new ArrayList<>();
+    private static List<String> Name_Archivo = new ArrayList<>();
+    private ArrayList<Boolean> archivoChecked= new ArrayList<>();
 
 
     private static ImageView noImage;
@@ -263,15 +285,22 @@ public class ExtraActivity extends AppCompatActivity {
         edObserv = (EditText) findViewById(R.id.edObserv);
         btnEnviar = (FloatingTextButton) findViewById(R.id.btnEnviar);
 
-        btnArchivo = (FloatingTextButton) findViewById(R.id.btnArchivo);
-        btnBorrarArchivo = (FloatingTextButton) findViewById(R.id.btnBorrarArchivo);
 
-        btnFoto = (FloatingTextButton) findViewById(R.id.btnFoto);
+        floatingActionsMenu = findViewById(R.id.FloatingActionMenuPrincipal);
+//        floatingActionsMenu.setIconAnimated(false);
+
+        actionButton_1 = findViewById(R.id.fab_action_1);
+        actionButton_2 = findViewById(R.id.fab_action_2);
+        actionButton_3 = findViewById(R.id.fab_action_3);
+        actionButton_4 = findViewById(R.id.fab_action_4);
+        actionButton_5 = findViewById(R.id.fab_action_5);
+        actionButton_6 = findViewById(R.id.fab_action_6);
+
+        actionButton_2_1 = findViewById(R.id.fab_action_2_1);
 
 
 
 
-        swtBorrar = findViewById(R.id.swtBorrar);
 
 
 
@@ -301,85 +330,157 @@ public class ExtraActivity extends AppCompatActivity {
 
 
 
-        locationStart();
-        btnArchivo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                    if (ContextCompat.checkSelfPermission(ExtraActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-                        GuardarInformacionArchivos();
-                        mostrarDialogoOpciones();
-                    } else {
-                        ActivityCompat.requestPermissions(ExtraActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 9);
-                    }
-
-            }
-        });
-
-
-        btnBorrarArchivo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                MostrarOpciones();
-
-
-            }
-        });
-
-
-
-
-
-        btnFoto.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        if (checkPermissions()) {
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION,}, 1000);
+            } else {
                 locationStart();
+            }
+        } else{
 
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    if (checkSelfPermission(String.valueOf(Manifest.permission.CAMERA)) != PackageManager.PERMISSION_DENIED) {
-                        ActivityCompat.requestPermissions(ExtraActivity.this, new String[]{Manifest.permission.CAMERA}, 1);
-                    }
-                }
-
-                if (ActivityCompat.checkSelfPermission(getApplicationContext(),
-                        WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-
-                    ActivityCompat.requestPermissions(ExtraActivity.this,
-                            new String[]{WRITE_EXTERNAL_STORAGE}, REQUEST_PERM_WRITE_STORAGE);
-                } else {
-                    locationStart();
-
-                    locationStart();
+        }
 
 
-                    final CharSequence[] opciones = {"Tomar foto", "Tomar video", "Cancelar"};
-                    final AlertDialog.Builder builder = new AlertDialog.Builder(ExtraActivity.this);
+        actionButton_1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                GuardarInformacionImagenes();
+                takePhoto_AltaCalidad();
+
+                floatingActionsMenu.close(true);
+
+            }
+        });
+
+        actionButton_2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                GuardarInformacionVideos();
+                takeVideo();
+
+                floatingActionsMenu.close(true);
+            }
+        });
+
+        actionButton_3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                GuardarInformacionArchivos();
+
+                PerFile = files.get(0);
+                PerFile.setType("PDF");
+                PerFile.setSrc("" + contUris);
+                files.set(0, PerFile);
+                PerFile = new Files();
+
+                Type_Archivo.add(0, "PDF");
+
+                selectPDF();
+                floatingActionsMenu.close(true);
+
+            }
+        });
+
+        actionButton_4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                GuardarInformacionArchivos();
+
+                PerFile = files.get(0);
+                PerFile.setType("Docx");
+                PerFile.setSrc(""+contUris);
+                files.set(0,PerFile);
+                PerFile = new Files();
+
+                Type_Archivo.add(0, "Docx");
+
+                selectDocx();
+
+                floatingActionsMenu.close(true);
+            }
+        });
+
+        actionButton_5.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                GuardarInformacionArchivos();
+
+                PerFile = files.get(0);
+                PerFile.setType("Video");
+                PerFile.setSrc(""+contUris);
+                files.set(0,PerFile);
+                PerFile = new Files();
+
+                Type_Archivo.add(0, "Video");
+
+                selectVideo();
+
+                floatingActionsMenu.close(true);
+            }
+        });
+
+        actionButton_6.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                GuardarInformacionArchivos();
+
+                PerFile = files.get(0);
+                PerFile.setType("Audio");
+                PerFile.setSrc("" + contUris);
+                files.set(0, PerFile);
+                PerFile = new Files();
+
+                selectAudio();
+
+                Type_Archivo.add(0, "Audio");
 
 
-                    builder.setTitle("Borrar archivos");
-                    builder.setItems(opciones, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
+                floatingActionsMenu.close(true);
+            }
+        });
 
-                            if (opciones[i].equals("Tomar foto")) {
+        actionButton_2_1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
+                builder.setTitle("Confirmación");
+                builder.setMessage("¿Está seguro de que desea borrar lo seleccionado?");
+//                                                    StyleableToast.makeText(getApplicationContext(), "Una vez realizada, esta acción no se puede revertir", Toast.LENGTH_SHORT, R.style.warningToast).show();
+                // builder.setCancelable(false);
+                builder.setPositiveButton("Si", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        for (int i=(ListVideos.size()-1); 0<=i; i--){
+                            if (mItemChecked.get(i)==true){
+                                Log.i("mItemChecked - ", "Borrado" + i);
+                                deleteImage(i);
 
-                                GuardarInformacionImagenes();
-                                takePhoto_AltaCalidad();
-                            }
-
-                            if (opciones[i].equals("Tomar video")) {
-
-                                GuardarInformacionVideos();
-                                takeVideo();
+                            }else{
+                                Log.i("mItemChecked - ", "Es false" + i);
                             }
                         }
 
-                    });
-                    builder.show();
-                }
+                        for (int i=(ArchivosUris.size()-1); 0<=i ;i--){
+                            if (archivoChecked.get(i)==true){
+                                deleteFile(i);
+                                Log.i("mArchivoChecked - ", "Borrado" + i);
+                            }else{
+                                Log.i("mArchivoChecked - ", "Es false" + i);
+                            }
+                        }
+                    }
+                });
+
+
+                builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+                builder.create().show();
             }
         });
-
 
 
 
@@ -428,6 +529,22 @@ public class ExtraActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    private  boolean checkPermissions() {
+        int result;
+        List<String> listPermissionsNeeded = new ArrayList<>();
+        for (String p:permissions) {
+            result = ContextCompat.checkSelfPermission(ExtraActivity.this,p);
+            if (result != PackageManager.PERMISSION_GRANTED) {
+                listPermissionsNeeded.add(p);
+            }
+        }
+        if (!listPermissionsNeeded.isEmpty()) {
+            ActivityCompat.requestPermissions(this, listPermissionsNeeded.toArray(new String[listPermissionsNeeded.size()]),MULTIPLE_PERMISSIONS );
+            return false;
+        }
+        return true;
     }
 
     private void GuardarInformacionVideos() {
@@ -481,77 +598,112 @@ public class ExtraActivity extends AppCompatActivity {
         PhotoData = new Foto();
     }
 
-    public void onClickSwitch(View view) {
-        if (view.getId() == R.id.swtBorrar) {
-            if (swtBorrar.isChecked()) {
-                StyleableToast.makeText(ExtraActivity.this, "Al activar esta opción si da click sobre una imagen la borrará", Toast.LENGTH_SHORT, R.style.warningToastMiddle).show();
-            } else {
-                Toast.makeText(ExtraActivity.this, "Borrado de fotos desactivado", Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
+
 
     private void initRecyclerView(){
-//        mRecyclerView = findViewById(R.id.images_recycler_extra);
-//        mLayaoutManager= new GridLayoutManager(this, 3);
-//
-//        mAdapter = new RecyclerViewAdapter(this, mImageBitmap, new RecyclerViewAdapter.OnItemClickListener() {
-//            @Override
-//            public void OnItemClick(Bitmap mImage, int position) {
-//
-//                if (swtBorrar.isChecked()){
-//                    deleteImage(position);
-//                }else{
-//                    AlertDialog.Builder mBuilder = new AlertDialog.Builder(ExtraActivity.this);
-//                    View mView = getLayoutInflater().inflate(R.layout.dialog_custom_layout, null);
-//                    PhotoView photoView = mView.findViewById(R.id.imageView);
+        int mNoOfColumns = SupervisionActivity.Utility.calculateNoOfColumns(getApplicationContext(), 90);
+
+        mRecyclerView = findViewById(R.id.images_recycler);
+//        mLayaoutManager= new GridLayoutManager(this, 4);
+        mLayaoutManager= new GridLayoutManager(this,mNoOfColumns);
+        mAdapter = new RecyclerViewAdapter(this, mTypeAdapter, ListVideos, mItemChecked, new RecyclerViewAdapter.OnItemClickListener() {
+            @Override
+            public void OnItemClick(Uri mImage, int position) {
+
+
+                if(mTypeAdapter.get(position).equals("Photo")) {
+                    final AlertDialog.Builder mBuilder = new AlertDialog.Builder(ExtraActivity.this);
+                    View mView = getLayoutInflater().inflate(R.layout.dialog_custom_layout, null);
+                    PhotoView photoView = mView.findViewById(R.id.imageView);
+                    Drawable d = new BitmapDrawable(mImageBitmap.get(position));
+                    photoView.setImageDrawable(d);
+                    mBuilder.setView(mView);
+                    final AlertDialog mDialog = mBuilder.create();
+                    mDialog.getWindow().setLayout(600, 400);
+                    mDialog.show();
+
+
+
+
+
+
+
+                }
+                if(mTypeAdapter.get(position).equals("Video")) {
+//                        AlertDialog.Builder mBuilder = new AlertDialog.Builder(SupervisionActivity.this);
+//                        View mView = getLayoutInflater().inflate(R.layout.layout_videoview, null);
+//                        VideoView videoView = mView.findViewById(R.id.video_recycler);
 ////                    photoView.setImageURI(Uri.fromFile(fileimagen));
 //
-//                    Drawable d = new BitmapDrawable(mImageBitmap.get(position));
-//                    photoView.setImageDrawable(d);
-//                    mBuilder.setView(mView);
-//                    AlertDialog mDialog = mBuilder.create();
-//                    mDialog.getWindow().setLayout(600, 400);
-//                    mDialog.show();
-//
-//
-//                }
-//
-//            }
-//        });
-//
-//        mRecyclerView.setHasFixedSize(true);
-//        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-//
-//        mRecyclerView.setLayoutManager(mLayaoutManager);
-//        mRecyclerView.setAdapter(mAdapter);
+//                        videoView.setVideoURI(ListVideos.get(position));
+//                        mBuilder.setView(mView);
+//                        AlertDialog mDialog = mBuilder.create();
+//                        mDialog.getWindow().setLayout(600, 400);
+//                        mDialog.show();
+                }
+
+
+            }
+        });
+
+        mRecyclerView.setHasFixedSize(true);
+        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+
+        mRecyclerView.setLayoutManager(mLayaoutManager);
+        mRecyclerView.setAdapter(mAdapter);
     }
 
-    private void addImage(Bitmap bitmap,int position){
-
-        mImageBitmap.add(position, bitmap);
+    private void addImage(Uri uri,int position, String type){
+        ListVideos.add(position, uri);
+        mTypeAdapter.add(position, type);
+        mItemChecked.add(0, false);
         mAdapter.notifyItemInserted(position);
         mLayaoutManager.scrollToPosition(position);
+
+
     }
 
     private void deleteImage(int position){
 
-        PhotoData = multimedia.get(position);
-        if (PhotoData.getType()=="Video"){
-            mImageBitmap.remove(position);
-            ListVideos.remove(position);
-            multimedia.remove(position);
-            mAdapter.notifyItemRemoved(position);
-            contImg--;
-        }else {
-            mImageBitmap.remove(position);
-            ListVideos.remove(position);
-            multimedia.remove(position);
-            mAdapter.notifyItemRemoved(position);
-            contImg--;
-        }
-        PhotoData = new Foto();
+        mImageBitmap.remove(position);
+        mTypeAdapter.remove(position);
+        mItemChecked.remove(position);
+        ListVideos.remove(position);
+        multimedia.remove(position);
+        mAdapter.notifyItemRemoved(position);
+        contImg--;
+    }
 
+    private void initRecyclerViewFiles(){
+
+
+        mRecyclerViewFiles = findViewById(R.id.archivos_recycler);
+        mLayaoutManagerFiles = new LinearLayoutManager(this);
+        mAdapterFiles = new ArchivosAdapter(this, ArchivosUris, Type_Archivo, Name_Archivo, archivoChecked);
+
+        mRecyclerViewFiles.setHasFixedSize(true);
+        mRecyclerViewFiles.setItemAnimator(new DefaultItemAnimator());
+
+        mRecyclerViewFiles.setLayoutManager(mLayaoutManagerFiles);
+        mRecyclerViewFiles.setAdapter(mAdapterFiles);
+    }
+
+    private void addFile(){
+
+        File filename = new File(ArchivosUris.get(0).getPath());
+        Name_Archivo.add(0, filename.getName());
+        archivoChecked.add(0, false);
+        mAdapterFiles.notifyItemInserted(0);
+        mLayaoutManagerFiles.scrollToPosition(0);
+    }
+
+    private void deleteFile(int position){
+        ArchivosUris.remove(position);
+        Name_Archivo.remove(position);
+        Type_Archivo.remove(position);
+        archivoChecked.remove(position);
+        mAdapterFiles.notifyItemRemoved(position);
+        contUris--;
     }
 
     private void startAsyncTask() {
@@ -1015,32 +1167,29 @@ public class ExtraActivity extends AppCompatActivity {
 
         if (requestCode == TAKE_PHOTO_CODE && resultCode == RESULT_OK) {
             Log.d("CameraDemo", "Pic saved");
-            //Toast.makeText(this, "Pic saved", Toast.LENGTH_SHORT).show();
-
             Bitmap bitmap = BitmapFactory.decodeFile(filePath);
 
             double heightd = bitmap.getHeight()*.1720430107526882;
-            double widthD = bitmap.getWidth()*.12903225806451612;
             float heightf =  (float)heightd;
-//            Toast.makeText(this, "El height es: " + 1024 + " y el width es: " + heightf, Toast.LENGTH_SHORT).show();
             Bitmap Bitnew = redimensionarImagenMaximo(bitmap, 512 ,  heightf);
+            mImageBitmap.add(0, Bitnew);
 
-            addImage(Bitnew, 0);
-            ListVideos.add(0, Uri.fromFile(new File(filePath)));
+            addImage( Uri.fromFile(new File(filePath)), 0, "Photo");
+//            ListVideos.add(0, Uri.fromFile(new File(filePath)));
             contImg++;
         }
 
         if(requestCode == REQUEST_VIDEO_CAPTURE && resultCode == RESULT_OK) {
 
+            Uri videoUri = data.getData();
+//            addImage(new File(videoUri.getPath()), 0, "Video");
+            addImage(videoUri, 0, "Video");
 
             Bitmap icon = BitmapFactory.decodeResource(ExtraActivity.this.getResources(),
                     R.drawable.reproductor_multimedia);
 
-
-            addImage(icon, 0);
-
-            Uri videoUri = data.getData();
-            ListVideos.add(0, videoUri);
+            mImageBitmap.add(0, icon);
+//            ListVideos.add(0, videoUri);
             contImg++;
 
         }
@@ -1248,21 +1397,21 @@ public class ExtraActivity extends AppCompatActivity {
 //        txtFecha.setText(created_at.substring(0, 9));
 //        txtHora.setText(created_at.substring(10, 15));
     }
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if(requestCode==9 && grantResults[0]==PackageManager.PERMISSION_GRANTED){
-            selectPDF();
-        }else{
-            StyleableToast.makeText(getApplicationContext(), "Porfavor otorgue los permisos...", Toast.LENGTH_LONG, R.style.warningToast).show();
-            //Toast.makeText(getApplicationContext(),"Porfavor otorgue los permisos...",Toast.LENGTH_SHORT).show();
-        }
-
-        if (requestCode == 1000) {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                locationStart();
-                return;
-            }
-        }
-    }
+//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+//        if(requestCode==9 && grantResults[0]==PackageManager.PERMISSION_GRANTED){
+//            selectPDF();
+//        }else{
+//            StyleableToast.makeText(getApplicationContext(), "Porfavor otorgue los permisos...", Toast.LENGTH_LONG, R.style.warningToast).show();
+//            //Toast.makeText(getApplicationContext(),"Porfavor otorgue los permisos...",Toast.LENGTH_SHORT).show();
+//        }
+//
+//        if (requestCode == 1000) {
+//            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+//                locationStart();
+//                return;
+//            }
+//        }
+//    }
 
     public void setLocation(Location loc) {
         //Obtener la direccion de la calle a partir de la latitud y la longitud

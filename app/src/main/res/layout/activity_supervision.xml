@@ -53,7 +53,7 @@
            app:fab_addButtonPlusIconColor="#FFFFFFFF"
            app:fab_labelStyle="@style/customfab"
            android:layout_marginBottom="60dp"
-           app:menu_icon="@drawable/ic_camera_black_24dp"
+
 
 
            fab:menu_showShadow="true"
@@ -129,8 +129,6 @@
                app:fab_size="mini"
                app:fab_label="Subir Audio"
                />
-
-
 
        </com.github.clans.fab.FloatingActionMenu>
 

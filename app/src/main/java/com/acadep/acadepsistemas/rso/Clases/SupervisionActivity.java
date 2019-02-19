@@ -59,7 +59,6 @@ import android.widget.Toast;
 
 import com.acadep.acadepsistemas.rso.Adapter.ArchivosAdapter;
 import com.acadep.acadepsistemas.rso.Adapter.RecyclerViewAdapter;
-import com.acadep.acadepsistemas.rso.Fragmentos.ActivitysFragment;
 import com.acadep.acadepsistemas.rso.Fragmentos.EventosFragment;
 //import com.example.acadepsistemas.seguimiento.Manifest;
 import com.acadep.acadepsistemas.rso.R;
@@ -457,7 +456,7 @@ public class SupervisionActivity extends AppCompatActivity
 
         btnEnviar = (FloatingTextButton) findViewById(R.id.btnEnviar);
 
-    
+
 
 //        swtBorrar = findViewById(R.id.swtBorrar);
 
@@ -2446,15 +2445,19 @@ public class SupervisionActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
+        boolean status = true;
 
         Fragment mifragment = null;
         Boolean FragmentoSeleccionado=false;
 
         if (id == R.id.nav_perfil) {
             Toast.makeText(getApplicationContext(),"Aún en proceso",Toast.LENGTH_SHORT).show();
+            status = false;
         }else if (id == R.id.nav_acty) {
-//            startActivity(new Intent(this, com.acadep.acadepsistemas.rso.Clases.RecyclerTest.class));
+            Toast.makeText(getApplicationContext(),"Aún en proceso",Toast.LENGTH_SHORT).show();
+            status = false;
         } else if (id == R.id.nav_event) {
+            SupervisionActivity.this.finish();
             mifragment = new EventosFragment();
             FragmentoSeleccionado=true;
 
@@ -2463,9 +2466,11 @@ public class SupervisionActivity extends AppCompatActivity
             //finish();
 
         } else if (id == R.id.nav_ext) {
+            Toast.makeText(getApplicationContext(),"Aún en proceso",Toast.LENGTH_SHORT).show();
+            status = false;
 
-            mifragment = new ActivitysFragment();
-            FragmentoSeleccionado=true;
+//            mifragment = new ActivitysFragment();
+//            FragmentoSeleccionado=true;
 
 //            Intent intent= new Intent (this, ExtraActivity.class);
 //            intent.putExtra("idEvento",idevent);
@@ -2476,6 +2481,7 @@ public class SupervisionActivity extends AppCompatActivity
 
         }else if(id == R.id.nav_conf) {
             Toast.makeText(getApplicationContext(),"Aún en proceso",Toast.LENGTH_SHORT).show();
+            status = false;
         } else if (id == R.id.nav_signOut) {
             cerrarSesion();
         }
