@@ -241,7 +241,7 @@ public class Login extends AppCompatActivity {
     }
 
     private void map(){
-        Intent i= new Intent(this, Main2Activity.class);
+        Intent i= new Intent(this, MainActivity.class);
         startActivity(i);
         finish();
     }

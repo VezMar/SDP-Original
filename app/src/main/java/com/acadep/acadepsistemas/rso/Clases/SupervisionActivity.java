@@ -310,6 +310,8 @@ public class SupervisionActivity extends AppCompatActivity
 
     private com.github.clans.fab.FloatingActionButton actionButton_2_1;
 
+    private com.github.clans.fab.FloatingActionButton actionButton_3_1;
+
 
     private static List<Foto> multimedia = new ArrayList<>();
     private static List<Files> files = new ArrayList<>();
@@ -437,6 +439,10 @@ public class SupervisionActivity extends AppCompatActivity
 
         actionButton_2_1 = findViewById(R.id.fab_action_2_1);
 
+        actionButton_3_1 = findViewById(R.id.fab_action_3_1);
+
+
+
 
         txtEstado = (TextView) findViewById(R.id.txtEstado);
 
@@ -454,7 +460,7 @@ public class SupervisionActivity extends AppCompatActivity
         txtTotal = (TextView) findViewById(R.id.txtTotal);
         txtTotal.setText("/" + number + unit);
 
-        btnEnviar = (FloatingTextButton) findViewById(R.id.btnEnviar);
+//        btnEnviar = (FloatingTextButton) findViewById(R.id.btnEnviar);
 
 
 
@@ -689,200 +695,292 @@ public class SupervisionActivity extends AppCompatActivity
                                                 }
                                             });
 
-
-//        btnFoto.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//
-//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-//                    if (checkSelfPermission(String.valueOf(Manifest.permission.CAMERA)) != PackageManager.PERMISSION_DENIED) {
-//                        ActivityCompat.requestPermissions(SupervisionActivity.this, new String[]{Manifest.permission.CAMERA}, 1);
-//                    }
-//                }
-//
-//                if (ActivityCompat.checkSelfPermission(getApplicationContext(),
-//                        WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-//
-//                    ActivityCompat.requestPermissions(SupervisionActivity.this,
-//                            new String[]{WRITE_EXTERNAL_STORAGE}, REQUEST_PERM_WRITE_STORAGE);
-//                } else {
-//                    locationStart();
-//
-//                    locationStart();
-//
-//
-//                    final CharSequence[] opciones = {"Tomar foto", "Tomar video", "Cancelar"};
-//                    final AlertDialog.Builder builder = new AlertDialog.Builder(SupervisionActivity.this);
-//
-//
-//                    builder.setTitle("Borrar archivos");
-//                    builder.setItems(opciones, new DialogInterface.OnClickListener() {
-//                        @Override
-//                        public void onClick(DialogInterface dialogInterface, int i) {
-//
-//                            if (opciones[i].equals("Tomar foto")) {
-//
-//                                GuardarInformacionImagenes();
-//                                takePhoto_AltaCalidad();
-//                            }
-//
-//                            if (opciones[i].equals("Tomar video")) {
-//
-//                                GuardarInformacionVideos();
-//                                takeVideo();
-//                            }
-//                        }
-//
-//                    });
-//                    builder.show();
-//                }
-//
-//            }
-//        });
+        actionButton_3_1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
 
-                        btnEnviar.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
+                if ((estado).equals("before") && cont1 > 0) {
+                    StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT, R.style.warningToast).show();
+                } else if ((estado).equals("during") && cont2 > 0) {
+                    StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT, R.style.warningToast).show();
+                } else if ((estado).equals("after") && cont3 > 0) {
+                    StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT, R.style.warningToast).show();
+                } else {
+
+                    Observation = edObserv.getText().toString();
+                    if (!Observation.equals("")) {
+                        if (contImg >= min_photos) {
+                            if (contImg > max_photos) {
+                                StyleableToast.makeText(getApplicationContext(), "El maximo de fotos es " + max_photos + " usted ha superado esa cantidad por " + (contImg - max_photos), Toast.LENGTH_SHORT, R.style.warningToast).show();
+                            } else {
+                                AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
+                                builder.setTitle("Confirmación");
+                                builder.setMessage("¿Está seguro de enviar? \n\n" + "Enviará " + contImg + " de " + max_photos + " elementos disponibles");
+                                StyleableToast.makeText(getApplicationContext(), "Una vez realizada, esta acción no se puede revertir", Toast.LENGTH_SHORT, R.style.warningToast).show();
+                                // builder.setCancelable(false);
+                                builder.setPositiveButton("Si", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+
+                                        ref_event.setId(idevent);
+                                        ref_event.setName(title);
 
 
-                                if ((estado).equals("before") && cont1 > 0) {
-                                    StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT, R.style.warningToast).show();
-                                } else if ((estado).equals("during") && cont2 > 0) {
-                                    StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT, R.style.warningToast).show();
-                                } else if ((estado).equals("after") && cont3 > 0) {
-                                    StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT, R.style.warningToast).show();
-                                } else {
+                                        if ((estado).equals("before")) {
 
-                                    Observation = edObserv.getText().toString();
-                                    if (!Observation.equals("")) {
-                                        if (contImg >= min_photos) {
-                                            if (contImg > max_photos) {
-                                                StyleableToast.makeText(getApplicationContext(), "El maximo de fotos es " + max_photos + " usted ha superado esa cantidad por " + (contImg - max_photos), Toast.LENGTH_SHORT, R.style.warningToast).show();
+
+                                            boolean before = true;
+
+
+                                            header = "before";
+                                            UUID uuid = UUID.randomUUID();
+                                            u = "" + uuid;
+
+                                            uploadAllImages();
+                                            uploadAllFiles();
+
+
+                                            BDFireStore.collection("events").document(idevent).update("status", 2);
+
+                                            BDFireStore.collection("events").document(idevent).update("advanced", 1);
+
+                                            //Toast.makeText(getApplicationContext(), "Datos ingresados", Toast.LENGTH_SHORT).show();
+
+
+                                            edObserv.setText("");
+                                            advanced = 1;
+
+
+                                        }
+
+                                        if ((estado).equals("during")) {
+
+
+                                            if (advanced <= Integer.parseInt(String.valueOf(edpercentage.getText()))) {
+                                                if (Integer.parseInt(String.valueOf(edpercentage.getText())) <= number) {
+
+                                                    advanced = Integer.parseInt(String.valueOf(edpercentage.getText()));
+
+                                                    boolean during = true;
+
+                                                    header = "before";
+                                                    UUID uuid = UUID.randomUUID();
+                                                    u = "" + uuid;
+
+
+                                                    uploadAllImages();
+                                                    uploadAllFiles();
+
+
+                                                    terminado = 2;
+
+                                                    BDFireStore.collection("events").document(idevent).update("advanced", advanced);
+
+                                                    edObserv.setText("");
+
+
+                                                } else {
+                                                    StyleableToast.makeText(getApplicationContext(), "El avance no puede ser mayor al 100%", Toast.LENGTH_LONG, R.style.warningToastMiddle).show();
+                                                }
                                             } else {
-                                                AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
-                                                builder.setTitle("Confirmación");
-                                                builder.setMessage("¿Está seguro de enviar? \n\n" + "Enviará " + contImg + " de " + max_photos + " elementos disponibles");
-                                                StyleableToast.makeText(getApplicationContext(), "Una vez realizada, esta acción no se puede revertir", Toast.LENGTH_SHORT, R.style.warningToast).show();
-                                                // builder.setCancelable(false);
-                                                builder.setPositiveButton("Si", new DialogInterface.OnClickListener() {
-                                                    @Override
-                                                    public void onClick(DialogInterface dialog, int which) {
-
-                                                        ref_event.setId(idevent);
-                                                        ref_event.setName(title);
+                                                StyleableToast.makeText(getApplicationContext(), "El avance no puede ser menor al anterior", Toast.LENGTH_LONG, R.style.warningToastMiddle).show();
+                                            }
 
 
-                                                        if ((estado).equals("before")) {
+                                        }
 
+                                        if ((estado).equals("after")) {
 
-                                                            boolean before = true;
+                                            boolean after = true;
 
-
-                                                            header = "before";
-                                                            UUID uuid = UUID.randomUUID();
-                                                            u = "" + uuid;
-
-                                                            uploadAllImages();
-                                                            uploadAllFiles();
-
-
-                                                            BDFireStore.collection("events").document(idevent).update("status", 2);
-
-                                                            BDFireStore.collection("events").document(idevent).update("advanced", 1);
-
-                                                            //Toast.makeText(getApplicationContext(), "Datos ingresados", Toast.LENGTH_SHORT).show();
-
-
-                                                            edObserv.setText("");
-                                                            advanced = 1;
-
-
-                                                        }
-
-                                                        if ((estado).equals("during")) {
-
-
-                                                            if (advanced <= Integer.parseInt(String.valueOf(edpercentage.getText()))) {
-                                                                if (Integer.parseInt(String.valueOf(edpercentage.getText())) <= number) {
-
-                                                                    advanced = Integer.parseInt(String.valueOf(edpercentage.getText()));
-
-                                                                    boolean during = true;
-
-                                                                    header = "before";
-                                                                    UUID uuid = UUID.randomUUID();
-                                                                    u = "" + uuid;
-
-
-                                                                    uploadAllImages();
-                                                                    uploadAllFiles();
-
-
-                                                                    terminado = 2;
-
-                                                                    BDFireStore.collection("events").document(idevent).update("advanced", advanced);
-
-                                                                    edObserv.setText("");
-
-
-                                                                } else {
-                                                                    StyleableToast.makeText(getApplicationContext(), "El avance no puede ser mayor al 100%", Toast.LENGTH_LONG, R.style.warningToastMiddle).show();
-                                                                }
-                                                            } else {
-                                                                StyleableToast.makeText(getApplicationContext(), "El avance no puede ser menor al anterior", Toast.LENGTH_LONG, R.style.warningToastMiddle).show();
-                                                            }
-
-
-                                                        }
-
-                                                        if ((estado).equals("after")) {
-
-                                                            boolean after = true;
-
-                                                            header = "before";
-                                                            UUID uuid = UUID.randomUUID();
-                                                            u = "" + uuid;
+                                            header = "before";
+                                            UUID uuid = UUID.randomUUID();
+                                            u = "" + uuid;
 
 //                                            StyleableToast.makeText(getApplicationContext(), "Datos ingresados", Toast.LENGTH_LONG, R.style.sucessToast).show();
 
 
-                                                            edObserv.setText("");
+                                            edObserv.setText("");
 
-                                                            uploadAllImages();
-                                                            uploadAllFiles();
+                                            uploadAllImages();
+                                            uploadAllFiles();
 
-                                                            BDFireStore.collection("events").document(idevent).update("advanced", advanced);
-
-
-                                                        }
+                                            BDFireStore.collection("events").document(idevent).update("advanced", advanced);
 
 
-                                                    }
-                                                });
-
-
-                                                builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-                                                    @Override
-                                                    public void onClick(DialogInterface dialog, int which) {
-
-                                                    }
-                                                });
-                                                builder.create().show();
-
-                                            }
-                                        } else {
-                                            StyleableToast.makeText(getApplicationContext(), "El número mínimo de fotos es " + min_photos, Toast.LENGTH_SHORT, R.style.warningToastMiddle).show();
                                         }
-                                    } else {
-                                        StyleableToast.makeText(getApplicationContext(), "El texto es necesario para poder enviar", Toast.LENGTH_SHORT, R.style.warningToastMiddle).show();
-                                    }
 
-                                }
+
+                                    }
+                                });
+
+
+                                builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+
+                                    }
+                                });
+                                builder.create().show();
 
                             }
+                        } else {
+                            StyleableToast.makeText(getApplicationContext(), "El número mínimo de fotos es " + min_photos, Toast.LENGTH_SHORT, R.style.warningToastMiddle).show();
+                        }
+                    } else {
+                        StyleableToast.makeText(getApplicationContext(), "El texto es necesario para poder enviar", Toast.LENGTH_SHORT, R.style.warningToastMiddle).show();
+                    }
 
-                        });
+                }
+
+            }
+        });
+
+
+
+//                        btnEnviar.setOnClickListener(new View.OnClickListener() {
+//                            @Override
+//                            public void onClick(View v) {
+//
+//
+//                                if ((estado).equals("before") && cont1 > 0) {
+//                                    StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT, R.style.warningToast).show();
+//                                } else if ((estado).equals("during") && cont2 > 0) {
+//                                    StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT, R.style.warningToast).show();
+//                                } else if ((estado).equals("after") && cont3 > 0) {
+//                                    StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT, R.style.warningToast).show();
+//                                } else {
+//
+//                                    Observation = edObserv.getText().toString();
+//                                    if (!Observation.equals("")) {
+//                                        if (contImg >= min_photos) {
+//                                            if (contImg > max_photos) {
+//                                                StyleableToast.makeText(getApplicationContext(), "El maximo de fotos es " + max_photos + " usted ha superado esa cantidad por " + (contImg - max_photos), Toast.LENGTH_SHORT, R.style.warningToast).show();
+//                                            } else {
+//                                                AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
+//                                                builder.setTitle("Confirmación");
+//                                                builder.setMessage("¿Está seguro de enviar? \n\n" + "Enviará " + contImg + " de " + max_photos + " elementos disponibles");
+//                                                StyleableToast.makeText(getApplicationContext(), "Una vez realizada, esta acción no se puede revertir", Toast.LENGTH_SHORT, R.style.warningToast).show();
+//                                                // builder.setCancelable(false);
+//                                                builder.setPositiveButton("Si", new DialogInterface.OnClickListener() {
+//                                                    @Override
+//                                                    public void onClick(DialogInterface dialog, int which) {
+//
+//                                                        ref_event.setId(idevent);
+//                                                        ref_event.setName(title);
+//
+//
+//                                                        if ((estado).equals("before")) {
+//
+//
+//                                                            boolean before = true;
+//
+//
+//                                                            header = "before";
+//                                                            UUID uuid = UUID.randomUUID();
+//                                                            u = "" + uuid;
+//
+//                                                            uploadAllImages();
+//                                                            uploadAllFiles();
+//
+//
+//                                                            BDFireStore.collection("events").document(idevent).update("status", 2);
+//
+//                                                            BDFireStore.collection("events").document(idevent).update("advanced", 1);
+//
+//                                                            //Toast.makeText(getApplicationContext(), "Datos ingresados", Toast.LENGTH_SHORT).show();
+//
+//
+//                                                            edObserv.setText("");
+//                                                            advanced = 1;
+//
+//
+//                                                        }
+//
+//                                                        if ((estado).equals("during")) {
+//
+//
+//                                                            if (advanced <= Integer.parseInt(String.valueOf(edpercentage.getText()))) {
+//                                                                if (Integer.parseInt(String.valueOf(edpercentage.getText())) <= number) {
+//
+//                                                                    advanced = Integer.parseInt(String.valueOf(edpercentage.getText()));
+//
+//                                                                    boolean during = true;
+//
+//                                                                    header = "before";
+//                                                                    UUID uuid = UUID.randomUUID();
+//                                                                    u = "" + uuid;
+//
+//
+//                                                                    uploadAllImages();
+//                                                                    uploadAllFiles();
+//
+//
+//                                                                    terminado = 2;
+//
+//                                                                    BDFireStore.collection("events").document(idevent).update("advanced", advanced);
+//
+//                                                                    edObserv.setText("");
+//
+//
+//                                                                } else {
+//                                                                    StyleableToast.makeText(getApplicationContext(), "El avance no puede ser mayor al 100%", Toast.LENGTH_LONG, R.style.warningToastMiddle).show();
+//                                                                }
+//                                                            } else {
+//                                                                StyleableToast.makeText(getApplicationContext(), "El avance no puede ser menor al anterior", Toast.LENGTH_LONG, R.style.warningToastMiddle).show();
+//                                                            }
+//
+//
+//                                                        }
+//
+//                                                        if ((estado).equals("after")) {
+//
+//                                                            boolean after = true;
+//
+//                                                            header = "before";
+//                                                            UUID uuid = UUID.randomUUID();
+//                                                            u = "" + uuid;
+//
+////                                            StyleableToast.makeText(getApplicationContext(), "Datos ingresados", Toast.LENGTH_LONG, R.style.sucessToast).show();
+//
+//
+//                                                            edObserv.setText("");
+//
+//                                                            uploadAllImages();
+//                                                            uploadAllFiles();
+//
+//                                                            BDFireStore.collection("events").document(idevent).update("advanced", advanced);
+//
+//
+//                                                        }
+//
+//
+//                                                    }
+//                                                });
+//
+//
+//                                                builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+//                                                    @Override
+//                                                    public void onClick(DialogInterface dialog, int which) {
+//
+//                                                    }
+//                                                });
+//                                                builder.create().show();
+//
+//                                            }
+//                                        } else {
+//                                            StyleableToast.makeText(getApplicationContext(), "El número mínimo de fotos es " + min_photos, Toast.LENGTH_SHORT, R.style.warningToastMiddle).show();
+//                                        }
+//                                    } else {
+//                                        StyleableToast.makeText(getApplicationContext(), "El texto es necesario para poder enviar", Toast.LENGTH_SHORT, R.style.warningToastMiddle).show();
+//                                    }
+//
+//                                }
+//
+//                            }
+//
+//                        });
 
 
 
@@ -1102,6 +1200,7 @@ public class SupervisionActivity extends AppCompatActivity
         Name_Archivo.remove(position);
         Type_Archivo.remove(position);
         archivoChecked.remove(position);
+        files.remove(position);
         mAdapterFiles.notifyItemRemoved(position);
         contUris--;
     }
@@ -1244,7 +1343,7 @@ public class SupervisionActivity extends AppCompatActivity
         String NOTIFICACION_CHANNEL_ID = "com.acadep.acadepsistemas.rso.test";
 
         int icono = R.mipmap.ic_launcher;
-        Intent intent = new Intent(SupervisionActivity.this, Main2Activity.class);
+        Intent intent = new Intent(SupervisionActivity.this, MainActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(SupervisionActivity.this, 0,intent, 0);
 
         NotificationCompat.Builder notiBuilder = new NotificationCompat.Builder(getApplicationContext(), NOTIFICACION_CHANNEL_ID);
@@ -1262,7 +1361,7 @@ public class SupervisionActivity extends AppCompatActivity
 
         notificationManager.notify(new Random().nextInt(), notiBuilder.build());
 
-        startActivity(new Intent(SupervisionActivity.this, com.acadep.acadepsistemas.rso.Clases.Main2Activity.class));
+        startActivity(new Intent(SupervisionActivity.this, MainActivity.class));
         }
     }
 
@@ -2461,7 +2560,7 @@ public class SupervisionActivity extends AppCompatActivity
             mifragment = new EventosFragment();
             FragmentoSeleccionado=true;
 
-           /*Intent intent= new Intent (Main2Activity.this, EventosActivity.class);
+           /*Intent intent= new Intent (MainActivity.this, EventosActivity.class);
             startActivity(intent);]*/
             //finish();
 
@@ -2518,7 +2617,7 @@ public class SupervisionActivity extends AppCompatActivity
         txtEstado.setVisibility(View.INVISIBLE);
         bottomNavigationView.setVisibility(View.INVISIBLE);
         edObserv.setVisibility(View.INVISIBLE);
-        btnEnviar.setVisibility(View.INVISIBLE);
+//        btnEnviar.setVisibility(View.INVISIBLE);
 
 
 

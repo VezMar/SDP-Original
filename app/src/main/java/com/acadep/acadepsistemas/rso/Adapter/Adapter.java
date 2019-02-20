@@ -37,7 +37,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.EventoviewHolder> impl
     @NonNull
     @Override
     public EventoviewHolder onCreateViewHolder(@NonNull ViewGroup parent, int i) {
-        View v = LayoutInflater.from(parent .getContext()).inflate(R.layout.row_recycler, parent,false);
+        View v = LayoutInflater.from(parent .getContext()).inflate(R.layout.row_recycler_eventos, parent,false);
         EventoviewHolder holder = new EventoviewHolder(v);
 
         v.setOnClickListener(this);

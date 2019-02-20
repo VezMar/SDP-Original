@@ -36,7 +36,7 @@ public class ActivityAdapter extends FirestoreRecyclerAdapter<Activity, Activity
     @NonNull
     @Override
     public ActivityHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.row_recycler_2, viewGroup, false);
+        View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.row_recycler_extra, viewGroup, false);
         return new ActivityHolder(v);
     }
 

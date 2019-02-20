@@ -111,7 +111,7 @@ public class EventoAdapter extends FirestoreRecyclerAdapter<Evento, EventoAdapte
     @NonNull
     @Override
     public EventoHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.row_recycler, viewGroup, false);
+        View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.row_recycler_eventos, viewGroup, false);
         return new EventoHolder(v);
     }
 

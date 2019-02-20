@@ -8,9 +8,9 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
-    <uses-feature
-        android:name="android.hardware.camera2"
-        android:required="true" />
+    <!--<uses-feature-->
+        <!--android:name="android.hardware.camera2"-->
+        <!--android:required="true" />-->
 
     <!-- uses-permission android:name="android.permission.CAMERA"/ -->
     <application
@@ -27,18 +27,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.acadep.acadepsistemas.rso.Clases.MainActivity" />
         <activity
-            android:name="com.acadep.acadepsistemas.rso.Clases.Main2Activity"
-            android:label="@string/app_name"
+            android:name="com.acadep.acadepsistemas.rso.Clases.MainActivity"
+            android:label="RSO"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name="com.acadep.acadepsistemas.rso.Clases.EventosActivity" />
         <activity
             android:name="com.acadep.acadepsistemas.rso.Clases.SupervisionActivity"
-            android:label="Reporte"
+            android:label="Evidencia"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name="com.acadep.acadepsistemas.rso.Clases.ExtraordinariosActivity" />
         <activity android:name="com.acadep.acadepsistemas.rso.Clases.ExtraActivity" />
 
         <service android:name="com.acadep.acadepsistemas.rso.Notificaciones.MiFirebaseMessagingService">
