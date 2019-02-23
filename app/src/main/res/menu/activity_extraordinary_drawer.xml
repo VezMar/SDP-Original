@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_perfil"
+            android:icon="@drawable/ic_account_circle_black_24dp"
+            android:title="Mi Perfil" />
+        <item
+            android:id="@+id/nav_acty"
+            android:icon="@drawable/ic_playlist_add_check_black_36dp"
+            android:title="Actividades" />
+        <item
+            android:id="@+id/nav_event"
+            android:icon="@drawable/ic_event_note_black_36dp"
+            android:title="Eventos" />
+        <item
+            android:id="@+id/nav_ext"
+            android:icon="@drawable/ic_error_outline_black_36dp"
+            android:title="Extraordinario" />
+
+    </group>
+
+    <item android:title="Cuenta">
+
+
+
+        <menu>
+            <item
+                android:id="@+id/nav_conf"
+                android:icon="@drawable/ic_settings_black_24dp"
+                android:title="Configuración" />
+            <item
+                android:id="@+id/nav_signOut"
+                android:icon="@drawable/ic_exit_to_app_black_36dp"
+                android:title="Cerrar Sesion" />
+        </menu>
+    </item>
+
+</menu>

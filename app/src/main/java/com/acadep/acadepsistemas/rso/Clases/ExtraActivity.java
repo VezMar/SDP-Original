@@ -28,8 +28,11 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -48,6 +51,7 @@ import android.widget.Toast;
 //import com.example.acadepsistemas.seguimiento.Manifest;
 import com.acadep.acadepsistemas.rso.Adapter.ArchivosAdapter;
 import com.acadep.acadepsistemas.rso.Adapter.RecyclerViewAdapter;
+import com.acadep.acadepsistemas.rso.Fragmentos.ExtraFragment;
 import com.acadep.acadepsistemas.rso.R;
 import com.acadep.acadepsistemas.rso.model.Activity;
 import com.acadep.acadepsistemas.rso.model.Extra;
@@ -128,12 +132,12 @@ public class ExtraActivity extends AppCompatActivity {
 
     private BottomNavigationView bottomNavigationView;
     private FloatingActionMenu floatingActionsMenu;
-    private com.github.clans.fab.FloatingActionButton actionButton_1;
-    private com.github.clans.fab.FloatingActionButton actionButton_2;
-    private com.github.clans.fab.FloatingActionButton actionButton_3;
-    private com.github.clans.fab.FloatingActionButton actionButton_4;
-    private com.github.clans.fab.FloatingActionButton actionButton_5;
-    private com.github.clans.fab.FloatingActionButton actionButton_6;
+    private com.github.clans.fab.FloatingActionButton actionButton_Take_photo;
+    private com.github.clans.fab.FloatingActionButton actionButton_Take_video;
+    private com.github.clans.fab.FloatingActionButton actionButton_Upload_PDF;
+    private com.github.clans.fab.FloatingActionButton actionButton_Upload_Docx;
+    private com.github.clans.fab.FloatingActionButton actionButton_Upload_Video;
+    private com.github.clans.fab.FloatingActionButton actionButton_Upload_Audio;
 
     private com.github.clans.fab.FloatingActionButton actionButton_2_1;
 
@@ -271,6 +275,7 @@ public class ExtraActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_extra);
 
+    
 
         recibirDatos();
         inicializacionVariables();
@@ -289,16 +294,21 @@ public class ExtraActivity extends AppCompatActivity {
         floatingActionsMenu = findViewById(R.id.FloatingActionMenuPrincipal);
 //        floatingActionsMenu.setIconAnimated(false);
 
-        actionButton_1 = findViewById(R.id.fab_action_1);
-        actionButton_2 = findViewById(R.id.fab_action_2);
-        actionButton_3 = findViewById(R.id.fab_action_3);
-        actionButton_4 = findViewById(R.id.fab_action_4);
-        actionButton_5 = findViewById(R.id.fab_action_5);
-        actionButton_6 = findViewById(R.id.fab_action_6);
+        actionButton_Take_video = findViewById(R.id.fab_action_2);
+        actionButton_Take_photo = findViewById(R.id.fab_action_1);
+        actionButton_Upload_PDF = findViewById(R.id.fab_action_3);
+        actionButton_Upload_Docx = findViewById(R.id.fab_action_4);
+        actionButton_Upload_Video = findViewById(R.id.fab_action_5);
+        actionButton_Upload_Audio = findViewById(R.id.fab_action_6);
 
         actionButton_2_1 = findViewById(R.id.fab_action_2_1);
 
-
+//        actionButton_Take_video.bringToFront();
+//        actionButton_Take_photo.bringToFront();
+//        actionButton_Upload_PDF.bringToFront();
+//        actionButton_Upload_Docx.bringToFront();
+//        actionButton_Upload_Video.bringToFront();
+//        actionButton_Upload_Audio.bringToFront();
 
 
 
@@ -341,7 +351,7 @@ public class ExtraActivity extends AppCompatActivity {
         }
 
 
-        actionButton_1.setOnClickListener(new View.OnClickListener() {
+        actionButton_Take_photo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 GuardarInformacionImagenes();
@@ -352,7 +362,7 @@ public class ExtraActivity extends AppCompatActivity {
             }
         });
 
-        actionButton_2.setOnClickListener(new View.OnClickListener() {
+        actionButton_Take_video.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 GuardarInformacionVideos();
@@ -362,7 +372,7 @@ public class ExtraActivity extends AppCompatActivity {
             }
         });
 
-        actionButton_3.setOnClickListener(new View.OnClickListener() {
+        actionButton_Upload_PDF.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 GuardarInformacionArchivos();
@@ -381,7 +391,7 @@ public class ExtraActivity extends AppCompatActivity {
             }
         });
 
-        actionButton_4.setOnClickListener(new View.OnClickListener() {
+        actionButton_Upload_Docx.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 GuardarInformacionArchivos();
@@ -400,7 +410,7 @@ public class ExtraActivity extends AppCompatActivity {
             }
         });
 
-        actionButton_5.setOnClickListener(new View.OnClickListener() {
+        actionButton_Upload_Video.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 GuardarInformacionArchivos();
@@ -419,7 +429,7 @@ public class ExtraActivity extends AppCompatActivity {
             }
         });
 
-        actionButton_6.setOnClickListener(new View.OnClickListener() {
+        actionButton_Upload_Audio.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 GuardarInformacionArchivos();
@@ -529,6 +539,7 @@ public class ExtraActivity extends AppCompatActivity {
 
             }
         });
+
     }
 
     private  boolean checkPermissions() {

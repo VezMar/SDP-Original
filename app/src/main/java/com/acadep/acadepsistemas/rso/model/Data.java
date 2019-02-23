@@ -8,6 +8,7 @@ public class Data {
     String description;
     String header;
     Total total;
+    private boolean read;
     private Ref_event ref_event = new Ref_event();
     private double Lat;
     private double Lng;
@@ -19,16 +20,25 @@ public class Data {
     public Data() {
     }
 
-    public Data(String created_at, String description, String header, Total total, Ref_event ref_event, double lat, double lng, List<Foto> multimedia, List<Files> files) {
+    public Data(String created_at, String description, String header, Total total, boolean read, Ref_event ref_event, double lat, double lng, List<Foto> multimedia, List<Files> files) {
         this.created_at = created_at;
         this.description = description;
         this.header = header;
         this.total = total;
+        this.read = read;
         this.ref_event = ref_event;
         Lat = lat;
         Lng = lng;
         this.multimedia = multimedia;
         this.files = files;
+    }
+
+    public boolean isRead() {
+        return read;
+    }
+
+    public void setRead(boolean read) {
+        this.read = read;
     }
 
     public String getCreated_at() {

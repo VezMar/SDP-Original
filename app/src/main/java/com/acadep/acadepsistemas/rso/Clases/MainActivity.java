@@ -1,5 +1,6 @@
 package com.acadep.acadepsistemas.rso.Clases;
 
+import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -16,22 +17,29 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.acadep.acadepsistemas.rso.Fragmentos.ActivitysFragment;
 import com.acadep.acadepsistemas.rso.Fragmentos.EventosFragment;
 import com.acadep.acadepsistemas.rso.Notificaciones.MiFirebaseMessagingService;
 import com.acadep.acadepsistemas.rso.R;
+import com.acadep.acadepsistemas.rso.model.Usuario;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 
 import com.onesignal.OneSignal;
+
+import org.w3c.dom.Text;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -41,19 +49,22 @@ public class MainActivity extends AppCompatActivity
 
     Fragment currentFragment;
 
-    FirebaseAuth mAuth;
+    FirebaseAuth mAuth  = FirebaseAuth.getInstance();
     FirebaseFirestore BDFireStore = FirebaseFirestore.getInstance();
 
     public String rolesUser;
     DatabaseReference mDatabase;
 
     TextView txtBienvenida;
+    TextView txtCorreo;
 
 
+    static String Correo;
     int cont=0;
 
     private BroadcastReceiver broadcastReceiver;
 
+    @SuppressLint("WrongViewCast")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,7 +76,39 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        View headerView = navigationView.getHeaderView(0);
+        txtCorreo =(TextView) headerView.findViewById(R.id.txtCorreo_Main);
+
+
+
+
         mAuth = FirebaseAuth.getInstance();
+
+
+        BDFireStore.collection("users").document(mAuth.getUid()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                Usuario usuario = documentSnapshot.toObject(Usuario.class);
+                Correo = usuario.getEmail();
+            }
+        }).addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                txtCorreo.setText(""+Correo);
+
+                Fragment mifragment = null;
+                mifragment = new EventosFragment();
+                if(cont<1){
+                    ocultarItems();
+                    getSupportFragmentManager()
+                            .beginTransaction()
+                            .replace(R.id.Contenedor, mifragment)
+                            .commit();
+                    cont++;
+                }
+            }
+        });
 
         FirebaseInstanceId.getInstance().getInstanceId()
                 .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
@@ -94,16 +137,7 @@ public class MainActivity extends AppCompatActivity
 //        Log.i("Token-Key", "Este es el token " + SharedPrefManager.getInstance(this).getToken());
 //        Log.i("Token-Key", "Este es el token " + );
 
-        Fragment mifragment = null;
-        mifragment = new EventosFragment();
-        if(cont<1){
-            ocultarItems();
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.Contenedor, mifragment)
-                    .commit();
-            cont++;
-        }
+
 
      /*mDatabase.addValueEventListener(new ValueEventListener() {
             @Override
@@ -163,7 +197,7 @@ public class MainActivity extends AppCompatActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+//        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
     }
 
@@ -213,8 +247,8 @@ public class MainActivity extends AppCompatActivity
         }else if (id == R.id.nav_acty) {
             Toast.makeText(getApplicationContext(),"Aún en proceso",Toast.LENGTH_SHORT).show();
             status = false;
-//                        startActivity(new Intent(this, com.acadep.acadepsistemas.rso.Clases.MaterialsCheckList.class));
-//                        startActivity(new Intent(this, com.acadep.acadepsistemas.rso.Clases.RecyclerTest.class));
+//                        startActivity(new Intent(this, com.acadep.acadepsistemas.rso.Clases.Prueba.MaterialsCheckList.class));
+//                        startActivity(new Intent(this, com.acadep.acadepsistemas.rso.Clases.Prueba.RecyclerTest.class));
         } else if (id == R.id.nav_event) {
             mifragment = new EventosFragment();
             FragmentoSeleccionado=true;
@@ -225,11 +259,11 @@ public class MainActivity extends AppCompatActivity
            //finish();
             status = true;
         }else if (id == R.id.nav_ext) {
-            Toast.makeText(getApplicationContext(),"Aún en proceso",Toast.LENGTH_SHORT).show();
-            item.setChecked(false);
-            status = false;
-//            mifragment = new ActivitysFragment();
-//            FragmentoSeleccionado=true;
+//            Toast.makeText(getApplicationContext(),"Aún en proceso",Toast.LENGTH_SHORT).show();
+//            item.setChecked(false);
+//            status = false;
+            mifragment = new ActivitysFragment();
+            FragmentoSeleccionado=true;
 
         }else if (id == R.id.nav_conf) {
             Toast.makeText(getApplicationContext(),"Aún en proceso",Toast.LENGTH_SHORT).show();

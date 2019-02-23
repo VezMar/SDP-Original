@@ -17,7 +17,7 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
-    
+
     <style name="customfab">
         <item name="android:background">@drawable/fab_label_background</item>
         <item name="android:textColor">#FFFFFF</item>
@@ -33,8 +33,10 @@
         <item name="stStrokeColor">#f55145</item>
         <item name="stIconStart">@drawable/ic_warning_black_24dp</item>
         <item name="stIconEnd">@drawable/ic_warning_black_24dp</item>
-        <item name="stLength">LONG</item> LONG or SHORT
-        <item name="stGravity">top</item> top or center
+        <item name="stLength">LONG</item>
+        LONG or SHORT
+        <item name="stGravity">top</item>
+        top or center
         <item name="stRadius">5dp</item>
     </style>
 
@@ -47,8 +49,10 @@
         <item name="stStrokeWidth">3dp</item>
         <item name="stStrokeColor">#ffbf0f</item>
         <item name="stIconStart">@drawable/ic_error_outline_black_24dp</item>
-        <item name="stLength">LONG</item> LONG or SHORT
-        <item name="stGravity">top</item> top or center
+        <item name="stLength">LONG</item>
+        LONG or SHORT
+        <item name="stGravity">top</item>
+        top or center
         <item name="stRadius">5dp</item>
     </style>
 
@@ -61,8 +65,10 @@
         <item name="stStrokeWidth">3dp</item>
         <item name="stStrokeColor">#ffbf0f</item>
         <item name="stIconStart">@drawable/ic_error_outline_black_24dp</item>
-        <item name="stLength">LONG</item> LONG or SHORT
-        <item name="stGravity">center</item> top or center
+        <item name="stLength">LONG</item>
+        LONG or SHORT
+        <item name="stGravity">center</item>
+        top or center
         <item name="stRadius">5dp</item>
     </style>
 
@@ -75,8 +81,10 @@
         <item name="stStrokeWidth">3dp</item>
         <item name="stStrokeColor">#00cae3</item>
         <item name="stIconStart">@drawable/ic_check_circle_black_24dp</item>
-        <item name="stLength">LONG</item> LONG or SHORT
-        <item name="stGravity">top</item> top or center
+        <item name="stLength">LONG</item>
+        LONG or SHORT
+        <item name="stGravity">top</item>
+        top or center
         <item name="stRadius">5dp</item>
     </style>
 
@@ -89,8 +97,10 @@
         <item name="stStrokeWidth">3dp</item>
         <item name="stStrokeColor">#5ea949</item>
         <item name="stIconStart">@drawable/ic_check_circle_black_24dp</item>
-        <item name="stLength">LONG</item> LONG or SHORT
-        <item name="stGravity">top</item> top or center
+        <item name="stLength">LONG</item>
+        LONG or SHORT
+        <item name="stGravity">top</item>
+        top or center
         <item name="stRadius">5dp</item>
     </style>
 

@@ -20,8 +20,10 @@ import com.acadep.acadepsistemas.rso.R;
 import com.acadep.acadepsistemas.rso.model.Evento;
 import com.acadep.acadepsistemas.rso.model.Recursos;
 import com.acadep.acadepsistemas.rso.model.Total;
+import com.acadep.acadepsistemas.rso.model.Usuario;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -47,7 +49,7 @@ public class EventosFragment extends Fragment {
     public String user_id;
     static boolean activeStatus;
     static String nameEvent;
-    FirebaseAuth mAuth;
+    FirebaseAuth mAuth = FirebaseAuth.getInstance();
     DatabaseReference mDatabase;
 
     com.acadep.acadepsistemas.rso.Adapter.EventoAdapter EventAdapter;
@@ -58,6 +60,12 @@ public class EventosFragment extends Fragment {
 
     TextView EventosPendientes;
     RecyclerView rv;
+
+
+    TextView txtCorreo;
+
+
+    static String Correo;
 
 
     ArrayList<Evento> list;
@@ -72,7 +80,11 @@ public class EventosFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
 
+
+
         final View view = inflater.inflate(R.layout.fragment_eventos, container, false);
+
+
         rv = (RecyclerView) view.findViewById(R.id.recycler);
         EventosPendientes = (TextView) view.findViewById(R.id.txtEventosPendientes);
 
@@ -83,7 +95,6 @@ public class EventosFragment extends Fragment {
 
         list = new ArrayList<Evento>();
 
-        mAuth = FirebaseAuth.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
         uidUserGlobal = user.getUid();
         contEventos=0;

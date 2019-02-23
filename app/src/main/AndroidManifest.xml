@@ -8,10 +8,9 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
-    <!--<uses-feature-->
-        <!--android:name="android.hardware.camera2"-->
-        <!--android:required="true" />-->
-
+    <!-- <uses-feature -->
+    <!-- android:name="android.hardware.camera2" -->
+    <!-- android:required="true" /> -->
     <!-- uses-permission android:name="android.permission.CAMERA"/ -->
     <application
         android:allowBackup="true"
@@ -20,7 +19,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name="com.acadep.acadepsistemas.rso.Clases.Login">
+        <activity android:name=".Clases.Login">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -28,25 +27,25 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.acadep.acadepsistemas.rso.Clases.MainActivity"
+            android:name=".Clases.MainActivity"
             android:label="RSO"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name="com.acadep.acadepsistemas.rso.Clases.SupervisionActivity"
+            android:name=".Clases.SupervisionActivity"
             android:label="Evidencia"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name="com.acadep.acadepsistemas.rso.Clases.ExtraActivity" />
+        <activity android:name=".Clases.ExtraActivity" />
 
-        <service android:name="com.acadep.acadepsistemas.rso.Notificaciones.MiFirebaseMessagingService">
+        <service android:name=".Notificaciones.MiFirebaseMessagingService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
 
-        <activity android:name="com.acadep.acadepsistemas.rso.Clases.RecuperacionContrasena" />
+        <activity android:name=".Clases.RecuperacionContrasena" />
         <activity
-            android:name="com.acadep.acadepsistemas.rso.Clases.RecyclerTest"
+            android:name=".Clases.Prueba.RecyclerTest"
             android:screenOrientation="portrait" />
 
         <provider
@@ -61,7 +60,11 @@
                 tools:replace="android:resource" />
         </provider>
 
-        <activity android:name="com.acadep.acadepsistemas.rso.Clases.MaterialsCheckList"></activity>
+        <activity android:name=".Clases.Prueba.MaterialsCheckList" />
+        <activity
+            android:name=".Clases.ExtraordinaryActivity"
+            android:label="Extraordinario"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

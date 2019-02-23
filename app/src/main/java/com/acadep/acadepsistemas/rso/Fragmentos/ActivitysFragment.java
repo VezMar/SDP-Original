@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 
 import com.acadep.acadepsistemas.rso.Adapter.ActivityAdapter;
 import com.acadep.acadepsistemas.rso.Clases.ExtraActivity;
+import com.acadep.acadepsistemas.rso.Clases.ExtraordinaryActivity;
 import com.acadep.acadepsistemas.rso.R;
 import com.acadep.acadepsistemas.rso.model.Activity;
 import com.acadep.acadepsistemas.rso.model.Evento;
@@ -65,7 +66,8 @@ public class ActivitysFragment extends Fragment {
 
                 String activity_id = evento.getActivity_id();
 
-                Intent intent = new Intent(getActivity(), ExtraActivity.class);
+                Intent intent = new Intent(getActivity(), ExtraordinaryActivity.class);
+//                Intent intent = new Intent(getActivity(), ExtraActivity.class);
                 intent.putExtra("activity_id", activity_id);
 
                 startActivity(intent);

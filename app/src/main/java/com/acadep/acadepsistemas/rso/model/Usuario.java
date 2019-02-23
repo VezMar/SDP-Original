@@ -2,88 +2,61 @@ package com.acadep.acadepsistemas.rso.model;
 
 public class Usuario {
 
-    private String activo;
-    private String apellido;
-    private String correo;
-    private String nombre;
-    private String rol;
-    private String uid;
-
+    private String email;
+    private String id;
+    private String name;
+    private role role;
+    private String token;
 
     public Usuario(){
 
     }
 
-    public Usuario(String activo, String apellido, String correo, String nombre, String rol, String uid) {
-        this.activo = activo;
-        this.apellido = apellido;
-        this.correo = correo;
-        this.nombre = nombre;
-        this.rol = rol;
-        this.uid = uid;
+    public Usuario(String email, String id, String name, com.acadep.acadepsistemas.rso.model.role role, String token) {
+        this.email = email;
+        this.id = id;
+        this.name = name;
+        this.role = role;
+        this.token = token;
     }
 
-    // ------------------------------------
-
-
-    @Override
-    public String toString() {
-        return "Usuario{" +
-                "activo='" + activo + '\'' +
-                ", apellido='" + apellido + '\'' +
-                ", correo='" + correo + '\'' +
-                ", nombre='" + nombre + '\'' +
-                ", rol='" + rol + '\'' +
-                ", uid='" + uid + '\'' +
-                '}';
+    public String getToken() {
+        return token;
     }
 
-    //-----------------------------------
-    public String getActivo() {
-        return activo;
+    public void setToken(String token) {
+        this.token = token;
     }
 
-    public void setActivo(String activo) {
-        this.activo = activo;
+    public String getEmail() {
+        return email;
     }
 
-    public String getApellido() {
-        return apellido;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
-    public void setApellido(String apellido) {
-        this.apellido = apellido;
+    public String getId() {
+        return id;
     }
 
-    public String getCorreo() {
-        return correo;
+    public void setId(String id) {
+        this.id = id;
     }
 
-    public void setCorreo(String correo) {
-        this.correo = correo;
+    public String getName() {
+        return name;
     }
 
-    public String getNombre() {
-        return nombre;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
+    public com.acadep.acadepsistemas.rso.model.role getRole() {
+        return role;
     }
 
-    public String getRol() {
-        return rol;
-    }
-
-    public void setRol(String rol) {
-        this.rol = rol;
-    }
-
-    public String getUid() {
-        return uid;
-    }
-
-    public void setUid(String uid) {
-        this.uid = uid;
+    public void setRole(com.acadep.acadepsistemas.rso.model.role role) {
+        this.role = role;
     }
 }
