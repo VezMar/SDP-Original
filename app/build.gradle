@@ -21,8 +21,8 @@ android {
         applicationId "com.acadep.acadepsistemas.rso"
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 5
-        versionName "1.5"
+        versionCode 6
+        versionName "1.6"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         manifestPlaceholders = [onesignal_app_id               : "a0f6884c-8ccf-4e51-9c1a-ba4b73c933c4",
                                 // Project number pulled from dashboard, local value is ignored.
@@ -33,6 +33,12 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+    }
+}
+
+android {
+    lintOptions {
+        abortOnError false
     }
 }
 

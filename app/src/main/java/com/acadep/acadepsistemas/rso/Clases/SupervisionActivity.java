@@ -398,6 +398,11 @@ public class SupervisionActivity extends AppCompatActivity
         today.setToNow();
 
 
+        mensaje1 = (TextView) findViewById(R.id.txtLat);
+        mensaje2 = (TextView) findViewById(R.id.txtLng);
+
+        mensaje1.setVisibility(View.INVISIBLE);
+        mensaje2.setVisibility(View.INVISIBLE);
 
         //init();
 
@@ -480,11 +485,6 @@ public class SupervisionActivity extends AppCompatActivity
 
         // GPSSSSSSSSSSSSSSSSSSSSS
 
-        mensaje1 = (TextView) findViewById(R.id.txtLat);
-        mensaje2 = (TextView) findViewById(R.id.txtLng);
-
-        mensaje1.setVisibility(View.INVISIBLE);
-        mensaje2.setVisibility(View.INVISIBLE);
 
 //        txtFecha  = (TextView) findViewById(R.id.txtFecha);
 //        txtHora  = (TextView) findViewById(R.id.txtHora);
@@ -565,7 +565,6 @@ public class SupervisionActivity extends AppCompatActivity
         actionButton_Take_photo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                GuardarInformacionImagenes();
                 takePhoto_AltaCalidad();
 
                 floatingActionsMenu.close(true);
@@ -1074,7 +1073,7 @@ public class SupervisionActivity extends AppCompatActivity
     }
 
     private void ChequeoConfiguration() {
-
+        locationStart();
         BDFireStore
                 .collection("configuration")
                 .document("global")
@@ -1431,52 +1430,6 @@ public class SupervisionActivity extends AppCompatActivity
 
 
 
-
-
-
-//        BDFireStore.collection("events")
-//                .document(idevent)
-//                .collection("observation")
-//                .get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-//                                                @Override
-//                                                public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-//
-//                                                    for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots){
-//
-//                                                        Data check = documentSnapshot.toObject(Data.class);
-//                                                        Data2 check2 = documentSnapshot.toObject(Data2.class);
-//                                                        Data3 check3 = documentSnapshot.toObject(Data3.class);
-//
-//                                                        if(check.isBefore()==true) {
-//                                                            cont1++;
-//                                                            bottomNavigationView.getSelectedItemId();
-//                                                            bottomNavigationView.setEnabled(false);
-//                                                            bottomNavigationView.setSelectedItemId(R.id.itemDurante);
-//                                                            estado = "during";
-//                                                            txtEstado.setText("Durante el Evento");
-//                                                        }
-//
-//                                                        if(check2.isDuring()==true) {
-//                                                            cont2++;
-//                                                            bottomNavigationView.getSelectedItemId();
-//                                                            bottomNavigationView.setEnabled(false);
-//                                                            bottomNavigationView.setSelectedItemId(R.id.itemDespues);
-//                                                            estado = "after";
-//                                                            txtEstado.setText("Después del Evento");
-//                                                        }
-//
-//                                                        if(check3.isAfter()==true) {
-//                                                            cont3++;
-//                                                            StyleableToast.makeText(getApplicationContext(), "Evento terminado", Toast.LENGTH_SHORT, R.style.doneToast).show();
-//
-//                                                        }
-//
-//                                                    }
-//
-//                                                }
-//                                            });
-
-
     }
 
     private void locationStart() {
@@ -1547,7 +1500,6 @@ public class SupervisionActivity extends AppCompatActivity
 //            }
 //        }
 //    }
-
 
 
     /* Aqui empieza la Clase Localizacion */
@@ -1826,6 +1778,8 @@ public class SupervisionActivity extends AppCompatActivity
             addImage( Uri.fromFile(new File(filePath)), 0, "Photo");
 //            ListVideos.add(0, Uri.fromFile(new File(filePath)));
             contImg++;
+            GuardarInformacionImagenes();
+
         }
 
         if(requestCode == REQUEST_VIDEO_CAPTURE && resultCode == RESULT_OK) {
@@ -2149,9 +2103,9 @@ public class SupervisionActivity extends AppCompatActivity
     private void Subirdatos() {
         created_at_funct();
         Total total = new Total();
-        total.setNumber(advanced);
+        total.setNumber(number);
         total.setUnit(unit);
-        Data data = new Data(created_at, Observation, header, total, false ,ref_event, Lat, Lng, multimedia, files);
+        Data data = new Data(advanced, created_at, Observation, header, total, false ,ref_event, Lat, Lng, multimedia, files);
         BDFireStore.collection("evidence").document(u).set(data, SetOptions.merge()).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
@@ -2360,6 +2314,8 @@ public class SupervisionActivity extends AppCompatActivity
             };
 
     private void recibirDatos() {
+        locationStart();
+
         Bundle extras = getIntent().getExtras();
         idevent = extras.getString("idEvento");
         nameEvent = extras.getString("nameEvent");

@@ -8,6 +8,7 @@ public class Configuration {
     int max_photos;
     int min_photos;
     List<String> materials;
+    int versionCode;
 
     public Configuration() {
     }
@@ -19,11 +20,20 @@ public class Configuration {
 //    }
 
 
-    public Configuration(List<Event_types> activitys_types, int max_photos, int min_photos, List<String> materials) {
-        this.event_types = activitys_types;
+    public Configuration(List<Event_types> event_types, int max_photos, int min_photos, List<String> materials, int versionCode) {
+        this.event_types = event_types;
         this.max_photos = max_photos;
         this.min_photos = min_photos;
         this.materials = materials;
+        this.versionCode = versionCode;
+    }
+
+    public int getVersionCode() {
+        return versionCode;
+    }
+
+    public void setVersionCode(int versionCode) {
+        this.versionCode = versionCode;
     }
 
     public List<String> getMaterials() {

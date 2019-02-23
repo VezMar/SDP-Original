@@ -2,10 +2,13 @@ package com.acadep.acadepsistemas.rso.Clases;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
@@ -13,13 +16,18 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.acadep.acadepsistemas.rso.R;
+import com.acadep.acadepsistemas.rso.model.Configuration;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.muddzdev.styleabletoast.StyleableToast;
 
 public class Login extends AppCompatActivity {
 
@@ -33,8 +41,11 @@ public class Login extends AppCompatActivity {
     DatabaseReference mDatabase;
     FirebaseAuth.AuthStateListener listener;
 
+    FirebaseFirestore BDFireStore = FirebaseFirestore.getInstance();
+
     public String uidUserGlobal;
 
+    static int versionCode, lastestVersionCode;
     @SuppressLint("WrongViewCast")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,63 +69,16 @@ public class Login extends AppCompatActivity {
 
         mDatabase = FirebaseDatabase.getInstance().getReference(getString(R.string.nodo_Usuario));
 
-       /* mDatabase.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                FirebaseUser user = mAuth.getCurrentUser();
-                for(DataSnapshot datasnapshot: dataSnapshot.getChildren()){
+        PackageInfo pInfo = null;
+        try {
+            pInfo = getApplicationContext().getPackageManager().getPackageInfo(getPackageName(), 0);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        Log.i("Code version ", ""+ pInfo.versionCode);
 
-                    Usuario usuario = datasnapshot.getValue(Usuario.class);
+        versionCode = pInfo.versionCode;
 
-                     String activo = usuario.getActivo();
-                     String apellido = usuario.getApellido();
-                     String correo = usuario.getCorreo();
-                     String nombre = usuario.getNombre();
-                     String rol = usuario.getRol();
-                     String uid = usuario.getUid();
-
-                    if (user.getUid() == uid){
-                        rolesUser = rol;
-                    }
-
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });*/
-/*
-        btnMostrar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-
-              / Intent intent= new Intent (Login.this, EventosActivity.class);
-                startActivity(intent);
-                String ad = "admin";
-                Query q = mDatabase.orderByChild(getString(R.string.campo_rol)).equalTo(ad);
-
-               q.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        int cont=0;
-                        for(DataSnapshot datasnapshot: dataSnapshot.getChildren()){
-                            cont++;
-
-                        }
-                        Toast.makeText(Login.this, "Hubo " + cont, Toast.LENGTH_SHORT).show();
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                    }
-                });
-
-            }
-        });*/
 
 
         mAuth = FirebaseAuth.getInstance();
@@ -128,16 +92,36 @@ public class Login extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(),"Sesion cerrada",Toast.LENGTH_SHORT).show();
                 }else{
                     //ESTA LOGUEADO
-                    Toast.makeText(getApplicationContext(),"Sesion iniciada",Toast.LENGTH_SHORT).show();
 
-                    map();
+
+                    BDFireStore
+                            .collection("configuration")
+                            .document("global")
+                            .get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                        @Override
+                        public void onSuccess(DocumentSnapshot documentSnapshot) {
+                            Configuration configuration = documentSnapshot.toObject(Configuration.class);
+                            lastestVersionCode = configuration.getVersionCode();
+                        }
+                    }).addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+
+                            if(versionCode >= lastestVersionCode) {
+                                Toast.makeText(getApplicationContext(), "Sesion iniciada", Toast.LENGTH_SHORT).show();
+                                map();
+                            }else{
+                                StyleableToast.makeText(Login.this, "Hay una nueva versión disponible, favor de actualizar" , Toast.LENGTH_LONG, R.style.warningToastMiddle).show();
+                            }
+                        }
+                    });
+                }
+
 
                     //rolesUser = getIntent().getExtras().get("rol").toString();
 
                     //Log.d("ROLUSER", "ESTADO: " + rolesUser);
                 }
-
-            }
         };
 
         btnLogin.setOnClickListener(new View.OnClickListener() {
@@ -208,21 +192,25 @@ public class Login extends AppCompatActivity {
         String User = txtUser.getText().toString();
         String password = txtPsd.getText().toString();
 
-        if(!User.isEmpty() && !password.isEmpty()){
-            prgsBar.setVisibility(View.VISIBLE);
-            mAuth.signInWithEmailAndPassword(User,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                @Override
-                public void onComplete(@NonNull Task<AuthResult> task) {
-                    if (task.isSuccessful()) {
-                        Toast.makeText(getApplicationContext(), "CORRECTO", Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(getApplicationContext(), "INCORRECTO", Toast.LENGTH_SHORT).show();
+        if(versionCode>=lastestVersionCode){
+            if (!User.isEmpty() && !password.isEmpty()) {
+                prgsBar.setVisibility(View.VISIBLE);
+                mAuth.signInWithEmailAndPassword(User, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            Toast.makeText(getApplicationContext(), "CORRECTO", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(getApplicationContext(), "INCORRECTO", Toast.LENGTH_SHORT).show();
+                        }
+                        prgsBar.setVisibility(View.INVISIBLE);
                     }
-                    prgsBar.setVisibility(View.INVISIBLE);
-                }
-            });
+                });
+            } else {
+                Toast.makeText(getApplicationContext(), "Ingrese el usuario y contraseña", Toast.LENGTH_SHORT).show();
+            }
         }else{
-            Toast.makeText(getApplicationContext(), "Ingrese el usuario y contraseña", Toast.LENGTH_SHORT).show();
+            StyleableToast.makeText(Login.this, "Hay una nueva versión disponible, favor de actualizar" , Toast.LENGTH_LONG, R.style.warningToastMiddle).show();
         }
     }
 

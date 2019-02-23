@@ -4,6 +4,7 @@ import java.util.List;
 
 public class Data {
 
+    int advanced;
     String created_at;
     String description;
     String header;
@@ -20,7 +21,8 @@ public class Data {
     public Data() {
     }
 
-    public Data(String created_at, String description, String header, Total total, boolean read, Ref_event ref_event, double lat, double lng, List<Foto> multimedia, List<Files> files) {
+    public Data(int advanced, String created_at, String description, String header, Total total, boolean read, Ref_event ref_event, double lat, double lng, List<Foto> multimedia, List<Files> files) {
+        this.advanced = advanced;
         this.created_at = created_at;
         this.description = description;
         this.header = header;
@@ -33,12 +35,12 @@ public class Data {
         this.files = files;
     }
 
-    public boolean isRead() {
-        return read;
+    public int getAdvanced() {
+        return advanced;
     }
 
-    public void setRead(boolean read) {
-        this.read = read;
+    public void setAdvanced(int advanced) {
+        this.advanced = advanced;
     }
 
     public String getCreated_at() {
@@ -71,6 +73,14 @@ public class Data {
 
     public void setTotal(Total total) {
         this.total = total;
+    }
+
+    public boolean isRead() {
+        return read;
+    }
+
+    public void setRead(boolean read) {
+        this.read = read;
     }
 
     public Ref_event getRef_event() {
