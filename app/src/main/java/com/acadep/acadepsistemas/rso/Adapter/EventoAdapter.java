@@ -102,8 +102,9 @@ public class EventoAdapter extends FirestoreRecyclerAdapter<Evento, EventoAdapte
 
 
 
-
-        holder.txtview_actividad.setText(evento.getType_activity());
+        holder.txtview_subProyecto.setText(evento.getSubproject_name());
+        holder.txtview_activity.setText(evento.getActivity_name());
+//        holder.txtview_actividad.setText(evento.getType_activity());
         holder.txtview_name.setText(evento.getTitle());
 
     }
@@ -120,17 +121,20 @@ public class EventoAdapter extends FirestoreRecyclerAdapter<Evento, EventoAdapte
     public class EventoHolder extends RecyclerView.ViewHolder{
 
         TextView txtview_actividad, txtview_trabajador,txtview_uid;
-        TextView txtview_name, txtview_start, txtview_end, txtview_active;
+        TextView txtview_name, txtview_start, txtview_end, txtview_active, txtview_subProyecto, txtview_activity;
         TextView txtDescripcion, txtHrs;
 
         public EventoHolder(@NonNull View itemView) {
             super(itemView);
 
-            txtview_actividad = (TextView) itemView.findViewById(R.id.txtview_actividad);
+//            txtview_actividad = (TextView) itemView.findViewById(R.id.txtview_actividad);
             //txtview_trabajador = (TextView) itemView.findViewById(R.id.txtview_trabajador);
             txtview_name = (TextView) itemView.findViewById(R.id.txtview_name);
             txtview_start = (TextView) itemView.findViewById(R.id.txtview_start);
             txtview_end = (TextView) itemView.findViewById(R.id.txtview_end);
+
+            txtview_subProyecto  = (TextView) itemView.findViewById(R.id.txtview_subProyecto);
+            txtview_activity  = (TextView) itemView.findViewById(R.id.txtview_activity);
 
             txtHrs = (TextView) itemView.findViewById(R.id.txtHrs);
             //txtDescripcion = (TextView) itemView.findViewById(R.id.txtDescripcion);

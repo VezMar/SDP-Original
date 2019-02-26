@@ -12,7 +12,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.acadep.acadepsistemas.rso.Adapter.EventoAdapter;
 import com.acadep.acadepsistemas.rso.Clases.SupervisionActivity;
@@ -32,6 +36,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
@@ -40,7 +46,7 @@ import java.util.List;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class EventosFragment extends Fragment {
+public class EventosFragment extends Fragment  {
 
     static int contEventos=0;
 
@@ -67,6 +73,10 @@ public class EventosFragment extends Fragment {
 
     static String Correo;
 
+    static ArrayList<String> arrayString = new ArrayList<String>();
+
+    Query mReference;
+
 
     ArrayList<Evento> list;
     com.acadep.acadepsistemas.rso.Adapter.Adapter adapter;
@@ -80,9 +90,36 @@ public class EventosFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
 
+//        arrayString.add("1");
+//        arrayString.add("2");
+//        arrayString.add("3");
+//        arrayString.add("4");
+//        arrayString.add("5");
+
 
 
         final View view = inflater.inflate(R.layout.fragment_eventos, container, false);
+//        Spinner spnProyectos = view.findViewById(R.id.SpnProyectos);
+//
+//        ArrayAdapter adapter = new ArrayAdapter(getContext(),  android.R.layout.simple_spinner_item, arrayString);
+//        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//        spnProyectos.setAdapter(adapter);
+//        spnProyectos.setOnItemSelectedListener(this);
+
+
+//        BDFireStore.collection("users").document(mAuth.getUid()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+//            @Override
+//            public void onSuccess(DocumentSnapshot documentSnapshot) {
+//                Usuario usuario = documentSnapshot.toObject(Usuario.class);
+//                Correo = usuario.getEmail();
+//            }
+//        }).addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+//            @Override
+//            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+//                txtCorreo.setText(""+Correo);
+//
+//            }
+//        });
 
 
         rv = (RecyclerView) view.findViewById(R.id.recycler);
@@ -120,11 +157,25 @@ public class EventosFragment extends Fragment {
     private void setUpRecyclerView() {
         //com.google.firebase.firestore.Query query = eventsReference.orderBy("end", com.google.firebase.firestore.Query.Direction.DESCENDING);
 
-        com.google.firebase.firestore.Query query = BDFireStore.collection("events").whereEqualTo("user_id", mAuth.getUid()).whereEqualTo("active",true);
+
+//        = BDFireStore.collection("events")
+//                .whereEqualTo("user_id", mAuth.getUid())
+//                    .whereEqualTo("active",true);
+        mReference = BDFireStore.collection("events")
+                .whereEqualTo("user_id", mAuth.getUid())
+                    .whereEqualTo("active",true)
+                        .orderBy("subproject_name", Query.Direction.ASCENDING);
+
+//        com.google.firebase.firestore.Query query = mReference.orderBy("subproject_name", Query.Direction.ASCENDING);
+
+//        query.orderBy("subproject_name", Query.Direction.DESCENDING);
+
+//                        .orderBy("subproject_name", Query.Direction.DESCENDING);
         //com.google.firebase.firestore.Query query = BDFireStore.collection("events").whereEqualTo("uid",  mAuth.getUid());
 
 
-        query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+
+        mReference.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
@@ -140,7 +191,7 @@ public class EventosFragment extends Fragment {
         });
 
         FirestoreRecyclerOptions<Evento> options = new FirestoreRecyclerOptions.Builder<Evento>()
-                .setQuery(query, Evento.class).build();
+                .setQuery(mReference, Evento.class).build();
 
         EventAdapter = new EventoAdapter(options);
 
@@ -236,5 +287,18 @@ public class EventosFragment extends Fragment {
 
     private void chequeoDevariables() {
     }
+
+//    public void onItemSelected(AdapterView<?> parent, View view,
+//                               int pos, long id) {
+//
+//        Toast.makeText(getContext(), ""+ arrayString.get(pos), Toast.LENGTH_SHORT).show();
+//        // An item was selected. You can retrieve the selected item using
+//        // parent.getItemAtPosition(pos)
+//    }
+//
+//    public void onNothingSelected(AdapterView<?> parent) {
+//        // Another interface callback
+//    }
+
 
 }

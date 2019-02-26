@@ -10,24 +10,24 @@ public class Data {
     String header;
     Total total;
     private boolean read;
+    private User user;
     private Ref_event ref_event = new Ref_event();
     private double Lat;
     private double Lng;
-
-
     List<Foto> multimedia;
     List<Files> files;
 
     public Data() {
     }
 
-    public Data(int advanced, String created_at, String description, String header, Total total, boolean read, Ref_event ref_event, double lat, double lng, List<Foto> multimedia, List<Files> files) {
+    public Data(int advanced, String created_at, String description, String header, Total total, boolean read, User user, Ref_event ref_event, double lat, double lng, List<Foto> multimedia, List<Files> files) {
         this.advanced = advanced;
         this.created_at = created_at;
         this.description = description;
         this.header = header;
         this.total = total;
         this.read = read;
+        this.user = user;
         this.ref_event = ref_event;
         Lat = lat;
         Lng = lng;
@@ -81,6 +81,14 @@ public class Data {
 
     public void setRead(boolean read) {
         this.read = read;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public Ref_event getRef_event() {

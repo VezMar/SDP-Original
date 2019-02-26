@@ -48,7 +48,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.EventoviewHolder> impl
     @Override
     public void onBindViewHolder(@NonNull EventoviewHolder holder, int position) {
 
-       holder.txtview_actividad.setText(evento.get(position).getType_activity());
+//       holder.txtview_actividad.setText(evento.get(position).getType_activity());
        // holder.txtview_uid.setText(evento.get(position).getUid());
         //holder.txtview_trabajador.setText(evento.get(position).getTrabajador());
         //holder.txtview_start.setText(evento.get(position).getStart());
@@ -85,7 +85,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.EventoviewHolder> impl
         public EventoviewHolder(@NonNull View itemView) {
             super(itemView);
 
-            txtview_actividad = (TextView) itemView.findViewById(R.id.txtview_actividad);
+//            txtview_actividad = (TextView) itemView.findViewById(R.id.txtview_actividad);
             //txtview_trabajador = (TextView) itemView.findViewById(R.id.txtview_trabajador);
             txtview_name = (TextView) itemView.findViewById(R.id.txtview_name);
             txtview_start = (TextView) itemView.findViewById(R.id.txtview_start);

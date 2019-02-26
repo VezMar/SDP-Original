@@ -3,7 +3,9 @@ package com.acadep.acadepsistemas.rso.Notificaciones;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -11,6 +13,8 @@ import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
+import com.acadep.acadepsistemas.rso.Clases.Login;
+import com.acadep.acadepsistemas.rso.Clases.MainActivity;
 import com.acadep.acadepsistemas.rso.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -83,6 +87,9 @@ public class MiFirebaseMessagingService extends FirebaseMessagingService {
 
         }
 
+        Intent resultIntent = new Intent(getApplicationContext(), Login.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 1, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
         NotificationCompat.Builder notiBuilder = new NotificationCompat.Builder(this, NOTIFICACION_CHANNEL_ID);
 
         notiBuilder.setAutoCancel(true)
@@ -92,7 +99,8 @@ public class MiFirebaseMessagingService extends FirebaseMessagingService {
                 .setContentTitle(title)
                 .setContentText(body)
                 .setSound(soundUri)
-                .setContentInfo("Info");
+                .setContentInfo("Info")
+                .setContentIntent(pendingIntent);
 
 
         notificationManager.notify(new Random().nextInt(), notiBuilder.build());
@@ -118,6 +126,10 @@ public class MiFirebaseMessagingService extends FirebaseMessagingService {
 
         }
 
+        Intent resultIntent = new Intent(getApplicationContext(), Login.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 1, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+
         NotificationCompat.Builder notiBuilder = new NotificationCompat.Builder(this, NOTIFICACION_CHANNEL_ID);
 
         notiBuilder.setAutoCancel(true)
@@ -127,7 +139,8 @@ public class MiFirebaseMessagingService extends FirebaseMessagingService {
                 .setContentTitle(title)
                 .setContentText(body)
                 .setSound(soundUri)
-                .setContentInfo("Info");
+                .setContentInfo("Info")
+                .setContentIntent(pendingIntent);
 
 
         notificationManager.notify(new Random().nextInt(), notiBuilder.build());

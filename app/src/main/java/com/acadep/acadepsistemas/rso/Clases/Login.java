@@ -27,6 +27,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firestore.admin.v1beta1.Progress;
 import com.muddzdev.styleabletoast.StyleableToast;
 
 public class Login extends AppCompatActivity {
@@ -44,6 +45,8 @@ public class Login extends AppCompatActivity {
     FirebaseFirestore BDFireStore = FirebaseFirestore.getInstance();
 
     public String uidUserGlobal;
+
+    ProgressBar prog;
 
     static int versionCode, lastestVersionCode;
     @SuppressLint("WrongViewCast")
@@ -79,6 +82,8 @@ public class Login extends AppCompatActivity {
 
         versionCode = pInfo.versionCode;
 
+        prog = findViewById(R.id.prgsbar);
+        prog.setVisibility(View.INVISIBLE);
 
 
         mAuth = FirebaseAuth.getInstance();
@@ -93,7 +98,7 @@ public class Login extends AppCompatActivity {
                 }else{
                     //ESTA LOGUEADO
 
-
+                    showLoading();
                     BDFireStore
                             .collection("configuration")
                             .document("global")
@@ -111,8 +116,9 @@ public class Login extends AppCompatActivity {
                                 Toast.makeText(getApplicationContext(), "Sesion iniciada", Toast.LENGTH_SHORT).show();
                                 map();
                             }else{
-                                StyleableToast.makeText(Login.this, "Hay una nueva versión disponible, favor de actualizar" , Toast.LENGTH_LONG, R.style.warningToastMiddle).show();
+                                StyleableToast.makeText(Login.this, "Descargue la nueva versión para poder continuar" , Toast.LENGTH_LONG, R.style.warningToastMiddle).show();
                             }
+                            hideLoading();
                         }
                     });
                 }
@@ -210,7 +216,7 @@ public class Login extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), "Ingrese el usuario y contraseña", Toast.LENGTH_SHORT).show();
             }
         }else{
-            StyleableToast.makeText(Login.this, "Hay una nueva versión disponible, favor de actualizar" , Toast.LENGTH_LONG, R.style.warningToastMiddle).show();
+            StyleableToast.makeText(Login.this, "Descargue la nueva versión para poder continuar" , Toast.LENGTH_LONG, R.style.warningToastMiddle).show();
         }
     }
 
@@ -226,6 +232,15 @@ public class Login extends AppCompatActivity {
         if(listener != null){
             mAuth.removeAuthStateListener(listener);
         }
+    }
+
+    public void showLoading(){
+            Toast.makeText(this, "Comprobando Actualizaciones", Toast.LENGTH_LONG).show();
+        prog.setVisibility(View.VISIBLE);
+    }
+
+    public void hideLoading(){
+        prog.setVisibility(View.GONE);
     }
 
     private void map(){

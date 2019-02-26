@@ -9,6 +9,7 @@ public class Evento {
 
     boolean active;
     String activity_id;
+    String activity_name;
     int advanced;
     String deleted;
     String description;
@@ -17,6 +18,7 @@ public class Evento {
     List<Recursos> staff;
     String start;
     int status;
+    String subproject_name;
     String title;
     List<Recursos> tools;
     Total total = new Total();
@@ -34,9 +36,10 @@ public class Evento {
     public Evento() {
     }
 
-    public Evento(boolean active, String activity_id, int advanced, String deleted, String description, String end, String id, List<Recursos> staff, String start, int status, String title, List<Recursos> tools, Total total, String type, String type_activity, String user_id) {
+    public Evento(boolean active, String activity_id, String activity_name, int advanced, String deleted, String description, String end, String id, List<Recursos> staff, String start, int status, String project_name, String title, List<Recursos> tools, Total total, String type, String type_activity, String user_id) {
         this.active = active;
         this.activity_id = activity_id;
+        this.activity_name = activity_name;
         this.advanced = advanced;
         this.deleted = deleted;
         this.description = description;
@@ -45,20 +48,13 @@ public class Evento {
         this.staff = staff;
         this.start = start;
         this.status = status;
+        this.subproject_name = project_name;
         this.title = title;
         this.tools = tools;
         this.total = total;
         this.type = type;
         this.type_activity = type_activity;
         this.user_id = user_id;
-    }
-
-    public String getDeleted() {
-        return deleted;
-    }
-
-    public void setDeleted(String deleted) {
-        this.deleted = deleted;
     }
 
     public boolean isActive() {
@@ -77,12 +73,28 @@ public class Evento {
         this.activity_id = activity_id;
     }
 
+    public String getActivity_name() {
+        return activity_name;
+    }
+
+    public void setActivity_name(String activity_name) {
+        this.activity_name = activity_name;
+    }
+
     public int getAdvanced() {
         return advanced;
     }
 
     public void setAdvanced(int advanced) {
         this.advanced = advanced;
+    }
+
+    public String getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(String deleted) {
+        this.deleted = deleted;
     }
 
     public String getDescription() {
@@ -131,6 +143,14 @@ public class Evento {
 
     public void setStatus(int status) {
         this.status = status;
+    }
+
+    public String getSubproject_name() {
+        return subproject_name;
+    }
+
+    public void setSubproject_name(String subproject_name) {
+        this.subproject_name = subproject_name;
     }
 
     public String getTitle() {

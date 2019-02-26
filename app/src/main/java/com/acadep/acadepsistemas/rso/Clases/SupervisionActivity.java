@@ -51,6 +51,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Switch;
@@ -72,6 +73,7 @@ import com.acadep.acadepsistemas.rso.model.Foto;
 import com.acadep.acadepsistemas.rso.model.Ref_event;
 import com.acadep.acadepsistemas.rso.model.Total;
 import com.acadep.acadepsistemas.rso.model.Ubication;
+import com.acadep.acadepsistemas.rso.model.User;
 import com.acadep.acadepsistemas.rso.model.Usuario;
 import com.acadep.acadepsistemas.rso.model.datetime;
 
@@ -261,6 +263,9 @@ public class SupervisionActivity extends AppCompatActivity
     static int max_photos;
     static int min_photos;
 
+    static String username;
+
+
 //Subir archivo
 
 
@@ -382,6 +387,9 @@ public class SupervisionActivity extends AppCompatActivity
     static boolean Tduring;
     static boolean Tafter;
 
+    CheckBox check_NoAplica;
+    boolean checked_NoAplica;
+
     TextView txtCorreo;
 
 
@@ -395,6 +403,26 @@ public class SupervisionActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+
+        //Firebase Inicializacion
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+        dbRef = FirebaseDatabase.getInstance();
+
+
+
+        //Instancias
+        mAuth = FirebaseAuth.getInstance();
+        storage = FirebaseStorage.getInstance();
+        //Fin Instancias
+        storageReference = storage.getReference();
+        //Fin Firebase Inicializacion
+
+        // FireStore
+        mFireStore = FirebaseFirestore.getInstance();
+
+        // FireStore
+
+
         today.setToNow();
 
 
@@ -403,6 +431,8 @@ public class SupervisionActivity extends AppCompatActivity
 
         mensaje1.setVisibility(View.INVISIBLE);
         mensaje2.setVisibility(View.INVISIBLE);
+
+
 
         //init();
 
@@ -413,6 +443,12 @@ public class SupervisionActivity extends AppCompatActivity
         initRecyclerView();
         initRecyclerViewFiles();
 
+
+        ref = FirebaseDatabase.getInstance().getReference().child("Eventos").child(idevent).child("observation");
+
+        refBefore = FirebaseDatabase.getInstance().getReference().child("Eventos").child(idevent).child("observation").child("before");
+        refDuring = FirebaseDatabase.getInstance().getReference().child("Eventos").child(idevent).child("observation").child("during");
+        refAfter = FirebaseDatabase.getInstance().getReference().child("Eventos").child(idevent).child("observation").child("after");
 
         //PerFotoArray[] = new Foto(context)
 
@@ -454,7 +490,7 @@ public class SupervisionActivity extends AppCompatActivity
 
         actionButton_Enviar = findViewById(R.id.fab_action_3_1);
 
-
+        check_NoAplica = findViewById(R.id.check_NoAplica);
 
 
         txtEstado = (TextView) findViewById(R.id.txtEstado);
@@ -494,27 +530,7 @@ public class SupervisionActivity extends AppCompatActivity
 
         // GPSSSSSSSSSSSSSSSSSSSSS
 
-        //Firebase Inicializacion
-        mDatabase = FirebaseDatabase.getInstance().getReference();
-        dbRef = FirebaseDatabase.getInstance();
-        ref = FirebaseDatabase.getInstance().getReference().child("Eventos").child(idevent).child("observation");
 
-        refBefore = FirebaseDatabase.getInstance().getReference().child("Eventos").child(idevent).child("observation").child("before");
-        refDuring = FirebaseDatabase.getInstance().getReference().child("Eventos").child(idevent).child("observation").child("during");
-        refAfter = FirebaseDatabase.getInstance().getReference().child("Eventos").child(idevent).child("observation").child("after");
-
-
-        //Instancias
-        mAuth = FirebaseAuth.getInstance();
-        storage = FirebaseStorage.getInstance();
-        //Fin Instancias
-        storageReference = storage.getReference();
-        //Fin Firebase Inicializacion
-
-        // FireStore
-        mFireStore = FirebaseFirestore.getInstance();
-
-        // FireStore
 
         // query = FirebaseDatabase.getInstance().getReference().child("Eventos").child(idevent).child("observation").child();
 
@@ -715,11 +731,12 @@ public class SupervisionActivity extends AppCompatActivity
                     StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT, R.style.warningToast).show();
                 } else {
 
+                    checked_NoAplica = check_NoAplica.isChecked();
                     String advanceed = String.valueOf(edpercentage.getText());
                     if(!advanceed.equals("")) {
                         Observation = edObserv.getText().toString();
                         if (!Observation.equals("")) {
-                            if (contImg >= min_photos) {
+                            if (contImg >= min_photos || check_NoAplica.isChecked()) {
                                 if (contImg > max_photos) {
                                     StyleableToast.makeText(getApplicationContext(), "El maximo de fotos es " + max_photos + " usted ha superado esa cantidad por " + (contImg - max_photos), Toast.LENGTH_SHORT, R.style.warningToast).show();
                                 } else {
@@ -746,8 +763,16 @@ public class SupervisionActivity extends AppCompatActivity
                                                 UUID uuid = UUID.randomUUID();
                                                 u = "" + uuid;
 
-                                                uploadAllImages();
-                                                uploadAllFiles();
+
+                                                if(check_NoAplica.isChecked()){
+                                                    Subirdatos();
+                                                    uploadAllFiles();
+                                                }else {
+                                                    uploadAllImages();
+
+                                                }
+
+
 
 
                                                 BDFireStore.collection("events").document(idevent).update("status", 2);
@@ -777,10 +802,13 @@ public class SupervisionActivity extends AppCompatActivity
                                                         UUID uuid = UUID.randomUUID();
                                                         u = "" + uuid;
 
+                                                        if(check_NoAplica.isChecked()){
+                                                            Subirdatos();
+                                                            uploadAllFiles();
+                                                        }else {
+                                                            uploadAllImages();
 
-                                                        uploadAllImages();
-                                                        uploadAllFiles();
-
+                                                        }
 
                                                         terminado = 2;
 
@@ -811,10 +839,12 @@ public class SupervisionActivity extends AppCompatActivity
 
 
                                                 edObserv.setText("");
-
-                                                uploadAllImages();
-                                                uploadAllFiles();
-
+                                                if(check_NoAplica.isChecked()){
+                                                    Subirdatos();
+                                                    uploadAllFiles();
+                                                }else {
+                                                    uploadAllImages();
+                                                }
                                                 BDFireStore.collection("events").document(idevent).update("advanced", advanced);
 
 
@@ -878,35 +908,9 @@ public class SupervisionActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
     }
 
-//    private void createCustomAnimation() {
-//        AnimatorSet set = new AnimatorSet();
-//
-//        ObjectAnimator scaleOutX = ObjectAnimator.ofFloat(floatingActionsMenu.getMenuIconView(), "scaleX", 1.0f, 0.2f);
-//        ObjectAnimator scaleOutY = ObjectAnimator.ofFloat(floatingActionsMenu.getMenuIconView(), "scaleY", 1.0f, 0.2f);
-//
-//        ObjectAnimator scaleInX = ObjectAnimator.ofFloat(floatingActionsMenu.getMenuIconView(), "scaleX", 0.2f, 1.0f);
-//        ObjectAnimator scaleInY = ObjectAnimator.ofFloat(floatingActionsMenu.getMenuIconView(), "scaleY", 0.2f, 1.0f);
-//
-//        scaleOutX.setDuration(50);
-//        scaleOutY.setDuration(50);
-//
-//        scaleInX.setDuration(150);
-//        scaleInY.setDuration(150);
-//
-//        scaleInX.addListener(new AnimatorListenerAdapter() {
-//            @Override
-//            public void onAnimationStart(Animator animation) {
-//                floatingActionsMenu.getMenuIconView().setImageResource(menuGreen.isOpened()
-//                        ? R.drawable.ic_close : R.drawable.ic_star);
-//            }
-//        });
-//
-//        set.play(scaleOutX).with(scaleOutY);
-//        set.play(scaleInX).with(scaleInY).after(scaleOutX);
-//        set.setInterpolator(new OvershootInterpolator(2));
-//
-//        floatingActionsMenu.setIconToggleAnimatorSet(set);
-//    }
+    private void onclick(View view){
+//        if(view.getId()==)
+    }
 
     private  boolean checkPermissions() {
         int result;
@@ -1100,6 +1104,15 @@ public class SupervisionActivity extends AppCompatActivity
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 ChequeoDeVariables();
+            }
+        });
+
+        BDFireStore.collection("users").document(mAuth.getUid()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                Usuario usuario = documentSnapshot.toObject(Usuario.class);
+
+                username = usuario.getName();
             }
         });
 
@@ -2102,10 +2115,17 @@ public class SupervisionActivity extends AppCompatActivity
 
     private void Subirdatos() {
         created_at_funct();
+
+        User user = new User();
+        user.setId(mAuth.getUid());
+        user.setName(username);
+
+        check_NoAplica.setChecked(false);
+
         Total total = new Total();
         total.setNumber(number);
         total.setUnit(unit);
-        Data data = new Data(advanced, created_at, Observation, header, total, false ,ref_event, Lat, Lng, multimedia, files);
+        Data data = new Data(advanced, created_at, Observation, header, total, false , user,ref_event, Lat, Lng, multimedia, files);
         BDFireStore.collection("evidence").document(u).set(data, SetOptions.merge()).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {

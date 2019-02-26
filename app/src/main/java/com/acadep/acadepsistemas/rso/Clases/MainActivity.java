@@ -93,6 +93,28 @@ public class MainActivity extends AppCompatActivity
 
         mAuth = FirebaseAuth.getInstance();
 
+        FirebaseInstanceId.getInstance().getInstanceId()
+                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                        if (!task.isSuccessful()) {
+                            Log.w("MainActivity", "getInstanceId failed", task.getException());
+                            return;
+                        }
+
+                        // Get new Instance ID token
+                        String token = task.getResult().getToken();
+
+                        // Log and toast
+
+                        //Log.d("MainActivity", token);
+                        Map<String, Object> Token = new HashMap<>();
+                        Token.put("token", token);
+                        BDFireStore.collection("users").document(mAuth.getUid()).set(Token, SetOptions.merge());
+
+                        //Toast.makeText(MainActivity.this, ""+token, Toast.LENGTH_SHORT).show();
+                    }
+                });
 
         BDFireStore.collection("users").document(mAuth.getUid()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
@@ -118,28 +140,9 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-        FirebaseInstanceId.getInstance().getInstanceId()
-                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
-                        if (!task.isSuccessful()) {
-                            Log.w("MainActivity", "getInstanceId failed", task.getException());
-                            return;
-                        }
 
-                        // Get new Instance ID token
-                        String token = task.getResult().getToken();
 
-                        // Log and toast
 
-                        //Log.d("MainActivity", token);
-                        Map<String, Object> Token = new HashMap<>();
-                        Token.put("token", token);
-                        BDFireStore.collection("users").document(mAuth.getUid()).set(Token, SetOptions.merge());
-
-                        //Toast.makeText(MainActivity.this, ""+token, Toast.LENGTH_SHORT).show();
-                    }
-                });
 
         registerReceiver(broadcastReceiver, new IntentFilter(MiFirebaseMessagingService.TOKEN_BROADCAST));
 //        Log.i("Token-Key", "Este es el token " + SharedPrefManager.getInstance(this).getToken());

@@ -25,15 +25,24 @@
 
 
             <TextView
-                android:id="@+id/txtview_actividad"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="SubProyecto:"
+                android:textAllCaps="true"
+                android:textColor="#4e4c4c"
+                android:textSize="15dp"
+                android:layout_marginLeft="15dp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/txtview_subProyecto"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="15dp"
-                android:text="@string/text_actividad"
+                android:layout_marginLeft="5dp"
+                android:text="SubProyecto"
                 android:textAllCaps="true"
-                android:textColor="#504e4e"
-                android:textSize="18dp"
-                android:textStyle="bold"
+                android:textColor="#4e4c4c"
+                android:textSize="15dp"
                 />
 
         </LinearLayout>
@@ -41,18 +50,56 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="horizontal">
 
             <TextView
-                    android:id="@+id/txtview_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Actividad:"
+                android:textAllCaps="true"
+                android:textColor="#4e4c4c"
+                android:textSize="15dp"
+                android:layout_marginLeft="15dp"
+                android:textStyle="bold" />
+
+            <TextView
+                    android:id="@+id/txtview_activity"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Nombre de evento"
+                    android:text="Nombre de actividad"
                     android:textAllCaps="true"
                     android:textColor="#4e4c4c"
                     android:textSize="15dp"
-                    android:layout_marginLeft="15dp"
-                    android:textStyle="bold" />
+                    android:layout_marginLeft="5dp" />
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Tarea:"
+                android:textAllCaps="true"
+                android:textColor="#4e4c4c"
+                android:textSize="15dp"
+                android:layout_marginLeft="15dp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/txtview_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Nombre de evento"
+                android:textAllCaps="true"
+                android:textColor="#4e4c4c"
+                android:textSize="15dp"
+                android:layout_marginLeft="5dp"/>
 
 
         </LinearLayout>
@@ -137,7 +184,7 @@
                 android:id="@+id/txtHrs"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text=" 75 h 35 m"
+                android:text=" xx h xx m"
                 android:textSize="13dp"
                 android:layout_marginLeft="130dp"
                 android:layout_gravity="right"/>
