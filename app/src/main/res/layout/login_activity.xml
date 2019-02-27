@@ -22,6 +22,9 @@
         android:src="@drawable/logo_acadep" />
 
 
+
+
+
     <EditText
         android:id="@+id/txtUser"
         android:layout_width="300dp"
@@ -34,7 +37,10 @@
         android:padding="16dp"
         android:textColor="@android:color/black"
         android:textColorHint="#636363"
-        android:maxLength="30"/>
+        android:maxLength="30"
+        android:inputType="textEmailAddress"/>
+
+
 
 
     <EditText
@@ -49,7 +55,8 @@
         android:inputType="textPassword"
         android:padding="16dp"
         android:textColor="@android:color/black"
-        android:textColorHint="#636363" />
+        android:textColorHint="#636363"
+        android:ems="12"/>
 
     <Button
         android:id="@+id/btnLogin"
@@ -81,6 +88,8 @@
         android:layout_marginTop="20dp"
         android:text="¿Olvidó su contraseña?"
         android:textColor="@android:color/black" />
+
+   
 
 
 </RelativeLayout>

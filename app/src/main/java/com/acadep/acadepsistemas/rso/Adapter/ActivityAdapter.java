@@ -30,7 +30,7 @@ public class ActivityAdapter extends FirestoreRecyclerAdapter<Activity, Activity
     @Override
     protected void onBindViewHolder(@NonNull ActivityHolder holder, int position, @NonNull Activity activity) {
         holder.txtTitle.setText(activity.getTitle());
-        holder.txtID.setText(activity.getId());
+        holder.txtID.setText(activity.getSubproject());
     }
 
     @NonNull

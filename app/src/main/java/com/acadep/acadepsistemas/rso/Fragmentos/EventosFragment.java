@@ -4,6 +4,7 @@ package com.acadep.acadepsistemas.rso.Fragmentos;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
@@ -55,11 +56,13 @@ public class EventosFragment extends Fragment  {
     public String user_id;
     static boolean activeStatus;
     static String nameEvent;
+
+
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
     DatabaseReference mDatabase;
 
     com.acadep.acadepsistemas.rso.Adapter.EventoAdapter EventAdapter;
-
+    Query mReference;
     FirebaseFirestore BDFireStore= FirebaseFirestore.getInstance();
     CollectionReference eventsReference;
     //CollectionReference eventsReference = BDFireStore.collection("events");
@@ -75,13 +78,22 @@ public class EventosFragment extends Fragment  {
 
     static ArrayList<String> arrayString = new ArrayList<String>();
 
-    Query mReference;
 
+    private String activity_id;
 
     ArrayList<Evento> list;
     com.acadep.acadepsistemas.rso.Adapter.Adapter adapter;
     public EventosFragment() {
         // Required empty public constructor
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        if (getArguments()!=null){
+            activity_id = getArguments().getString("activity_id");
+        }
     }
 
 
@@ -122,12 +134,12 @@ public class EventosFragment extends Fragment  {
 //        });
 
 
-        rv = (RecyclerView) view.findViewById(R.id.recycler);
         EventosPendientes = (TextView) view.findViewById(R.id.txtEventosPendientes);
 
         FragmentTransaction fragmentTransaction1 = getFragmentManager().beginTransaction();
-        //fragmentTransaction1.add(R.id.fragment_container, new SupervisionFragment());
 
+        //fragmentTransaction1.add(R.id.fragment_container, new SupervisionFragment());
+        rv = (RecyclerView) view.findViewById(R.id.recycler);
         rv.setLayoutManager(new LinearLayoutManager(getContext()));
 
         list = new ArrayList<Evento>();
@@ -155,25 +167,17 @@ public class EventosFragment extends Fragment  {
     }
 
     private void setUpRecyclerView() {
-        //com.google.firebase.firestore.Query query = eventsReference.orderBy("end", com.google.firebase.firestore.Query.Direction.DESCENDING);
 
-
-//        = BDFireStore.collection("events")
+//        mReference = BDFireStore.collection("events")
 //                .whereEqualTo("user_id", mAuth.getUid())
 //                    .whereEqualTo("active",true);
+//                        .orderBy("subproject_name", Query.Direction.ASCENDING)
+//                            .orderBy("activity_name", Query.Direction.ASCENDING);
+
+
         mReference = BDFireStore.collection("events")
                 .whereEqualTo("user_id", mAuth.getUid())
-                    .whereEqualTo("active",true)
-                        .orderBy("subproject_name", Query.Direction.ASCENDING);
-
-//        com.google.firebase.firestore.Query query = mReference.orderBy("subproject_name", Query.Direction.ASCENDING);
-
-//        query.orderBy("subproject_name", Query.Direction.DESCENDING);
-
-//                        .orderBy("subproject_name", Query.Direction.DESCENDING);
-        //com.google.firebase.firestore.Query query = BDFireStore.collection("events").whereEqualTo("uid",  mAuth.getUid());
-
-
+                    .whereEqualTo("activity_id", activity_id);
 
         mReference.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override

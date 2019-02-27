@@ -2365,6 +2365,8 @@ public class SupervisionActivity extends AppCompatActivity
                     .setCancelable(false)
                     .setPositiveButton("Si", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
+                            BorrarImagenes();
+                            BorrarFiles();
                             SupervisionActivity.this.finish();
                         }
                     })
@@ -2375,8 +2377,6 @@ public class SupervisionActivity extends AppCompatActivity
                     });
             AlertDialog alert = builder.create();
             alert.show();
-
-
     }
 
     @Override

@@ -35,9 +35,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true"
-                android:layout_marginStart="0dp"
-                android:layout_marginTop="455dp"
+                android:layout_alignParentBottom="true"
                 design:menu="@menu/menu_navigation" />
 
 
@@ -69,7 +67,8 @@
             <ScrollView
                 android:id="@+id/scroll"
                 android:layout_width="match_parent"
-                android:layout_height="454dp"
+                android:layout_height="match_parent"
+                android:layout_above="@id/bottomNavigationView"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentTop="true"
                 android:layout_marginStart="0dp"
@@ -139,10 +138,10 @@
                                 android:id="@+id/edit_porcentage"
                                 android:layout_width="50dp"
                                 android:layout_height="wrap_content"
-                                android:digits="0,1,2,3,4,5,6,7,8,9"
                                 android:lines="1"
                                 android:maxLength="5"
-                                android:textSize="15dp" />
+                                android:textSize="15dp"
+                                android:inputType="number"/>
 
                             <TextView
                                 android:id="@+id/txtTotal"
@@ -150,6 +149,9 @@
                                 android:layout_height="wrap_content"
                                 android:text="/1000mtrs"
                                 android:textSize="18dp" />
+
+
+                            <!--android:digits="0,1,2,3,4,5,6,7,8,9"-->
 
                         </LinearLayout>
 

@@ -25,6 +25,7 @@ import android.widget.Toast;
 
 import com.acadep.acadepsistemas.rso.Fragmentos.ActivitysFragment;
 import com.acadep.acadepsistemas.rso.Fragmentos.EventosFragment;
+import com.acadep.acadepsistemas.rso.Fragmentos.ProjectFragment;
 import com.acadep.acadepsistemas.rso.Notificaciones.MiFirebaseMessagingService;
 import com.acadep.acadepsistemas.rso.R;
 import com.acadep.acadepsistemas.rso.model.Usuario;
@@ -128,7 +129,8 @@ public class MainActivity extends AppCompatActivity
                 txtCorreo.setText(""+Correo);
 
                 Fragment mifragment = null;
-                mifragment = new EventosFragment();
+//                mifragment = new EventosFragment();
+                mifragment = new ProjectFragment();
                 if(cont<1){
                     ocultarItems();
                     getSupportFragmentManager()
@@ -214,11 +216,19 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
+//        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+//        if (drawer.isDrawerOpen(GravityCompat.START)) {
+//            drawer.closeDrawer(GravityCompat.START);
+//        } else {
+//            super.onBackPressed();
+//        }
+        int count = getFragmentManager().getBackStackEntryCount();
+
+        if (count == 0) {
             super.onBackPressed();
+            //additional code
+        } else {
+            getFragmentManager().popBackStack();
         }
     }
 
