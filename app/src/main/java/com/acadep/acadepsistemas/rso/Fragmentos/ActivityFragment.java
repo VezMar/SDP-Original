@@ -1,7 +1,5 @@
 package com.acadep.acadepsistemas.rso.Fragmentos;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -11,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.acadep.acadepsistemas.rso.Adapter.ActivityAdapter;
 import com.acadep.acadepsistemas.rso.R;
@@ -30,14 +29,18 @@ public class ActivityFragment extends Fragment {
     private RecyclerView rv;
     ActivityAdapter activityAdapter;
 
-    private String subproject_id;
+    private String project_id;
+    private String project_title;
+
+    TextView Subproyect;
     
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         if (getArguments()!=null){
-            subproject_id = getArguments().getString("subproject_id");
+            project_id = getArguments().getString("project_id");
+            project_title = getArguments().getString("project_title");
         }
     }
     
@@ -48,16 +51,17 @@ public class ActivityFragment extends Fragment {
         rv = (RecyclerView) view.findViewById(R.id.recycler_2);
         rv.setLayoutManager(new LinearLayoutManager(getContext()));
         initRecyclerView();
-        
 
+        Subproyect = view.findViewById(R.id.txt_SubProyecto);
+        Subproyect.setText(""+ project_title);
 
         return view;
     }
 
     private void initRecyclerView() {
         mReference_activity = BDFireStore.collection("activities")
-                .whereEqualTo(mAuth.getUid(), true)
-                .whereEqualTo("subproject_id", subproject_id);
+                .whereEqualTo("users."+mAuth.getUid(), true)
+                .whereEqualTo("project_id", project_id);
 //        mReference_activity = BDFireStore.collection("projects");
 
         FirestoreRecyclerOptions<Activity> options = new FirestoreRecyclerOptions.Builder<Activity>()
@@ -69,7 +73,9 @@ public class ActivityFragment extends Fragment {
             @Override
             public void onItemClick(DocumentSnapshot documentSnapshot, int position) {
                 Activity activity = documentSnapshot.toObject(Activity.class);
+
                 String id = activity.getId();
+                String activity_title = activity.getTitle();
 
                 Fragment mifragment = null;
                 mifragment = new EventosFragment();
@@ -77,6 +83,8 @@ public class ActivityFragment extends Fragment {
 
                 Bundle bundle = new Bundle();
                 bundle.putString("activity_id", id);
+                bundle.putString("project_title", project_title);
+                bundle.putString("activity_title", activity_title);
 
                 mifragment.setArguments(bundle);
 

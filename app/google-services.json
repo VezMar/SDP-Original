@@ -1,35 +1,27 @@
 {
   "project_info": {
-    "project_number": "958208857248",
-    "firebase_url": "https://seguimiento-de-proyectos-4fa3c.firebaseio.com",
-    "project_id": "seguimiento-de-proyectos-4fa3c",
-    "storage_bucket": "seguimiento-de-proyectos-4fa3c.appspot.com"
+    "project_number": "617618237761",
+    "firebase_url": "https://soriana-49211.firebaseio.com",
+    "project_id": "soriana-49211",
+    "storage_bucket": "soriana-49211.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:958208857248:android:25e2841bef6723d1",
+        "mobilesdk_app_id": "1:617618237761:android:25e2841bef6723d1",
         "android_client_info": {
           "package_name": "com.acadep.acadepsistemas.rso"
         }
       },
       "oauth_client": [
         {
-          "client_id": "958208857248-1id7k8v96ghsgnggqe21r1liduinka7u.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.acadep.acadepsistemas.seguimiento",
-            "certificate_hash": "d9b2bab302a007950922697b85167043460d6832"
-          }
-        },
-        {
-          "client_id": "958208857248-f79qfvdvvm4cu31dibgfho9854nrcjtl.apps.googleusercontent.com",
+          "client_id": "617618237761-vvdke9cphtf35537gclr004bldpb3tmo.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDt8zWH8jERux3DVnhL4UFw4yRhdvDlRkA"
+          "current_key": "AIzaSyCq-xoUeJTtTZVC8eoOYvpI_oLmU99RFss"
         }
       ],
       "services": {
@@ -37,57 +29,8 @@
           "status": 1
         },
         "appinvite_service": {
-          "status": 2,
-          "other_platform_oauth_client": [
-            {
-              "client_id": "958208857248-f79qfvdvvm4cu31dibgfho9854nrcjtl.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
-        },
-        "ads_service": {
-          "status": 2
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:958208857248:android:58343a17c4b79984",
-        "android_client_info": {
-          "package_name": "com.example.acadepsistemas.seguimiento"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "958208857248-63ctnffab03stfq1j08v7r6hmbs6trj6.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.example.acadepsistemas.seguimiento",
-            "certificate_hash": "d9b2bab302a007950922697b85167043460d6832"
-          }
-        },
-        {
-          "client_id": "958208857248-f79qfvdvvm4cu31dibgfho9854nrcjtl.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyDt8zWH8jERux3DVnhL4UFw4yRhdvDlRkA"
-        }
-      ],
-      "services": {
-        "analytics_service": {
-          "status": 1
-        },
-        "appinvite_service": {
-          "status": 2,
-          "other_platform_oauth_client": [
-            {
-              "client_id": "958208857248-f79qfvdvvm4cu31dibgfho9854nrcjtl.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
+          "status": 1,
+          "other_platform_oauth_client": []
         },
         "ads_service": {
           "status": 2

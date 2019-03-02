@@ -4,6 +4,7 @@ import java.util.List;
 
 public class Activity {
 
+    boolean active;
     String deleted;
     String description;
     String end;
@@ -13,13 +14,15 @@ public class Activity {
     String start;
     String subproject;
     String title;
-    List<String> users;
+    String updated_at;
+
 
 
     public Activity() {
     }
 
-    public Activity(String deleted, String description, String end, String id, List<Recursos> insumos, String project_id, String start, String subproject, String title, List<String> users) {
+    public Activity(boolean active, String deleted, String description, String end, String id, List<Recursos> insumos, String project_id, String start, String subproject, String title, String updated_at) {
+        this.active = active;
         this.deleted = deleted;
         this.description = description;
         this.end = end;
@@ -29,7 +32,15 @@ public class Activity {
         this.start = start;
         this.subproject = subproject;
         this.title = title;
-        this.users = users;
+        this.updated_at = updated_at;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 
     public String getDeleted() {
@@ -38,14 +49,6 @@ public class Activity {
 
     public void setDeleted(String deleted) {
         this.deleted = deleted;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 
     public String getDescription() {
@@ -62,6 +65,14 @@ public class Activity {
 
     public void setEnd(String end) {
         this.end = end;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public List<Recursos> getInsumos() {
@@ -104,11 +115,11 @@ public class Activity {
         this.title = title;
     }
 
-    public List<String> getUsers() {
-        return users;
+    public String getUpdated_at() {
+        return updated_at;
     }
 
-    public void setUsers(List<String> users) {
-        this.users = users;
+    public void setUpdated_at(String updated_at) {
+        this.updated_at = updated_at;
     }
 }

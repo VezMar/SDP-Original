@@ -11,13 +11,15 @@ public class Evento {
     String activity_id;
     String activity_name;
     int advanced;
+    boolean before_complete;
     String deleted;
     String description;
+    boolean during_complete;
     String end;
     String id;
     List<Recursos> staff;
     String start;
-    int status;
+    String color;
     String subproject_name;
     String title;
     List<Recursos> tools;
@@ -36,19 +38,21 @@ public class Evento {
     public Evento() {
     }
 
-    public Evento(boolean active, String activity_id, String activity_name, int advanced, String deleted, String description, String end, String id, List<Recursos> staff, String start, int status, String project_name, String title, List<Recursos> tools, Total total, String type, String type_activity, String user_id) {
+    public Evento(boolean active, String activity_id, String activity_name, int advanced, boolean before_complete, String deleted, String description, boolean during_complete, String end, String id, List<Recursos> staff, String start, String status, String subproject_name, String title, List<Recursos> tools, Total total, String type, String type_activity, String user_id) {
         this.active = active;
         this.activity_id = activity_id;
         this.activity_name = activity_name;
         this.advanced = advanced;
+        this.before_complete = before_complete;
         this.deleted = deleted;
         this.description = description;
+        this.during_complete = during_complete;
         this.end = end;
         this.id = id;
         this.staff = staff;
         this.start = start;
-        this.status = status;
-        this.subproject_name = project_name;
+        this.color = status;
+        this.subproject_name = subproject_name;
         this.title = title;
         this.tools = tools;
         this.total = total;
@@ -89,6 +93,14 @@ public class Evento {
         this.advanced = advanced;
     }
 
+    public boolean isBefore_complete() {
+        return before_complete;
+    }
+
+    public void setBefore_complete(boolean before_complete) {
+        this.before_complete = before_complete;
+    }
+
     public String getDeleted() {
         return deleted;
     }
@@ -103,6 +115,14 @@ public class Evento {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public boolean isDuring_complete() {
+        return during_complete;
+    }
+
+    public void setDuring_complete(boolean during_complete) {
+        this.during_complete = during_complete;
     }
 
     public String getEnd() {
@@ -137,12 +157,12 @@ public class Evento {
         this.start = start;
     }
 
-    public int getStatus() {
-        return status;
+    public String getColor() {
+        return color;
     }
 
-    public void setStatus(int status) {
-        this.status = status;
+    public void setColor(String color) {
+        this.color = color;
     }
 
     public String getSubproject_name() {

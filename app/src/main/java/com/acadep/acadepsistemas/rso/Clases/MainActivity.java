@@ -280,11 +280,11 @@ public class MainActivity extends AppCompatActivity
            //finish();
             status = true;
         }else if (id == R.id.nav_ext) {
-//            Toast.makeText(getApplicationContext(),"Aún en proceso",Toast.LENGTH_SHORT).show();
-//            item.setChecked(false);
-//            status = false;
-            mifragment = new ActivitysFragment();
-            FragmentoSeleccionado=true;
+            Toast.makeText(getApplicationContext(),"Aún en proceso",Toast.LENGTH_SHORT).show();
+            item.setChecked(false);
+            status = false;
+//            mifragment = new ActivitysFragment();
+//            FragmentoSeleccionado=true;
 
         }else if (id == R.id.nav_conf) {
             Toast.makeText(getApplicationContext(),"Aún en proceso",Toast.LENGTH_SHORT).show();

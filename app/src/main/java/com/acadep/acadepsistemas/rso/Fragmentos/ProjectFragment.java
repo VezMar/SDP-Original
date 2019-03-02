@@ -54,7 +54,7 @@ public class ProjectFragment extends Fragment {
 
 
         String id = ""+mAuth.getUid();
-        mReference = BDFireStore.collection("projects").whereEqualTo(mAuth.getUid(), true);
+        mReference = BDFireStore.collection("projects").whereEqualTo("users."+mAuth.getUid(), true);
 //        mReference_activity = BDFireStore.collection("projects");
 
         FirestoreRecyclerOptions<Project> options = new FirestoreRecyclerOptions.Builder<Project>()
@@ -70,14 +70,15 @@ public class ProjectFragment extends Fragment {
                 Project project = documentSnapshot.toObject(Project.class);
 
                 String id = project.getId();
-
+                String project_title = project.getTitle();
 
                 Fragment mifragment = null;
-                mifragment = new SubProjectFragment();
+                mifragment = new ActivityFragment();
 //
 
                 Bundle bundle = new Bundle();
                 bundle.putString("project_id", id);
+                bundle.putString("project_title", project_title);
 
                 mifragment.setArguments(bundle);
 

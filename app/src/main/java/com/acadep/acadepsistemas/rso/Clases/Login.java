@@ -195,7 +195,7 @@ public class Login extends AppCompatActivity {
     }
 
     private void ingresar() {
-        String User = txtUser.getText().toString();
+        String User = txtUser.getText().toString().replace(" ", "");
         String password = txtPsd.getText().toString();
 
         if(versionCode>=lastestVersionCode){

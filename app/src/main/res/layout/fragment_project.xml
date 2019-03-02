@@ -4,23 +4,27 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".Fragmentos.ProjectFragment">
+    tools:context=".Fragmentos.ProjectFragment"
+    android:paddingBottom="16dp"
+    android:paddingTop="16dp"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp">
 
 
 
     <TextView
-        android:id="@+id/txtp"
+        android:id="@+id/txt_SubProyecto"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Proyectos"
-        android:textSize="25dp"
+        android:text="Seleccione un Subproyecto"
+        android:textSize="15dp"
         android:textColor="#000"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_project"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/txtp"
+        android:layout_below="@id/txt_SubProyecto"
         >
     </android.support.v7.widget.RecyclerView>
 </RelativeLayout>

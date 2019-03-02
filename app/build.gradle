@@ -21,8 +21,8 @@ android {
         applicationId "com.acadep.acadepsistemas.rso"
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 11
-        versionName "1.11"
+        versionCode 14
+        versionName "1.14"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         manifestPlaceholders = [onesignal_app_id               : "a0f6884c-8ccf-4e51-9c1a-ba4b73c933c4",
                                 // Project number pulled from dashboard, local value is ignored.

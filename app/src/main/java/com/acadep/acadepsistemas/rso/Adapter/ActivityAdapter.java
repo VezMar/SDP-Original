@@ -30,7 +30,7 @@ public class ActivityAdapter extends FirestoreRecyclerAdapter<Activity, Activity
     @Override
     protected void onBindViewHolder(@NonNull ActivityHolder holder, int position, @NonNull Activity activity) {
         holder.txtTitle.setText(activity.getTitle());
-        holder.txtID.setText(activity.getSubproject());
+//        holder.txtID.setText(activity.getSubproject());
     }
 
     @NonNull
@@ -49,7 +49,7 @@ public class ActivityAdapter extends FirestoreRecyclerAdapter<Activity, Activity
             super(itemView);
 
             txtTitle = itemView.findViewById(R.id.txtTitulo);
-            txtID = itemView.findViewById(R.id.txtId_Acitivy);
+//            txtID = itemView.findViewById(R.id.txtId_Acitivy);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override

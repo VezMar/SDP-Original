@@ -32,7 +32,7 @@ public class ProjectAdapter extends FirestoreRecyclerAdapter<Project, ProjectAda
     protected void onBindViewHolder(@NonNull ProjectViewHolder holder, int position, @NonNull Project project) {
 
 
-        holder.txtProjectDescription.setText(project.getDescription());
+//        holder.txtProjectDescription.setText(project.getDescription());
         holder.txtProjectName.setText(project.getTitle());
     }
 
@@ -50,7 +50,7 @@ public class ProjectAdapter extends FirestoreRecyclerAdapter<Project, ProjectAda
         public ProjectViewHolder(@NonNull View itemView) {
             super(itemView);
 
-        this.txtProjectDescription = itemView.findViewById(R.id.txtProjectDescription);
+//        this.txtProjectDescription = itemView.findViewById(R.id.txtProjectDescription);
         this.txtProjectName = itemView.findViewById(R.id.txtProjectName);
 
 

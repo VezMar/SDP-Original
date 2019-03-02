@@ -16,14 +16,64 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Subproyecto: "
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:textColor="#000"/>
+
+                <TextView
+                    android:id="@+id/txt_SubProyecto"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="SubProyectos"
+                    android:textSize="20sp"
+                    android:textColor="#000"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Actividad: "
+                    android:textSize="15dp"
+                    android:textStyle="bold"
+                    android:textColor="#000"/>
+
+                <TextView
+                    android:id="@+id/txtAct"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Seleccione una Actividad"
+                    android:textSize="15dp"
+                    android:textColor="#000"
+                    android:layout_below="@id/txt_SubProyecto"/>
+
+            </LinearLayout>
+        </LinearLayout>
+
         <TextView
             android:id="@+id/txtEventosPendientes"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignStart="@+id/recycler"
             android:layout_alignParentTop="true"
-            android:layout_marginTop="5dp"
-            android:text="# Eventos pendientes" />
+            android:layout_marginTop="10dp"
+            android:text="Tienes # Eventos pendientes" />
 
         <!--<Spinner-->
             <!--android:id="@+id/SpnProyectos"-->

@@ -344,7 +344,7 @@ public class SupervisionActivity extends AppCompatActivity
     private static String Hora;
 
 
-    int status=1;
+    String status= "#333";
     int terminado = 1;
 
     static String created_at;
@@ -392,6 +392,9 @@ public class SupervisionActivity extends AppCompatActivity
 
     TextView txtCorreo;
 
+
+    static boolean during_complete;
+    static boolean before_complete;
 
     static String Correo;
 
@@ -475,6 +478,7 @@ public class SupervisionActivity extends AppCompatActivity
         //Inicializacion de varibales
         bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottomNavigationView);
         bottomNavigationView.setOnNavigationItemSelectedListener(navListener);
+        bottomNavigationView.setVisibility(View.INVISIBLE);
 
         floatingActionsMenu = findViewById(R.id.FloatingActionMenuPrincipal);
 //        floatingActionsMenu.setIconAnimated(false);
@@ -507,7 +511,7 @@ public class SupervisionActivity extends AppCompatActivity
         edpercentage = (EditText) findViewById(R.id.edit_porcentage);
         txtAvance = (TextView) findViewById(R.id.txtAvance);
         txtTotal = (TextView) findViewById(R.id.txtTotal);
-        txtTotal.setText("/" + number + unit);
+        txtTotal.setText("/" + number + " "+ unit);
 
 //        btnEnviar = (FloatingTextButton) findViewById(R.id.btnEnviar);
 
@@ -545,8 +549,13 @@ public class SupervisionActivity extends AppCompatActivity
         } else{
 
         }
-        edpercentage.setText(""+ advanced);
+//        if(advanced==1){
+//            edpercentage.setText("0");
+//        }else {
+//            edpercentage.setText("" + advanced);
+//        }
 
+        edpercentage.setText("" + advanced);
         /**/
 
 
@@ -732,7 +741,7 @@ public class SupervisionActivity extends AppCompatActivity
                 } else {
 
                     checked_NoAplica = check_NoAplica.isChecked();
-                    String advanceed = String.valueOf(edpercentage.getText());
+                    final String advanceed = String.valueOf(edpercentage.getText());
                     if(!advanceed.equals("")) {
                         Observation = edObserv.getText().toString();
                         if (!Observation.equals("")) {
@@ -765,25 +774,29 @@ public class SupervisionActivity extends AppCompatActivity
 
 
                                                 if(check_NoAplica.isChecked()){
-                                                    Subirdatos();
-                                                    uploadAllFiles();
+                                                    if(contUris==0){
+                                                        Subirdatos();
+                                                    }else {
+                                                        uploadAllFiles();
+                                                    }
                                                 }else {
                                                     uploadAllImages();
-
+                                                    uploadAllFiles();
                                                 }
 
 
 
 
-                                                BDFireStore.collection("events").document(idevent).update("status", 2);
+                                                BDFireStore.collection("events").document(idevent).update("status", "#3498db");
 
-                                                BDFireStore.collection("events").document(idevent).update("advanced", 1);
+//                                                BDFireStore.collection("events").document(idevent).update("advanced", 1);
 
                                                 //Toast.makeText(getApplicationContext(), "Datos ingresados", Toast.LENGTH_SHORT).show();
 
 
                                                 edObserv.setText("");
-                                                advanced = 1;
+                                                BDFireStore.collection("events").document(idevent).update("before_complete", true);
+                                                before_complete=true;
 
 
                                             }
@@ -791,28 +804,36 @@ public class SupervisionActivity extends AppCompatActivity
                                             if ((estado).equals("during")) {
 
 
-                                                if (advanced <= Integer.parseInt(String.valueOf(edpercentage.getText()))) {
+                                                if (advanced <= Integer.parseInt(String.valueOf(edpercentage.getText())) || 0 == Integer.parseInt(String.valueOf(edpercentage.getText())) && during_complete==false) {
                                                     if (Integer.parseInt(String.valueOf(edpercentage.getText())) <= number) {
 
                                                         advanced = Integer.parseInt(String.valueOf(edpercentage.getText()));
 
                                                         boolean during = true;
 
-                                                        header = "before";
+                                                        header = "during";
                                                         UUID uuid = UUID.randomUUID();
                                                         u = "" + uuid;
 
                                                         if(check_NoAplica.isChecked()){
-                                                            Subirdatos();
-                                                            uploadAllFiles();
+                                                            if(contUris==0){
+                                                                Subirdatos();
+                                                            }else {
+                                                                uploadAllFiles();
+                                                            }
                                                         }else {
                                                             uploadAllImages();
-
+                                                            uploadAllFiles();
                                                         }
 
+
+                                                        if(advanced==number){
+                                                            BDFireStore.collection("events").document(idevent).update("during_complete", true);
+                                                            before_complete=true;
+                                                        }
                                                         terminado = 2;
 
-                                                        BDFireStore.collection("events").document(idevent).update("advanced", advanced);
+                                                        BDFireStore.collection("events").document(idevent).update(""+mAuth.getUid(), advanced);
 
                                                         edObserv.setText("");
 
@@ -831,19 +852,24 @@ public class SupervisionActivity extends AppCompatActivity
 
                                                 boolean after = true;
 
-                                                header = "before";
+                                                header = "after";
                                                 UUID uuid = UUID.randomUUID();
                                                 u = "" + uuid;
 
 //                                            StyleableToast.makeText(getApplicationContext(), "Datos ingresados", Toast.LENGTH_LONG, R.style.sucessToast).show();
 
+                                                advanced = number;
 
                                                 edObserv.setText("");
                                                 if(check_NoAplica.isChecked()){
-                                                    Subirdatos();
-                                                    uploadAllFiles();
+                                                    if(contUris==0){
+                                                        Subirdatos();
+                                                    }else {
+                                                        uploadAllFiles();
+                                                    }
                                                 }else {
                                                     uploadAllImages();
+                                                    uploadAllFiles();
                                                 }
                                                 BDFireStore.collection("events").document(idevent).update("advanced", advanced);
 
@@ -873,6 +899,7 @@ public class SupervisionActivity extends AppCompatActivity
                     }else{
                         StyleableToast.makeText(getApplicationContext(), "El avance es necesario para poder enviar", Toast.LENGTH_SHORT, R.style.warningToastMiddle).show();
                     }
+
 
                 }
 
@@ -1107,6 +1134,20 @@ public class SupervisionActivity extends AppCompatActivity
             }
         });
 
+        BDFireStore.collection("events").document(idevent).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                Evento evento = documentSnapshot.toObject(Evento.class);
+                during_complete = evento.isDuring_complete();
+                before_complete = evento.isBefore_complete();
+            }
+        }).addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                ChequeoDeVariables();
+            }
+        });
+
         BDFireStore.collection("users").document(mAuth.getUid()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
@@ -1209,7 +1250,7 @@ public class SupervisionActivity extends AppCompatActivity
         if (estado.equals("after")|| estado.equals("during") && Tafter==false && advanced == number || estado.equals("before") && Tduring==false && Tafter==false ){
 
             BDFireStore.collection("events").document(idevent).update("active", false);
-            BDFireStore.collection("events").document(idevent).update("status", 3);
+            BDFireStore.collection("events").document(idevent).update("status", "#27ae60");
 
             StyleableToast.makeText(getApplicationContext(), "Evento terminado", Toast.LENGTH_SHORT, R.style.doneToast).show();
 
@@ -1374,7 +1415,9 @@ public class SupervisionActivity extends AppCompatActivity
     private void ChequeoDeVariables() {
 
 
-        if(advanced ==0 && Tbefore==true){
+
+//        if(advanced ==0 && Tbefore==true && before_complete == false){
+        if(Tbefore==true && before_complete == false){
             txtAvance.setVisibility(View.INVISIBLE);
             edpercentage.setVisibility(View.INVISIBLE);
             txtTotal.setVisibility(View.INVISIBLE);
@@ -1389,11 +1432,14 @@ public class SupervisionActivity extends AppCompatActivity
             bottomNavigationView.setEnabled(true);
 
             estado = "before";
-            txtEstado.setText("Antes del Evento");
+            txtEstado.setText("Evidencia: antes");
         }else {
 
-            if (advanced >= 1 && advanced < number && Tduring == true || Tbefore == false && Tduring == true) {
+
+//            if (advanced >= 1 && advanced < number && Tduring == true && during_complete == false || Tbefore == false && Tduring == true && during_complete == false|| during_complete == false && advanced >= 1 || during_complete == false && Tbefore==true && before_complete==true) {
+            if (Tduring == true && during_complete==false){
 //                edpercentage.setText(""+advanced);
+
 
                 txtAvance.setVisibility(View.VISIBLE);
                 edpercentage.setVisibility(View.VISIBLE);
@@ -1417,7 +1463,8 @@ public class SupervisionActivity extends AppCompatActivity
                 txtEstado.setText("Evidencia: Durante");
             }else {
 
-                if (advanced == number && Tafter == true || Tduring == false && Tafter == true) {
+//                if (advanced == number && Tafter == true && during_complete == true || Tduring == false && Tafter == true) {
+                if (Tafter == true && during_complete == true) {
                     txtAvance.setVisibility(View.INVISIBLE);
                     edpercentage.setVisibility(View.INVISIBLE);
                     txtTotal.setVisibility(View.INVISIBLE);
@@ -2122,6 +2169,8 @@ public class SupervisionActivity extends AppCompatActivity
 
         check_NoAplica.setChecked(false);
 
+
+
         Total total = new Total();
         total.setNumber(number);
         total.setUnit(unit);
@@ -2132,6 +2181,22 @@ public class SupervisionActivity extends AppCompatActivity
                 StyleableToast.makeText(getApplicationContext(), "Información subida exitosamente", Toast.LENGTH_SHORT, R.style.doneToast). show();
                 BorrarFiles();
                 BorrarImagenes();
+
+                if (before_complete==true){
+                    estado = "during";
+                    txtEstado.setText("Evidencia: Durante");
+                    txtAvance.setVisibility(View.VISIBLE);
+                    edpercentage.setVisibility(View.VISIBLE);
+                    txtTotal.setVisibility(View.VISIBLE);
+                }else if (during_complete==true){
+                    txtAvance.setVisibility(View.INVISIBLE);
+                    edpercentage.setVisibility(View.INVISIBLE);
+                    txtTotal.setVisibility(View.INVISIBLE);
+                    estado = "after";
+                    txtEstado.setText("Evidencia: Después");
+                }
+
+
             }
         });
 
@@ -2266,7 +2331,7 @@ public class SupervisionActivity extends AppCompatActivity
                             opcion = false;
                             menuItem.setEnabled(false);
                         } else {
-                            if(advanced == 0 && Tbefore==true) {
+                            if(advanced == 0 && Tbefore==true ) {
 //                                StyleableToast.makeText(getApplicationContext(), "Seccion disponible", Toast.LENGTH_SHORT, R.style.doneToast).show();
                                 estado = "before";
                                 txtEstado.setText("Antes del Evento");
@@ -2278,7 +2343,7 @@ public class SupervisionActivity extends AppCompatActivity
                     }
 
                     if (menuItem.getItemId()==R.id.itemDurante){
-                        if(advanced ==number) {
+                        if(advanced == number ) {
 //                            StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT, R.style.warningToast).show();
                             opcion = false;
                             menuItem.setEnabled(false);
@@ -2352,6 +2417,8 @@ public class SupervisionActivity extends AppCompatActivity
         advanced = extras.getInt("advanced");
         number = extras.getInt("number");
         unit = extras.getString("unit");
+        during_complete = extras.getBoolean("during_complete");
+        before_complete = extras.getBoolean("before_complete");
         //active=false;
 
 
@@ -2425,9 +2492,12 @@ public class SupervisionActivity extends AppCompatActivity
             //finish();
 
         } else if (id == R.id.nav_ext) {
-            SupervisionActivity.this.finish();
-            mifragment = new ActivitysFragment();
-            FragmentoSeleccionado=true;
+            Toast.makeText(getApplicationContext(),"Aún en proceso",Toast.LENGTH_SHORT).show();
+            item.setChecked(false);
+            status = false;
+//            SupervisionActivity.this.finish();
+//            mifragment = new ActivitysFragment();
+//            FragmentoSeleccionado=true;
 
         }else if(id == R.id.nav_conf) {
             Toast.makeText(getApplicationContext(),"Aún en proceso",Toast.LENGTH_SHORT).show();
@@ -2451,7 +2521,7 @@ public class SupervisionActivity extends AppCompatActivity
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout2);
         drawer.closeDrawer(GravityCompat.START);
-        return true;
+        return status;
     }
 
     private void cerrarSesion(){

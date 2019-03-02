@@ -114,7 +114,7 @@
                             android:layout_height="wrap_content"
                             android:ems="10"
                             android:gravity="top|left"
-                            android:hint="Descripcion"
+                            android:hint="Descripción"
                             android:inputType="textMultiLine"
                             android:lines="6"
                             android:overScrollMode="always"

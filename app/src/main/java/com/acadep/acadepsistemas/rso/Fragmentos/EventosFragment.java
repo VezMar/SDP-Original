@@ -63,6 +63,7 @@ public class EventosFragment extends Fragment  {
 
     com.acadep.acadepsistemas.rso.Adapter.EventoAdapter EventAdapter;
     Query mReference;
+    Query mQuery;
     FirebaseFirestore BDFireStore= FirebaseFirestore.getInstance();
     CollectionReference eventsReference;
     //CollectionReference eventsReference = BDFireStore.collection("events");
@@ -80,6 +81,11 @@ public class EventosFragment extends Fragment  {
 
 
     private String activity_id;
+    private String project_title;
+    private String activity_title;
+
+    private TextView txt_SubProyecto;
+    private TextView txtAct;
 
     ArrayList<Evento> list;
     com.acadep.acadepsistemas.rso.Adapter.Adapter adapter;
@@ -93,6 +99,10 @@ public class EventosFragment extends Fragment  {
 
         if (getArguments()!=null){
             activity_id = getArguments().getString("activity_id");
+            project_title = getArguments().getString("project_title");
+            activity_title = getArguments().getString("activity_title");
+
+
         }
     }
 
@@ -100,39 +110,7 @@ public class EventosFragment extends Fragment  {
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-
-//        arrayString.add("1");
-//        arrayString.add("2");
-//        arrayString.add("3");
-//        arrayString.add("4");
-//        arrayString.add("5");
-
-
-
         final View view = inflater.inflate(R.layout.fragment_eventos, container, false);
-//        Spinner spnProyectos = view.findViewById(R.id.SpnProyectos);
-//
-//        ArrayAdapter adapter = new ArrayAdapter(getContext(),  android.R.layout.simple_spinner_item, arrayString);
-//        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//        spnProyectos.setAdapter(adapter);
-//        spnProyectos.setOnItemSelectedListener(this);
-
-
-//        BDFireStore.collection("users").document(mAuth.getUid()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-//            @Override
-//            public void onSuccess(DocumentSnapshot documentSnapshot) {
-//                Usuario usuario = documentSnapshot.toObject(Usuario.class);
-//                Correo = usuario.getEmail();
-//            }
-//        }).addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-//            @Override
-//            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-//                txtCorreo.setText(""+Correo);
-//
-//            }
-//        });
-
 
         EventosPendientes = (TextView) view.findViewById(R.id.txtEventosPendientes);
 
@@ -143,6 +121,11 @@ public class EventosFragment extends Fragment  {
         rv.setLayoutManager(new LinearLayoutManager(getContext()));
 
         list = new ArrayList<Evento>();
+
+        txt_SubProyecto = view.findViewById(R.id.txt_SubProyecto);
+            txt_SubProyecto.setText(""+project_title);
+        txtAct = view.findViewById(R.id.txtAct);
+            txtAct.setText(""+activity_title);
 
         FirebaseUser user = mAuth.getCurrentUser();
         uidUserGlobal = user.getUid();
@@ -170,23 +153,23 @@ public class EventosFragment extends Fragment  {
 
 //        mReference = BDFireStore.collection("events")
 //                .whereEqualTo("user_id", mAuth.getUid())
-//                    .whereEqualTo("active",true);
+//                    .whereEqualTo("active",true)
 //                        .orderBy("subproject_name", Query.Direction.ASCENDING)
 //                            .orderBy("activity_name", Query.Direction.ASCENDING);
 
 
-        mReference = BDFireStore.collection("events")
+        mQuery = BDFireStore.collection("events")
                 .whereEqualTo("user_id", mAuth.getUid())
                     .whereEqualTo("activity_id", activity_id);
 
-        mReference.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        mQuery.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
 
                     for (DocumentSnapshot document : task.getResult()) {
                         contEventos++;
-                        EventosPendientes.setText(contEventos+" Eventos pendientes");
+                        EventosPendientes.setText("Tienes "+contEventos+" Eventos pendientes");
                     }
                 } else {
                     Log.d("<E> en EventosFragment:", " Error getting documents: ", task.getException());
@@ -195,7 +178,7 @@ public class EventosFragment extends Fragment  {
         });
 
         FirestoreRecyclerOptions<Evento> options = new FirestoreRecyclerOptions.Builder<Evento>()
-                .setQuery(mReference, Evento.class).build();
+                .setQuery(mQuery, Evento.class).build();
 
         EventAdapter = new EventoAdapter(options);
 
@@ -217,6 +200,9 @@ public class EventosFragment extends Fragment  {
                 String description = evento.getDescription();
                 String idEvento = evento.getId();
                 String nameEvent = evento.getTitle();
+                boolean during_complete = evento.isDuring_complete();
+                boolean before_complete = evento.isBefore_complete();
+
 
                 int number = total.getNumber();
                 String unit = total.getUnit();
@@ -239,6 +225,8 @@ public class EventosFragment extends Fragment  {
                 intent.putExtra("description", description);
                 intent.putExtra("deleted", deleted);
                 intent.putExtra("advanced", advanced);
+                intent.putExtra("during_complete", during_complete);
+                intent.putExtra("before_complete", before_complete);
 
                 intent.putExtra("number", number);
                 intent.putExtra("unit", unit);
