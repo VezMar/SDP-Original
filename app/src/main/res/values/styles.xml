@@ -67,7 +67,7 @@
         <item name="stIconStart">@drawable/ic_error_outline_black_24dp</item>
         <item name="stLength">LONG</item>
         LONG or SHORT
-        <item name="stGravity">center</item>
+        <item name="stGravity">top</item>
         top or center
         <item name="stRadius">5dp</item>
     </style>

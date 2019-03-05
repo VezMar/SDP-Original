@@ -160,7 +160,8 @@ public class EventosFragment extends Fragment  {
 
         mQuery = BDFireStore.collection("events")
                 .whereEqualTo("user_id", mAuth.getUid())
-                    .whereEqualTo("activity_id", activity_id);
+                    .whereEqualTo("activity_id", activity_id)
+                        .whereEqualTo("active", true);
 
         mQuery.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
@@ -207,7 +208,8 @@ public class EventosFragment extends Fragment  {
                 int number = total.getNumber();
                 String unit = total.getUnit();
 
-                int advanced = evento.getAdvanced();
+                int ava = evento.getAva();
+
 
                 List<Recursos> tools = evento.getTools();
                 String deleted = evento.getDeleted();
@@ -224,7 +226,7 @@ public class EventosFragment extends Fragment  {
                 intent.putExtra("title", title);
                 intent.putExtra("description", description);
                 intent.putExtra("deleted", deleted);
-                intent.putExtra("advanced", advanced);
+                intent.putExtra("ava", ava);
                 intent.putExtra("during_complete", during_complete);
                 intent.putExtra("before_complete", before_complete);
 

@@ -11,6 +11,7 @@ public class Evento {
     String activity_id;
     String activity_name;
     int advanced;
+    int ava;
     boolean before_complete;
     String deleted;
     String description;
@@ -38,11 +39,12 @@ public class Evento {
     public Evento() {
     }
 
-    public Evento(boolean active, String activity_id, String activity_name, int advanced, boolean before_complete, String deleted, String description, boolean during_complete, String end, String id, List<Recursos> staff, String start, String status, String subproject_name, String title, List<Recursos> tools, Total total, String type, String type_activity, String user_id) {
+    public Evento(boolean active, String activity_id, String activity_name, int advanced, int ava, boolean before_complete, String deleted, String description, boolean during_complete, String end, String id, List<Recursos> staff, String start, String color, String subproject_name, String title, List<Recursos> tools, Total total, String type, String type_activity, String user_id) {
         this.active = active;
         this.activity_id = activity_id;
         this.activity_name = activity_name;
         this.advanced = advanced;
+        this.ava = ava;
         this.before_complete = before_complete;
         this.deleted = deleted;
         this.description = description;
@@ -51,7 +53,7 @@ public class Evento {
         this.id = id;
         this.staff = staff;
         this.start = start;
-        this.color = status;
+        this.color = color;
         this.subproject_name = subproject_name;
         this.title = title;
         this.tools = tools;
@@ -91,6 +93,14 @@ public class Evento {
 
     public void setAdvanced(int advanced) {
         this.advanced = advanced;
+    }
+
+    public int getAva() {
+        return ava;
+    }
+
+    public void setAva(int ava) {
+        this.ava = ava;
     }
 
     public boolean isBefore_complete() {

@@ -5,7 +5,7 @@ import java.util.ArrayList;
 public class Project {
 
     private boolean active;
-    private String deleted;
+//    private String deleted;
     private String description;
     private String end;
     private String id;
@@ -18,9 +18,8 @@ public class Project {
     public Project() {
     }
 
-    public Project(boolean active, String deleted, String description, String end, String id, String start, String title) {
+    public Project(boolean active, String description, String end, String id, String start, String title) {
         this.active = active;
-        this.deleted = deleted;
         this.description = description;
         this.end = end;
         this.id = id;
@@ -34,14 +33,6 @@ public class Project {
 
     public void setActive(boolean active) {
         this.active = active;
-    }
-
-    public String getDeleted() {
-        return deleted;
-    }
-
-    public void setDeleted(String deleted) {
-        this.deleted = deleted;
     }
 
     public String getDescription() {
