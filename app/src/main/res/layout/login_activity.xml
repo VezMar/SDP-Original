@@ -25,44 +25,77 @@
 
 
 
-    <EditText
-        android:id="@+id/txtUser"
-        android:layout_width="300dp"
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/txtInputUser"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/logo"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="22dp"
-        android:background="#E0E0E0"
-        android:hint="Correo Electrónico"
-        android:padding="16dp"
-        android:textColor="@android:color/black"
-        android:textColorHint="#636363"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
         android:maxLength="30"
-        android:inputType="textEmailAddress"/>
+        app:errorEnabled="true">
+
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/txtUser"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:ems="12"
+            android:hint="Correo Electrónico"
+            android:inputType="textEmailAddress"
+            android:padding="16dp"
+            android:textColor="@android:color/black" />
+
+
+    </android.support.design.widget.TextInputLayout>
 
 
 
 
-    <EditText
-        android:id="@+id/txtPsd"
-        android:layout_width="300dp"
+    <!--<EditText-->
+        <!--android:id="@+id/txtPsd"-->
+        <!--android:layout_width="300dp"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_below="@+id/txtUser"-->
+        <!--android:layout_centerHorizontal="true"-->
+        <!--android:layout_marginTop="15dp"-->
+        <!--android:background="#E0E0E0"-->
+        <!--android:hint="Contraseña"-->
+        <!--android:inputType="textPassword"-->
+        <!--android:padding="16dp"-->
+        <!--android:textColor="@android:color/black"-->
+        <!--android:textColorHint="#636363"-->
+        <!--android:ems="12"/>-->
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/txtInputPsd"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/txtUser"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="15dp"
-        android:background="#E0E0E0"
-        android:hint="Contraseña"
-        android:inputType="textPassword"
-        android:padding="16dp"
-        android:textColor="@android:color/black"
-        android:textColorHint="#636363"
-        android:ems="12"/>
+        android:layout_below="@+id/txtInputUser"
+        app:passwordToggleEnabled="true"
+        app:errorEnabled="true"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp">
+
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/txtPsd"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:ems="12"
+            android:hint="Contraseña"
+            android:inputType="textPassword"
+            android:padding="16dp" />
+
+    </android.support.design.widget.TextInputLayout>
 
     <Button
         android:id="@+id/btnLogin"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/txtPsd"
+        android:layout_below="@+id/txtInputPsd"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
         android:background="#004ba0"
@@ -77,6 +110,7 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="299dp" />
+
 
     <TextView
         android:id="@+id/txtForgotPsw"

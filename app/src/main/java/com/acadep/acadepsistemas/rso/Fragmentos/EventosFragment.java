@@ -82,6 +82,7 @@ public class EventosFragment extends Fragment  {
 
     private String activity_id;
     private String project_title;
+    private String project_id;
     private String activity_title;
 
     private TextView txt_SubProyecto;
@@ -101,6 +102,7 @@ public class EventosFragment extends Fragment  {
             activity_id = getArguments().getString("activity_id");
             project_title = getArguments().getString("project_title");
             activity_title = getArguments().getString("activity_title");
+            project_id = getArguments().getString("project_id");
 
 
         }
@@ -167,11 +169,16 @@ public class EventosFragment extends Fragment  {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
-
+                    contEventos=0;
                     for (DocumentSnapshot document : task.getResult()) {
                         contEventos++;
                         EventosPendientes.setText("Tienes "+contEventos+" Eventos pendientes");
                     }
+                    if(contEventos==0){
+                        BDFireStore.collection("activities").document(""+activity_id).update("users."+mAuth.getUid(), false);
+                    }
+
+
                 } else {
                     Log.d("<E> en EventosFragment:", " Error getting documents: ", task.getException());
                 }
@@ -229,6 +236,11 @@ public class EventosFragment extends Fragment  {
                 intent.putExtra("ava", ava);
                 intent.putExtra("during_complete", during_complete);
                 intent.putExtra("before_complete", before_complete);
+
+                intent.putExtra("activity_id",activity_id);
+                intent.putExtra("project_title",project_title);
+                intent.putExtra("project_id",project_id);
+                intent.putExtra("activity_title",activity_title);
 
                 intent.putExtra("number", number);
                 intent.putExtra("unit", unit);

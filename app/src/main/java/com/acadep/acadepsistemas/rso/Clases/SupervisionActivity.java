@@ -95,6 +95,7 @@ import com.google.firebase.database.Query;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
@@ -303,7 +304,8 @@ public class SupervisionActivity extends AppCompatActivity
 
     //FIRESTORE
     private FirebaseFirestore mFireStore;
-    private Query mQuery;
+    private com.google.firebase.firestore.Query mQuery;
+    private com.google.firebase.firestore.Query mQuery2;
 
 
     private BottomNavigationView bottomNavigationView;
@@ -397,7 +399,14 @@ public class SupervisionActivity extends AppCompatActivity
     static boolean before_complete;
 
 
+    private String activity_id;
+    private String project_title;
+    private String project_id;
+    private String activity_title;
+
     static String Correo;
+    private int contEventos=0;
+    private int contActivity=0;
 
     //-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     @Override
@@ -574,7 +583,7 @@ public class SupervisionActivity extends AppCompatActivity
 //                        ActivityCompat.requestPermissions(SupervisionActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 9);
 //                    }
 //                }else{
-//                    StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT, R.style.warningToast).show();
+//                    StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT ).show();
 //                }
 //            }
 //        });
@@ -706,7 +715,7 @@ public class SupervisionActivity extends AppCompatActivity
                                                     AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
                                                     builder.setTitle("Confirmación");
                                                     builder.setMessage("¿Está seguro de que desea borrar lo seleccionado?");
-//                                                    StyleableToast.makeText(getApplicationContext(), "Una vez realizada, esta acción no se puede revertir", Toast.LENGTH_SHORT, R.style.warningToast).show();
+//                                                    StyleableToast.makeText(getApplicationContext(), "Una vez realizada, esta acción no se puede revertir", Toast.LENGTH_SHORT ).show();
                                                     // builder.setCancelable(false);
                                                     builder.setPositiveButton("Si", new DialogInterface.OnClickListener() {
                                                         @Override
@@ -749,11 +758,11 @@ public class SupervisionActivity extends AppCompatActivity
 
 
                 if ((estado).equals("before") && cont1 > 0) {
-                    StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT, R.style.warningToast).show();
+                    StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT ).show();
                 } else if ((estado).equals("during") && cont2 > 0) {
-                    StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT, R.style.warningToast).show();
+                    StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT ).show();
                 } else if ((estado).equals("after") && cont3 > 0) {
-                    StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT, R.style.warningToast).show();
+                    StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT ).show();
                 } else {
 
                     checked_NoAplica = check_NoAplica.isChecked();
@@ -762,165 +771,161 @@ public class SupervisionActivity extends AppCompatActivity
                         Observation = edObserv.getText().toString();
                         if (!Observation.equals("")) {
                             if (contImg >= min_photos || check_NoAplica.isChecked()) {
-                                if (contImg > max_photos) {
-                                    StyleableToast.makeText(getApplicationContext(), "El maximo de fotos es " + max_photos + " usted ha superado esa cantidad por " + (contImg - max_photos), Toast.LENGTH_SHORT, R.style.warningToast).show();
-                                } else {
-                                    AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
-                                    builder.setTitle("Confirmación");
-                                    builder.setMessage("¿Está seguro de enviar? \n\n" + "Enviará " + contImg + " de " + max_photos + " elementos disponibles");
-                                    StyleableToast.makeText(getApplicationContext(), "Una vez realizada, esta acción no se puede revertir", Toast.LENGTH_SHORT, R.style.warningToast).show();
-                                    // builder.setCancelable(false);
-                                    builder.setPositiveButton("Si", new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
+                                if (check_NoAplica.isChecked()==true && contImg == 0 || check_NoAplica.isChecked()==false && contImg>0  ){
+                                    if (contImg > max_photos) {
+                                        Toast.makeText(getApplicationContext(), "El maximo de fotos es " + max_photos + " usted ha superado esa cantidad por " + (contImg - max_photos), Toast.LENGTH_SHORT ).show();
+                                    } else {
+                                        AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
+                                        builder.setTitle("Confirmación");
+                                        builder.setMessage("¿Está seguro de enviar? \n\n" + "Enviará " + contImg + " de " + max_photos + " elementos disponibles");
+                                        Toast.makeText(getApplicationContext(), "Una vez realizada esta acción no se puede revertir!!", Toast.LENGTH_LONG ).show();
+                                        // builder.setCancelable(false);
+                                        builder.setPositiveButton("Si", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
 
-                                            ref_event.setId(idevent);
-                                            ref_event.setName(title);
-
-
-                                            if ((estado).equals("before")) {
+                                                ref_event.setId(idevent);
+                                                ref_event.setName(title);
 
 
-                                                boolean before = true;
+                                                if ((estado).equals("before")) {
 
 
-                                                header = "before";
-                                                UUID uuid = UUID.randomUUID();
-                                                u = "" + uuid;
+                                                    boolean before = true;
 
 
-                                                BDFireStore.collection("events").document(idevent).update("before_complete", true);
-                                                before_complete=true;
+                                                    header = "before";
+                                                    UUID uuid = UUID.randomUUID();
+                                                    u = "" + uuid;
 
-                                                if(check_NoAplica.isChecked()){
-                                                    if(contUris==0){
-                                                        Subirdatos();
-                                                    }else {
+
+                                                    BDFireStore.collection("events").document(idevent).update("before_complete", true);
+                                                    before_complete = true;
+
+                                                    if (check_NoAplica.isChecked()) {
+                                                        if (contUris == 0) {
+                                                            Subirdatos();
+                                                        } else {
+                                                            uploadAllFiles();
+                                                        }
+                                                    } else {
+                                                        uploadAllImages();
                                                         uploadAllFiles();
                                                     }
-                                                }else {
-                                                    uploadAllImages();
-                                                    uploadAllFiles();
-                                                }
 
 
-
-
-                                                BDFireStore.collection("events").document(idevent).update("color", "#3498db");
+                                                    BDFireStore.collection("events").document(idevent).update("color", "#3498db");
 
 //                                                BDFireStore.collection("events").document(idevent).update("ava", 1);
 
-                                                //Toast.makeText(getApplicationContext(), "Datos ingresados", Toast.LENGTH_SHORT).show();
+                                                    //Toast.makeText(getApplicationContext(), "Datos ingresados", Toast.LENGTH_SHORT).show();
 
 
+                                                }
+
+                                                if ((estado).equals("during")) {
 
 
+                                                    if (ava <= Integer.parseInt(String.valueOf(edpercentage.getText())) || 0 == Integer.parseInt(String.valueOf(edpercentage.getText())) && during_complete == false) {
+                                                        if (Integer.parseInt(String.valueOf(edpercentage.getText())) <= number) {
 
-                                            }
+                                                            ava = Integer.parseInt(String.valueOf(edpercentage.getText()));
 
-                                            if ((estado).equals("during")) {
+                                                            boolean during = true;
 
+                                                            header = "during";
+                                                            UUID uuid = UUID.randomUUID();
+                                                            u = "" + uuid;
 
-                                                if (ava <= Integer.parseInt(String.valueOf(edpercentage.getText())) || 0 == Integer.parseInt(String.valueOf(edpercentage.getText())) && during_complete==false) {
-                                                    if (Integer.parseInt(String.valueOf(edpercentage.getText())) <= number) {
+                                                            if (ava == number) {
+                                                                BDFireStore.collection("events").document(idevent).update("during_complete", true);
+                                                                during_complete = true;
+                                                            }
 
-                                                        ava = Integer.parseInt(String.valueOf(edpercentage.getText()));
-
-                                                        boolean during = true;
-
-                                                        header = "during";
-                                                        UUID uuid = UUID.randomUUID();
-                                                        u = "" + uuid;
-
-                                                        if(ava ==number){
-                                                            BDFireStore.collection("events").document(idevent).update("during_complete", true);
-                                                            during_complete=true;
-                                                        }
-
-                                                        if(check_NoAplica.isChecked()){
-                                                            if(contUris==0){
-                                                                Subirdatos();
-                                                            }else {
+                                                            if (check_NoAplica.isChecked()) {
+                                                                if (contUris == 0) {
+                                                                    Subirdatos();
+                                                                } else {
+                                                                    uploadAllFiles();
+                                                                }
+                                                            } else {
+                                                                uploadAllImages();
                                                                 uploadAllFiles();
                                                             }
-                                                        }else {
-                                                            uploadAllImages();
+
+
+                                                            terminado = 2;
+
+                                                            BDFireStore.collection("events").document(idevent).update("ava", ava);
+
+
+                                                        } else {
+                                                            Toast.makeText(getApplicationContext(), "El avance no puede ser mayor al 100%", Toast.LENGTH_LONG ).show();
+                                                        }
+                                                    } else {
+                                                        Toast.makeText(getApplicationContext(), "El avance no puede ser menor al anterior", Toast.LENGTH_LONG ).show();
+                                                    }
+
+
+                                                }
+
+                                                if ((estado).equals("after")) {
+
+                                                    boolean after = true;
+
+                                                    header = "after";
+                                                    UUID uuid = UUID.randomUUID();
+                                                    u = "" + uuid;
+
+//                                            Toast.makeText(getApplicationContext(), "Datos ingresados", Toast.LENGTH_LONG ).show();
+
+                                                    ava = number;
+
+                                                    edObserv.setText("");
+                                                    if (check_NoAplica.isChecked()) {
+                                                        if (contUris == 0) {
+                                                            Subirdatos();
+                                                        } else {
                                                             uploadAllFiles();
                                                         }
-
-
-
-                                                        terminado = 2;
-
-                                                        BDFireStore.collection("events").document(idevent).update("ava", ava);
-
-
-
-
                                                     } else {
-                                                        StyleableToast.makeText(getApplicationContext(), "El avance no puede ser mayor al 100%", Toast.LENGTH_LONG, R.style.warningToastMiddle).show();
-                                                    }
-                                                } else {
-                                                    StyleableToast.makeText(getApplicationContext(), "El avance no puede ser menor al anterior", Toast.LENGTH_LONG, R.style.warningToastMiddle).show();
-                                                }
-
-
-                                            }
-
-                                            if ((estado).equals("after")) {
-
-                                                boolean after = true;
-
-                                                header = "after";
-                                                UUID uuid = UUID.randomUUID();
-                                                u = "" + uuid;
-
-//                                            StyleableToast.makeText(getApplicationContext(), "Datos ingresados", Toast.LENGTH_LONG, R.style.sucessToast).show();
-
-                                                ava = number;
-
-                                                edObserv.setText("");
-                                                if(check_NoAplica.isChecked()){
-                                                    if(contUris==0){
-                                                        Subirdatos();
-                                                    }else {
+                                                        uploadAllImages();
                                                         uploadAllFiles();
                                                     }
-                                                }else {
-                                                    uploadAllImages();
-                                                    uploadAllFiles();
-                                                }
 
-                                                if(ava ==number){
-                                                    BDFireStore.collection("events").document(idevent).update("active", false);
+                                                    if (ava == number) {
+                                                        BDFireStore.collection("events").document(idevent).update("active", false);
+                                                    }
+                                                    BDFireStore.collection("events").document(idevent).update("ava", ava);
+
+
                                                 }
-                                                BDFireStore.collection("events").document(idevent).update("ava", ava);
 
 
                                             }
+                                        });
 
 
-                                        }
-                                    });
+                                        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
 
+                                            }
+                                        });
+                                        builder.create().show();
 
-                                    builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-
-                                        }
-                                    });
-                                    builder.create().show();
-
+                                    }
+                                }else{
+                                    Toast.makeText(getApplicationContext(), "No puede subir multimedia si ha seleccionado <<No aplica>>", Toast.LENGTH_SHORT).show();
                                 }
                             } else {
-                                StyleableToast.makeText(getApplicationContext(), "El número mínimo de fotos para poder enviar es " + min_photos, Toast.LENGTH_SHORT, R.style.warningToastMiddle).show();
+                                Toast.makeText(getApplicationContext(), "El número mínimo de fotos para poder enviar es " + min_photos, Toast.LENGTH_SHORT ).show();
                             }
                         } else {
-                            StyleableToast.makeText(getApplicationContext(), "El texto es necesario para poder enviar", Toast.LENGTH_SHORT, R.style.warningToastMiddle).show();
+                            Toast.makeText(getApplicationContext(), "El texto es necesario para poder enviar", Toast.LENGTH_SHORT ).show();
                         }
                     }else{
-                        StyleableToast.makeText(getApplicationContext(), "El avance es necesario para poder enviar", Toast.LENGTH_SHORT, R.style.warningToastMiddle).show();
+                        Toast.makeText(getApplicationContext(), "El avance es necesario para poder enviar", Toast.LENGTH_SHORT ).show();
                     }
 
 
@@ -1270,51 +1275,144 @@ public class SupervisionActivity extends AppCompatActivity
 
     private void EventoTerminado() {
 
-        if (estado.equals("after")|| estado.equals("during") && Tafter==false && ava == number || estado.equals("before") && Tduring==false && Tafter==false || during_complete == true && before_complete==true && estado=="after" && ava == number ){
+        if (estado.equals("after")|| estado.equals("during") && Tafter==false && ava == number || estado.equals("before") && Tduring==false && Tafter==false || during_complete == true && before_complete==true && estado=="after" && ava == number ) {
 
-            BDFireStore.collection("events").document(idevent).update("active", false);
+
             BDFireStore.collection("events").document(idevent).update("color", "#27ae60");
 
-            StyleableToast.makeText(getApplicationContext(), "Evento terminado", Toast.LENGTH_SHORT, R.style.doneToast).show();
+            mQuery = BDFireStore.collection("events")
+                    .whereEqualTo("user_id", mAuth.getUid())
+                    .whereEqualTo("activity_id", activity_id)
+                    .whereEqualTo("active", true);
+            BDFireStore.collection("events").document(idevent).update("active", false);
+
+//            BDFireStore.collection("events").document(idevent).update("active", false).addOnCompleteListener(new OnCompleteListener<Void>() {
+//                @Override
+//                public void onComplete(@NonNull Task<Void> task) {
+//                    mQuery.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+//                        @Override
+//                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+//                            if (task.isSuccessful()) {
+//                                contEventos = 0;
+//                                for (DocumentSnapshot document : task.getResult()) {
+//                                    contEventos++;
+//                                }
+//                                if (contEventos == 0) {
+//                                    BDFireStore.collection("activities").document("" + activity_id).update("users." + mAuth.getUid(), false);
+//                                    Toast.makeText(SupervisionActivity.this, "contEventos" + contEventos, Toast.LENGTH_SHORT).show();
+//                                    mQuery2 = BDFireStore.collection("activities")
+//                                            .whereEqualTo("users." + mAuth.getUid(), true)
+//                                            .whereEqualTo("project_id", project_id);
+//
+//
+//                                    mQuery2.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+//                                        @Override
+//                                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+//                                            if (task.isSuccessful()) {
+//                                                contActivity = 0;
+//                                                for (DocumentSnapshot document : task.getResult()) {
+//                                                    contActivity++;
+//                                                }
+//                                                Toast.makeText(SupervisionActivity.this, "contActivity: " + contActivity, Toast.LENGTH_SHORT).show();
+//                                                if (contActivity == 0) {
+//                                                    BDFireStore.collection("projects").document("" + project_id).update("users." + mAuth.getUid(), false).addOnCompleteListener(new OnCompleteListener<Void>() {
+//                                                        @Override
+//                                                        public void onComplete(@NonNull Task<Void> task) {
+//
+//                                                            Toast.makeText(getApplicationContext(), "Evento terminado", Toast.LENGTH_SHORT).show();
+//
+//
+//                                                            NotificationCompat.Builder mBuilder;
+//                                                            NotificationManager mNotifyMgr = (NotificationManager) getApplicationContext().getSystemService(NOTIFICATION_SERVICE);
+//
+//                                                            NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+//                                                            String NOTIFICACION_CHANNEL_ID = "com.acadep.acadepsistemas.rso.test";
+//
+//                                                            int icono = R.mipmap.ic_launcher;
+//                                                            Intent intent = new Intent(SupervisionActivity.this, MainActivity.class);
+//                                                            PendingIntent pendingIntent = PendingIntent.getActivity(SupervisionActivity.this, 0, intent, 0);
+//
+//                                                            NotificationCompat.Builder notiBuilder = new NotificationCompat.Builder(getApplicationContext(), NOTIFICACION_CHANNEL_ID);
+//
+//                                                            notiBuilder.setAutoCancel(true)
+//                                                                    .setDefaults(Notification.DEFAULT_ALL)
+//                                                                    .setWhen(System.currentTimeMillis())
+//                                                                    .setSmallIcon(R.drawable.rso)
+//                                                                    .setContentTitle("Evento terminado")
+//                                                                    .setContentText(nameEvent + " ha finalizado")
+//                                                                    .setContentInfo("info")
+//                                                                    .setAutoCancel(true)
+//                                                                    .setContentIntent(pendingIntent);
+//
+//
+//                                                            notificationManager.notify(new Random().nextInt(), notiBuilder.build());
+//
+//                                                            startActivity(new Intent(SupervisionActivity.this, MainActivity.class));
+//                                                        }
+//                                                    });
+//                                                }
+//
+//                                            } else {
+//                                                Log.d("<E> ActivityFragment:", " Error getting documents: ", task.getException());
+//                                            }
+//                                        }
+//                                    });
+//                                }
+//                            } else {
+//                                Log.d("<E> en EventosFragment:", " Error getting documents: ", task.getException());
+//                            }
+//                        }
+//                    });
+//                }
+//            });
 
 
-        NotificationCompat.Builder mBuilder;
-        NotificationManager mNotifyMgr =(NotificationManager) getApplicationContext().getSystemService(NOTIFICATION_SERVICE);
 
-        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        String NOTIFICACION_CHANNEL_ID = "com.acadep.acadepsistemas.rso.test";
-
-        int icono = R.mipmap.ic_launcher;
-        Intent intent = new Intent(SupervisionActivity.this, MainActivity.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(SupervisionActivity.this, 0,intent, 0);
-
-        NotificationCompat.Builder notiBuilder = new NotificationCompat.Builder(getApplicationContext(), NOTIFICACION_CHANNEL_ID);
-
-        notiBuilder.setAutoCancel(true)
-                .setDefaults(Notification.DEFAULT_ALL)
-                .setWhen(System.currentTimeMillis())
-                .setSmallIcon(R.drawable.rso)
-                .setContentTitle("Evento terminado")
-                .setContentText(nameEvent + " ha finalizado")
-                .setContentInfo("info")
-                .setAutoCancel(true)
-                .setContentIntent(pendingIntent);
+            Toast.makeText(getApplicationContext(), "Evento terminado", Toast.LENGTH_SHORT  ).show();
 
 
-        notificationManager.notify(new Random().nextInt(), notiBuilder.build());
+            NotificationCompat.Builder mBuilder;
+            NotificationManager mNotifyMgr =(NotificationManager) getApplicationContext().getSystemService(NOTIFICATION_SERVICE);
 
-        startActivity(new Intent(SupervisionActivity.this, MainActivity.class));
+            NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            String NOTIFICACION_CHANNEL_ID = "com.acadep.acadepsistemas.rso.test";
+
+            int icono = R.mipmap.ic_launcher;
+            Intent intent = new Intent(SupervisionActivity.this, MainActivity.class);
+            PendingIntent pendingIntent = PendingIntent.getActivity(SupervisionActivity.this, 0,intent, 0);
+
+            NotificationCompat.Builder notiBuilder = new NotificationCompat.Builder(getApplicationContext(), NOTIFICACION_CHANNEL_ID);
+
+            notiBuilder.setAutoCancel(true)
+                    .setDefaults(Notification.DEFAULT_ALL)
+                    .setWhen(System.currentTimeMillis())
+                    .setSmallIcon(R.drawable.rso)
+                    .setContentTitle("Evento terminado")
+                    .setContentText(nameEvent + " ha finalizado")
+                    .setContentInfo("info")
+                    .setAutoCancel(true)
+                    .setContentIntent(pendingIntent);
+
+
+            notificationManager.notify(new Random().nextInt(), notiBuilder.build());
+
+            startActivity(new Intent(SupervisionActivity.this, MainActivity.class));
+
+
+
+
+
         }
     }
 
     private void MostrarOpciones() {
 
         if((estado).equals("before") && cont1>0){
-            StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT, R.style.warningToast).show();
+            Toast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT ).show();
         }else if ((estado).equals("during") && cont2>0){
-            StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT, R.style.warningToast).show();
+            Toast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT ).show();
         }else if ((estado).equals("after") && cont3>0){
-            StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT, R.style.warningToast).show();
+            Toast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT ).show();
         }else {
             final CharSequence[] opciones = {"Borrar archivo anterior", "Cancelar"};
             final AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -1334,13 +1432,13 @@ public class SupervisionActivity extends AppCompatActivity
 //                        }
 
                         if (contUris==0) {
-                            StyleableToast.makeText(getApplicationContext(), "No hay ningún archivo para borrar", Toast.LENGTH_SHORT, R.style.warningToast).show();
+                            Toast.makeText(getApplicationContext(), "No hay ningún archivo para borrar", Toast.LENGTH_SHORT ).show();
                         }else{
                             if(contUris<11){
                                 contUris--;
                                 ArchivosUris.remove(0);
                                 files.remove(0);
-                                StyleableToast.makeText(getApplicationContext(), "¡Archivo Borrado con exito!", Toast.LENGTH_SHORT, R.style.doneToast).show();
+                                Toast.makeText(getApplicationContext(), "¡Archivo Borrado con exito!", Toast.LENGTH_SHORT  ).show();
                             }else{
 
                             }
@@ -1375,17 +1473,17 @@ public class SupervisionActivity extends AppCompatActivity
     private void mostrarDialogoOpciones() {
 
         if((estado).equals("before") && cont1>0){
-            StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT, R.style.warningToast).show();
+            Toast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT ).show();
         }else if ((estado).equals("during") && cont2>0){
-            StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT, R.style.warningToast).show();
+            Toast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT ).show();
         }else if ((estado).equals("after") && cont3>0){
-            StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT, R.style.warningToast).show();
+            Toast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT ).show();
         }else {
             final CharSequence[] opciones = {"Elegir PDF", "Elegir Docx", "Elegir Video", "Elegir Audio", "Cancelar"};
             final AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
             if (contUris == 0) {
-                StyleableToast.makeText(getApplicationContext(), "Solo puede añadir 10 archivos diferentes", Toast.LENGTH_SHORT, R.style.warningToast).show();
+                Toast.makeText(getApplicationContext(), "Solo puede añadir 10 archivos diferentes", Toast.LENGTH_SHORT ).show();
                 //Toast.makeText(getApplicationContext(),"Solo puede añadir 10 archivos diferentes \nUna vez agregado un archivo este no puede ser eliminado",Toast.LENGTH_LONG).show();
             }
 
@@ -1548,7 +1646,7 @@ public class SupervisionActivity extends AppCompatActivity
 //        if(requestCode==9 && grantResults[0]==PackageManager.PERMISSION_GRANTED){
 //            selectPDF();
 //        }else{
-//            StyleableToast.makeText(getApplicationContext(), "Porfavor otorgue los permisos...", Toast.LENGTH_LONG, R.style.warningToast).show();
+//            Toast.makeText(getApplicationContext(), "Porfavor otorgue los permisos...", Toast.LENGTH_LONG ).show();
 //            //Toast.makeText(getApplicationContext(),"Porfavor otorgue los permisos...",Toast.LENGTH_SHORT).show();
 //        }
 //
@@ -1600,7 +1698,7 @@ public class SupervisionActivity extends AppCompatActivity
 //    public void onClickSwitch(View view) {
 //        if (view.getId() == R.id.swtBorrar) {
 //            if (swtBorrar.isChecked()) {
-//                StyleableToast.makeText(SupervisionActivity.this, "Al activar esta opción si da click sobre una imagen la borrará", Toast.LENGTH_SHORT, R.style.warningToastMiddle).show();
+//                Toast.makeText(SupervisionActivity.this, "Al activar esta opción si da click sobre una imagen la borrará", Toast.LENGTH_SHORT ).show();
 //            } else {
 //                Toast.makeText(SupervisionActivity.this, "Borrado de fotos desactivado", Toast.LENGTH_SHORT).show();
 //            }
@@ -1767,9 +1865,9 @@ public class SupervisionActivity extends AppCompatActivity
     public void takePhoto() throws IOException {
 
         if((estado).equals("before") && ava >=1){
-            StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT, R.style.warningToast).show();
+            Toast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT ).show();
         }else if ((estado).equals("during") && ava >99){
-            StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT, R.style.warningToast).show();
+            Toast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT ).show();
         }else {
 
 
@@ -1906,7 +2004,7 @@ public class SupervisionActivity extends AppCompatActivity
 
         if (requestCode==86 && resultCode==RESULT_OK && data!=null) {
             if(contUris>9){
-                StyleableToast.makeText(getApplicationContext(), "Limite de archivos alcanzado", Toast.LENGTH_LONG, R.style.warningToast).show();
+                Toast.makeText(getApplicationContext(), "Limite de archivos alcanzado", Toast.LENGTH_LONG ).show();
             }else {
                 SelecUri(data);
                 addFile();
@@ -1915,7 +2013,7 @@ public class SupervisionActivity extends AppCompatActivity
             //Toast.makeText(getApplicationContext(),"Tu archivo se ha guardado exitosamente",Toast.LENGTH_SHORT).show();
         }else if (requestCode==87 && resultCode==RESULT_OK && data!=null) {
             if(contUris>9){
-                StyleableToast.makeText(getApplicationContext(), "Limite de archivos alcanzado", Toast.LENGTH_LONG, R.style.warningToast).show();
+                Toast.makeText(getApplicationContext(), "Limite de archivos alcanzado", Toast.LENGTH_LONG ).show();
             }else {
                 SelecUri(data);
                 addFile();
@@ -1924,7 +2022,7 @@ public class SupervisionActivity extends AppCompatActivity
             //Toast.makeText(getApplicationContext(),"Tu archivo se ha guardado exitosamente",Toast.LENGTH_SHORT).show();
         } if (requestCode==88 && resultCode==RESULT_OK && data!=null) {
             if(contUris>9){
-                StyleableToast.makeText(getApplicationContext(), "Limite de archivos alcanzado", Toast.LENGTH_LONG, R.style.warningToast).show();
+                Toast.makeText(getApplicationContext(), "Limite de archivos alcanzado", Toast.LENGTH_LONG ).show();
             }else {
                 SelecUri(data);
                 addFile();
@@ -1934,7 +2032,7 @@ public class SupervisionActivity extends AppCompatActivity
         }
         if (requestCode==89 && resultCode==RESULT_OK && data!=null) {
             if(contUris>9){
-                StyleableToast.makeText(getApplicationContext(), "Limite de archivos alcanzado", Toast.LENGTH_LONG, R.style.warningToast).show();
+                Toast.makeText(getApplicationContext(), "Limite de archivos alcanzado", Toast.LENGTH_LONG ).show();
             }else {
                 SelecUri(data);
                 addFile();
@@ -1986,10 +2084,10 @@ public class SupervisionActivity extends AppCompatActivity
 
         if(contUris<10){
             ArchivosUris.add(0, data.getData());
-            StyleableToast.makeText(getApplicationContext(), "Archivo agregado con exito \nPuede subir " + (restUris-contUris) + " más", Toast.LENGTH_LONG, R.style.sucessToast).show();
+            Toast.makeText(getApplicationContext(), "Archivo agregado con exito \nPuede subir " + (restUris-contUris) + " más", Toast.LENGTH_LONG ).show();
 
         }else{
-            StyleableToast.makeText(getApplicationContext(), "Limite de archivos alcanzado", Toast.LENGTH_LONG, R.style.warningToast).show();
+            Toast.makeText(getApplicationContext(), "Limite de archivos alcanzado", Toast.LENGTH_LONG ).show();
         }
 
     }
@@ -2092,14 +2190,14 @@ public class SupervisionActivity extends AppCompatActivity
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
                                 if (task.isSuccessful()){
-                                    StyleableToast.makeText(getApplicationContext(), "Archivo Subido...", Toast.LENGTH_SHORT, R.style.doneToast).show();
+                                    Toast.makeText(getApplicationContext(), "Archivo Subido...", Toast.LENGTH_SHORT ).show();
                                     //Toast.makeText(getApplicationContext(),"Archivo Subido...",Toast.LENGTH_SHORT).show();
 
 
 
 
                                 }else{
-//                                    StyleableToast.makeText(getApplicationContext(), "¡Fallo al subirse!", Toast.LENGTH_SHORT, R.style.dangerToast).show();
+//                                    Toast.makeText(getApplicationContext(), "¡Fallo al subirse!", Toast.LENGTH_SHORT, R.style.dangerToast).show();
                                     //Toast.makeText(getApplicationContext(),"¡Fallo al subirse!",Toast.LENGTH_SHORT).show();
                                 }
                             }
@@ -2108,7 +2206,7 @@ public class SupervisionActivity extends AppCompatActivity
                 }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-//                StyleableToast.makeText(getApplicationContext(), "¡Fallo al subirse!", Toast.LENGTH_SHORT, R.style.dangerToast).show();
+//                Toast.makeText(getApplicationContext(), "¡Fallo al subirse!", Toast.LENGTH_SHORT, R.style.dangerToast).show();
                 //Toast.makeText(getApplicationContext(),"¡Fallo al subirse!",Toast.LENGTH_SHORT).show();
             }
         }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
@@ -2222,7 +2320,7 @@ public class SupervisionActivity extends AppCompatActivity
         BDFireStore.collection("evidence").document(u).set(data, SetOptions.merge()).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
-                StyleableToast.makeText(getApplicationContext(), "Información subida exitosamente", Toast.LENGTH_SHORT, R.style.doneToast). show();
+                Toast.makeText(getApplicationContext(), "Información subida exitosamente", Toast.LENGTH_SHORT  ). show();
                 edObserv.setText("");
                 EventoTerminado();
                 ChequeoDeVariables();
@@ -2309,7 +2407,7 @@ public class SupervisionActivity extends AppCompatActivity
 
                                         progressDialog.setProgress(100);
                                         progressDialog.setMessage("Click para salir...");
-                                        StyleableToast.makeText(getApplicationContext(), "Subida de archivos terminada!",Toast.LENGTH_SHORT, R.style.doneToast).show();
+                                        Toast.makeText(getApplicationContext(), "Subida de archivos terminada!",Toast.LENGTH_SHORT  ).show();
 
 
 
@@ -2330,14 +2428,14 @@ public class SupervisionActivity extends AppCompatActivity
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
                                 if (task.isSuccessful()){
-                                    StyleableToast.makeText(getApplicationContext(), "Archivo Subido...", Toast.LENGTH_SHORT, R.style.doneToast).show();
+                                    Toast.makeText(getApplicationContext(), "Archivo Subido...", Toast.LENGTH_SHORT  ).show();
                                     //Toast.makeText(getApplicationContext(),"Archivo Subido...",Toast.LENGTH_SHORT).show();
 
 
 
 
                                 }else{
-//                                    StyleableToast.makeText(getApplicationContext(), "¡Fallo al subirse!", Toast.LENGTH_SHORT, R.style.dangerToast).show();
+//                                    Toast.makeText(getApplicationContext(), "¡Fallo al subirse!", Toast.LENGTH_SHORT, R.style.dangerToast).show();
                                     //Toast.makeText(getApplicationContext(),"¡Fallo al subirse!",Toast.LENGTH_SHORT).show();
                                 }
                             }
@@ -2346,7 +2444,7 @@ public class SupervisionActivity extends AppCompatActivity
                 }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-//                StyleableToast.makeText(getApplicationContext(), "¡Fallo al subirse!", Toast.LENGTH_SHORT, R.style.dangerToast).show();
+//                Toast.makeText(getApplicationContext(), "¡Fallo al subirse!", Toast.LENGTH_SHORT, R.style.dangerToast).show();
                 //Toast.makeText(getApplicationContext(),"¡Fallo al subirse!",Toast.LENGTH_SHORT).show();
             }
         }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
@@ -2375,12 +2473,12 @@ public class SupervisionActivity extends AppCompatActivity
 
                     if (menuItem.getItemId()==R.id.itemAntes) {
                         if (ava >=1 ) {
-//                            StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT, R.style.warningToast).show();
+//                            Toast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT ).show();
                             opcion = false;
                             menuItem.setEnabled(false);
                         } else {
                             if(ava == 0 && Tbefore==true ) {
-//                                StyleableToast.makeText(getApplicationContext(), "Seccion disponible", Toast.LENGTH_SHORT, R.style.doneToast).show();
+//                                Toast.makeText(getApplicationContext(), "Seccion disponible", Toast.LENGTH_SHORT,  ).show();
                                 estado = "before";
                                 txtEstado.setText("Antes del Evento");
                             }else{
@@ -2392,18 +2490,18 @@ public class SupervisionActivity extends AppCompatActivity
 
                     if (menuItem.getItemId()==R.id.itemDurante){
                         if(ava == number ) {
-//                            StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT, R.style.warningToast).show();
+//                            Toast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT ).show();
                             opcion = false;
                             menuItem.setEnabled(false);
                         }else {
                             if (ava >=1 && ava <=number  && Tduring==true|| Tbefore == false && Tduring == true) {
-//                                StyleableToast.makeText(getApplicationContext(), "Seccion disponible", Toast.LENGTH_SHORT, R.style.doneToast).show();
+//                                Toast.makeText(getApplicationContext(), "Seccion disponible", Toast.LENGTH_SHORT,  ).show();
                                 estado = "during";
                                 txtEstado.setText("Durante el Evento");
                             }else{
                                 opcion = false;
                                 menuItem.setEnabled(false);
-//                                StyleableToast.makeText(getApplicationContext(), "Te faltan secciones por realizar", Toast.LENGTH_SHORT, R.style.warningToast).show();
+//                                Toast.makeText(getApplicationContext(), "Te faltan secciones por realizar", Toast.LENGTH_SHORT ).show();
                             }
 
                         }
@@ -2413,13 +2511,13 @@ public class SupervisionActivity extends AppCompatActivity
 
                             if (ava == number && Tafter==true || Tduring==false && Tafter==true && ava != 0) {
 
-//                                StyleableToast.makeText(getApplicationContext(), "Seccion disponible", Toast.LENGTH_SHORT, R.style.doneToast).show();
+//                                Toast.makeText(getApplicationContext(), "Seccion disponible", Toast.LENGTH_SHORT,  ).show();
                                 estado = "after";
                                 txtEstado.setText("Después del Evento");
                             }else{
                                 opcion = false;
                                 menuItem.setEnabled(false);
-//                                StyleableToast.makeText(getApplicationContext(), "Te faltan secciones por realizar", Toast.LENGTH_SHORT, R.style.warningToast).show();
+//                                Toast.makeText(getApplicationContext(), "Te faltan secciones por realizar", Toast.LENGTH_SHORT ).show();
                             }
 
                     }

@@ -45,7 +45,16 @@
             android:textColor="#000"
             android:layout_below="@id/txt_SubProyecto"/>
 
+        <TextView
+            android:id="@+id/txtActividadesPendientes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:text="Tienes # Actividades pendientes" />
     </LinearLayout>
+
+
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_2"
