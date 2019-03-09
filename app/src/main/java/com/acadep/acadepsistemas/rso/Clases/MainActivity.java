@@ -265,11 +265,12 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.nav_perfil) {
             Toast.makeText(getApplicationContext(),"Aún en proceso",Toast.LENGTH_SHORT).show();
             status = false;
-//        }else if (id == R.id.nav_acty) {
-//            Toast.makeText(getApplicationContext(),"Aún en proceso",Toast.LENGTH_SHORT).show();
-//            status = false;
-////                        startActivity(new Intent(this, com.acadep.acadepsistemas.rso.Clases.Prueba.MaterialsCheckList.class));
-////                        startActivity(new Intent(this, com.acadep.acadepsistemas.rso.Clases.Prueba.RecyclerTest.class));
+        }else if (id == R.id.nav_acty) {
+            Toast.makeText(getApplicationContext(),"Aún en proceso",Toast.LENGTH_SHORT).show();
+            status = false;
+                        startActivity(new Intent(this, com.acadep.acadepsistemas.rso.Clases.Prueba.EvidenceActivity.class));
+//                        startActivity(new Intent(this, com.acadep.acadepsistemas.rso.Clases.Prueba.RecyclerTest.class));
+
         } else if (id == R.id.nav_event) {
             mifragment = new ProjectFragment();
             FragmentoSeleccionado=true;

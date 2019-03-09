@@ -64,7 +64,10 @@
         <activity
             android:name=".Clases.ExtraordinaryActivity"
             android:label="Extraordinario"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Clases.Prueba.EvidenceActivity"
+            android:label="Evidencia"></activity>
     </application>
 
 </manifest>

@@ -20,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.acadep.acadepsistemas.rso.Adapter.EventoAdapter;
+import com.acadep.acadepsistemas.rso.Clases.Prueba.EvidenceActivity;
 import com.acadep.acadepsistemas.rso.Clases.SupervisionActivity;
 import com.acadep.acadepsistemas.rso.R;
 import com.acadep.acadepsistemas.rso.model.Evento;
@@ -223,7 +224,9 @@ public class EventosFragment extends Fragment  {
                 activeStatus = evento.isActive();
 
 
-                Intent intent = new Intent(getActivity(), SupervisionActivity.class);
+//                Intent intent = new Intent(getActivity(), SupervisionActivity.class);
+                Intent intent = new Intent(getActivity(), EvidenceActivity.class);
+
                 intent.putExtra("idEvento", idEvento);
                 intent.putExtra("actividad", actividad);
                 intent.putExtra("nameEvent", nameEvent);

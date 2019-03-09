@@ -31,5 +31,13 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_supervision">SupervisionActivity</string>
     <string name="title_activity_extraordinary">ExtraordinaryActivity</string>
+    <string name="title_activity_evidence">EvidenceActivity</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+
+    <string name="title_multimedia">Multimedia</string>
+    <string name="title_observaciones">Observaciones</string>
+    <string name="title_archivos">Archivos</string>
 
 </resources>
