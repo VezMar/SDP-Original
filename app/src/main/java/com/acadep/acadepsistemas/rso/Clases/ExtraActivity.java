@@ -930,7 +930,7 @@ public class ExtraActivity extends AppCompatActivity {
 //
 //                        Subirdatos();
 //                        if(x == (contImg-1) && contUris==0){
-////                            BDFireStore.collection("evidence").document(u).set(multimedia, SetOptions.merge());
+////                            BDFireStore.collection("evidence").document(uuids).set(multimedia, SetOptions.merge());
 //                            BorrarImagenes();
 //                        }
 //

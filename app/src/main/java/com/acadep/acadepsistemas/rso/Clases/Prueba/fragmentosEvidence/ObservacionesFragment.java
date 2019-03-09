@@ -37,8 +37,8 @@ public class ObservacionesFragment extends Fragment {
     static String title;
     static ArrayList<String> tools;
     static int ava;
-    static int number = evidenceActivity.getNumber();
-    static String unit = evidenceActivity.getUnit();
+     int number = evidenceActivity.getNumber();
+     String unit = evidenceActivity.getUnit();
     static boolean during_complete;
     static boolean before_complete;
     static String deleted;
@@ -99,7 +99,7 @@ public class ObservacionesFragment extends Fragment {
 
                 String text = ""+edpercentage.getText();
                 if(!text.equals("")) {
-                    evidenceActivity.setAva(Integer.parseInt(text));
+                    evidenceActivity.setEdpercentage(text);
                 }
             }
         });

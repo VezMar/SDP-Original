@@ -3,11 +3,16 @@ package com.acadep.acadepsistemas.rso.Clases.Prueba.fragmentosEvidence;
 import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -51,8 +56,11 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Locale;
 import java.util.Random;
 import java.util.UUID;
+
+import static android.app.Activity.RESULT_OK;
 
 
 public class MultimediaFragment extends Fragment {
@@ -96,6 +104,7 @@ public class MultimediaFragment extends Fragment {
 
     static com.github.clans.fab.FloatingActionButton actionButton_Take_photo;
     static com.github.clans.fab.FloatingActionButton actionButton_Take_video;
+    static com.github.clans.fab.FloatingActionButton actionButton_Borrar_Seleccionados;
     static FloatingActionMenu floatingActionsMenu;
 
     public MultimediaFragment() {
@@ -106,7 +115,7 @@ public class MultimediaFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        locationStart();
     }
 
     @Override
@@ -118,6 +127,7 @@ public class MultimediaFragment extends Fragment {
         floatingActionsMenu = view.findViewById(R.id.FloatingActionMenuPrincipal);
         actionButton_Take_photo = view.findViewById(R.id.fab_action_1);
         actionButton_Take_video = view.findViewById(R.id.fab_action_2);
+        actionButton_Borrar_Seleccionados = view.findViewById(R.id.fab_action_2_1);
 
 
         if (checkPermissions()) {
@@ -145,9 +155,52 @@ public class MultimediaFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 GuardarInformacionVideos();
-//                takeVideo();
+                takeVideo();
 
                 floatingActionsMenu.close(true);
+            }
+        });
+
+        actionButton_Borrar_Seleccionados.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
+                builder.setTitle("Confirmación");
+                builder.setMessage("¿Está seguro de que desea borrar lo seleccionado?");
+//                                                    StyleableToast.makeText(getApplicationContext(), "Una vez realizada, esta acción no se puede revertir", Toast.LENGTH_SHORT ).show();
+                // builder.setCancelable(false);
+                builder.setPositiveButton("Si", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        for (int i=(ListVideos.size()-1); 0<=i; i--){
+                            if (mItemChecked.get(i)==true){
+                                Log.i("mItemChecked - ", "Borrado" + i);
+                                deleteImage(i);
+
+                            }else{
+                                Log.i("mItemChecked - ", "Es false" + i);
+                            }
+                        }
+
+//                        for (int i=(ArchivosUris.size()-1); 0<=i ;i--){
+//                            if (archivoChecked.get(i)==true){
+//                                deleteFile(i);
+//                                Log.i("mArchivoChecked - ", "Borrado" + i);
+//                            }else{
+//                                Log.i("mArchivoChecked - ", "Es false" + i);
+//                            }
+//                        }
+                    }
+                });
+
+
+                builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+                builder.create().show();
             }
         });
 
@@ -208,6 +261,11 @@ public class MultimediaFragment extends Fragment {
         mItemChecked.add(0, false);
         mAdapter.notifyItemInserted(position);
         mLayaoutManager.scrollToPosition(position);
+
+        EvidenceActivity.setListVideos(ListVideos);
+        EvidenceActivity.setmTypeAdapter(mTypeAdapter);
+        EvidenceActivity.setmItemChecked(mItemChecked);
+
     }
 
     private void deleteImage(int position){
@@ -219,6 +277,12 @@ public class MultimediaFragment extends Fragment {
         multimedia.remove(position);
         mAdapter.notifyItemRemoved(position);
         contImg--;
+
+        EvidenceActivity.setListVideos(ListVideos);
+        EvidenceActivity.setmTypeAdapter(mTypeAdapter);
+        EvidenceActivity.setmItemChecked(mItemChecked);
+        EvidenceActivity.setmImageBitmap(mImageBitmap);
+        EvidenceActivity.setContImg(contImg);
     }
 
     @Override
@@ -252,6 +316,33 @@ public class MultimediaFragment extends Fragment {
         return true;
     }
 
+    private void GuardarInformacionImagenes() {
+
+        locationStart();
+        created_at_funct();
+
+        datatime.setDate(Fecha);
+        datatime.setTime(Hora);
+
+        locationStart();
+        ubication.setLat(Lat);
+        ubication.setLng(Lng);
+
+
+
+
+        PhotoData.setCreated_at(created_at);
+        PhotoData.setUbication(ubication);
+        PhotoData.setType("Imagen");
+        PhotoData.setSrc(""+contImg);
+
+        multimedia.add(0, PhotoData);
+
+        evidenceActivity.setMultimedia(multimedia);
+
+        PhotoData = new Foto();
+    }
+
     private void GuardarInformacionVideos() {
 
         locationStart();
@@ -273,6 +364,8 @@ public class MultimediaFragment extends Fragment {
         PhotoData.setSrc(""+contImg);
 
         multimedia.add(0, PhotoData);
+
+        evidenceActivity.setMultimedia(multimedia);
 
         PhotoData = new Foto();
 
@@ -310,15 +403,69 @@ public class MultimediaFragment extends Fragment {
         startActivityForResult(cameraIntent, TAKE_PHOTO_CODE);
     }
 
-//    private void takeVideo() {
-//        Intent takeVideoIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
-//        if (takeVideoIntent.resolveActivity(getPackageManager()) != null) {
-//            startActivityForResult(takeVideoIntent, REQUEST_VIDEO_CAPTURE);
-//        }
-//    }
+    private void takeVideo() {
+        Intent takeVideoIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+        if (takeVideoIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+            startActivityForResult(takeVideoIntent, REQUEST_VIDEO_CAPTURE);
+        }
+    }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
 
+        if (requestCode == TAKE_PHOTO_CODE && resultCode == RESULT_OK) {
+            Log.d("CameraDemo", "Pic saved");
+            Bitmap bitmap = BitmapFactory.decodeFile(filePath);
 
+            double heightd = bitmap.getHeight()*.1720430107526882;
+            float heightf =  (float)heightd;
+            Bitmap Bitnew = redimensionarImagenMaximo(bitmap, 512 ,  heightf);
+            mImageBitmap.add(0, Bitnew);
+
+            addImage( Uri.fromFile(new File(filePath)), 0, "Photo");
+//            ListVideos.add(0, Uri.fromFile(new File(filePath)));
+            contImg++;
+            GuardarInformacionImagenes();
+
+            evidenceActivity.setmImageBitmap(mImageBitmap);
+            evidenceActivity.setContImg(contImg);
+
+        }
+
+        if(requestCode == REQUEST_VIDEO_CAPTURE && resultCode == RESULT_OK) {
+
+            Uri videoUri = data.getData();
+//            addImage(new File(videoUri.getPath()), 0, "Video");
+            addImage(videoUri, 0, "Video");
+
+            Bitmap icon = BitmapFactory.decodeResource(getActivity().getResources(),
+                    R.drawable.reproductor_multimedia);
+
+            mImageBitmap.add(0, icon);
+//            ListVideos.add(0, videoUri);
+            contImg++;
+
+            evidenceActivity.setmImageBitmap(mImageBitmap);
+            evidenceActivity.setContImg(contImg);
+
+        }
+
+    }
+
+    public Bitmap redimensionarImagenMaximo(Bitmap mBitmap, float newWidth, float newHeigth){
+        //Redimensionamos
+        int width = mBitmap.getWidth();
+        int height = mBitmap.getHeight();
+        float scaleWidth = ((float) newWidth) / width;
+        float scaleHeight = ((float) newHeigth) / height;
+        // create a matrix for the manipulation
+        Matrix matrix = new Matrix();
+        // resize the bit map
+        matrix.postScale(scaleWidth, scaleHeight);
+        // recreate the new Bitmap
+        return Bitmap.createBitmap(mBitmap, 0, 0, width, height, matrix, false);
+    }
 
     private void created_at_funct() {
         java.util.Date FecAct = new Date();
@@ -338,8 +485,8 @@ public class MultimediaFragment extends Fragment {
 
 
     private void locationStart() {
-        LocationManager mlocManager = (LocationManager) evidenceActivity.getSystemService(Context.LOCATION_SERVICE);
-        Localizacion Local = new Localizacion();
+        LocationManager mlocManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+        EvidenceActivity.Localizacion Local = new EvidenceActivity.Localizacion();
         Local.setMainActivity(getActivity());
         final boolean gpsEnabled = mlocManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
         if (!gpsEnabled) {
@@ -358,14 +505,32 @@ public class MultimediaFragment extends Fragment {
         //txtFecha.setText(created_at.substring(0, 9));
         //txtHora.setText(created_at.substring(10, 15));
     }
+    public void setLocation(Location loc) {
+        //Obtener la direccion de la calle a partir de la latitud y la longitud
+        if (loc.getLatitude() != 0.0 && loc.getLongitude() != 0.0) {
+            try {
+                Geocoder geocoder = new Geocoder(getContext(), Locale.getDefault());
+                List<Address> list = geocoder.getFromLocation(
+                        loc.getLatitude(), loc.getLongitude(), 1);
+                if (!list.isEmpty()) {
+                    Address DirCalle = list.get(0);
+//                    mensaje2.setText("Mi direccion es: \n"
+//                            + DirCalle.getAddressLine(0));
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
 
     /* Aqui empieza la Clase Localizacion */
     public static class Localizacion implements LocationListener {
-        SupervisionActivity mainActivity3;
-        public SupervisionActivity getMainActivity() {
+        EvidenceActivity mainActivity3;
+        public EvidenceActivity getMainActivity() {
             return mainActivity3;
         }
-        public void setMainActivity(SupervisionActivity mainActivity) {
+        public void setMainActivity(EvidenceActivity mainActivity) {
             this.mainActivity3 = mainActivity;
         }
         @Override
@@ -376,6 +541,8 @@ public class MultimediaFragment extends Fragment {
             loc.getLongitude();
             String Text = "Mi ubicacion actual es: " + "\n Lat = "
                     + loc.getLatitude() + "\n Long = " + loc.getLongitude();
+
+            Log.i("ubication", Text);
 
             //----------------------------------------------------------------------------------------------------------------------------------------------------------
             Lat=loc.getLatitude();
@@ -412,6 +579,8 @@ public class MultimediaFragment extends Fragment {
 
         public void setMainActivity(FragmentActivity activity) {
         }
+
+
     }
 
 

@@ -51,6 +51,21 @@
         </LinearLayout>
     </RelativeLayout>
 
+    <com.github.clans.fab.FloatingActionButton
+        android:id="@+id/fab_action_2_1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginRight="8dp"
+        android:src="@drawable/ic_delete_black_24dp"
+        fab:fab_colorNormal="#c71d0d"
+        fab:fab_colorPressed="#ff1600"
+        app:fab_size="normal"
+        app:fab_label="Borrar Seleccionados"
+        android:layout_marginBottom="80dp"
+        />
+
     <com.github.clans.fab.FloatingActionMenu
         android:id="@+id/FloatingActionMenuPrincipal"
         android:layout_width="wrap_content"
@@ -92,5 +107,7 @@
             app:fab_label="Tomar Video"/>
 
     </com.github.clans.fab.FloatingActionMenu>
+
+
 
 </RelativeLayout>

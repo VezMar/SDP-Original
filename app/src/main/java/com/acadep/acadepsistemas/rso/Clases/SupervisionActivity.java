@@ -60,7 +60,6 @@ import android.widget.Toast;
 
 import com.acadep.acadepsistemas.rso.Adapter.ArchivosAdapter;
 import com.acadep.acadepsistemas.rso.Adapter.RecyclerViewAdapter;
-import com.acadep.acadepsistemas.rso.Fragmentos.EventosFragment;
 //import com.example.acadepsistemas.seguimiento.Manifest;
 import com.acadep.acadepsistemas.rso.Fragmentos.ProjectFragment;
 import com.acadep.acadepsistemas.rso.R;
@@ -91,11 +90,9 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
@@ -210,7 +207,7 @@ public class SupervisionActivity extends AppCompatActivity
     static int conteo = 0;
     static int descision = 0;
 
-    static String u;
+    static String uuids;
 
     static String idevent;
     static String nameEvent;
@@ -330,6 +327,7 @@ public class SupervisionActivity extends AppCompatActivity
     private static List<String> Name_Archivo = new ArrayList<>();
     private ArrayList<Boolean> archivoChecked= new ArrayList<>();
 
+
     Files PerFile = new Files();
 
     //static File [] FileImagenArray = new File[6];
@@ -352,9 +350,9 @@ public class SupervisionActivity extends AppCompatActivity
     static String created_at;
 
     //    Imagenes
-    private ArrayList<Bitmap> mImageBitmap = new ArrayList<>();
-    private ArrayList<String> mTypeAdapter = new ArrayList<>();
-    private ArrayList<Boolean> mItemChecked = new ArrayList<>();
+    private  static ArrayList<Bitmap> mImageBitmap = new ArrayList<>();
+    private  static ArrayList<String> mTypeAdapter = new ArrayList<>();
+    private  static ArrayList<Boolean> mItemChecked = new ArrayList<>();
 
 
 
@@ -796,7 +794,7 @@ public class SupervisionActivity extends AppCompatActivity
 
                                                     header = "before";
                                                     UUID uuid = UUID.randomUUID();
-                                                    u = "" + uuid;
+                                                    uuids = "" + uuid;
 
 
                                                     BDFireStore.collection("events").document(idevent).update("before_complete", true);
@@ -835,7 +833,7 @@ public class SupervisionActivity extends AppCompatActivity
 
                                                             header = "during";
                                                             UUID uuid = UUID.randomUUID();
-                                                            u = "" + uuid;
+                                                            uuids = "" + uuid;
 
                                                             if (ava == number) {
                                                                 BDFireStore.collection("events").document(idevent).update("during_complete", true);
@@ -875,7 +873,7 @@ public class SupervisionActivity extends AppCompatActivity
 
                                                     header = "after";
                                                     UUID uuid = UUID.randomUUID();
-                                                    u = "" + uuid;
+                                                    uuids = "" + uuid;
 
 //                                            Toast.makeText(getApplicationContext(), "Datos ingresados", Toast.LENGTH_LONG ).show();
 
@@ -1243,7 +1241,6 @@ public class SupervisionActivity extends AppCompatActivity
 
 
         Hora = today.hour +":" + calendar.get(Calendar.MINUTE);
-
         created_at = Fecha + "T" +Hora;
 
     }
@@ -1280,10 +1277,10 @@ public class SupervisionActivity extends AppCompatActivity
 
             BDFireStore.collection("events").document(idevent).update("color", "#27ae60");
 
-            mQuery = BDFireStore.collection("events")
-                    .whereEqualTo("user_id", mAuth.getUid())
-                    .whereEqualTo("activity_id", activity_id)
-                    .whereEqualTo("active", true);
+//            mQuery = BDFireStore.collection("events")
+//                    .whereEqualTo("user_id", mAuth.getUid())
+//                    .whereEqualTo("activity_id", activity_id)
+//                    .whereEqualTo("active", true);
             BDFireStore.collection("events").document(idevent).update("active", false);
 
 //            BDFireStore.collection("events").document(idevent).update("active", false).addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -2289,7 +2286,7 @@ public class SupervisionActivity extends AppCompatActivity
 //
 //                        Subirdatos();
 //                        if(x == (contImg-1) && contUris==0){
-////                            BDFireStore.collection("evidence").document(u).set(multimedia, SetOptions.merge());
+////                            BDFireStore.collection("evidence").document(uuids).set(multimedia, SetOptions.merge());
 //                            BorrarImagenes();
 //                        }
 //
@@ -2317,7 +2314,7 @@ public class SupervisionActivity extends AppCompatActivity
         total.setNumber(number);
         total.setUnit(unit);
         Data data = new Data(ava, created_at, Observation, header, total, false , user,ref_event, Lat, Lng, multimedia, files);
-        BDFireStore.collection("evidence").document(u).set(data, SetOptions.merge()).addOnCompleteListener(new OnCompleteListener<Void>() {
+        BDFireStore.collection("evidence").document(uuids).set(data, SetOptions.merge()).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 Toast.makeText(getApplicationContext(), "Información subida exitosamente", Toast.LENGTH_SHORT  ). show();
