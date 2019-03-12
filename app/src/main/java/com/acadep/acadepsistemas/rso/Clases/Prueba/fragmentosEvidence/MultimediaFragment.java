@@ -35,6 +35,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -120,6 +121,7 @@ public class MultimediaFragment extends Fragment {
     static  String estado = "before";
 
     TextView txtEstado;
+    CheckBox check_NoAplica;
 
     public MultimediaFragment() {
         // Required empty public constructor
@@ -152,6 +154,7 @@ public class MultimediaFragment extends Fragment {
         actionButton_Take_photo = view.findViewById(R.id.fab_action_1);
         actionButton_Take_video = view.findViewById(R.id.fab_action_2);
         actionButton_Borrar_Seleccionados = view.findViewById(R.id.fab_action_2_1);
+        check_NoAplica = view.findViewById(R.id.check_NoAplica);
 
         ChequeoDeVariables();
 
@@ -165,6 +168,17 @@ public class MultimediaFragment extends Fragment {
 
         }
 
+
+        check_NoAplica.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (check_NoAplica.isChecked()){
+                    evidenceActivity.setChecked_NoAplica(true);
+                }else{
+                    evidenceActivity.setChecked_NoAplica(false);
+                }
+            }
+        });
 
         actionButton_Take_photo.setOnClickListener(new View.OnClickListener() {
             @Override

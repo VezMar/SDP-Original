@@ -122,7 +122,8 @@ public class ObservacionesFragment extends Fragment {
 
                 String text = ""+edpercentage.getText();
                 if(!text.equals("")) {
-                    evidenceActivity.setAva(Integer.parseInt(text));
+                    evidenceActivity.setAvanced(Integer.parseInt(text));
+//                    evidenceActivity.setEdpercentage(text);
                 }
             }
         });

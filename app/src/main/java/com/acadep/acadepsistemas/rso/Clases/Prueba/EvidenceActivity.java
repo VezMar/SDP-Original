@@ -131,7 +131,11 @@ public class EvidenceActivity extends AppCompatActivity {
    private static String description;
    private static String title_event;
    private static ArrayList<String> tools;
+
    private static int ava;
+    private static int avanced;
+
+
    private static int number;
    private static String unit;
    private static String deleted;
@@ -363,87 +367,48 @@ public class EvidenceActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-//                checked_NoAplica = check_NoAplica.isChecked();
+                checked_NoAplica = EvidenceActivity.isChecked_NoAplica();
                 final String advanceed = String.valueOf(edpercentage);
                 if(!advanceed.equals("")) {
                     Observation = ""+ EvidenceActivity.getEdObserv();
                     if (!Observation.equals("")) {
                         if (contImg >= min_photos || checked_NoAplica == true) {
                             if (checked_NoAplica==true && contImg == 0 || checked_NoAplica==false && contImg >= min_photos  ){
-                                if (contImg > max_photos) {
-                                    Toast.makeText(getApplicationContext(), "El maximo de fotos es " + max_photos + " usted ha superado esa cantidad por " + (contImg - max_photos), Toast.LENGTH_SHORT ).show();
-                                } else {
-                                    AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
-                                    builder.setTitle("Confirmación");
-                                    builder.setMessage("¿Está seguro de enviar? \n\n" + "Enviará " + contImg + " de " + max_photos + " elementos disponibles");
-                                    Toast.makeText(getApplicationContext(), "Una vez realizada esta acción no se puede revertir!!", Toast.LENGTH_LONG ).show();
-                                    // builder.setCancelable(false);
-                                    builder.setPositiveButton("Si", new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
+                                avanced = EvidenceActivity.getAvanced();
 
-                                            ref_event.setId(idevent);
-                                            ref_event.setName(title_event);
+                                ava = EvidenceActivity.getAva();
+                                if (ava <= avanced) {
+                                    if (avanced <= number) {
+                                        if (contImg > max_photos) {
+                                            Toast.makeText(getApplicationContext(), "El maximo de fotos es " + max_photos + " usted ha superado esa cantidad por " + (contImg - max_photos), Toast.LENGTH_SHORT ).show();
+                                        } else {
+                                            AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
+                                            builder.setTitle("Confirmación");
+                                            builder.setMessage("¿Está seguro de enviar? \n\n" + "Enviará " + contImg + " de " + max_photos + " elementos disponibles");
+                                            Toast.makeText(getApplicationContext(), "Una vez realizada esta acción no se puede revertir!!", Toast.LENGTH_LONG ).show();
+                                            // builder.setCancelable(false);
+                                            builder.setPositiveButton("Si", new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int which) {
 
-
-                                            if ((estado).equals("before")) {
-
-
-                                                boolean before = true;
-
-
-                                                header = "before";
-                                                UUID uuid = UUID.randomUUID();
-                                                uuids = "" + uuid;
+                                                    ref_event.setId(idevent);
+                                                    ref_event.setName(title_event);
 
 
-
-                                                BDFireStore.collection("events").document(idevent).update("before_complete", true);
-                                                before_complete = true;
-
-                                                if (checked_NoAplica==true) {
-                                                    if (contUris == 0) {
-                                                        Subirdatos();
-                                                    } else {
-                                                        uploadAllFiles();
-                                                    }
-                                                } else {
-                                                    uploadAllImages();
-                                                    uploadAllFiles();
-                                                }
+                                                    if ((estado).equals("before")) {
 
 
-                                                BDFireStore.collection("events").document(idevent).update("color", "#3498db");
-
-//                                                BDFireStore.collection("events").document(idevent).update("ava", 1);
-
-                                                //Toast.makeText(getApplicationContext(), "Datos ingresados", Toast.LENGTH_SHORT).show();
+                                                        boolean before = true;
 
 
-                                            }
-
-                                            if ((estado).equals("during")) {
-
-                                                edpercentage = EvidenceActivity.getEdpercentage();
-                                                if(edpercentage==null){
-                                                    edpercentage="0";
-                                                }
-                                                ava = EvidenceActivity.getAva();
-                                                if (ava <= Integer.parseInt(edpercentage)) {
-                                                    if (Integer.parseInt(String.valueOf(edpercentage)) <= number) {
-
-                                                        ava = Integer.parseInt(String.valueOf(edpercentage));
-
-                                                        boolean during = true;
-
-                                                        header = "during";
+                                                        header = "before";
                                                         UUID uuid = UUID.randomUUID();
                                                         uuids = "" + uuid;
 
-                                                        if (ava == number) {
-                                                            BDFireStore.collection("events").document(idevent).update("during_complete", true);
-                                                            during_complete = true;
-                                                        }
+
+
+                                                        BDFireStore.collection("events").document(idevent).update("before_complete", true);
+                                                        before_complete = true;
 
                                                         if (checked_NoAplica==true) {
                                                             if (contUris == 0) {
@@ -457,66 +422,106 @@ public class EvidenceActivity extends AppCompatActivity {
                                                         }
 
 
-//                                                        terminado = 2;
+                                                        BDFireStore.collection("events").document(idevent).update("color", "#3498db");
 
+        //                                                BDFireStore.collection("events").document(idevent).update("ava", 1);
+
+                                                        //Toast.makeText(getApplicationContext(), "Datos ingresados", Toast.LENGTH_SHORT).show();
+
+
+                                                    }
+
+                                                    if ((estado).equals("during")) {
+
+
+
+
+                                                                ava = EvidenceActivity.getAva();
+
+                                                                boolean during = true;
+
+                                                                header = "during";
+                                                                UUID uuid = UUID.randomUUID();
+                                                                uuids = "" + uuid;
+
+                                                                if (ava == number) {
+                                                                    BDFireStore.collection("events").document(idevent).update("during_complete", true);
+                                                                    during_complete = true;
+                                                                }
+
+                                                                if (checked_NoAplica==true) {
+                                                                    if (contUris == 0) {
+                                                                        Subirdatos();
+                                                                    } else {
+                                                                        uploadAllFiles();
+                                                                    }
+                                                                } else {
+                                                                    uploadAllImages();
+                                                                    uploadAllFiles();
+                                                                }
+
+
+        //                                                        terminado = 2;
+
+                                                                BDFireStore.collection("events").document(idevent).update("ava", ava);
+
+
+
+
+
+                                                    }
+
+                                                    if ((estado).equals("after")) {
+
+                                                        boolean after = true;
+
+                                                        header = "after";
+                                                        UUID uuid = UUID.randomUUID();
+                                                        uuids = "" + uuid;
+
+        //                                            Toast.makeText(getApplicationContext(), "Datos ingresados", Toast.LENGTH_LONG ).show();
+
+                                                        ava = number;
+
+                                                        edObserv = "";
+                                                        if (checked_NoAplica==true) {
+                                                            if (contUris == 0) {
+                                                                Subirdatos();
+                                                            } else {
+                                                                uploadAllFiles();
+                                                            }
+                                                        } else {
+                                                            uploadAllImages();
+                                                            uploadAllFiles();
+                                                        }
+
+                                                        if (ava == number) {
+                                                            BDFireStore.collection("events").document(idevent).update("active", false);
+                                                        }
                                                         BDFireStore.collection("events").document(idevent).update("ava", ava);
 
 
-                                                    } else {
-                                                        Toast.makeText(getApplicationContext(), "El avance no puede ser mayor al 100%", Toast.LENGTH_LONG ).show();
                                                     }
-                                                } else {
-                                                    Toast.makeText(getApplicationContext(), "El avance no puede ser menor al anterior", Toast.LENGTH_LONG ).show();
+
+
                                                 }
+                                            });
 
 
-                                            }
+                                            builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int which) {
 
-                                            if ((estado).equals("after")) {
-
-                                                boolean after = true;
-
-                                                header = "after";
-                                                UUID uuid = UUID.randomUUID();
-                                                uuids = "" + uuid;
-
-//                                            Toast.makeText(getApplicationContext(), "Datos ingresados", Toast.LENGTH_LONG ).show();
-
-                                                ava = number;
-
-                                                edObserv = "";
-                                                if (checked_NoAplica==true) {
-                                                    if (contUris == 0) {
-                                                        Subirdatos();
-                                                    } else {
-                                                        uploadAllFiles();
-                                                    }
-                                                } else {
-                                                    uploadAllImages();
-                                                    uploadAllFiles();
                                                 }
-
-                                                if (ava == number) {
-                                                    BDFireStore.collection("events").document(idevent).update("active", false);
-                                                }
-                                                BDFireStore.collection("events").document(idevent).update("ava", ava);
-
-
-                                            }
-
+                                            });
+                                            builder.create().show();
 
                                         }
-                                    });
-
-
-                                    builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-
-                                        }
-                                    });
-                                    builder.create().show();
-
+                                    } else {
+                                        Toast.makeText(getApplicationContext(), "El avance no puede ser mayor al 100%", Toast.LENGTH_LONG ).show();
+                                    }
+                                } else {
+                                    Toast.makeText(getApplicationContext(), "El avance no puede ser menor al anterior", Toast.LENGTH_LONG ).show();
                                 }
                             }else{
                                 Toast.makeText(getApplicationContext(), "No puede subir multimedia si ha seleccionado <<No aplica>>", Toast.LENGTH_SHORT).show();
@@ -986,6 +991,7 @@ public class EvidenceActivity extends AppCompatActivity {
 
         EvidenceActivity.setIdactivity(idactivity);
         EvidenceActivity.setAva(ava);
+        EvidenceActivity.setAvanced(ava);
         EvidenceActivity.setNameEvent(nameEvent);
         EvidenceActivity.setTitle_event(title_event);
         EvidenceActivity.setDuring_complete(during_complete);
@@ -1217,6 +1223,7 @@ public class EvidenceActivity extends AppCompatActivity {
                         public void onClick(DialogInterface dialog, int id) {
                             BorrarImagenes();
                             BorrarFiles();
+                            EvidenceActivity.setEdObserv("");
                             EvidenceActivity.this.finish();
                         }
                     })
@@ -1432,6 +1439,14 @@ public class EvidenceActivity extends AppCompatActivity {
 
     public static void setAva(int ava) {
         EvidenceActivity.ava = ava;
+    }
+
+    public static int getAvanced() {
+        return avanced;
+    }
+
+    public static void setAvanced(int avanced) {
+        EvidenceActivity.avanced = avanced;
     }
 
     public static int getNumber() {
