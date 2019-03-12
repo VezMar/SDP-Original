@@ -175,9 +175,9 @@ public class EventosFragment extends Fragment  {
                         contEventos++;
                         EventosPendientes.setText("Tienes "+contEventos+" Eventos pendientes");
                     }
-                    if(contEventos==0){
-                        BDFireStore.collection("activities").document(""+activity_id).update("users."+mAuth.getUid(), false);
-                    }
+//                    if(contEventos==0){
+//                        BDFireStore.collection("activities").document(""+activity_id).update("users."+mAuth.getUid(), false);
+//                    }
 
 
                 } else {

@@ -43,6 +43,11 @@ public class ObservacionesFragment extends Fragment {
     static boolean before_complete;
     static String deleted;
 
+    static boolean Tbefore;
+    static boolean Tduring;
+    static boolean Tafter;
+
+    static  String estado = "before";
     // Datos del evento
 //---------------------------------------------------------------
 
@@ -51,6 +56,8 @@ public class ObservacionesFragment extends Fragment {
         EditText edpercentage;
         TextView txtAvance;
         TextView txtTotal;
+        TextView txtEstado;
+        TextView txtAyuda;
     //Declaración de componentes
 
     public ObservacionesFragment() {
@@ -64,7 +71,18 @@ public class ObservacionesFragment extends Fragment {
         if (getArguments()!=null){
             number = getArguments().getInt("number");
             unit = getArguments().getString("unit");
+
+            during_complete = getArguments().getBoolean("during_complete");
+            before_complete = getArguments().getBoolean("before_complete");
+
+            Tbefore = getArguments().getBoolean("Tbefore");
+            Tduring = getArguments().getBoolean("Tduring");
+            Tafter = getArguments().getBoolean("Tafter");
+
+            estado = getArguments().getString("estado");
         }
+
+
     }
 
     @Override
@@ -78,10 +96,15 @@ public class ObservacionesFragment extends Fragment {
         txtAvance = (TextView) view.findViewById(R.id.txtAvance);
         txtTotal = (TextView) view.findViewById(R.id.txtTotal);
 
+        txtEstado = (TextView) view.findViewById(R.id.txtEstado);
+        txtAyuda = view.findViewById(R.id.txtAyuda);
+
         edObserv.setText("" + evidenceActivity.getEdObserv());
         edpercentage.setText("" + evidenceActivity.getAva());
 
         txtTotal.setText("/" + number + " "+ unit);
+
+        ChequeoDeVariables();
 
         edpercentage.addTextChangedListener(new TextWatcher() {
             @Override
@@ -99,7 +122,7 @@ public class ObservacionesFragment extends Fragment {
 
                 String text = ""+edpercentage.getText();
                 if(!text.equals("")) {
-                    evidenceActivity.setEdpercentage(text);
+                    evidenceActivity.setAva(Integer.parseInt(text));
                 }
             }
         });
@@ -122,6 +145,42 @@ public class ObservacionesFragment extends Fragment {
         });
 
         return view;
+    }
+
+    private void ChequeoDeVariables() {
+        if(Tbefore==true && before_complete == false){
+            txtAvance.setVisibility(View.INVISIBLE);
+            edpercentage.setVisibility(View.INVISIBLE);
+            txtTotal.setVisibility(View.INVISIBLE);
+            txtAyuda.setVisibility(View.INVISIBLE);
+
+            ava = 0;
+            txtEstado.setText("Inicio de la tarea");
+            estado = "before";
+            EvidenceActivity.setEstado("before");
+        }else {
+            if (Tduring == true && during_complete==false){
+                txtAvance.setVisibility(View.VISIBLE);
+                edpercentage.setVisibility(View.VISIBLE);
+                txtTotal.setVisibility(View.VISIBLE);
+                txtAyuda.setVisibility(View.VISIBLE);
+
+                txtEstado.setText("Durante la tarea");
+                estado = "during";
+                EvidenceActivity.setEstado("during");
+            }else {
+                if (Tafter == true && during_complete == true) {
+                    txtAvance.setVisibility(View.INVISIBLE);
+                    edpercentage.setVisibility(View.INVISIBLE);
+                    txtTotal.setVisibility(View.INVISIBLE);
+                    txtAyuda.setVisibility(View.INVISIBLE);
+
+                    txtEstado.setText("Después de la tarea");
+                    estado = "after";
+                    EvidenceActivity.setEstado("after");
+                }
+            }
+        }
     }
 
     /**

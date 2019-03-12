@@ -25,6 +25,7 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.format.Time;
@@ -91,50 +92,10 @@ public class EvidenceActivity extends AppCompatActivity {
     public EvidenceActivity() {
     }
 
-    public EvidenceActivity(String idevent, String nameEvent, String user_id, String actividad, String trabajador, String name, String start, String end, String idactivity, String description, String title_event, ArrayList<String> tools, int ava, int number, String unit, String deleted, boolean checked_NoAplica, String observation, Ref_event ref_event, String header, String uuids, int contT, int contT2, String username, Query mQuery, int contUris, int restUris, List<Uri> archivosUris, List<Files> files, Files perFile, List<String> type_Archivo, List<String> name_Archivo, ArrayList<Boolean> archivoChecked, ProgressDialog progressDialog, ArrayList<String> mTypeAdapter, ArrayList<Uri> listVideos, ArrayList<Boolean> mItemChecked, ArrayList<Bitmap> mImageBitmap, List<Foto> multimedia, int contImg, Foto photoData, String edObserv, String edpercentage, TextView txtAvance, TextView txtTotal, FloatingActionButton actionButton_Enviar, TextView txtEstado, FirebaseFirestore BDFireStore, FirebaseAuth mAuth, FirebaseStorage storage, StorageReference storageReference, FirebaseDatabase dbRef, List<Event_types> event_types, boolean tbefore, boolean tduring, boolean tafter, boolean during_complete, boolean before_complete, int max_photos, int min_photos, String estado, datetime datatime, Ubication ubication, Time today, String fecha, String hora, String created_at, BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener) {
+    public EvidenceActivity(String idevent, Query mQuery, ProgressDialog progressDialog, TextView txtAvance, TextView txtTotal, FloatingActionButton actionButton_Enviar, TextView txtEstado, FirebaseFirestore BDFireStore, FirebaseAuth mAuth, FirebaseStorage storage, StorageReference storageReference, FirebaseDatabase dbRef, List<Event_types> event_types, boolean tbefore, boolean tduring, boolean tafter, boolean during_complete, boolean before_complete, int max_photos, int min_photos, BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener) {
         this.idevent = idevent;
-        this.nameEvent = nameEvent;
-        this.user_id = user_id;
-        this.actividad = actividad;
-        this.trabajador = trabajador;
-        this.name = name;
-        this.start = start;
-        this.end = end;
-        this.idactivity = idactivity;
-        this.description = description;
-        this.title_event = title_event;
-        this.tools = tools;
-        this.ava = ava;
-        this.number = number;
-        this.unit = unit;
-        this.deleted = deleted;
-        this.checked_NoAplica = checked_NoAplica;
-        Observation = observation;
-        this.ref_event = ref_event;
-        this.header = header;
-        this.uuids = uuids;
-        this.contT = contT;
-        this.contT2 = contT2;
-        this.username = username;
         this.mQuery = mQuery;
-        this.contUris = contUris;
-        this.restUris = restUris;
-        ArchivosUris = archivosUris;
-        this.files = files;
-        PerFile = perFile;
-        Type_Archivo = type_Archivo;
-        Name_Archivo = name_Archivo;
-        this.archivoChecked = archivoChecked;
         this.progressDialog = progressDialog;
-        this.mTypeAdapter = mTypeAdapter;
-        ListVideos = listVideos;
-        this.mItemChecked = mItemChecked;
-        this.mImageBitmap = mImageBitmap;
-        this.multimedia = multimedia;
-        this.contImg = contImg;
-        PhotoData = photoData;
-        this.edObserv = edObserv;
-        this.edpercentage = edpercentage;
         this.txtAvance = txtAvance;
         this.txtTotal = txtTotal;
         this.actionButton_Enviar = actionButton_Enviar;
@@ -152,13 +113,6 @@ public class EvidenceActivity extends AppCompatActivity {
         this.before_complete = before_complete;
         this.max_photos = max_photos;
         this.min_photos = min_photos;
-        this.estado = estado;
-        this.datatime = datatime;
-        this.ubication = ubication;
-        this.today = today;
-        Fecha = fecha;
-        Hora = hora;
-        this.created_at = created_at;
         this.mOnNavigationItemSelectedListener = mOnNavigationItemSelectedListener;
     }
 
@@ -227,8 +181,8 @@ public class EvidenceActivity extends AppCompatActivity {
 
    private static Foto PhotoData = new Foto();
 
-    static double Lat;
-    static double Lng;
+    private static double Lat;
+    private static double Lng;
     // Datos de la multimedia
 //---------------------------------------------------------------
     // Datos de la observación
@@ -259,13 +213,13 @@ public class EvidenceActivity extends AppCompatActivity {
 //---------------------------------------------------------------
     //Configuration
      private List<Event_types> event_types;
-    private boolean Tbefore;
-    private boolean Tduring;
-    private boolean Tafter;
+    private static boolean Tbefore;
+    private static boolean Tduring;
+    private static boolean Tafter;
 
 
-    private boolean during_complete;
-    private boolean before_complete;
+    private static boolean during_complete;
+    private static boolean before_complete;
 
      int max_photos;
      int min_photos;
@@ -294,8 +248,7 @@ public class EvidenceActivity extends AppCompatActivity {
             Boolean FragmentoSeleccionado=false;
             int id = item.getItemId();
 
-
-                if (id ==R.id.navigation_observaciones){
+                if (id == R.id.navigation_observaciones){
                     mifragment = new ObservacionesFragment();
                     FragmentoSeleccionado=true;
                 }else if (id == R.id.navigation_multmedia) {
@@ -305,8 +258,6 @@ public class EvidenceActivity extends AppCompatActivity {
                     mifragment = new ArchivosFragment();
                     FragmentoSeleccionado = true;
                 }
-
-
 
             if(FragmentoSeleccionado==true){
 
@@ -329,6 +280,13 @@ public class EvidenceActivity extends AppCompatActivity {
                 bundle.putBoolean("during_complete",during_complete);
                 bundle.putBoolean("before_complete",before_complete );
 
+                bundle.putBoolean("Tbefore",Tbefore);
+                bundle.putBoolean("Tduring",Tduring);
+                bundle.putBoolean("Tafter",Tafter);
+
+                bundle.putString("estado",estado);
+
+
                 mifragment.setArguments(bundle);
 
                 getSupportFragmentManager()
@@ -338,7 +296,6 @@ public class EvidenceActivity extends AppCompatActivity {
 
                 item.setChecked(true);
                 getSupportActionBar().setTitle(item.getTitle());
-
             }
             return FragmentoSeleccionado;
         }
@@ -356,13 +313,14 @@ public class EvidenceActivity extends AppCompatActivity {
 
         recibirDatos();
         ChequeoConfiguration();
+        ChequeoDeVariables();
         actionButton_Enviar = findViewById(R.id.fab_action_enviar);
 
 
 
         Fragment mifragment = null;
 //                mifragment = new EventosFragment();
-        mifragment = new ObservacionesFragment();
+        mifragment = new MultimediaFragment();
 
         Bundle bundle = new Bundle();
         bundle.putString("idEvento", idevent);
@@ -383,18 +341,28 @@ public class EvidenceActivity extends AppCompatActivity {
         bundle.putBoolean("during_complete",during_complete);
         bundle.putBoolean("before_complete",before_complete );
 
+        bundle.putBoolean("Tbefore",Tbefore);
+        bundle.putBoolean("Tduring",Tduring );
+        bundle.putBoolean("Tafter",Tafter);
+
+        bundle.putString("estado", estado );
+
         mifragment.setArguments(bundle);
 
 
 
-        getSupportFragmentManager()
-                .beginTransaction()
-                .add(R.id.contenedor_Evidence, mifragment)
-                .commit();
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction().replace(R.id.contenedor_Evidence, mifragment).commit();
+
+//        getSupportFragmentManager()
+//                .beginTransaction()
+//                .replace(R.id.contenedor_Evidence, mifragment)
+//                .commit();
 
         actionButton_Enviar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
 //                checked_NoAplica = check_NoAplica.isChecked();
                 final String advanceed = String.valueOf(edpercentage);
                 if(!advanceed.equals("")) {
@@ -427,6 +395,7 @@ public class EvidenceActivity extends AppCompatActivity {
                                                 header = "before";
                                                 UUID uuid = UUID.randomUUID();
                                                 uuids = "" + uuid;
+
 
 
                                                 BDFireStore.collection("events").document(idevent).update("before_complete", true);
@@ -592,6 +561,7 @@ public class EvidenceActivity extends AppCompatActivity {
                 BorrarImagenes();
 
                 if (before_complete==true && during_complete==false){
+                    EvidenceActivity.this.finish();
                     estado = "Tarea en curso";
 //                    txtEstado.setText("Evidencia: Durante");
 //                    txtAvance.setVisibility(View.VISIBLE);
@@ -599,14 +569,13 @@ public class EvidenceActivity extends AppCompatActivity {
 //                    txtTotal.setVisibility(View.VISIBLE);
 //                    txtAyuda.setVisibility(View.VISIBLE);
                 }else if (during_complete==true || ava ==number){
+                    EvidenceActivity.this.finish();
 //                    txtAvance.setVisibility(View.INVISIBLE);
 //                    edpercentage.setVisibility(View.INVISIBLE);
 //                    txtTotal.setVisibility(View.INVISIBLE);
 //                    txtAyuda.setVisibility(View.INVISIBLE);
                     estado = "after";
 //                    txtEstado.setText("Fin de la tarea");
-
-
                 }
             }
         });
@@ -619,11 +588,29 @@ public class EvidenceActivity extends AppCompatActivity {
         DateTime dateTime = new DateTime();
 
 //        Fecha =   today.year + "-" + today.month + "-" + today.monthDay;
-        Fecha =   calendar.get(Calendar.YEAR) + "-" + dateTime.getMonthOfYear() + "-" + calendar.get(Calendar.DAY_OF_MONTH);
 
+        String mes = "" + dateTime.getMonthOfYear();
+        if (mes.length() == 1) {
+            mes = "0" + mes;
+        }
 
+        String dia = "" + calendar.get(Calendar.DAY_OF_MONTH);
+        if (dia.length() == 1) {
+            dia = "0" + dia;
+        }
+        Fecha =   calendar.get(Calendar.YEAR) + "-" + mes + "-" + dia;
 
-        Hora = today.hour +":" + calendar.get(Calendar.MINUTE);
+        String minute = ""+calendar.get(Calendar.MINUTE);
+        if (minute.length()==1){
+            minute = "0"+minute;
+        }
+
+        String hora = ""+calendar.get(Calendar.HOUR);
+        if (hora.length()==1){
+            hora = "0"+hora;
+        }
+
+        Hora = hora +":" + minute;
 
         created_at = Fecha + "T" +Hora;
 
@@ -995,9 +982,14 @@ public class EvidenceActivity extends AppCompatActivity {
         before_complete = extras.getBoolean("before_complete");
         //active=false;
 
+        title_event = nameEvent;
 
         EvidenceActivity.setIdactivity(idactivity);
         EvidenceActivity.setAva(ava);
+        EvidenceActivity.setNameEvent(nameEvent);
+        EvidenceActivity.setTitle_event(title_event);
+        EvidenceActivity.setDuring_complete(during_complete);
+        EvidenceActivity.setBefore_complete(before_complete);
 
     }
 
@@ -1021,6 +1013,11 @@ public class EvidenceActivity extends AppCompatActivity {
                         Tbefore = event_types.get(i).isBefore();
                         Tduring = event_types.get(i).isDuring();
                         Tafter = event_types.get(i).isAfter();
+
+                        EvidenceActivity.setTbefore(Tbefore);
+                        EvidenceActivity.setTduring(Tduring);
+                        EvidenceActivity.setTafter(Tafter);
+
                         break;
                     }
                 }
@@ -1190,56 +1187,46 @@ public class EvidenceActivity extends AppCompatActivity {
     }
 
     private void ChequeoDeVariables() {
-
-
-
-//        if(ava ==0 && Tbefore==true && before_complete == false){
         if(Tbefore==true && before_complete == false){
-//            txtAvance.setVisibility(View.INVISIBLE);
-//            edpercentage.setVisibility(View.INVISIBLE);
-//            txtTotal.setVisibility(View.INVISIBLE);
-//            txtAyuda.setVisibility(View.INVISIBLE);
-
             ava = 0;
-
+//            txtEstado.setText("Inicio de la tarea");
             estado = "before";
-//            txtEstado.setText("Evidencia: antes");
+            EvidenceActivity.setEstado("before");
+
         }else {
-
-
-//            if (ava >= 1 && ava < number && Tduring == true && during_complete == false || Tbefore == false && Tduring == true && during_complete == false|| during_complete == false && ava >= 1 || during_complete == false && Tbefore==true && before_complete==true) {
             if (Tduring == true && during_complete==false){
-//                edpercentage.setText(""+ava);
-
-
-//                txtAvance.setVisibility(View.VISIBLE);
-//                edpercentage.setVisibility(View.VISIBLE);
-//                txtTotal.setVisibility(View.VISIBLE);
-//                txtAyuda.setVisibility(View.VISIBLE);
-
-
-
+//                txtEstado.setText("Durante la tarea");
                 estado = "during";
-//                txtEstado.setText("Evidencia: Durante");
+                EvidenceActivity.setEstado("during");
             }else {
-
-//                if (ava == number && Tafter == true && during_complete == true || Tduring == false && Tafter == true) {
                 if (Tafter == true && during_complete == true) {
-//                    txtAvance.setVisibility(View.INVISIBLE);
-//                    edpercentage.setVisibility(View.INVISIBLE);
-//                    txtTotal.setVisibility(View.INVISIBLE);
-//                    txtAyuda.setVisibility(View.INVISIBLE);
-
-
-
+//                    txtEstado.setText("Después de la tarea");
                     estado = "after";
-//                    txtEstado.setText("Evidencia: Después");
+                    EvidenceActivity.setEstado("after");
                 }
             }
         }
+    }
 
-
-
+    @Override
+    public void onBackPressed() {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage("Estás seguro de salir?")
+                    .setCancelable(false)
+                    .setPositiveButton("Si", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            BorrarImagenes();
+                            BorrarFiles();
+                            EvidenceActivity.this.finish();
+                        }
+                    })
+                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            dialog.cancel();
+                        }
+                    });
+            AlertDialog alert = builder.create();
+            alert.show();
 
     }
 
@@ -1306,6 +1293,9 @@ public class EvidenceActivity extends AppCompatActivity {
             //----------------------------------------------------------------------------------------------------------------------------------------------------------
             Lat=loc.getLatitude();
             Lng=loc.getLongitude();
+
+           EvidenceActivity.setLat(Lat);
+           EvidenceActivity.setLng(Lng);
 
             //mensaje1.setText(Text);
             //mensaje1.setText(Text);
@@ -1701,6 +1691,8 @@ public class EvidenceActivity extends AppCompatActivity {
         EvidenceActivity.edpercentage = edpercentage;
     }
 
+
+
     public TextView getTxtAvance() {
         return txtAvance;
     }
@@ -1781,44 +1773,44 @@ public class EvidenceActivity extends AppCompatActivity {
         this.event_types = event_types;
     }
 
-    public boolean isTbefore() {
+    public static boolean isTbefore() {
         return Tbefore;
     }
 
-    public void setTbefore(boolean tbefore) {
+    public static void setTbefore(boolean tbefore) {
         Tbefore = tbefore;
     }
 
-    public boolean isTduring() {
+    public static boolean isTduring() {
         return Tduring;
     }
 
-    public void setTduring(boolean tduring) {
+    public static void setTduring(boolean tduring) {
         Tduring = tduring;
     }
 
-    public boolean isTafter() {
+    public static boolean isTafter() {
         return Tafter;
     }
 
-    public void setTafter(boolean tafter) {
+    public static void setTafter(boolean tafter) {
         Tafter = tafter;
     }
 
-    public boolean isDuring_complete() {
+    public static boolean isDuring_complete() {
         return during_complete;
     }
 
-    public void setDuring_complete(boolean during_complete) {
-        this.during_complete = during_complete;
+    public static void setDuring_complete(boolean during_complete) {
+        EvidenceActivity.during_complete = during_complete;
     }
 
-    public boolean isBefore_complete() {
+    public static boolean isBefore_complete() {
         return before_complete;
     }
 
-    public void setBefore_complete(boolean before_complete) {
-        this.before_complete = before_complete;
+    public static void setBefore_complete(boolean before_complete) {
+        EvidenceActivity.before_complete = before_complete;
     }
 
     public int getMax_photos() {

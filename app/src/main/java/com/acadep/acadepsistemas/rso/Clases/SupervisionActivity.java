@@ -93,6 +93,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
@@ -1236,11 +1237,30 @@ public class SupervisionActivity extends AppCompatActivity
         DateTime dateTime = new DateTime();
 
 //        Fecha =   today.year + "-" + today.month + "-" + today.monthDay;
-        Fecha =   calendar.get(Calendar.YEAR) + "-" + dateTime.getMonthOfYear() + "-" + calendar.get(Calendar.DAY_OF_MONTH);
 
+        String mes = "" + dateTime.getMonthOfYear();
+        if (mes.length() == 1) {
+            mes = "0" + mes;
+        }
 
+        String dia = "" + calendar.get(Calendar.DAY_OF_MONTH);
+        if (dia.length() == 1) {
+            dia = "0" + dia;
+        }
+        Fecha =   calendar.get(Calendar.YEAR) + "-" + mes + "-" + dia;
 
-        Hora = today.hour +":" + calendar.get(Calendar.MINUTE);
+        String minute = ""+calendar.get(Calendar.MINUTE);
+        if (minute.length()==1){
+            minute = "0"+minute;
+        }
+
+        String hora = ""+calendar.get(Calendar.HOUR);
+        if (hora.length()==1){
+            hora = "0"+hora;
+        }
+
+        Hora = hora +":" + minute;
+
         created_at = Fecha + "T" +Hora;
 
     }
@@ -1277,123 +1297,129 @@ public class SupervisionActivity extends AppCompatActivity
 
             BDFireStore.collection("events").document(idevent).update("color", "#27ae60");
 
-//            mQuery = BDFireStore.collection("events")
-//                    .whereEqualTo("user_id", mAuth.getUid())
-//                    .whereEqualTo("activity_id", activity_id)
-//                    .whereEqualTo("active", true);
-            BDFireStore.collection("events").document(idevent).update("active", false);
+            mQuery = BDFireStore.collection("events")
+                    .whereEqualTo("user_id", mAuth.getUid())
+                    .whereEqualTo("activity_id", activity_id)
+                    .whereEqualTo("active", true);
 
-//            BDFireStore.collection("events").document(idevent).update("active", false).addOnCompleteListener(new OnCompleteListener<Void>() {
-//                @Override
-//                public void onComplete(@NonNull Task<Void> task) {
-//                    mQuery.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-//                        @Override
-//                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-//                            if (task.isSuccessful()) {
-//                                contEventos = 0;
-//                                for (DocumentSnapshot document : task.getResult()) {
-//                                    contEventos++;
-//                                }
-//                                if (contEventos == 0) {
-//                                    BDFireStore.collection("activities").document("" + activity_id).update("users." + mAuth.getUid(), false);
+//            BDFireStore.collection("events").document(idevent).update("active", false);
+
+            BDFireStore.collection("events").document(idevent).update("active", false).addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    mQuery.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if (task.isSuccessful()) {
+                                contEventos = 0;
+                                for (DocumentSnapshot document : task.getResult()) {
+                                    contEventos++;
+                                }
+                                if (contEventos == 0) {
+                                    BDFireStore.collection("activities").document("" + activity_id).update("users." + mAuth.getUid(), false);
 //                                    Toast.makeText(SupervisionActivity.this, "contEventos" + contEventos, Toast.LENGTH_SHORT).show();
-//                                    mQuery2 = BDFireStore.collection("activities")
-//                                            .whereEqualTo("users." + mAuth.getUid(), true)
-//                                            .whereEqualTo("project_id", project_id);
-//
-//
-//                                    mQuery2.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-//                                        @Override
-//                                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-//                                            if (task.isSuccessful()) {
-//                                                contActivity = 0;
-//                                                for (DocumentSnapshot document : task.getResult()) {
-//                                                    contActivity++;
-//                                                }
-//                                                Toast.makeText(SupervisionActivity.this, "contActivity: " + contActivity, Toast.LENGTH_SHORT).show();
-//                                                if (contActivity == 0) {
-//                                                    BDFireStore.collection("projects").document("" + project_id).update("users." + mAuth.getUid(), false).addOnCompleteListener(new OnCompleteListener<Void>() {
-//                                                        @Override
-//                                                        public void onComplete(@NonNull Task<Void> task) {
-//
-//                                                            Toast.makeText(getApplicationContext(), "Evento terminado", Toast.LENGTH_SHORT).show();
-//
-//
-//                                                            NotificationCompat.Builder mBuilder;
-//                                                            NotificationManager mNotifyMgr = (NotificationManager) getApplicationContext().getSystemService(NOTIFICATION_SERVICE);
-//
-//                                                            NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-//                                                            String NOTIFICACION_CHANNEL_ID = "com.acadep.acadepsistemas.rso.test";
-//
-//                                                            int icono = R.mipmap.ic_launcher;
-//                                                            Intent intent = new Intent(SupervisionActivity.this, MainActivity.class);
-//                                                            PendingIntent pendingIntent = PendingIntent.getActivity(SupervisionActivity.this, 0, intent, 0);
-//
-//                                                            NotificationCompat.Builder notiBuilder = new NotificationCompat.Builder(getApplicationContext(), NOTIFICACION_CHANNEL_ID);
-//
-//                                                            notiBuilder.setAutoCancel(true)
-//                                                                    .setDefaults(Notification.DEFAULT_ALL)
-//                                                                    .setWhen(System.currentTimeMillis())
-//                                                                    .setSmallIcon(R.drawable.rso)
-//                                                                    .setContentTitle("Evento terminado")
-//                                                                    .setContentText(nameEvent + " ha finalizado")
-//                                                                    .setContentInfo("info")
-//                                                                    .setAutoCancel(true)
-//                                                                    .setContentIntent(pendingIntent);
-//
-//
-//                                                            notificationManager.notify(new Random().nextInt(), notiBuilder.build());
-//
-//                                                            startActivity(new Intent(SupervisionActivity.this, MainActivity.class));
-//                                                        }
-//                                                    });
-//                                                }
-//
-//                                            } else {
-//                                                Log.d("<E> ActivityFragment:", " Error getting documents: ", task.getException());
-//                                            }
-//                                        }
-//                                    });
-//                                }
-//                            } else {
-//                                Log.d("<E> en EventosFragment:", " Error getting documents: ", task.getException());
-//                            }
-//                        }
-//                    });
-//                }
-//            });
+                                    mQuery2 = BDFireStore.collection("activities")
+                                            .whereEqualTo("users." + mAuth.getUid(), true)
+                                            .whereEqualTo("project_id", project_id);
+
+
+                                    mQuery2.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                            if (task.isSuccessful()) {
+                                                contActivity = 0;
+                                                for (DocumentSnapshot document : task.getResult()) {
+                                                    contActivity++;
+                                                }
+                                                Toast.makeText(SupervisionActivity.this, "contActivity: " + contActivity, Toast.LENGTH_SHORT).show();
+                                                if (contActivity == 0) {
+                                                    BDFireStore.collection("projects").document("" + project_id).update("users." + mAuth.getUid(), false).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                        @Override
+                                                        public void onComplete(@NonNull Task<Void> task) {
+
+
+                                                        }
+                                                    });
+                                                }
+
+                                            } else {
+                                                Log.d("<E> ActivityFragment:", " Error getting documents: ", task.getException());
+                                            }
+                                        }
+                                    });
+                                }
+                            } else {
+                                Log.d("<E> en EventosFragment:", " Error getting documents: ", task.getException());
+                            }
+
+
+                            Toast.makeText(getApplicationContext(), "Evento terminado", Toast.LENGTH_SHORT).show();
+
+
+                            NotificationCompat.Builder mBuilder;
+                            NotificationManager mNotifyMgr = (NotificationManager) getApplicationContext().getSystemService(NOTIFICATION_SERVICE);
+
+                            NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                            String NOTIFICACION_CHANNEL_ID = "com.acadep.acadepsistemas.rso.test";
+
+                            int icono = R.mipmap.ic_launcher;
+                            Intent intent = new Intent(SupervisionActivity.this, MainActivity.class);
+                            PendingIntent pendingIntent = PendingIntent.getActivity(SupervisionActivity.this, 0, intent, 0);
+
+                            NotificationCompat.Builder notiBuilder = new NotificationCompat.Builder(getApplicationContext(), NOTIFICACION_CHANNEL_ID);
+
+                            notiBuilder.setAutoCancel(true)
+                                    .setDefaults(Notification.DEFAULT_ALL)
+                                    .setWhen(System.currentTimeMillis())
+                                    .setSmallIcon(R.drawable.rso)
+                                    .setContentTitle("Evento terminado")
+                                    .setContentText(nameEvent + " ha finalizado")
+                                    .setContentInfo("info")
+                                    .setAutoCancel(true)
+                                    .setContentIntent(pendingIntent);
+
+
+                            notificationManager.notify(new Random().nextInt(), notiBuilder.build());
+
+                            startActivity(new Intent(SupervisionActivity.this, MainActivity.class));
+                            SupervisionActivity.this.finish();
+                        }
+                    });
+                }
+            });
 
 
 
-            Toast.makeText(getApplicationContext(), "Evento terminado", Toast.LENGTH_SHORT  ).show();
-
-
-            NotificationCompat.Builder mBuilder;
-            NotificationManager mNotifyMgr =(NotificationManager) getApplicationContext().getSystemService(NOTIFICATION_SERVICE);
-
-            NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-            String NOTIFICACION_CHANNEL_ID = "com.acadep.acadepsistemas.rso.test";
-
-            int icono = R.mipmap.ic_launcher;
-            Intent intent = new Intent(SupervisionActivity.this, MainActivity.class);
-            PendingIntent pendingIntent = PendingIntent.getActivity(SupervisionActivity.this, 0,intent, 0);
-
-            NotificationCompat.Builder notiBuilder = new NotificationCompat.Builder(getApplicationContext(), NOTIFICACION_CHANNEL_ID);
-
-            notiBuilder.setAutoCancel(true)
-                    .setDefaults(Notification.DEFAULT_ALL)
-                    .setWhen(System.currentTimeMillis())
-                    .setSmallIcon(R.drawable.rso)
-                    .setContentTitle("Evento terminado")
-                    .setContentText(nameEvent + " ha finalizado")
-                    .setContentInfo("info")
-                    .setAutoCancel(true)
-                    .setContentIntent(pendingIntent);
-
-
-            notificationManager.notify(new Random().nextInt(), notiBuilder.build());
-
-            startActivity(new Intent(SupervisionActivity.this, MainActivity.class));
+//            Toast.makeText(getApplicationContext(), "Evento terminado", Toast.LENGTH_SHORT  ).show();
+//
+//
+//            NotificationCompat.Builder mBuilder;
+//            NotificationManager mNotifyMgr =(NotificationManager) getApplicationContext().getSystemService(NOTIFICATION_SERVICE);
+//
+//            NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+//            String NOTIFICACION_CHANNEL_ID = "com.acadep.acadepsistemas.rso.test";
+//
+//            int icono = R.mipmap.ic_launcher;
+//            Intent intent = new Intent(SupervisionActivity.this, MainActivity.class);
+//            PendingIntent pendingIntent = PendingIntent.getActivity(SupervisionActivity.this, 0,intent, 0);
+//
+//            NotificationCompat.Builder notiBuilder = new NotificationCompat.Builder(getApplicationContext(), NOTIFICACION_CHANNEL_ID);
+//
+//            notiBuilder.setAutoCancel(true)
+//                    .setDefaults(Notification.DEFAULT_ALL)
+//                    .setWhen(System.currentTimeMillis())
+//                    .setSmallIcon(R.drawable.rso)
+//                    .setContentTitle("Evento terminado")
+//                    .setContentText(nameEvent + " ha finalizado")
+//                    .setContentInfo("info")
+//                    .setAutoCancel(true)
+//                    .setContentIntent(pendingIntent);
+//
+//
+//            notificationManager.notify(new Random().nextInt(), notiBuilder.build());
+//
+//            startActivity(new Intent(SupervisionActivity.this, MainActivity.class));
+//            SupervisionActivity.this.finish();
 
 
 
@@ -2562,6 +2588,9 @@ public class SupervisionActivity extends AppCompatActivity
         unit = extras.getString("unit");
         during_complete = extras.getBoolean("during_complete");
         before_complete = extras.getBoolean("before_complete");
+        activity_id = extras.getString("activity_id");
+        project_id = extras.getString("project_id");
+
         //active=false;
 
 

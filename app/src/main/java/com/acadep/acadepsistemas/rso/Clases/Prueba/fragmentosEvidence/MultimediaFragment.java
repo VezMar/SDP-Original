@@ -35,6 +35,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.acadep.acadepsistemas.rso.Adapter.RecyclerViewAdapter;
@@ -107,6 +108,19 @@ public class MultimediaFragment extends Fragment {
     static com.github.clans.fab.FloatingActionButton actionButton_Borrar_Seleccionados;
     static FloatingActionMenu floatingActionsMenu;
 
+
+    static boolean during_complete;
+    static boolean before_complete;
+    static String deleted;
+
+    static boolean Tbefore;
+    static boolean Tduring;
+    static boolean Tafter;
+
+    static  String estado = "before";
+
+    TextView txtEstado;
+
     public MultimediaFragment() {
         // Required empty public constructor
     }
@@ -116,6 +130,15 @@ public class MultimediaFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         locationStart();
+
+        during_complete = EvidenceActivity.isDuring_complete();
+        before_complete = EvidenceActivity.isBefore_complete();
+
+        Tbefore = EvidenceActivity.isTbefore();
+        Tduring = EvidenceActivity.isTduring();
+        Tafter = EvidenceActivity.isTafter();
+
+        estado = EvidenceActivity.getEstado();
     }
 
     @Override
@@ -124,11 +147,13 @@ public class MultimediaFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_multimedia, container, false);
         initRecyclerView(view);
 
+        txtEstado = (TextView) view.findViewById(R.id.txtEstado);
         floatingActionsMenu = view.findViewById(R.id.FloatingActionMenuPrincipal);
         actionButton_Take_photo = view.findViewById(R.id.fab_action_1);
         actionButton_Take_video = view.findViewById(R.id.fab_action_2);
         actionButton_Borrar_Seleccionados = view.findViewById(R.id.fab_action_2_1);
 
+        ChequeoDeVariables();
 
         if (checkPermissions()) {
             if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -206,6 +231,27 @@ public class MultimediaFragment extends Fragment {
 
 
         return view;
+    }
+
+    private void ChequeoDeVariables() {
+        if(Tbefore==true && before_complete == false){
+//            ava = 0;
+            txtEstado.setText("Inicio de la tarea");
+            estado = "before";
+            EvidenceActivity.setEstado("before");
+        }else {
+            if (Tduring == true && during_complete==false){
+                txtEstado.setText("Durante la tarea");
+                estado = "during";
+                EvidenceActivity.setEstado("during");
+            }else {
+                if (Tafter == true && during_complete == true) {
+                    txtEstado.setText("Después de la tarea");
+                    estado = "after";
+                    EvidenceActivity.setEstado("after");
+                }
+            }
+        }
     }
 
     private void initRecyclerView(View view){
@@ -325,6 +371,8 @@ public class MultimediaFragment extends Fragment {
         datatime.setTime(Hora);
 
         locationStart();
+        Lat = evidenceActivity.getLat();
+        Lng = evidenceActivity.getLng();
         ubication.setLat(Lat);
         ubication.setLng(Lng);
 
@@ -352,6 +400,8 @@ public class MultimediaFragment extends Fragment {
         datatime.setTime(Hora);
 
         locationStart();
+        Lat = evidenceActivity.getLat();
+        Lng = evidenceActivity.getLng();
         ubication.setLat(Lat);
         ubication.setLng(Lng);
 
@@ -505,83 +555,11 @@ public class MultimediaFragment extends Fragment {
         //txtFecha.setText(created_at.substring(0, 9));
         //txtHora.setText(created_at.substring(10, 15));
     }
-    public void setLocation(Location loc) {
-        //Obtener la direccion de la calle a partir de la latitud y la longitud
-        if (loc.getLatitude() != 0.0 && loc.getLongitude() != 0.0) {
-            try {
-                Geocoder geocoder = new Geocoder(getContext(), Locale.getDefault());
-                List<Address> list = geocoder.getFromLocation(
-                        loc.getLatitude(), loc.getLongitude(), 1);
-                if (!list.isEmpty()) {
-                    Address DirCalle = list.get(0);
-//                    mensaje2.setText("Mi direccion es: \n"
-//                            + DirCalle.getAddressLine(0));
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
 
 
-    /* Aqui empieza la Clase Localizacion */
-    public static class Localizacion implements LocationListener {
-        EvidenceActivity mainActivity3;
-        public EvidenceActivity getMainActivity() {
-            return mainActivity3;
-        }
-        public void setMainActivity(EvidenceActivity mainActivity) {
-            this.mainActivity3 = mainActivity;
-        }
-        @Override
-        public void onLocationChanged(Location loc) {
-            // Este metodo se ejecuta cada vez que el GPS recibe nuevas coordenadas
-            // debido a la deteccion de un cambio de ubicacion
-            loc.getLatitude();
-            loc.getLongitude();
-            String Text = "Mi ubicacion actual es: " + "\n Lat = "
-                    + loc.getLatitude() + "\n Long = " + loc.getLongitude();
-
-            Log.i("ubication", Text);
-
-            //----------------------------------------------------------------------------------------------------------------------------------------------------------
-            Lat=loc.getLatitude();
-            Lng=loc.getLongitude();
-
-            //mensaje1.setText(Text);
-            //mensaje1.setText(Text);
-            this.mainActivity3.setLocation(loc);
-        }
-        @Override
-        public void onProviderDisabled(String provider) {
-            // Este metodo se ejecuta cuando el GPS es desactivado
-//            mensaje1.setText("GPS Desactivado");
-        }
-        @Override
-        public void onProviderEnabled(String provider) {
-            // Este metodo se ejecuta cuando el GPS es activado
-//            mensaje1.setText("GPS Activado");
-        }
-        @Override
-        public void onStatusChanged(String provider, int status, Bundle extras) {
-            switch (status) {
-                case LocationProvider.AVAILABLE:
-                    Log.d("debug", "LocationProvider.AVAILABLE");
-                    break;
-                case LocationProvider.OUT_OF_SERVICE:
-                    Log.d("debug", "LocationProvider.OUT_OF_SERVICE");
-                    break;
-                case LocationProvider.TEMPORARILY_UNAVAILABLE:
-                    Log.d("debug", "LocationProvider.TEMPORARILY_UNAVAILABLE");
-                    break;
-            }
-        }
-
-        public void setMainActivity(FragmentActivity activity) {
-        }
 
 
-    }
+
 
 
 }

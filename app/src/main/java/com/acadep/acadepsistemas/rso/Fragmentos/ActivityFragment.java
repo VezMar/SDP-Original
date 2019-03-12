@@ -81,9 +81,9 @@ public class ActivityFragment extends Fragment {
                         contActivity++;
                         ActividadesPendientes.setText("Tienes "+contActivity+" Actividades pendientes");
                     }
-                    if(contActivity==0){
-                        BDFireStore.collection("projects").document(""+project_id).update("users."+mAuth.getUid(), false);
-                    }
+//                    if(contActivity==0){
+//                        BDFireStore.collection("projects").document(""+project_id).update("users."+mAuth.getUid(), false);
+//                    }
                 } else {
                     Log.d("<E> ActivityFragment:", " Error getting documents: ", task.getException());
                 }

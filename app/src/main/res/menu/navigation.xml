@@ -2,14 +2,15 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/navigation_observaciones"
-        android:icon="@drawable/ic_assignment_black_24dp"
-        android:title="@string/title_observaciones"/>
+        android:id="@+id/navigation_multmedia"
+        android:icon="@drawable/ic_perm_media_black_24dp"
+        android:title="@string/title_multimedia"/>
 
     <item
-        android:id="@+id/navigation_multmedia"
-        android:icon="@drawable/ic_dashboard_black_24dp"
-        android:title="@string/title_multimedia"/>
+        android:id="@+id/navigation_observaciones"
+        android:icon="@drawable/ic_text_fields_black_24dp"
+        android:title="@string/title_observaciones"/>
+
 
     <item
         android:id="@+id/navigation_archivos"

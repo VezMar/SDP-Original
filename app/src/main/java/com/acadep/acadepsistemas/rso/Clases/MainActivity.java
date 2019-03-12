@@ -268,7 +268,7 @@ public class MainActivity extends AppCompatActivity
         }else if (id == R.id.nav_acty) {
             Toast.makeText(getApplicationContext(),"Aún en proceso",Toast.LENGTH_SHORT).show();
             status = false;
-                        startActivity(new Intent(this, com.acadep.acadepsistemas.rso.Clases.Prueba.EvidenceActivity.class));
+//                        startActivity(new Intent(this, com.acadep.acadepsistemas.rso.Clases.Prueba.EvidenceActivity.class));
 //                        startActivity(new Intent(this, com.acadep.acadepsistemas.rso.Clases.Prueba.RecyclerTest.class));
 
         } else if (id == R.id.nav_event) {
