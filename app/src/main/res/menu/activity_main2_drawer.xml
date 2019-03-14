@@ -9,10 +9,10 @@
             android:icon="@drawable/ic_account_circle_black_24dp"
             android:title="Mi Perfil" />
 
-        <item
-            android:id="@+id/nav_acty"
-            android:icon="@drawable/ic_playlist_add_check_black_36dp"
-            android:title="Prueba" />
+        <!--<item-->
+            <!--android:id="@+id/nav_acty"-->
+            <!--android:icon="@drawable/ic_playlist_add_check_black_36dp"-->
+            <!--android:title="Prueba" />-->
 
         <item
             android:id="@+id/nav_event"

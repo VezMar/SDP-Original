@@ -1,6 +1,7 @@
 package com.acadep.acadepsistemas.rso.Clases.Prueba;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -71,6 +72,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.karan.churi.PermissionManager.PermissionManager;
 
 import org.joda.time.DateTime;
 
@@ -211,7 +213,7 @@ public class EvidenceActivity extends AppCompatActivity {
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
     FirebaseStorage storage = FirebaseStorage.getInstance();
     StorageReference storageReference = storage.getReference();
-    FirebaseDatabase dbRef;
+    FirebaseDatabase dbRef = FirebaseDatabase.getInstance();
 
     //Firebase - Firestore
 //---------------------------------------------------------------
@@ -241,6 +243,10 @@ public class EvidenceActivity extends AppCompatActivity {
    private static String Hora;
     private  static String created_at;
     //Tiempo
+//---------------------------------------------------------------
+    //Permisos
+    PermissionManager permissionManager;
+    //Permisos
 //---------------------------------------------------------------
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -291,6 +297,8 @@ public class EvidenceActivity extends AppCompatActivity {
                 bundle.putString("estado",estado);
 
 
+
+
                 mifragment.setArguments(bundle);
 
                 getSupportFragmentManager()
@@ -311,7 +319,6 @@ public class EvidenceActivity extends AppCompatActivity {
         setContentView(R.layout.activity_evidence);
 
 
-
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
@@ -322,42 +329,6 @@ public class EvidenceActivity extends AppCompatActivity {
 
 
 
-        Fragment mifragment = null;
-//                mifragment = new EventosFragment();
-        mifragment = new MultimediaFragment();
-
-        Bundle bundle = new Bundle();
-        bundle.putString("idEvento", idevent);
-        bundle.putString("nameEvent",nameEvent);
-        bundle.putString("actividad",actividad);
-        bundle.putString("user_id",user_id);
-        bundle.putString("trabajador",trabajador);
-        bundle.putString("start",start);
-        bundle.putString("end",end);
-        bundle.putString("title_event", title_event);
-        bundle.putString("idactivity",idactivity);
-        bundle.putString("description",description);
-        bundle.putStringArrayList("tools",tools);
-        bundle.putString("deleted",deleted);
-        bundle.putInt("ava",ava);
-        bundle.putInt("number",number);
-        bundle.putString("unit",unit);
-        bundle.putBoolean("during_complete",during_complete);
-        bundle.putBoolean("before_complete",before_complete );
-
-        bundle.putBoolean("Tbefore",Tbefore);
-        bundle.putBoolean("Tduring",Tduring );
-        bundle.putBoolean("Tafter",Tafter);
-
-        bundle.putString("estado", estado );
-
-        mifragment.setArguments(bundle);
-
-
-
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction().replace(R.id.contenedor_Evidence, mifragment).commit();
-
 //        getSupportFragmentManager()
 //                .beginTransaction()
 //                .replace(R.id.contenedor_Evidence, mifragment)
@@ -366,6 +337,11 @@ public class EvidenceActivity extends AppCompatActivity {
         actionButton_Enviar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+
+
+
+
 
                 checked_NoAplica = EvidenceActivity.isChecked_NoAplica();
                 final String advanceed = String.valueOf(edpercentage);
@@ -436,7 +412,7 @@ public class EvidenceActivity extends AppCompatActivity {
 
 
 
-                                                                ava = EvidenceActivity.getAva();
+                                                                ava = avanced;
 
                                                                 boolean during = true;
 
@@ -449,6 +425,8 @@ public class EvidenceActivity extends AppCompatActivity {
                                                                     during_complete = true;
                                                                 }
 
+                                                                BDFireStore.collection("events").document(idevent).update("ava", ava);
+
                                                                 if (checked_NoAplica==true) {
                                                                     if (contUris == 0) {
                                                                         Subirdatos();
@@ -459,15 +437,6 @@ public class EvidenceActivity extends AppCompatActivity {
                                                                     uploadAllImages();
                                                                     uploadAllFiles();
                                                                 }
-
-
-        //                                                        terminado = 2;
-
-                                                                BDFireStore.collection("events").document(idevent).update("ava", ava);
-
-
-
-
 
                                                     }
 
@@ -540,6 +509,7 @@ public class EvidenceActivity extends AppCompatActivity {
 
     }
 
+
     private void Subirdatos() {
         created_at_funct();
 
@@ -549,8 +519,9 @@ public class EvidenceActivity extends AppCompatActivity {
 
         checked_NoAplica = false;
 
+        files = EvidenceActivity.getFiles();
 
-
+        ava = EvidenceActivity.getAvanced();
         Total total = new Total();
         total.setNumber(number);
         total.setUnit(unit);
@@ -624,7 +595,7 @@ public class EvidenceActivity extends AppCompatActivity {
     private void uploadAllFiles() {
 //        uploadfileGlobal(ArchivoUri);
 
-
+        ArchivosUris = EvidenceActivity.getArchivosUris();
         for (int i = 0; i<ArchivosUris.size(); i++){
             if ( ArchivosUris.get(i) != null){
                 uploadfileGlobal(ArchivosUris.get(i), i);
@@ -833,7 +804,7 @@ public class EvidenceActivity extends AppCompatActivity {
 
         PerFile = files.get(i);
         PerFile.setName( Name);
-//        PerFile.setName(ArchivoUri.getPath());
+        PerFile.setName(ArchivoUri.getPath());
         files.set(i,PerFile);
         PerFile = new Files();
 
@@ -857,6 +828,7 @@ public class EvidenceActivity extends AppCompatActivity {
                                     files.set(i,PerFile);
                                     PerFile = new Files();
 
+                                    EvidenceActivity.setFiles(files);
 
 
                                     contT2++;
@@ -1046,6 +1018,44 @@ public class EvidenceActivity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 ChequeoDeVariables();
+
+
+                Fragment mifragment = null;
+//                mifragment = new EventosFragment();
+//                mifragment = new MultimediaFragment();
+                mifragment = new ObservacionesFragment();
+
+                Bundle bundle = new Bundle();
+                bundle.putString("idEvento", idevent);
+                bundle.putString("nameEvent",nameEvent);
+                bundle.putString("actividad",actividad);
+                bundle.putString("user_id",user_id);
+                bundle.putString("trabajador",trabajador);
+                bundle.putString("start",start);
+                bundle.putString("end",end);
+                bundle.putString("title_event", title_event);
+                bundle.putString("idactivity",idactivity);
+                bundle.putString("description",description);
+                bundle.putStringArrayList("tools",tools);
+                bundle.putString("deleted",deleted);
+                bundle.putInt("ava",ava);
+                bundle.putInt("number",number);
+                bundle.putString("unit",unit);
+                bundle.putBoolean("during_complete",during_complete);
+                bundle.putBoolean("before_complete",before_complete );
+
+                bundle.putBoolean("Tbefore",Tbefore);
+                bundle.putBoolean("Tduring",Tduring );
+                bundle.putBoolean("Tafter",Tafter);
+
+                bundle.putString("estado", estado );
+
+                mifragment.setArguments(bundle);
+
+
+
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                fragmentManager.beginTransaction().replace(R.id.contenedor_Evidence, mifragment).commit();
             }
         });
 

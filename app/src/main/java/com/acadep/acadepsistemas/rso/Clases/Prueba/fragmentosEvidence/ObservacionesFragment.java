@@ -3,6 +3,7 @@ package com.acadep.acadepsistemas.rso.Clases.Prueba.fragmentosEvidence;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -11,9 +12,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.acadep.acadepsistemas.rso.Clases.Prueba.EvidenceActivity;
 import com.acadep.acadepsistemas.rso.R;
+import com.karan.churi.PermissionManager.PermissionManager;
 
 import java.util.ArrayList;
 
@@ -60,6 +63,9 @@ public class ObservacionesFragment extends Fragment {
         TextView txtAyuda;
     //Declaración de componentes
 
+    PermissionManager permissionManager;
+
+
     public ObservacionesFragment() {
         // Required empty public constructor
     }
@@ -91,6 +97,9 @@ public class ObservacionesFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_observaciones, container, false);
 
+        permissionManager = new PermissionManager() {};
+        permissionManager.checkAndRequestPermissions(getActivity());
+
         edObserv = (EditText) view.findViewById(R.id.edObserv);
         edpercentage = (EditText) view.findViewById(R.id.edit_porcentage);
         txtAvance = (TextView) view.findViewById(R.id.txtAvance);
@@ -100,7 +109,7 @@ public class ObservacionesFragment extends Fragment {
         txtAyuda = view.findViewById(R.id.txtAyuda);
 
         edObserv.setText("" + evidenceActivity.getEdObserv());
-        edpercentage.setText("" + evidenceActivity.getAva());
+        edpercentage.setText("" + evidenceActivity.getAvanced());
 
         txtTotal.setText("/" + number + " "+ unit);
 
@@ -146,6 +155,24 @@ public class ObservacionesFragment extends Fragment {
         });
 
         return view;
+    }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        permissionManager.checkResult(requestCode, permissions,grantResults);
+
+        ArrayList<String> granted = permissionManager.getStatus().get(0).granted;
+        ArrayList<String> denied = permissionManager.getStatus().get(0).denied;
+
+        for (String item:granted){
+            Toast.makeText(getContext(), "Permisos otrogados", Toast.LENGTH_SHORT).show();
+        }
+
+        for (String item:denied){
+            Toast.makeText(getContext(), "Faltan permisos por otorgar", Toast.LENGTH_SHORT).show();
+        }
+
     }
 
     private void ChequeoDeVariables() {

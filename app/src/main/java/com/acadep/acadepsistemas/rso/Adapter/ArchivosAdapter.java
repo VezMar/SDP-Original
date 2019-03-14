@@ -43,26 +43,46 @@ public class ArchivosAdapter extends RecyclerView.Adapter{
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
+
+
+        if (archivoChecked.get(i)==null){
+            archivoChecked.set(i, false);
+        }
+
         if (Type_Archivo.get(i).equals("Video")) {
             ((ArchivosViewHolder)viewHolder).img_Archivos.setImageResource(R.drawable.ic_videocam_black_24dp);
+            ((ArchivosViewHolder)viewHolder).txType_Archivo.setText(""+Type_Archivo.get(i));
+            ((ArchivosViewHolder)viewHolder).txName_Archivo.setText(""+Name_Archivo.get(i));
+            ((ArchivosViewHolder)viewHolder).txtUbicacion_Archivo.setText(""+ArchivosUris.get(i));
+            ((ArchivosViewHolder)viewHolder).myCheckBox_Archivos.setChecked(archivoChecked.get(i));
         }
 
         if (Type_Archivo.get(i).equals("Audio")) {
             ((ArchivosViewHolder)viewHolder).img_Archivos.setImageResource(R.drawable.ic_keyboard_voice_black_24dp);
+            ((ArchivosViewHolder)viewHolder).txType_Archivo.setText(""+Type_Archivo.get(i));
+            ((ArchivosViewHolder)viewHolder).txName_Archivo.setText(""+Name_Archivo.get(i));
+            ((ArchivosViewHolder)viewHolder).txtUbicacion_Archivo.setText(""+ArchivosUris.get(i));
+            ((ArchivosViewHolder)viewHolder).myCheckBox_Archivos.setChecked(archivoChecked.get(i));
         }
 
         if (Type_Archivo.get(i).equals("Docx")) {
             ((ArchivosViewHolder)viewHolder).img_Archivos.setImageResource(R.drawable.ic_insert_drive_file_black_24dp);
+            ((ArchivosViewHolder)viewHolder).txType_Archivo.setText(""+Type_Archivo.get(i));
+            ((ArchivosViewHolder)viewHolder).txName_Archivo.setText(""+Name_Archivo.get(i));
+            ((ArchivosViewHolder)viewHolder).txtUbicacion_Archivo.setText(""+ArchivosUris.get(i));
+            ((ArchivosViewHolder)viewHolder).myCheckBox_Archivos.setChecked(archivoChecked.get(i));
 
         }
         if (Type_Archivo.get(i).equals("PDF")) {
             ((ArchivosViewHolder)viewHolder).img_Archivos.setImageResource(R.drawable.ic_picture_as_pdf_black_24dp);
+            ((ArchivosViewHolder)viewHolder).txType_Archivo.setText(""+Type_Archivo.get(i));
+            ((ArchivosViewHolder)viewHolder).txName_Archivo.setText(""+Name_Archivo.get(i));
+            ((ArchivosViewHolder)viewHolder).txtUbicacion_Archivo.setText(""+ArchivosUris.get(i));
+            ((ArchivosViewHolder)viewHolder).myCheckBox_Archivos.setChecked(archivoChecked.get(i));
         }
 
-        ((ArchivosViewHolder)viewHolder).txType_Archivo.setText(""+Type_Archivo.get(i));
-        ((ArchivosViewHolder)viewHolder).txName_Archivo.setText(""+Name_Archivo.get(i));
-        ((ArchivosViewHolder)viewHolder).txtUbicacion_Archivo.setText(""+ArchivosUris.get(i));
-        ((ArchivosViewHolder)viewHolder).myCheckBox_Archivos.setChecked(archivoChecked.get(i));
+
+//        ((ArchivosViewHolder)viewHolder).myCheckBox_Archivos.setChecked(false);
 
 
     }

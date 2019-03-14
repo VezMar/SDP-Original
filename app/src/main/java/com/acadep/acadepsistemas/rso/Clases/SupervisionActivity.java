@@ -787,6 +787,7 @@ public class SupervisionActivity extends AppCompatActivity
                                                 ref_event.setName(title);
 
 
+
                                                 if ((estado).equals("before")) {
 
 
