@@ -6,32 +6,6 @@
     android:layout_height="match_parent"
     tools:context="com.acadep.acadepsistemas.rso.Clases.RecuperacionContrasena">
 
-
-
-
-    <EditText
-        android:id="@+id/EditForgotEmail"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="58dp"
-        android:layout_marginTop="213dp"
-        android:hint="Escriba su Email aquí              " />
-
-    <ru.dimorinny.floatingtextbutton.FloatingTextButton
-        android:id="@+id/btnSenEmail"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginStart="98dp"
-        android:layout_marginBottom="192dp"
-        app:floating_background_color="#1c8915"
-        app:floating_left_icon="@drawable/ic_email_black_24dp"
-        app:floating_title="Enviar Email"
-        app:floating_title_color="@android:color/white" />
-
     <TextView
         android:id="@+id/textView4"
         android:layout_width="wrap_content"
@@ -39,10 +13,81 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_marginStart="3dp"
-        android:layout_marginTop="86dp"
-        android:text=" Le enviaremos un enlace por correo electrónico después de que haga clic en el botón enviar. por favor haga clic en ese enlace para restablecer su contraseña"
+        android:layout_marginTop="30dp"
+        android:text="Para recuperar la contraseña:"
         android:textColor="@android:color/black"
         android:textSize="20sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="60dp"
+        android:text="1. Ingresa tu dirección de correo eletronico"
+        android:textColor="@android:color/black"
+        android:textSize="20sp"
+        android:layout_below="@id/textView4"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/textView4"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="19dp"
+        android:layout_marginTop="111dp"
+        android:text="2. Haz clic en 'Enviar' y revisa tu bandeja"
+        android:textColor="@android:color/black"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/x5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/textView4"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="19dp"
+        android:layout_marginTop="164dp"
+        android:text="3. Recibiras más instrucciones ahí"
+        android:textColor="@android:color/black"
+        android:textSize="20sp" />
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/txiL"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="22dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:layout_below="@id/x5">
+
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/EditForgotEmail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Correo Electrónico"
+            android:inputType="textEmailAddress"/>
+
+    </android.support.design.widget.TextInputLayout>
+
+    <ru.dimorinny.floatingtextbutton.FloatingTextButton
+        android:id="@+id/btnSenEmail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="170dp"
+        app:floating_background_color="#1c8915"
+        app:floating_left_icon="@drawable/ic_email_black_24dp"
+        app:floating_title="Enviar"
+        app:floating_title_color="@android:color/white"
+        android:layout_below="@id/txiL"
+        android:layout_marginTop="20dp"
+        />
 
 </RelativeLayout>

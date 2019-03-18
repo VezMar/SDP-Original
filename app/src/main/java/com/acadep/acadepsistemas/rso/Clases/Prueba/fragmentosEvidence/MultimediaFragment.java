@@ -63,6 +63,7 @@ import java.util.Random;
 import java.util.UUID;
 
 import static android.app.Activity.RESULT_OK;
+import static android.content.Context.RECEIVER_VISIBLE_TO_INSTANT_APPS;
 
 
 public class MultimediaFragment extends Fragment {
@@ -101,11 +102,13 @@ public class MultimediaFragment extends Fragment {
     private String filePath;
 
 
+    static final int RESULT_LOAD_IMG = 92;
     int TAKE_PHOTO_CODE = 0;
     static final int REQUEST_VIDEO_CAPTURE = 1;
 
     static com.github.clans.fab.FloatingActionButton actionButton_Take_photo;
     static com.github.clans.fab.FloatingActionButton actionButton_Take_video;
+    static com.github.clans.fab.FloatingActionButton actionButton_Upload_Image;
     static com.github.clans.fab.FloatingActionButton actionButton_Borrar_Seleccionados;
     static FloatingActionMenu floatingActionsMenu;
 
@@ -131,7 +134,7 @@ public class MultimediaFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        locationStart();
+//        locationStart();
 
         during_complete = EvidenceActivity.isDuring_complete();
         before_complete = EvidenceActivity.isBefore_complete();
@@ -141,6 +144,13 @@ public class MultimediaFragment extends Fragment {
         Tafter = EvidenceActivity.isTafter();
 
         estado = EvidenceActivity.getEstado();
+
+        mTypeAdapter = EvidenceActivity.getmTypeAdapter();
+        ListVideos = EvidenceActivity.getListVideos();
+        mItemChecked = EvidenceActivity.getmItemChecked();
+        mImageBitmap = EvidenceActivity.getmImageBitmap();
+        multimedia = EvidenceActivity.getMultimedia();
+        contImg = EvidenceActivity.getContImg();
     }
 
     @Override
@@ -153,20 +163,23 @@ public class MultimediaFragment extends Fragment {
         floatingActionsMenu = view.findViewById(R.id.FloatingActionMenuPrincipal);
         actionButton_Take_photo = view.findViewById(R.id.fab_action_1);
         actionButton_Take_video = view.findViewById(R.id.fab_action_2);
+        actionButton_Upload_Image = view.findViewById(R.id.fab_action_3);
         actionButton_Borrar_Seleccionados = view.findViewById(R.id.fab_action_2_1);
+
+
         check_NoAplica = view.findViewById(R.id.check_NoAplica);
 
         ChequeoDeVariables();
 
-        if (checkPermissions()) {
-            if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION,}, 1000);
-            } else {
-                locationStart();
-            }
-        } else{
-
-        }
+//        if (checkPermissions()) {
+//            if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+//                ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION,}, 1000);
+//            } else {
+//                locationStart();
+//            }
+//        } else{
+//
+//        }
 
 
         check_NoAplica.setOnClickListener(new View.OnClickListener() {
@@ -177,6 +190,15 @@ public class MultimediaFragment extends Fragment {
                 }else{
                     evidenceActivity.setChecked_NoAplica(false);
                 }
+            }
+        });
+
+        actionButton_Upload_Image.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                selectImage();
+
+                floatingActionsMenu.close(true);
             }
         });
 
@@ -291,7 +313,7 @@ public class MultimediaFragment extends Fragment {
                     mDialog.show();
 
                 }
-                if(mTypeAdapter.get(position).equals("Video")) {
+                if(mTypeAdapter.get(position).equals("video")) {
 //                        AlertDialog.Builder mBuilder = new AlertDialog.Builder(SupervisionActivity.this);
 //                        View mView = getLayoutInflater().inflate(R.layout.layout_videoview, null);
 //                        VideoView videoView = mView.findViewById(R.id.video_recycler);
@@ -345,38 +367,38 @@ public class MultimediaFragment extends Fragment {
         EvidenceActivity.setContImg(contImg);
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
-        switch (requestCode) {
-            case MULTIPLE_PERMISSIONS:{
-                if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
-                    Toast.makeText(getContext(), "Permisos otorgados...", Toast.LENGTH_SHORT).show();
-                } else {
-//                    Toast.makeText(this, "Aplicacion sin permisos...", Toast.LENGTH_SHORT).show();
-                }
-                // permissions list of don't granted permission
-            }
-            return;
-        }
-    }
+//    @Override
+//    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+//        switch (requestCode) {
+//            case MULTIPLE_PERMISSIONS:{
+//                if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+//                    Toast.makeText(getContext(), "Permisos otorgados...", Toast.LENGTH_SHORT).show();
+//                } else {
+////                    Toast.makeText(this, "Aplicacion sin permisos...", Toast.LENGTH_SHORT).show();
+//                }
+//                // permissions list of don't granted permission
+//            }
+//            return;
+//        }
+//    }
 
-    private  boolean checkPermissions() {
-        int result;
-        List<String> listPermissionsNeeded = new ArrayList<>();
-        for (String p:permissions) {
-            result = ContextCompat.checkSelfPermission(getContext(),p);
-            if (result != PackageManager.PERMISSION_GRANTED) {
-                listPermissionsNeeded.add(p);
-            }
-        }
-        if (!listPermissionsNeeded.isEmpty()) {
-            ActivityCompat.requestPermissions(getActivity(), listPermissionsNeeded.toArray(new String[listPermissionsNeeded.size()]),MULTIPLE_PERMISSIONS );
-            return false;
-        }
-        return true;
-    }
+//    private  boolean checkPermissions() {
+//        int result;
+//        List<String> listPermissionsNeeded = new ArrayList<>();
+//        for (String p:permissions) {
+//            result = ContextCompat.checkSelfPermission(getContext(),p);
+//            if (result != PackageManager.PERMISSION_GRANTED) {
+//                listPermissionsNeeded.add(p);
+//            }
+//        }
+//        if (!listPermissionsNeeded.isEmpty()) {
+//            ActivityCompat.requestPermissions(getActivity(), listPermissionsNeeded.toArray(new String[listPermissionsNeeded.size()]),MULTIPLE_PERMISSIONS );
+//            return false;
+//        }
+//        return true;
+//    }
 
-    private void GuardarInformacionImagenes() {
+    private void GuardarInformacionImagenes(int i) {
 
         locationStart();
         created_at_funct();
@@ -391,11 +413,17 @@ public class MultimediaFragment extends Fragment {
         ubication.setLng(Lng);
 
 
+        if (i ==2) {
+            PhotoData.setType("gallery");
+        }
+        if (i ==1) {
+            PhotoData.setType("image");
+        }
 
 
         PhotoData.setCreated_at(created_at);
         PhotoData.setUbication(ubication);
-        PhotoData.setType("Imagen");
+
         PhotoData.setSrc(""+contImg);
 
         multimedia.add(0, PhotoData);
@@ -424,7 +452,7 @@ public class MultimediaFragment extends Fragment {
 
         PhotoData.setCreated_at(created_at);
         PhotoData.setUbication(ubication);
-        PhotoData.setType("Video");
+        PhotoData.setType("video");
         PhotoData.setSrc(""+contImg);
 
         multimedia.add(0, PhotoData);
@@ -434,6 +462,13 @@ public class MultimediaFragment extends Fragment {
         PhotoData = new Foto();
 
     }
+
+    private void selectImage(){
+        Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
+        photoPickerIntent.setType("image/*");
+        startActivityForResult(photoPickerIntent, RESULT_LOAD_IMG);
+    }
+
 
     private void takePhoto_AltaCalidad() {
         final String dir = Environment.getExternalStorageDirectory().toString() + "/Imagenes-De-RSO/";
@@ -490,7 +525,7 @@ public class MultimediaFragment extends Fragment {
             addImage( Uri.fromFile(new File(filePath)), 0, "Photo");
 //            ListVideos.add(0, Uri.fromFile(new File(filePath)));
             contImg++;
-            GuardarInformacionImagenes();
+            GuardarInformacionImagenes(1);
 
             evidenceActivity.setmImageBitmap(mImageBitmap);
             evidenceActivity.setContImg(contImg);
@@ -510,6 +545,29 @@ public class MultimediaFragment extends Fragment {
 //            ListVideos.add(0, videoUri);
             contImg++;
 
+            evidenceActivity.setmImageBitmap(mImageBitmap);
+            evidenceActivity.setContImg(contImg);
+
+        }
+
+        if (requestCode == RESULT_LOAD_IMG && resultCode == RESULT_OK){
+
+
+            Uri imageUri = data.getData();
+            addImage(imageUri, 0, "Photo");
+            Bitmap bitmap = null;
+            try {
+                bitmap = MediaStore.Images.Media.getBitmap(this.getActivity().getContentResolver(), imageUri);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            double heightd = bitmap.getHeight()*.1720430107526882;
+            float heightf =  (float)heightd;
+            Bitmap Bitnew = redimensionarImagenMaximo(bitmap, 512 ,  heightf);
+            mImageBitmap.add(0, Bitnew);
+
+            contImg++;
+            GuardarInformacionImagenes(2);
             evidenceActivity.setmImageBitmap(mImageBitmap);
             evidenceActivity.setContImg(contImg);
 
@@ -537,11 +595,29 @@ public class MultimediaFragment extends Fragment {
         DateTime dateTime = new DateTime();
 
 //        Fecha =   today.year + "-" + today.month + "-" + today.monthDay;
-        Fecha =   calendar.get(Calendar.YEAR) + "-" + dateTime.getMonthOfYear() + "-" + calendar.get(Calendar.DAY_OF_MONTH);
 
+        String mes = "" + dateTime.getMonthOfYear();
+        if (mes.length() == 1) {
+            mes = "0" + mes;
+        }
 
+        String dia = "" + calendar.get(Calendar.DAY_OF_MONTH);
+        if (dia.length() == 1) {
+            dia = "0" + dia;
+        }
+        Fecha =   calendar.get(Calendar.YEAR) + "-" + mes + "-" + dia;
 
-        Hora = today.hour +":" + calendar.get(Calendar.MINUTE);
+        String minute = ""+calendar.get(Calendar.MINUTE);
+        if (minute.length()==1){
+            minute = "0"+minute;
+        }
+
+        String hora = ""+calendar.get(Calendar.HOUR);
+        if (hora.length()==1){
+            hora = "0"+hora;
+        }
+
+        Hora = hora +":" + minute;
 
         created_at = Fecha + "T" +Hora;
 

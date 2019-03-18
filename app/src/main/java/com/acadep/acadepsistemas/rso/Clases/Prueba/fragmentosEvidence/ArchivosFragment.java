@@ -114,7 +114,7 @@ public class ArchivosFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        locationStart();
+//        locationStart();
 
         during_complete = EvidenceActivity.isDuring_complete();
         before_complete = EvidenceActivity.isBefore_complete();
@@ -143,15 +143,15 @@ public class ArchivosFragment extends Fragment {
 
         ChequeoDeVariables();
 
-        if (checkPermissions()) {
-            if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION,}, 1000);
-            } else {
-                locationStart();
-            }
-        } else{
-
-        }
+//        if (checkPermissions()) {
+//            if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+//                ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION,}, 1000);
+//            } else {
+//                locationStart();
+//            }
+//        } else{
+//
+//        }
 
 
         actionButton_Upload_PDF.setOnClickListener(new View.OnClickListener() {
@@ -279,21 +279,21 @@ public class ArchivosFragment extends Fragment {
         return view;
     }
 
-    private  boolean checkPermissions() {
-        int result;
-        List<String> listPermissionsNeeded = new ArrayList<>();
-        for (String p:permissions) {
-            result = ContextCompat.checkSelfPermission(getContext(),p);
-            if (result != PackageManager.PERMISSION_GRANTED) {
-                listPermissionsNeeded.add(p);
-            }
-        }
-        if (!listPermissionsNeeded.isEmpty()) {
-            ActivityCompat.requestPermissions(getActivity(), listPermissionsNeeded.toArray(new String[listPermissionsNeeded.size()]),MULTIPLE_PERMISSIONS );
-            return false;
-        }
-        return true;
-    }
+//    private  boolean checkPermissions() {
+//        int result;
+//        List<String> listPermissionsNeeded = new ArrayList<>();
+//        for (String p:permissions) {
+//            result = ContextCompat.checkSelfPermission(getContext(),p);
+//            if (result != PackageManager.PERMISSION_GRANTED) {
+//                listPermissionsNeeded.add(p);
+//            }
+//        }
+//        if (!listPermissionsNeeded.isEmpty()) {
+//            ActivityCompat.requestPermissions(getActivity(), listPermissionsNeeded.toArray(new String[listPermissionsNeeded.size()]),MULTIPLE_PERMISSIONS );
+//            return false;
+//        }
+//        return true;
+//    }
 
     private void initRecyclerViewFiles(View view){
 

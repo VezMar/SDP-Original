@@ -1,11 +1,16 @@
 package com.acadep.acadepsistemas.rso.Clases;
 
 import android.annotation.SuppressLint;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
+import android.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,6 +20,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.acadep.acadepsistemas.rso.Manifest;
 import com.acadep.acadepsistemas.rso.R;
 import com.acadep.acadepsistemas.rso.model.Configuration;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -55,8 +61,9 @@ public class Login extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login_activity);
 
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.hide();
+//        ActionBar actionBar = getSupportActionBar();
+//        actionBar.hide();
+
 
         prgsBar = (ProgressBar) findViewById(R.id.prgsbar);
         prgsBar.setVisibility(View.INVISIBLE);
@@ -113,12 +120,51 @@ public class Login extends AppCompatActivity {
                         public void onComplete(@NonNull Task<DocumentSnapshot> task) {
 
                             if(versionCode >= lastestVersionCode) {
+                                hideLoading();
                                 Toast.makeText(getApplicationContext(), "Sesion iniciada", Toast.LENGTH_SHORT).show();
                                 map();
                             }else{
-                                StyleableToast.makeText(Login.this, "Descargue la nueva versión para poder continuar" , Toast.LENGTH_LONG, R.style.warningToastMiddle).show();
+                                hideLoading();
+//                                StyleableToast.makeText(Login.this, "Descargue la nueva versión para poder continuar" , Toast.LENGTH_LONG, R.style.warningToastMiddle).show();
+//                                AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
+//                                builder.setTitle("¡Nueva versión disponible!");
+//                                builder.setMessage("Descargue la nueva versión para poder continuar");
+//                                builder.setPositiveButton("Ir a la PlayStore", new DialogInterface.OnClickListener() {
+//                                    @Override
+//                                    public void onClick(DialogInterface dialog, int which) {
+//                                        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=com.acadep.acadepsistemas.rso"));
+//                                        startActivity(intent);
+//                                    }
+//                                });
+//                                builder.setNeutralButton("Cancelar", new DialogInterface.OnClickListener() {
+//                                    @Override
+//                                    public void onClick(DialogInterface dialog, int which) {
+//
+//                                    }
+//                                });
+//                                builder.create().show();
+
+                                AlertDialog.Builder builder = new AlertDialog.Builder(Login.this);
+                                builder.setTitle("¡Nueva versión disponible!");
+                                builder.setMessage("Descargue la nueva versión para poder continuar");
+                                builder.setPositiveButton("Ir a la PlayStore", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=com.acadep.acadepsistemas.rso"));
+                                        startActivity(intent);
+                                    }
+                                });
+                                builder.setNeutralButton("Cancelar", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+
+                                    }
+                                });
+//                                builder.setIcon(R.drawable.ic_warning_black_24dp);
+                                builder.create().show();
+
                             }
-                            hideLoading();
+
                         }
                     });
                 }
@@ -194,6 +240,11 @@ public class Login extends AppCompatActivity {
 
     }
 
+
+
+
+
+
     private void ingresar() {
         String User = txtUser.getText().toString().replace(" ", "");
         String password = txtPsd.getText().toString();
@@ -216,7 +267,25 @@ public class Login extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), "Ingrese el usuario y contraseña", Toast.LENGTH_SHORT).show();
             }
         }else{
-            StyleableToast.makeText(Login.this, "Descargue la nueva versión para poder continuar" , Toast.LENGTH_LONG, R.style.warningToastMiddle).show();
+//            StyleableToast.makeText(Login.this, "Descargue la nueva versión para poder continuar" , Toast.LENGTH_LONG, R.style.warningToastMiddle).show();
+            AlertDialog.Builder builder = new AlertDialog.Builder(Login.this);
+            builder.setTitle("¡Nueva versión disponible!");
+            builder.setMessage("Descargue la nueva versión para poder continuar");
+            builder.setPositiveButton("Ir a la PlayStore", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=com.acadep.acadepsistemas.rso"));
+                    startActivity(intent);
+                }
+            });
+            builder.setNeutralButton("Cancelar", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+
+                }
+            });
+//                                builder.setIcon(R.drawable.ic_warning_black_24dp);
+            builder.create().show();
         }
     }
 
@@ -248,12 +317,7 @@ public class Login extends AppCompatActivity {
         startActivity(i);
         finish();
     }
-    private void cerrarSesion(){
-        mAuth.signOut();
-        Intent i= new Intent(this, Login.class);
-        startActivity(i);
-        finish();
-    }
+
 
 
 

@@ -1,10 +1,13 @@
 package com.acadep.acadepsistemas.rso.Clases.Prueba.fragmentosEvidence;
 
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -15,10 +18,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.acadep.acadepsistemas.rso.Clases.Prueba.EvidenceActivity;
+import com.acadep.acadepsistemas.rso.Clases.SupervisionActivity;
 import com.acadep.acadepsistemas.rso.R;
 import com.karan.churi.PermissionManager.PermissionManager;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class ObservacionesFragment extends Fragment {
@@ -64,6 +69,7 @@ public class ObservacionesFragment extends Fragment {
     //Declaración de componentes
 
     PermissionManager permissionManager;
+
 
 
     public ObservacionesFragment() {
@@ -158,22 +164,22 @@ public class ObservacionesFragment extends Fragment {
     }
 
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        permissionManager.checkResult(requestCode, permissions,grantResults);
-
-        ArrayList<String> granted = permissionManager.getStatus().get(0).granted;
-        ArrayList<String> denied = permissionManager.getStatus().get(0).denied;
-
-        for (String item:granted){
-            Toast.makeText(getContext(), "Permisos otrogados", Toast.LENGTH_SHORT).show();
-        }
-
-        for (String item:denied){
-            Toast.makeText(getContext(), "Faltan permisos por otorgar", Toast.LENGTH_SHORT).show();
-        }
-
-    }
+//    @Override
+//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+//        permissionManager.checkResult(requestCode, permissions,grantResults);
+//
+//        ArrayList<String> granted = permissionManager.getStatus().get(0).granted;
+//        ArrayList<String> denied = permissionManager.getStatus().get(0).denied;
+//
+//        for (String item:granted){
+//            Toast.makeText(getContext(), "Permisos otrogados", Toast.LENGTH_SHORT).show();
+//        }
+//
+//        for (String item:denied){
+//            Toast.makeText(getContext(), "Faltan permisos por otorgar", Toast.LENGTH_SHORT).show();
+//        }
+//
+//    }
 
     private void ChequeoDeVariables() {
         if(Tbefore==true && before_complete == false){
@@ -210,6 +216,8 @@ public class ObservacionesFragment extends Fragment {
             }
         }
     }
+
+
 
     /**
      * This interface must be implemented by activities that contain this

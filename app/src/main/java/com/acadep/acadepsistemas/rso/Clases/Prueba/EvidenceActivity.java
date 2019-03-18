@@ -19,6 +19,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.location.LocationProvider;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
@@ -28,6 +29,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.format.Time;
 import android.util.Log;
@@ -246,6 +248,16 @@ public class EvidenceActivity extends AppCompatActivity {
 //---------------------------------------------------------------
     //Permisos
     PermissionManager permissionManager;
+
+    String[] permissions= new String[]{
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.CAMERA,
+            Manifest.permission.ACCESS_COARSE_LOCATION,
+            Manifest.permission.ACCESS_FINE_LOCATION};
+
+    public static final int MULTIPLE_PERMISSIONS = 10;
+
+
     //Permisos
 //---------------------------------------------------------------
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -304,7 +316,7 @@ public class EvidenceActivity extends AppCompatActivity {
                 getSupportFragmentManager()
                         .beginTransaction()
                         .replace(R.id.contenedor_Evidence, mifragment)
-                        .commit();
+                        .commitAllowingStateLoss();
 
                 item.setChecked(true);
                 getSupportActionBar().setTitle(item.getTitle());
@@ -322,11 +334,12 @@ public class EvidenceActivity extends AppCompatActivity {
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
+//        checkWritePermission();
+//        checkUbicationPermission();
         recibirDatos();
         ChequeoConfiguration();
         ChequeoDeVariables();
         actionButton_Enviar = findViewById(R.id.fab_action_enviar);
-
 
 
 //        getSupportFragmentManager()
@@ -339,29 +352,25 @@ public class EvidenceActivity extends AppCompatActivity {
             public void onClick(View v) {
 
 
-
-
-
-
                 checked_NoAplica = EvidenceActivity.isChecked_NoAplica();
                 final String advanceed = String.valueOf(edpercentage);
-                if(!advanceed.equals("")) {
-                    Observation = ""+ EvidenceActivity.getEdObserv();
+                if (!advanceed.equals("")) {
+                    Observation = "" + EvidenceActivity.getEdObserv();
                     if (!Observation.equals("")) {
                         if (contImg >= min_photos || checked_NoAplica == true) {
-                            if (checked_NoAplica==true && contImg == 0 || checked_NoAplica==false && contImg >= min_photos  ){
+                            if (checked_NoAplica == true && contImg == 0 || checked_NoAplica == false && contImg >= min_photos) {
                                 avanced = EvidenceActivity.getAvanced();
 
                                 ava = EvidenceActivity.getAva();
                                 if (ava <= avanced) {
                                     if (avanced <= number) {
                                         if (contImg > max_photos) {
-                                            Toast.makeText(getApplicationContext(), "El maximo de fotos es " + max_photos + " usted ha superado esa cantidad por " + (contImg - max_photos), Toast.LENGTH_SHORT ).show();
+                                            Toast.makeText(getApplicationContext(), "El maximo de fotos es " + max_photos + " usted ha superado esa cantidad por " + (contImg - max_photos), Toast.LENGTH_SHORT).show();
                                         } else {
                                             AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
                                             builder.setTitle("Confirmación");
                                             builder.setMessage("¿Está seguro de enviar? \n\n" + "Enviará " + contImg + " de " + max_photos + " elementos disponibles");
-                                            Toast.makeText(getApplicationContext(), "Una vez realizada esta acción no se puede revertir!!", Toast.LENGTH_LONG ).show();
+                                            Toast.makeText(getApplicationContext(), "Una vez realizada esta acción no se puede revertir!!", Toast.LENGTH_LONG).show();
                                             // builder.setCancelable(false);
                                             builder.setPositiveButton("Si", new DialogInterface.OnClickListener() {
                                                 @Override
@@ -382,11 +391,10 @@ public class EvidenceActivity extends AppCompatActivity {
                                                         uuids = "" + uuid;
 
 
-
                                                         BDFireStore.collection("events").document(idevent).update("before_complete", true);
                                                         before_complete = true;
 
-                                                        if (checked_NoAplica==true) {
+                                                        if (checked_NoAplica == true) {
                                                             if (contUris == 0) {
                                                                 Subirdatos();
                                                             } else {
@@ -400,7 +408,7 @@ public class EvidenceActivity extends AppCompatActivity {
 
                                                         BDFireStore.collection("events").document(idevent).update("color", "#3498db");
 
-        //                                                BDFireStore.collection("events").document(idevent).update("ava", 1);
+                                                        //                                                BDFireStore.collection("events").document(idevent).update("ava", 1);
 
                                                         //Toast.makeText(getApplicationContext(), "Datos ingresados", Toast.LENGTH_SHORT).show();
 
@@ -410,33 +418,31 @@ public class EvidenceActivity extends AppCompatActivity {
                                                     if ((estado).equals("during")) {
 
 
+                                                        ava = avanced;
 
+                                                        boolean during = true;
 
-                                                                ava = avanced;
+                                                        header = "during";
+                                                        UUID uuid = UUID.randomUUID();
+                                                        uuids = "" + uuid;
 
-                                                                boolean during = true;
+                                                        if (ava == number) {
+                                                            BDFireStore.collection("events").document(idevent).update("during_complete", true);
+                                                            during_complete = true;
+                                                        }
 
-                                                                header = "during";
-                                                                UUID uuid = UUID.randomUUID();
-                                                                uuids = "" + uuid;
+                                                        BDFireStore.collection("events").document(idevent).update("ava", ava);
 
-                                                                if (ava == number) {
-                                                                    BDFireStore.collection("events").document(idevent).update("during_complete", true);
-                                                                    during_complete = true;
-                                                                }
-
-                                                                BDFireStore.collection("events").document(idevent).update("ava", ava);
-
-                                                                if (checked_NoAplica==true) {
-                                                                    if (contUris == 0) {
-                                                                        Subirdatos();
-                                                                    } else {
-                                                                        uploadAllFiles();
-                                                                    }
-                                                                } else {
-                                                                    uploadAllImages();
-                                                                    uploadAllFiles();
-                                                                }
+                                                        if (checked_NoAplica == true) {
+                                                            if (contUris == 0) {
+                                                                Subirdatos();
+                                                            } else {
+                                                                uploadAllFiles();
+                                                            }
+                                                        } else {
+                                                            uploadAllImages();
+                                                            uploadAllFiles();
+                                                        }
 
                                                     }
 
@@ -448,12 +454,12 @@ public class EvidenceActivity extends AppCompatActivity {
                                                         UUID uuid = UUID.randomUUID();
                                                         uuids = "" + uuid;
 
-        //                                            Toast.makeText(getApplicationContext(), "Datos ingresados", Toast.LENGTH_LONG ).show();
+                                                        //                                            Toast.makeText(getApplicationContext(), "Datos ingresados", Toast.LENGTH_LONG ).show();
 
                                                         ava = number;
 
                                                         edObserv = "";
-                                                        if (checked_NoAplica==true) {
+                                                        if (checked_NoAplica == true) {
                                                             if (contUris == 0) {
                                                                 Subirdatos();
                                                             } else {
@@ -487,22 +493,22 @@ public class EvidenceActivity extends AppCompatActivity {
 
                                         }
                                     } else {
-                                        Toast.makeText(getApplicationContext(), "El avance no puede ser mayor al 100%", Toast.LENGTH_LONG ).show();
+                                        Toast.makeText(getApplicationContext(), "El avance no puede ser mayor al 100%", Toast.LENGTH_LONG).show();
                                     }
                                 } else {
-                                    Toast.makeText(getApplicationContext(), "El avance no puede ser menor al anterior", Toast.LENGTH_LONG ).show();
+                                    Toast.makeText(getApplicationContext(), "El avance no puede ser menor al anterior", Toast.LENGTH_LONG).show();
                                 }
-                            }else{
+                            } else {
                                 Toast.makeText(getApplicationContext(), "No puede subir multimedia si ha seleccionado <<No aplica>>", Toast.LENGTH_SHORT).show();
                             }
                         } else {
-                            Toast.makeText(getApplicationContext(), "El número mínimo de fotos para poder enviar es " + min_photos, Toast.LENGTH_SHORT ).show();
+                            Toast.makeText(getApplicationContext(), "El número mínimo de fotos para poder enviar es " + min_photos, Toast.LENGTH_SHORT).show();
                         }
                     } else {
-                        Toast.makeText(getApplicationContext(), "El texto es necesario para poder enviar", Toast.LENGTH_SHORT ).show();
+                        Toast.makeText(getApplicationContext(), "El texto es necesario para poder enviar", Toast.LENGTH_SHORT).show();
                     }
-                }else{
-                    Toast.makeText(getApplicationContext(), "El avance es necesario para poder enviar", Toast.LENGTH_SHORT ).show();
+                } else {
+                    Toast.makeText(getApplicationContext(), "El avance es necesario para poder enviar", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -537,6 +543,7 @@ public class EvidenceActivity extends AppCompatActivity {
                 BorrarImagenes();
 
                 if (before_complete==true && during_complete==false){
+
                     EvidenceActivity.this.finish();
                     estado = "Tarea en curso";
 //                    txtEstado.setText("Evidencia: Durante");
@@ -595,6 +602,7 @@ public class EvidenceActivity extends AppCompatActivity {
     private void uploadAllFiles() {
 //        uploadfileGlobal(ArchivoUri);
 
+
         ArchivosUris = EvidenceActivity.getArchivosUris();
         for (int i = 0; i<ArchivosUris.size(); i++){
             if ( ArchivosUris.get(i) != null){
@@ -606,13 +614,15 @@ public class EvidenceActivity extends AppCompatActivity {
     }
 
     private void uploadAllImages() {
+        multimedia = EvidenceActivity.getMultimedia();
+        mImageBitmap = EvidenceActivity.getmImageBitmap();
 
         for(int i=0; i<mImageBitmap.size(); i++){
             PhotoData = multimedia.get(i);
-            if (PhotoData.getType().equals("Video")){
+            if (PhotoData.getType().equals("video")){
                 uploadVideo(ListVideos.get(i), i);
             }
-            if (PhotoData.getType().equals("Imagen")){
+            if (PhotoData.getType().equals("image") || PhotoData.getType().equals("gallery")){
                 if(mImageBitmap.get(i) != null){
                     uploadImageGlobal(mImageBitmap.get(i), i);
                     //multimedia.add(PhotoData);
@@ -653,8 +663,6 @@ public class EvidenceActivity extends AppCompatActivity {
 
                                     if(contT == contImg && contUris==0 ){
                                         Subirdatos();
-
-
                                     }
 
 
@@ -699,6 +707,7 @@ public class EvidenceActivity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
 
+
             }
         });
     }
@@ -738,6 +747,7 @@ public class EvidenceActivity extends AppCompatActivity {
                     PhotoData = new Foto();
 
                     contT++;
+
                     if(contT == contImg && contUris==0 ){
                         Subirdatos();
 
@@ -842,11 +852,6 @@ public class EvidenceActivity extends AppCompatActivity {
                                         progressDialog.setMessage("Click para salir...");
                                         Toast.makeText(getApplicationContext(), "Subida de archivos terminada!",Toast.LENGTH_SHORT  ).show();
 
-
-
-
-
-
                                     }
 
 
@@ -907,6 +912,13 @@ public class EvidenceActivity extends AppCompatActivity {
         }
 
         contUris=0;
+
+        EvidenceActivity.setArchivosUris(ArchivosUris);
+        EvidenceActivity.setName_Archivo(Name_Archivo);
+        EvidenceActivity.setType_Archivo(Type_Archivo);
+        EvidenceActivity.setArchivoChecked(archivoChecked);
+        EvidenceActivity.setFiles(files);
+        EvidenceActivity.setContUris(contUris);
 //        files = new ArrayList<>();
 //        archivoChecked = new ArrayList<>();
 //        Type_Archivo = new ArrayList<>();
@@ -930,6 +942,15 @@ public class EvidenceActivity extends AppCompatActivity {
         contT=0;
         contT2=0;
 
+        EvidenceActivity.setMultimedia(multimedia);
+        EvidenceActivity.setPhotoData(PhotoData);
+        EvidenceActivity.setListVideos(ListVideos);
+        EvidenceActivity.setmTypeAdapter(mTypeAdapter);
+        EvidenceActivity.setmImageBitmap(mImageBitmap);
+        EvidenceActivity.setContImg(contImg);
+        EvidenceActivity.setContT(contT);
+        EvidenceActivity.setContT2(contT2);
+
 //        mTypeAdapter = new ArrayList<>();
 //        mImageBitmap = new ArrayList<>();
 //        ListImages = new ArrayList<>();
@@ -937,7 +958,7 @@ public class EvidenceActivity extends AppCompatActivity {
     }
 
     private void recibirDatos() {
-
+        checkPermissions();
 
         Bundle extras = getIntent().getExtras();
         idevent = extras.getString("idEvento");
@@ -1055,7 +1076,7 @@ public class EvidenceActivity extends AppCompatActivity {
 
 
                 FragmentManager fragmentManager = getSupportFragmentManager();
-                fragmentManager.beginTransaction().replace(R.id.contenedor_Evidence, mifragment).commit();
+                fragmentManager.beginTransaction().replace(R.id.contenedor_Evidence, mifragment).commitAllowingStateLoss();
             }
         });
 
@@ -1221,6 +1242,57 @@ public class EvidenceActivity extends AppCompatActivity {
                     EvidenceActivity.setEstado("after");
                 }
             }
+        }
+    }
+
+
+//    public boolean checkWritePermission(){
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//            if (ContextCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+//                return false;
+//            }
+//        }
+//        return true;
+//    }
+//
+//    public boolean checkUbicationPermission(){
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//            if (ContextCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+//                return false;
+//            }
+//        }
+//        return true;
+//    }
+
+    private  boolean checkPermissions() {
+        int result;
+        List<String> listPermissionsNeeded = new ArrayList<>();
+        for (String p:permissions) {
+            result = ContextCompat.checkSelfPermission(EvidenceActivity.this,p);
+            if (result != PackageManager.PERMISSION_GRANTED) {
+                listPermissionsNeeded.add(p);
+            }
+        }
+        if (!listPermissionsNeeded.isEmpty()) {
+            ActivityCompat.requestPermissions(this, listPermissionsNeeded.toArray(new String[listPermissionsNeeded.size()]),MULTIPLE_PERMISSIONS );
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case MULTIPLE_PERMISSIONS:{
+                if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                    Toast.makeText(this, "Permisos otorgados...", Toast.LENGTH_SHORT).show();
+                } else {
+//                    Toast.makeText(this, "Aplicacion sin permisos...", Toast.LENGTH_SHORT).show();
+//                    EvidenceActivity.this.finish();
+                }
+                // permissions list of don't granted permission
+            }
+            return;
         }
     }
 

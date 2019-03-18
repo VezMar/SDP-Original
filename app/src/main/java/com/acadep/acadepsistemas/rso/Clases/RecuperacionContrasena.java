@@ -42,7 +42,7 @@ public class RecuperacionContrasena extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                String userEmail = ResetEmailInput.getText().toString();
+                String userEmail = ResetEmailInput.getText().toString().replace(" ", "");;
 
                 if(TextUtils.isEmpty(userEmail)){
                     StyleableToast.makeText(getApplicationContext(),"Porfavor ingrese un correo electronico", Toast.LENGTH_SHORT, R.style.warningToast).show();
@@ -51,7 +51,7 @@ public class RecuperacionContrasena extends AppCompatActivity {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             if(task.isSuccessful()){
-                                StyleableToast.makeText(getApplicationContext(),"Porfavor cheque su correo electronico", Toast.LENGTH_SHORT, R.style.doneToast).show();
+                                StyleableToast.makeText(getApplicationContext(),"Porfavor revise su correo electrónico", Toast.LENGTH_SHORT, R.style.doneToast).show();
                                 startActivity(new Intent(RecuperacionContrasena.this, Login.class));
                             }else{
                                 String message = task.getException().getMessage();

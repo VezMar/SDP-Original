@@ -42,7 +42,7 @@
                android:id="@+id/fab_action_2_1"
                android:layout_width="wrap_content"
                android:layout_height="wrap_content"
-               android:layout_marginBottom="140dp"
+               android:layout_marginBottom="80dp"
                android:layout_alignParentEnd="true"
                android:layout_alignParentBottom="true"
                android:layout_marginRight="8dp"
@@ -69,7 +69,6 @@
            fab:menu_colorPressed="@color/colorPrimaryDark"
            app:fab_addButtonPlusIconColor="#FFFFFFFF"
            app:fab_labelStyle="@style/customfab"
-           android:layout_marginBottom="60dp"
 
 
 
@@ -83,6 +82,16 @@
            >
 
            <com.github.clans.fab.FloatingActionButton
+               android:id="@+id/fab_action_2"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:src="@drawable/ic_videocam_black_24dp"
+               fab:fab_colorNormal="@color/white"
+               fab:fab_colorPressed="@color/white_pressed"
+               app:fab_size="mini"
+               app:fab_label="Tomar Video"/>
+
+           <com.github.clans.fab.FloatingActionButton
                android:id="@+id/fab_action_1"
                android:layout_width="wrap_content"
                android:layout_height="wrap_content"
@@ -93,15 +102,17 @@
                app:fab_label="Tomar Foto"
                />
 
+
            <com.github.clans.fab.FloatingActionButton
-               android:id="@+id/fab_action_2"
+               android:id="@+id/fab_action_7"
                android:layout_width="wrap_content"
                android:layout_height="wrap_content"
-               android:src="@drawable/ic_videocam_black_24dp"
+               android:src="@drawable/ic_perm_media_black_24dp"
                fab:fab_colorNormal="@color/white"
                fab:fab_colorPressed="@color/white_pressed"
                app:fab_size="mini"
-               app:fab_label="Tomar Video"/>
+               app:fab_label="Subir Foto"
+               />
 
            <com.github.clans.fab.FloatingActionButton
                android:id="@+id/fab_action_3"

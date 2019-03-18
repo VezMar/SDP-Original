@@ -103,9 +103,11 @@ import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import java.io.InputStream;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -182,6 +184,7 @@ public class SupervisionActivity extends AppCompatActivity
     static final int REQUEST_VIDEO_CAPTURE = 1;
     int TAKE_PHOTO_CODE = 0;
     public static final int MULTIPLE_PERMISSIONS = 10;
+    public static final int RESULT_LOAD_IMG = 92;
 
     String[] permissions= new String[]{
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
@@ -313,6 +316,7 @@ public class SupervisionActivity extends AppCompatActivity
     private com.github.clans.fab.FloatingActionButton actionButton_Upload_PDF;
     private com.github.clans.fab.FloatingActionButton actionButton_Upload_Docx;
     private com.github.clans.fab.FloatingActionButton actionButton_Upload_Video;
+    private com.github.clans.fab.FloatingActionButton actionButton_Upload_Image;
     private com.github.clans.fab.FloatingActionButton actionButton_Upload_Audio;
 
     private com.github.clans.fab.FloatingActionButton actionButton_Borrar_Seleccionado;
@@ -498,6 +502,7 @@ public class SupervisionActivity extends AppCompatActivity
         actionButton_Upload_Docx = findViewById(R.id.fab_action_4);
         actionButton_Upload_Video = findViewById(R.id.fab_action_5);
         actionButton_Upload_Audio = findViewById(R.id.fab_action_6);
+        actionButton_Upload_Image = findViewById(R.id.fab_action_7);
 
         actionButton_Borrar_Seleccionado = findViewById(R.id.fab_action_2_1);
 
@@ -610,6 +615,14 @@ public class SupervisionActivity extends AppCompatActivity
             }
         });
 
+        actionButton_Upload_Image.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                selectImage();
+
+                floatingActionsMenu.close(true);
+            }
+        });
 
         actionButton_Take_photo.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -675,12 +688,12 @@ public class SupervisionActivity extends AppCompatActivity
                 GuardarInformacionArchivos();
 
                 PerFile = files.get(0);
-                PerFile.setType("Video");
+                PerFile.setType("video");
                 PerFile.setSrc(""+contUris);
                 files.set(0,PerFile);
                 PerFile = new Files();
 
-                Type_Archivo.add(0, "Video");
+                Type_Archivo.add(0, "video");
 
                 selectVideo();
 
@@ -764,19 +777,20 @@ public class SupervisionActivity extends AppCompatActivity
                     StyleableToast.makeText(getApplicationContext(), "Ya realizaste esta seccion", Toast.LENGTH_SHORT ).show();
                 } else {
 
-                    checked_NoAplica = check_NoAplica.isChecked();
+//                    checked_NoAplica = check_NoAplica.isChecked();
                     final String advanceed = String.valueOf(edpercentage.getText());
                     if(!advanceed.equals("")) {
                         Observation = edObserv.getText().toString();
                         if (!Observation.equals("")) {
-                            if (contImg >= min_photos || check_NoAplica.isChecked()) {
-                                if (check_NoAplica.isChecked()==true && contImg == 0 || check_NoAplica.isChecked()==false && contImg>0  ){
+//                            if (contImg >= min_photos || check_NoAplica.isChecked()) {
+                            if (contImg >= min_photos) {
+//                                if (check_NoAplica.isChecked()==true && contImg == 0 || check_NoAplica.isChecked()==false && contImg>0  ){
                                     if (contImg > max_photos) {
                                         Toast.makeText(getApplicationContext(), "El maximo de fotos es " + max_photos + " usted ha superado esa cantidad por " + (contImg - max_photos), Toast.LENGTH_SHORT ).show();
                                     } else {
                                         AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
                                         builder.setTitle("Confirmación");
-                                        builder.setMessage("¿Está seguro de enviar? \n\n" + "Enviará " + contImg + " de " + max_photos + " elementos disponibles");
+                                        builder.setMessage("¿Está seguro de enviar? \n\n" + "Enviará " + contImg + " Elementos de multimedia");
                                         Toast.makeText(getApplicationContext(), "Una vez realizada esta acción no se puede revertir!!", Toast.LENGTH_LONG ).show();
                                         // builder.setCancelable(false);
                                         builder.setPositiveButton("Si", new DialogInterface.OnClickListener() {
@@ -802,17 +816,23 @@ public class SupervisionActivity extends AppCompatActivity
                                                     BDFireStore.collection("events").document(idevent).update("before_complete", true);
                                                     before_complete = true;
 
-                                                    if (check_NoAplica.isChecked()) {
-                                                        if (contUris == 0) {
-                                                            Subirdatos();
-                                                        } else {
-                                                            uploadAllFiles();
-                                                        }
-                                                    } else {
+//                                                    if (check_NoAplica.isChecked()) {
+//                                                        if (contUris == 0) {
+//                                                            Subirdatos();
+//                                                        } else {
+//                                                            uploadAllFiles();
+//                                                        }
+//                                                    } else {
+//                                                        uploadAllImages();
+//                                                        uploadAllFiles();
+//                                                    }
+
+                                                    if(contImg>0 || contUris>0){
                                                         uploadAllImages();
                                                         uploadAllFiles();
+                                                    }else{
+                                                        Subirdatos();
                                                     }
-
 
                                                     BDFireStore.collection("events").document(idevent).update("color", "#3498db");
 
@@ -842,17 +862,23 @@ public class SupervisionActivity extends AppCompatActivity
                                                                 during_complete = true;
                                                             }
 
-                                                            if (check_NoAplica.isChecked()) {
-                                                                if (contUris == 0) {
-                                                                    Subirdatos();
-                                                                } else {
-                                                                    uploadAllFiles();
-                                                                }
-                                                            } else {
+//                                                            if (check_NoAplica.isChecked()) {
+//                                                                if (contUris == 0) {
+//                                                                    Subirdatos();
+//                                                                } else {
+//                                                                    uploadAllFiles();
+//                                                                }
+//                                                            } else {
+//                                                                uploadAllImages();
+//                                                                uploadAllFiles();
+//                                                            }
+
+                                                            if(contImg>0 || contUris>0){
                                                                 uploadAllImages();
                                                                 uploadAllFiles();
+                                                            }else{
+                                                                Subirdatos();
                                                             }
-
 
                                                             terminado = 2;
 
@@ -882,16 +908,24 @@ public class SupervisionActivity extends AppCompatActivity
                                                     ava = number;
 
                                                     edObserv.setText("");
-                                                    if (check_NoAplica.isChecked()) {
-                                                        if (contUris == 0) {
-                                                            Subirdatos();
-                                                        } else {
-                                                            uploadAllFiles();
-                                                        }
-                                                    } else {
+//                                                    if (check_NoAplica.isChecked()) {
+//                                                        if (contUris == 0) {
+//                                                            Subirdatos();
+//                                                        } else {
+//                                                            uploadAllFiles();
+//                                                        }
+//                                                    } else {
+//                                                        uploadAllImages();
+//                                                        uploadAllFiles();
+//                                                    }
+                                                    if(contImg>0 || contUris>0){
                                                         uploadAllImages();
                                                         uploadAllFiles();
+                                                    }else{
+                                                        Subirdatos();
                                                     }
+
+
 
                                                     if (ava == number) {
                                                         BDFireStore.collection("events").document(idevent).update("active", false);
@@ -915,9 +949,9 @@ public class SupervisionActivity extends AppCompatActivity
                                         builder.create().show();
 
                                     }
-                                }else{
-                                    Toast.makeText(getApplicationContext(), "No puede subir multimedia si ha seleccionado <<No aplica>>", Toast.LENGTH_SHORT).show();
-                                }
+//                                }else{
+//                                    Toast.makeText(getApplicationContext(), "No puede subir multimedia si ha seleccionado <<No aplica>>", Toast.LENGTH_SHORT).show();
+//                                }
                             } else {
                                 Toast.makeText(getApplicationContext(), "El número mínimo de fotos para poder enviar es " + min_photos, Toast.LENGTH_SHORT ).show();
                             }
@@ -1002,7 +1036,7 @@ public class SupervisionActivity extends AppCompatActivity
 
             PhotoData.setCreated_at(created_at);
             PhotoData.setUbication(ubication);
-            PhotoData.setType("Video");
+            PhotoData.setType("video");
             PhotoData.setSrc(""+contImg);
 
             multimedia.add(0, PhotoData);
@@ -1018,7 +1052,9 @@ public class SupervisionActivity extends AppCompatActivity
                 if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
                     Toast.makeText(this, "Permisos otorgados...", Toast.LENGTH_SHORT).show();
                 } else {
-//                    Toast.makeText(this, "Aplicacion sin permisos...", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Aplicacion sin permisos...", Toast.LENGTH_SHORT).show();
+                    SupervisionActivity.this.finish();
+
                 }
                 // permissions list of don't granted permission
             }
@@ -1055,7 +1091,7 @@ public class SupervisionActivity extends AppCompatActivity
 
 
                     }
-                    if(mTypeAdapter.get(position).equals("Video")) {
+                    if(mTypeAdapter.get(position).equals("video")) {
 //                        AlertDialog.Builder mBuilder = new AlertDialog.Builder(SupervisionActivity.this);
 //                        View mView = getLayoutInflater().inflate(R.layout.layout_videoview, null);
 //                        VideoView videoView = mView.findViewById(R.id.video_recycler);
@@ -1217,10 +1253,10 @@ public class SupervisionActivity extends AppCompatActivity
 
         for(int i=0; i<mImageBitmap.size(); i++){
             PhotoData = multimedia.get(i);
-            if (PhotoData.getType().equals("Video")){
+            if (PhotoData.getType().equals("video")){
                 uploadVideo(ListVideos.get(i), i);
             }
-            if (PhotoData.getType().equals("Imagen")){
+            if (PhotoData.getType().equals("image") || PhotoData.getType().equals("gallery")){
                 if(mImageBitmap.get(i) != null){
                     uploadImageGlobal(mImageBitmap.get(i), i);
                     //multimedia.add(PhotoData);
@@ -1266,7 +1302,7 @@ public class SupervisionActivity extends AppCompatActivity
 
     }
 
-    private void GuardarInformacionImagenes() {
+    private void GuardarInformacionImagenes(int i) {
 
         locationStart();
         created_at_funct();
@@ -1278,12 +1314,17 @@ public class SupervisionActivity extends AppCompatActivity
         ubication.setLat(Lat);
         ubication.setLng(Lng);
 
-
+        if (i ==2) {
+            PhotoData.setType("gallery");
+        }
+        if (i ==1) {
+            PhotoData.setType("image");
+        }
 
 
         PhotoData.setCreated_at(created_at);
         PhotoData.setUbication(ubication);
-        PhotoData.setType("Imagen");
+
         PhotoData.setSrc(""+contImg);
 
         multimedia.add(0, PhotoData);
@@ -1959,6 +2000,12 @@ public class SupervisionActivity extends AppCompatActivity
 //        ArchivosUris = new ArrayList<>();
     }
 
+    private void selectImage(){
+        Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
+        photoPickerIntent.setType("image/*");
+        startActivityForResult(photoPickerIntent, RESULT_LOAD_IMG);
+    }
+
     private void selectPDF() {
         Intent intent = new Intent();
         intent.setType("application/pdf");
@@ -2006,7 +2053,7 @@ public class SupervisionActivity extends AppCompatActivity
             addImage( Uri.fromFile(new File(filePath)), 0, "Photo");
 //            ListVideos.add(0, Uri.fromFile(new File(filePath)));
             contImg++;
-            GuardarInformacionImagenes();
+            GuardarInformacionImagenes(1);
 
         }
 
@@ -2022,6 +2069,27 @@ public class SupervisionActivity extends AppCompatActivity
             mImageBitmap.add(0, icon);
 //            ListVideos.add(0, videoUri);
             contImg++;
+
+        }
+
+        if (requestCode == RESULT_LOAD_IMG && resultCode == RESULT_OK){
+
+
+            Uri imageUri = data.getData();
+            addImage(imageUri, 0, "Photo");
+            Bitmap bitmap = null;
+            try {
+                bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), imageUri);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            double heightd = bitmap.getHeight()*.1720430107526882;
+            float heightf =  (float)heightd;
+            Bitmap Bitnew = redimensionarImagenMaximo(bitmap, 512 ,  heightf);
+            mImageBitmap.add(0, Bitnew);
+
+            contImg++;
+            GuardarInformacionImagenes(2);
 
         }
 
@@ -2065,10 +2133,10 @@ public class SupervisionActivity extends AppCompatActivity
            // Toast.makeText(getApplicationContext(),"Tu archivo se ha guardado exitosamente",Toast.LENGTH_SHORT).show();
         }
 
-        if (requestCode==1 && resultCode == RESULT_OK){
-            capturedCoolerBitmap = (Bitmap) data.getExtras().get("data");
-
-        }
+//        if (requestCode==1 && resultCode == RESULT_OK){
+//            capturedCoolerBitmap = (Bitmap) data.getExtras().get("data");
+//
+//        }
 
         if (requestCode==104 && resultCode == RESULT_OK) {
 
@@ -2333,7 +2401,7 @@ public class SupervisionActivity extends AppCompatActivity
         user.setId(mAuth.getUid());
         user.setName(username);
 
-        check_NoAplica.setChecked(false);
+//        check_NoAplica.setChecked(false);
 
 
 
