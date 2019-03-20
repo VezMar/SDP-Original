@@ -268,30 +268,18 @@ public class MainActivity extends AppCompatActivity
         }else if (id == R.id.nav_acty) {
             Toast.makeText(getApplicationContext(),"Aún en proceso",Toast.LENGTH_SHORT).show();
             status = false;
-//                        startActivity(new Intent(this, com.acadep.acadepsistemas.rso.Clases.Prueba.EvidenceActivity.class));
+//                        startActivity(new Intent(this, com.acadep.acadepsistemas.rso.Clases.EvidenceActivity.class));
 //                        startActivity(new Intent(this, com.acadep.acadepsistemas.rso.Clases.Prueba.RecyclerTest.class));
 
         } else if (id == R.id.nav_event) {
             mifragment = new ProjectFragment();
             FragmentoSeleccionado=true;
 
-
-           /*Intent intent= new Intent (MainActivity.this, EventosActivity.class);
-            startActivity(intent);]*/
-           //finish();
-            status = true;
-//        }else if (id == R.id.nav_ext) {
-//            Toast.makeText(getApplicationContext(),"Aún en proceso",Toast.LENGTH_SHORT).show();
 //            item.setChecked(false);
 //            status = false;
-////            mifragment = new ActivitysFragment();
-////            FragmentoSeleccionado=true;
-//
-//        }else if (id == R.id.nav_conf) {
+        }else if (id == R.id.nav_conf){
             Toast.makeText(getApplicationContext(),"Aún en proceso",Toast.LENGTH_SHORT).show();
-            item.setChecked(false);
-            status = false;
-        } else if (id == R.id.nav_signOut) {
+        }else if (id == R.id.nav_signOut) {
             cerrarSesion();
 
         }

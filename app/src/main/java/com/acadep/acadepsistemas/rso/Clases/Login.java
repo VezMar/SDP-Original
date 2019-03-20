@@ -38,7 +38,8 @@ import com.muddzdev.styleabletoast.StyleableToast;
 
 public class Login extends AppCompatActivity {
 
-    TextView txtPsd, txtUser, txtForgotPsw;
+    TextView txtPsd, txtUser, txtForgotPsw, txtPoliticasPrivacidad;
+
     Button btnLogin,btnRegistrar,btnMostrar;
     ProgressBar prgsBar;
 
@@ -71,6 +72,8 @@ public class Login extends AppCompatActivity {
         txtUser = (TextView) findViewById(R.id.txtUser);
 
         txtForgotPsw = (TextView) findViewById(R.id.txtForgotPsw);
+        txtPoliticasPrivacidad = (TextView) findViewById(R.id.txtPoliticasPrivacidad);
+
 
         btnLogin = (Button) findViewById(R.id.btnLogin);
         //btnRegistrar = (Button) findViewById(R.id.btnRegistrar);
@@ -197,6 +200,16 @@ public class Login extends AppCompatActivity {
                 startActivity(i);
             }
         });
+
+        txtPoliticasPrivacidad.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent myIntent = new Intent(getApplicationContext(), WebViewActivity.class);
+                startActivity(myIntent);
+            }
+        });
+
+
 
        /* btnRegistrar.setOnClickListener(new View.OnClickListener() {
             @Override

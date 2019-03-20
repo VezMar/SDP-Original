@@ -52,7 +52,7 @@
         android:layout_alignParentTop="true"
         android:layout_marginStart="19dp"
         android:layout_marginTop="164dp"
-        android:text="3. Recibiras más instrucciones ahí"
+        android:text="3. Recibirás más instrucciones ahí"
         android:textColor="@android:color/black"
         android:textSize="20sp" />
 

@@ -1,4 +1,4 @@
-package com.acadep.acadepsistemas.rso.Clases.Prueba.fragmentosEvidence;
+package com.acadep.acadepsistemas.rso.Clases.fragmentosEvidence;
 
 import android.Manifest;
 import android.app.AlertDialog;
@@ -11,12 +11,8 @@ import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.location.Address;
-import android.location.Geocoder;
-import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.location.LocationProvider;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -24,8 +20,6 @@ import android.provider.MediaStore;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
@@ -37,10 +31,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.acadep.acadepsistemas.rso.Adapter.RecyclerViewAdapter;
-import com.acadep.acadepsistemas.rso.Clases.Prueba.EvidenceActivity;
+import com.acadep.acadepsistemas.rso.Clases.EvidenceActivity;
 import com.acadep.acadepsistemas.rso.Clases.SupervisionActivity;
 import com.acadep.acadepsistemas.rso.R;
 import com.acadep.acadepsistemas.rso.model.Foto;
@@ -58,12 +51,10 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.Locale;
 import java.util.Random;
 import java.util.UUID;
 
 import static android.app.Activity.RESULT_OK;
-import static android.content.Context.RECEIVER_VISIBLE_TO_INSTANT_APPS;
 
 
 public class MultimediaFragment extends Fragment {
@@ -146,11 +137,11 @@ public class MultimediaFragment extends Fragment {
         estado = EvidenceActivity.getEstado();
 
         mTypeAdapter = EvidenceActivity.getmTypeAdapter();
-        ListVideos = EvidenceActivity.getListVideos();
+        ListVideos   = EvidenceActivity.getListVideos();
         mItemChecked = EvidenceActivity.getmItemChecked();
         mImageBitmap = EvidenceActivity.getmImageBitmap();
-        multimedia = EvidenceActivity.getMultimedia();
-        contImg = EvidenceActivity.getContImg();
+        multimedia   = EvidenceActivity.getMultimedia();
+        contImg      = EvidenceActivity.getContImg();
     }
 
     @Override
@@ -167,7 +158,7 @@ public class MultimediaFragment extends Fragment {
         actionButton_Borrar_Seleccionados = view.findViewById(R.id.fab_action_2_1);
 
 
-        check_NoAplica = view.findViewById(R.id.check_NoAplica);
+//        check_NoAplica = view.findViewById(R.id.check_NoAplica);
 
         ChequeoDeVariables();
 
@@ -182,16 +173,16 @@ public class MultimediaFragment extends Fragment {
 //        }
 
 
-        check_NoAplica.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (check_NoAplica.isChecked()){
-                    evidenceActivity.setChecked_NoAplica(true);
-                }else{
-                    evidenceActivity.setChecked_NoAplica(false);
-                }
-            }
-        });
+//        check_NoAplica.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if (check_NoAplica.isChecked()){
+//                    evidenceActivity.setChecked_NoAplica(true);
+//                }else{
+//                    evidenceActivity.setChecked_NoAplica(false);
+//                }
+//            }
+//        });
 
         actionButton_Upload_Image.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -337,16 +328,20 @@ public class MultimediaFragment extends Fragment {
         mRecyclerView.setAdapter(mAdapter);
     }
 
-    private void addImage(Uri uri,int position, String type){
+    private void addImage(Uri uri,int position, String type, Bitmap bitmap){
         ListVideos.add(position, uri);
         mTypeAdapter.add(position, type);
         mItemChecked.add(0, false);
         mAdapter.notifyItemInserted(position);
         mLayaoutManager.scrollToPosition(position);
+        mImageBitmap.add(0, bitmap);
 
         EvidenceActivity.setListVideos(ListVideos);
         EvidenceActivity.setmTypeAdapter(mTypeAdapter);
         EvidenceActivity.setmItemChecked(mItemChecked);
+        EvidenceActivity.setmImageBitmap(mImageBitmap);
+        EvidenceActivity.setContImg(contImg);
+
 
     }
 
@@ -520,15 +515,15 @@ public class MultimediaFragment extends Fragment {
             double heightd = bitmap.getHeight()*.1720430107526882;
             float heightf =  (float)heightd;
             Bitmap Bitnew = redimensionarImagenMaximo(bitmap, 512 ,  heightf);
-            mImageBitmap.add(0, Bitnew);
 
-            addImage( Uri.fromFile(new File(filePath)), 0, "Photo");
-//            ListVideos.add(0, Uri.fromFile(new File(filePath)));
             contImg++;
+            addImage( Uri.fromFile(new File(filePath)), 0, "Photo", Bitnew);
+//            ListVideos.add(0, Uri.fromFile(new File(filePath)));
+
             GuardarInformacionImagenes(1);
 
-            evidenceActivity.setmImageBitmap(mImageBitmap);
-            evidenceActivity.setContImg(contImg);
+
+//            EvidenceActivity.setContImg(contImg);
 
         }
 
@@ -536,17 +531,18 @@ public class MultimediaFragment extends Fragment {
 
             Uri videoUri = data.getData();
 //            addImage(new File(videoUri.getPath()), 0, "Video");
-            addImage(videoUri, 0, "Video");
 
             Bitmap icon = BitmapFactory.decodeResource(getActivity().getResources(),
                     R.drawable.reproductor_multimedia);
 
-            mImageBitmap.add(0, icon);
-//            ListVideos.add(0, videoUri);
             contImg++;
+            addImage(videoUri, 0, "Video", icon);
 
-            evidenceActivity.setmImageBitmap(mImageBitmap);
-            evidenceActivity.setContImg(contImg);
+//            ListVideos.add(0, videoUri);
+
+
+//            EvidenceActivity.setmImageBitmap(mImageBitmap);
+//            EvidenceActivity.setContImg(contImg);
 
         }
 
@@ -554,7 +550,7 @@ public class MultimediaFragment extends Fragment {
 
 
             Uri imageUri = data.getData();
-            addImage(imageUri, 0, "Photo");
+
             Bitmap bitmap = null;
             try {
                 bitmap = MediaStore.Images.Media.getBitmap(this.getActivity().getContentResolver(), imageUri);
@@ -564,12 +560,14 @@ public class MultimediaFragment extends Fragment {
             double heightd = bitmap.getHeight()*.1720430107526882;
             float heightf =  (float)heightd;
             Bitmap Bitnew = redimensionarImagenMaximo(bitmap, 512 ,  heightf);
-            mImageBitmap.add(0, Bitnew);
-
             contImg++;
+            addImage(imageUri, 0, "Photo", Bitnew);
+
+
             GuardarInformacionImagenes(2);
-            evidenceActivity.setmImageBitmap(mImageBitmap);
-            evidenceActivity.setContImg(contImg);
+
+//            EvidenceActivity.setmImageBitmap(mImageBitmap);
+//            EvidenceActivity.setContImg(contImg);
 
         }
 

@@ -1,4 +1,4 @@
-package com.acadep.acadepsistemas.rso.Clases.Prueba.fragmentosEvidence;
+package com.acadep.acadepsistemas.rso.Clases.fragmentosEvidence;
 
 import android.Manifest;
 import android.app.AlertDialog;
@@ -13,7 +13,6 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -26,7 +25,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.acadep.acadepsistemas.rso.Adapter.ArchivosAdapter;
-import com.acadep.acadepsistemas.rso.Clases.Prueba.EvidenceActivity;
+import com.acadep.acadepsistemas.rso.Clases.EvidenceActivity;
 import com.acadep.acadepsistemas.rso.R;
 import com.acadep.acadepsistemas.rso.model.Files;
 import com.acadep.acadepsistemas.rso.model.Ubication;
@@ -43,7 +42,6 @@ import java.util.GregorianCalendar;
 import java.util.List;
 
 import static android.app.Activity.RESULT_OK;
-import static com.firebase.ui.auth.AuthUI.getApplicationContext;
 
 public class ArchivosFragment extends Fragment {
 
@@ -124,6 +122,13 @@ public class ArchivosFragment extends Fragment {
         Tafter = EvidenceActivity.isTafter();
 
         estado = EvidenceActivity.getEstado();
+
+       ArchivosUris    = EvidenceActivity.getArchivosUris();
+       Type_Archivo    = EvidenceActivity.getType_Archivo();
+       Name_Archivo    = EvidenceActivity.getName_Archivo();
+       archivoChecked  = EvidenceActivity.getArchivoChecked();
+       files           = EvidenceActivity.getFiles();
+       contUris        = EvidenceActivity.getContUris();
     }
 
     @Override
@@ -157,38 +162,15 @@ public class ArchivosFragment extends Fragment {
         actionButton_Upload_PDF.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                GuardarInformacionArchivos();
-
-                PerFile = files.get(0);
-                PerFile.setType("PDF");
-                PerFile.setSrc("" + contUris);
-                files.set(0, PerFile);
-                PerFile = new Files();
-
-                Type_Archivo.add(0, "PDF");
-
-
                 selectPDF();
                 floatingActionsMenu.close(true);
-
             }
         });
 
         actionButton_Upload_Docx.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                GuardarInformacionArchivos();
-
-                PerFile = files.get(0);
-                PerFile.setType("Docx");
-                PerFile.setSrc(""+contUris);
-                files.set(0,PerFile);
-                PerFile = new Files();
-
-                Type_Archivo.add(0, "Docx");
-
                 selectDocx();
-
                 floatingActionsMenu.close(true);
             }
         });
@@ -196,18 +178,7 @@ public class ArchivosFragment extends Fragment {
         actionButton_Upload_Video.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                GuardarInformacionArchivos();
-
-                PerFile = files.get(0);
-                PerFile.setType("Video");
-                PerFile.setSrc(""+contUris);
-                files.set(0,PerFile);
-                PerFile = new Files();
-
-                Type_Archivo.add(0, "Video");
-
                 selectVideo();
-
                 floatingActionsMenu.close(true);
             }
         });
@@ -215,13 +186,6 @@ public class ArchivosFragment extends Fragment {
         actionButton_Upload_Audio.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                GuardarInformacionArchivos();
-
-                PerFile = files.get(0);
-                PerFile.setType("Audio");
-                PerFile.setSrc("" + contUris);
-                files.set(0, PerFile);
-                PerFile = new Files();
 
                 selectAudio();
 
@@ -417,6 +381,15 @@ public class ArchivosFragment extends Fragment {
             if(contUris>9){
                 Toast.makeText(getContext(), "Limite de archivos alcanzado", Toast.LENGTH_LONG ).show();
             }else {
+                GuardarInformacionArchivos();
+
+                PerFile = files.get(0);
+                PerFile.setType("PDF");
+                PerFile.setSrc("" + contUris);
+                files.set(0, PerFile);
+                PerFile = new Files();
+
+                Type_Archivo.add(0, "PDF");
                 SelecUri(data);
                 addFile();
                 contUris++;
@@ -428,6 +401,16 @@ public class ArchivosFragment extends Fragment {
             if(contUris>9){
                 Toast.makeText(getContext(), "Limite de archivos alcanzado", Toast.LENGTH_LONG ).show();
             }else {
+                GuardarInformacionArchivos();
+
+                PerFile = files.get(0);
+                PerFile.setType("Video");
+                PerFile.setSrc(""+contUris);
+                files.set(0,PerFile);
+                PerFile = new Files();
+
+                Type_Archivo.add(0, "Video");
+
                 SelecUri(data);
                 addFile();
                 contUris++;
@@ -438,6 +421,14 @@ public class ArchivosFragment extends Fragment {
             if(contUris>9){
                 Toast.makeText(getContext(), "Limite de archivos alcanzado", Toast.LENGTH_LONG ).show();
             }else {
+                GuardarInformacionArchivos();
+
+                PerFile = files.get(0);
+                PerFile.setType("Audio");
+                PerFile.setSrc("" + contUris);
+                files.set(0, PerFile);
+                PerFile = new Files();
+
                 SelecUri(data);
                 addFile();
                 contUris++;
@@ -449,6 +440,16 @@ public class ArchivosFragment extends Fragment {
             if(contUris>9){
                 Toast.makeText(getContext(), "Limite de archivos alcanzado", Toast.LENGTH_LONG ).show();
             }else {
+                GuardarInformacionArchivos();
+
+                PerFile = files.get(0);
+                PerFile.setType("Docx");
+                PerFile.setSrc(""+contUris);
+                files.set(0,PerFile);
+                PerFile = new Files();
+
+                Type_Archivo.add(0, "Docx");
+
                 SelecUri(data);
                 addFile();
                 contUris++;
@@ -477,10 +478,10 @@ public class ArchivosFragment extends Fragment {
         mAdapterFiles.notifyItemInserted(0);
         mLayaoutManagerFiles.scrollToPosition(0);
 
-        evidenceActivity.setArchivosUris(ArchivosUris);
+        EvidenceActivity.setArchivosUris(ArchivosUris);
         EvidenceActivity.setName_Archivo(Name_Archivo);
         EvidenceActivity.setType_Archivo(Type_Archivo);
-        evidenceActivity.setArchivoChecked(archivoChecked);
+        EvidenceActivity.setArchivoChecked(archivoChecked);
         EvidenceActivity.setFiles(files);
         EvidenceActivity.setContUris(contUris);
     }
@@ -497,7 +498,7 @@ public class ArchivosFragment extends Fragment {
         EvidenceActivity.setArchivosUris(ArchivosUris);
         EvidenceActivity.setName_Archivo(Name_Archivo);
         EvidenceActivity.setType_Archivo(Type_Archivo);
-        evidenceActivity.setArchivoChecked(archivoChecked);
+        EvidenceActivity.setArchivoChecked(archivoChecked);
         EvidenceActivity.setFiles(files);
         EvidenceActivity.setContUris(contUris);
     }

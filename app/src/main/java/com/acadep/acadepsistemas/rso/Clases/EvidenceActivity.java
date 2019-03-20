@@ -1,7 +1,6 @@
-package com.acadep.acadepsistemas.rso.Clases.Prueba;
+package com.acadep.acadepsistemas.rso.Clases;
 
 import android.Manifest;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -19,7 +18,6 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.location.LocationProvider;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
@@ -35,15 +33,12 @@ import android.text.format.Time;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.acadep.acadepsistemas.rso.Clases.MainActivity;
-import com.acadep.acadepsistemas.rso.Clases.Prueba.fragmentosEvidence.ArchivosFragment;
-import com.acadep.acadepsistemas.rso.Clases.Prueba.fragmentosEvidence.MultimediaFragment;
-import com.acadep.acadepsistemas.rso.Clases.Prueba.fragmentosEvidence.ObservacionesFragment;
-import com.acadep.acadepsistemas.rso.Clases.SupervisionActivity;
+import com.acadep.acadepsistemas.rso.Clases.fragmentosEvidence.ArchivosFragment;
+import com.acadep.acadepsistemas.rso.Clases.fragmentosEvidence.MultimediaFragment;
+import com.acadep.acadepsistemas.rso.Clases.fragmentosEvidence.ObservacionesFragment;
 import com.acadep.acadepsistemas.rso.R;
 import com.acadep.acadepsistemas.rso.model.Configuration;
 import com.acadep.acadepsistemas.rso.model.Data;
@@ -706,8 +701,6 @@ public class EvidenceActivity extends AppCompatActivity {
         }).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-
-
             }
         });
     }

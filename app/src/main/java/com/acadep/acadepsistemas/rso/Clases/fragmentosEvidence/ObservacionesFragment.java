@@ -1,13 +1,9 @@
-package com.acadep.acadepsistemas.rso.Clases.Prueba.fragmentosEvidence;
+package com.acadep.acadepsistemas.rso.Clases.fragmentosEvidence;
 
-import android.content.Context;
-import android.content.pm.PackageManager;
-import android.net.Uri;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -15,15 +11,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.acadep.acadepsistemas.rso.Clases.Prueba.EvidenceActivity;
-import com.acadep.acadepsistemas.rso.Clases.SupervisionActivity;
+import com.acadep.acadepsistemas.rso.Clases.EvidenceActivity;
 import com.acadep.acadepsistemas.rso.R;
 import com.karan.churi.PermissionManager.PermissionManager;
 
 import java.util.ArrayList;
-import java.util.List;
 
 
 public class ObservacionesFragment extends Fragment {
@@ -157,6 +150,23 @@ public class ObservacionesFragment extends Fragment {
             @Override
             public void afterTextChanged(Editable s) {
                 evidenceActivity.setEdObserv(""+ edObserv.getText());
+            }
+        });
+
+        txtAyuda.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
+                builder.setTitle("Ayuda");
+                builder.setMessage("El total del avance debe ser igual al total de la tarea para completar esta sección");
+                builder.setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+                builder.setIcon(R.drawable.ic_warning_black_24dp);
+                builder.create().show();
             }
         });
 

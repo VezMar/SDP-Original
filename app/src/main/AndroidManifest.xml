@@ -65,13 +65,16 @@
         </provider>
 
         <activity android:name=".Clases.Prueba.MaterialsCheckList" />
+        <activity android:name=".Clases.WebViewActivity" />
         <activity
             android:name=".Clases.ExtraordinaryActivity"
             android:label="Extraordinario"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".Clases.Prueba.EvidenceActivity"
-            android:label="Evidencia" />
+            android:name=".Clases.EvidenceActivity"
+            android:label="Evidencia"
+            android:screenOrientation="portrait"
+            />
         <activity android:name=".Clases.LoginActivity"></activity>
     </application>
 

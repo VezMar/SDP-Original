@@ -508,7 +508,7 @@ public class SupervisionActivity extends AppCompatActivity
 
         actionButton_Enviar = findViewById(R.id.fab_action_3_1);
 
-        check_NoAplica = findViewById(R.id.check_NoAplica);
+//        check_NoAplica = findViewById(R.id.check_NoAplica);
 
 
         txtEstado = (TextView) findViewById(R.id.txtEstado);
