@@ -19,12 +19,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.acadep.acadepsistemas.rso.Fragmentos.ActivitysFragment;
-import com.acadep.acadepsistemas.rso.Fragmentos.EventosFragment;
 import com.acadep.acadepsistemas.rso.Fragmentos.ProjectFragment;
 import com.acadep.acadepsistemas.rso.Notificaciones.MiFirebaseMessagingService;
 import com.acadep.acadepsistemas.rso.R;
@@ -41,8 +38,6 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 
 import com.onesignal.OneSignal;
-
-import org.w3c.dom.Text;
 
 import java.util.HashMap;
 import java.util.Map;

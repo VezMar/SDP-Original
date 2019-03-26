@@ -570,7 +570,6 @@ public class MultimediaFragment extends Fragment {
 //            EvidenceActivity.setContImg(contImg);
 
         }
-
     }
 
     public Bitmap redimensionarImagenMaximo(Bitmap mBitmap, float newWidth, float newHeigth){

@@ -33,12 +33,14 @@ import android.text.format.Time;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.acadep.acadepsistemas.rso.Clases.fragmentosEvidence.ArchivosFragment;
 import com.acadep.acadepsistemas.rso.Clases.fragmentosEvidence.MultimediaFragment;
 import com.acadep.acadepsistemas.rso.Clases.fragmentosEvidence.ObservacionesFragment;
+import com.acadep.acadepsistemas.rso.Fragmentos.ExtraFragment;
 import com.acadep.acadepsistemas.rso.R;
 import com.acadep.acadepsistemas.rso.model.Configuration;
 import com.acadep.acadepsistemas.rso.model.Data;
@@ -118,7 +120,7 @@ public class EvidenceActivity extends AppCompatActivity {
     //---------------------------------------------------------------
     // Datos del evento
 
-    private  String idevent;
+   private  String idevent;
    private static String nameEvent;
    private static String user_id;
    private static String actividad;
@@ -132,7 +134,7 @@ public class EvidenceActivity extends AppCompatActivity {
    private static ArrayList<String> tools;
 
    private static int ava;
-    private static int avanced;
+   private static int avanced;
 
 
    private static int number;
@@ -202,6 +204,7 @@ public class EvidenceActivity extends AppCompatActivity {
     // Componentes de EvidenceActivity
     private com.github.clans.fab.FloatingActionButton actionButton_Enviar;
     private TextView txtEstado;
+    private ProgressBar prgsBar;
     // Componentes de EvidenceActivity
 //---------------------------------------------------------------
     //Firebase - Firestore
@@ -329,6 +332,9 @@ public class EvidenceActivity extends AppCompatActivity {
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
+//        OnFragmentInteractionListener fragmentInteractionListener;
+//        fragmentInteractionListener.MapDialogFragment();
+
 //        checkWritePermission();
 //        checkUbicationPermission();
         recibirDatos();
@@ -336,6 +342,8 @@ public class EvidenceActivity extends AppCompatActivity {
         ChequeoDeVariables();
         actionButton_Enviar = findViewById(R.id.fab_action_enviar);
 
+//        prgsBar = (ProgressBar) findViewById(R.id.prgsbar);
+//        prgsBar.setVisibility(View.INVISIBLE);
 
 //        getSupportFragmentManager()
 //                .beginTransaction()
@@ -355,28 +363,39 @@ public class EvidenceActivity extends AppCompatActivity {
                         if (contImg >= min_photos || checked_NoAplica == true) {
                             if (checked_NoAplica == true && contImg == 0 || checked_NoAplica == false && contImg >= min_photos) {
                                 avanced = EvidenceActivity.getAvanced();
-
                                 ava = EvidenceActivity.getAva();
                                 if (ava <= avanced) {
                                     if (avanced <= number) {
                                         if (contImg > max_photos) {
                                             Toast.makeText(getApplicationContext(), "El maximo de fotos es " + max_photos + " usted ha superado esa cantidad por " + (contImg - max_photos), Toast.LENGTH_SHORT).show();
                                         } else {
-                                            AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
+
+//                                            progressDialog= new ProgressDialog(EvidenceActivity.this);
+//                                            progressDialog.setProgress(ProgressDialog.STYLE_SPINNER);
+//                                            progressDialog.setTitle("Procesando...");
+//                                            progressDialog.show();
+
+                                            final AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
                                             builder.setTitle("Confirmación");
                                             builder.setMessage("¿Está seguro de enviar? \n\n" + "Enviará " + contImg + " de " + max_photos + " elementos disponibles");
-                                            Toast.makeText(getApplicationContext(), "Una vez realizada esta acción no se puede revertir!!", Toast.LENGTH_LONG).show();
+                                            Toast.makeText(getApplicationContext(), "!Una vez realizada esta acción no se puede revertir!", Toast.LENGTH_LONG).show();
+
                                             // builder.setCancelable(false);
                                             builder.setPositiveButton("Si", new DialogInterface.OnClickListener() {
                                                 @Override
                                                 public void onClick(DialogInterface dialog, int which) {
 
+
+
+
                                                     ref_event.setId(idevent);
                                                     ref_event.setName(title_event);
 
 
-                                                    if ((estado).equals("before")) {
+                                                    Toast.makeText(getApplicationContext(), "Procesando...", Toast.LENGTH_LONG).show();
 
+                                                    if ((estado).equals("before")) {
+//                                                        progressDialog.hide();
 
                                                         boolean before = true;
 
@@ -389,6 +408,7 @@ public class EvidenceActivity extends AppCompatActivity {
                                                         BDFireStore.collection("events").document(idevent).update("before_complete", true);
                                                         before_complete = true;
 
+                                                        dialog.dismiss();
                                                         if (checked_NoAplica == true) {
                                                             if (contUris == 0) {
                                                                 Subirdatos();
@@ -411,7 +431,7 @@ public class EvidenceActivity extends AppCompatActivity {
                                                     }
 
                                                     if ((estado).equals("during")) {
-
+//                                                        progressDialog.hide();
 
                                                         ava = avanced;
 
@@ -428,6 +448,7 @@ public class EvidenceActivity extends AppCompatActivity {
 
                                                         BDFireStore.collection("events").document(idevent).update("ava", ava);
 
+                                                        dialog.dismiss();
                                                         if (checked_NoAplica == true) {
                                                             if (contUris == 0) {
                                                                 Subirdatos();
@@ -442,7 +463,7 @@ public class EvidenceActivity extends AppCompatActivity {
                                                     }
 
                                                     if ((estado).equals("after")) {
-
+//                                                        progressDialog.hide();
                                                         boolean after = true;
 
                                                         header = "after";
@@ -454,6 +475,8 @@ public class EvidenceActivity extends AppCompatActivity {
                                                         ava = number;
 
                                                         edObserv = "";
+
+                                                        dialog.dismiss();
                                                         if (checked_NoAplica == true) {
                                                             if (contUris == 0) {
                                                                 Subirdatos();
@@ -481,10 +504,14 @@ public class EvidenceActivity extends AppCompatActivity {
                                             builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
                                                 @Override
                                                 public void onClick(DialogInterface dialog, int which) {
-
+//                                                    progressDialog.hide();
                                                 }
                                             });
-                                            builder.create().show();
+                                            builder.create();
+                                            builder.show();
+
+
+
 
                                         }
                                     } else {
@@ -507,6 +534,17 @@ public class EvidenceActivity extends AppCompatActivity {
                 }
             }
         });
+
+    }
+
+    public interface OnFragmentInteractionListener {
+        // TODO: Update argument type and name
+//        void fragmentEventosFragment(Eventos event);
+//        void showVisualizeEvent(Eventos event);
+//        void deleteEvent(Eventos event);
+        void MapDialogFragment(String uuid);
+        void MapDialogFragmentObtenerLugar();
+
 
     }
 
@@ -656,7 +694,7 @@ public class EvidenceActivity extends AppCompatActivity {
 
                                     contT++;
 
-                                    if(contT == contImg && contUris==0 ){
+                                    if(contT == contImg && contUris==0 || contT == contImg && contT2 == contUris){
                                         Subirdatos();
                                     }
 
@@ -707,7 +745,11 @@ public class EvidenceActivity extends AppCompatActivity {
 
 
     private void uploadImageGlobal(Bitmap bitnew, final int x) {
-
+        progressDialog= new ProgressDialog(EvidenceActivity.this);
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        progressDialog.setTitle("Subiendo archivo...");
+        progressDialog.setProgress(0);
+        progressDialog.show();
 
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -720,7 +762,13 @@ public class EvidenceActivity extends AppCompatActivity {
         final StorageReference ref = storageReference.child("images").child("evidence").child("Img" + created_at + UUID.randomUUID().toString());
 
 //        ref.putFile(uri).continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
-        ref.putBytes(dato).continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+        ref.putBytes(dato).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                int currenProgress = (int) (100*taskSnapshot.getBytesTransferred()/taskSnapshot.getTotalByteCount());
+                progressDialog.setProgress(currenProgress);
+            }
+        }).continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
             @Override
             public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
                 if (!task.isSuccessful()) {
@@ -741,7 +789,7 @@ public class EvidenceActivity extends AppCompatActivity {
 
                     contT++;
 
-                    if(contT == contImg && contUris==0 ){
+                    if(contT == contImg && contUris==0 || contT == contImg && contT2 == contUris){
                         Subirdatos();
 
                     }
@@ -835,7 +883,7 @@ public class EvidenceActivity extends AppCompatActivity {
 
 
                                     contT2++;
-                                    if(contT2 == contUris){
+                                    if(contT2 == contUris & contT == contImg){
 
                                         Subirdatos();
 //                                        BorrarImagenes();
@@ -843,7 +891,7 @@ public class EvidenceActivity extends AppCompatActivity {
 
                                         progressDialog.setProgress(100);
                                         progressDialog.setMessage("Click para salir...");
-                                        Toast.makeText(getApplicationContext(), "Subida de archivos terminada!",Toast.LENGTH_SHORT  ).show();
+                                        Toast.makeText(getApplicationContext(), "¡Subida de archivos terminada!",Toast.LENGTH_SHORT  ).show();
 
                                     }
 
@@ -1292,7 +1340,7 @@ public class EvidenceActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setMessage("Estás seguro de salir?")
+            builder.setMessage("¿Estás seguro de salir?")
                     .setCancelable(false)
                     .setPositiveButton("Si", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {

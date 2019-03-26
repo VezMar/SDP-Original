@@ -12,7 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.acadep.acadepsistemas.rso.Adapter.ActivityAdapter;
-import com.acadep.acadepsistemas.rso.Clases.ExtraActivity;
 import com.acadep.acadepsistemas.rso.Clases.ExtraordinaryActivity;
 import com.acadep.acadepsistemas.rso.R;
 import com.acadep.acadepsistemas.rso.model.Activity;

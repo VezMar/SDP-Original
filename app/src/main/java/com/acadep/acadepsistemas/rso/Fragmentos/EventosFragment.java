@@ -73,10 +73,13 @@ public class EventosFragment extends Fragment  {
     static ArrayList<String> arrayString = new ArrayList<String>();
 
 
-    private String activity_id;
     private String project_title;
     private String project_id;
     private String activity_title;
+    private String activity_id;
+    private String event_id;
+    private String event_title;
+
 
     private TextView txt_SubProyecto;
     private TextView txtAct;
@@ -133,15 +136,7 @@ public class EventosFragment extends Fragment  {
 
         mDatabase = FirebaseDatabase.getInstance().getReference().child("Eventos");
 
-
-
         return view;
-
-
-
-
-
-
     }
 
     private void setUpRecyclerView() {
@@ -156,7 +151,9 @@ public class EventosFragment extends Fragment  {
         mQuery = BDFireStore.collection("events")
                 .whereEqualTo("user_id", mAuth.getUid())
                     .whereEqualTo("activity_id", activity_id)
-                        .whereEqualTo("active", true);
+                        .whereEqualTo("active", true)
+                            .orderBy("start");
+
 
         mQuery.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
@@ -165,7 +162,7 @@ public class EventosFragment extends Fragment  {
                     contEventos=0;
                     for (DocumentSnapshot document : task.getResult()) {
                         contEventos++;
-                        EventosPendientes.setText("Tienes "+contEventos+" Eventos pendientes");
+                        EventosPendientes.setText("Tienes "+contEventos+" Tareas pendientes");
                     }
                     if(contEventos==0){
                         BDFireStore.collection("activities").document(""+activity_id).update("users."+mAuth.getUid(), false);
@@ -216,32 +213,75 @@ public class EventosFragment extends Fragment  {
                 activeStatus = evento.isActive();
 
 
+                Fragment mifragment = null;
+                mifragment = new TypesFragment();
+//
+                Bundle bundle = new Bundle();
+                bundle.putString( "activity_id", activity_id);
+                bundle.putString( "activity_title", activity_title);
+                bundle.putString( "project_id", project_id);
+                bundle.putString( "project_title", project_title);
+                bundle.putString( "event_id", idEvento);
+                bundle.putString( "event_title", title);
+                bundle.putString( "actividad", actividad);
+                bundle.putBoolean("during_complete",during_complete);
+                bundle.putBoolean("before_complete",before_complete );
+                bundle.putString( "idEvento", idEvento);
+                bundle.putString( "actividad", actividad);
+                bundle.putString( "nameEvent", nameEvent);
+                bundle.putString( "user_id", user_id);
+                bundle.putString( "start", start);
+                bundle.putString( "end", end);
+                bundle.putString( "title", title);
+                bundle.putString( "description", description);
+                bundle.putString( "deleted", deleted);
+                bundle.putInt(    "ava", ava);
+
+                bundle.putString( "activity_id",activity_id);
+                bundle.putString( "project_title",project_title);
+                bundle.putString( "project_id",project_id);
+                bundle.putString( "activity_title",activity_title);
+
+                bundle.putInt(    "number", number);
+                bundle.putString( "unit", unit);
+
+
+                mifragment.setArguments(bundle);
+
+                getActivity().getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.Contenedor, mifragment)
+                        .addToBackStack("main")
+                        .commit();
+
+
+
 //                Intent intent = new Intent(getActivity(), SupervisionActivity.class);
-                Intent intent = new Intent(getActivity(), EvidenceActivity.class);
-
-                intent.putExtra("idEvento", idEvento);
-                intent.putExtra("actividad", actividad);
-                intent.putExtra("nameEvent", nameEvent);
-                intent.putExtra("user_id", user_id);
-                intent.putExtra("start", start);
-                intent.putExtra("end", end);
-                intent.putExtra("title", title);
-                intent.putExtra("description", description);
-                intent.putExtra("deleted", deleted);
-                intent.putExtra("ava", ava);
-                intent.putExtra("during_complete", during_complete);
-                intent.putExtra("before_complete", before_complete);
-
-                intent.putExtra("activity_id",activity_id);
-                intent.putExtra("project_title",project_title);
-                intent.putExtra("project_id",project_id);
-                intent.putExtra("activity_title",activity_title);
-
-                intent.putExtra("number", number);
-                intent.putExtra("unit", unit);
-
-
-                    startActivity(intent);
+//                Intent intent = new Intent(getActivity(), EvidenceActivity.class);
+//
+//                intent.putExtra("idEvento", idEvento);
+//                intent.putExtra("actividad", actividad);
+//                intent.putExtra("nameEvent", nameEvent);
+//                intent.putExtra("user_id", user_id);
+//                intent.putExtra("start", start);
+//                intent.putExtra("end", end);
+//                intent.putExtra("title", title);
+//                intent.putExtra("description", description);
+//                intent.putExtra("deleted", deleted);
+//                intent.putExtra("ava", ava);
+//                intent.putExtra("during_complete", during_complete);
+//                intent.putExtra("before_complete", before_complete);
+//
+//                intent.putExtra("activity_id",activity_id);
+//                intent.putExtra("project_title",project_title);
+//                intent.putExtra("project_id",project_id);
+//                intent.putExtra("activity_title",activity_title);
+//
+//                intent.putExtra("number", number);
+//                intent.putExtra("unit", unit);
+//
+//
+//                    startActivity(intent);
                     //Toast.makeText(getContext(), "Supervision", Toast.LENGTH_SHORT).show();
 //                    StyleableToast.makeText(getContext(), ""+actividad, Toast.LENGTH_SHORT, R.style.sucessToast).show();
 

@@ -6,10 +6,12 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.OpenableColumns;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -383,6 +385,9 @@ public class ArchivosFragment extends Fragment {
             }else {
                 GuardarInformacionArchivos();
 
+
+
+
                 PerFile = files.get(0);
                 PerFile.setType("PDF");
                 PerFile.setSrc("" + contUris);
@@ -391,7 +396,7 @@ public class ArchivosFragment extends Fragment {
 
                 Type_Archivo.add(0, "PDF");
                 SelecUri(data);
-                addFile();
+                addFile(data);
                 contUris++;
 
                 evidenceActivity.setContUris(contUris);
@@ -412,7 +417,7 @@ public class ArchivosFragment extends Fragment {
                 Type_Archivo.add(0, "Video");
 
                 SelecUri(data);
-                addFile();
+                addFile(data);
                 contUris++;
                 evidenceActivity.setContUris(contUris);
             }
@@ -430,7 +435,7 @@ public class ArchivosFragment extends Fragment {
                 PerFile = new Files();
 
                 SelecUri(data);
-                addFile();
+                addFile(data);
                 contUris++;
                 evidenceActivity.setContUris(contUris);
             }
@@ -451,7 +456,7 @@ public class ArchivosFragment extends Fragment {
                 Type_Archivo.add(0, "Docx");
 
                 SelecUri(data);
-                addFile();
+                addFile(data);
                 contUris++;
                 evidenceActivity.setContUris(contUris);
             }
@@ -470,10 +475,30 @@ public class ArchivosFragment extends Fragment {
         }
     }
 
-    private void addFile(){
+    private void addFile(Intent data){
 
-        File filename = new File(ArchivosUris.get(0).getPath());
-        Name_Archivo.add(0, filename.getName());
+        Uri uri = data.getData();
+        String uriString = uri.toString();
+        File file = new File(uriString);
+        String displayname=null;
+        if (uriString.startsWith("content://"))
+        {
+            Cursor cursor= null;
+            try{
+                cursor = getActivity().getApplicationContext().getContentResolver().query(uri, null, null, null, null);
+                if (cursor!=null && cursor.moveToFirst()){
+                    displayname = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
+                }
+            }finally {
+                cursor.close();
+            }
+        }else if (uriString.startsWith("file://")){
+            displayname = file.getName();
+        }
+
+
+//        File filename = new File(ArchivosUris.get(0).getPath());
+        Name_Archivo.add(0, displayname);
         archivoChecked.add(0, false);
         mAdapterFiles.notifyItemInserted(0);
         mLayaoutManagerFiles.scrollToPosition(0);

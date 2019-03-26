@@ -53,7 +53,7 @@ public class ArchivosAdapter extends RecyclerView.Adapter{
             ((ArchivosViewHolder)viewHolder).img_Archivos.setImageResource(R.drawable.ic_videocam_black_24dp);
             ((ArchivosViewHolder)viewHolder).txType_Archivo.setText(""+Type_Archivo.get(i));
             ((ArchivosViewHolder)viewHolder).txName_Archivo.setText(""+Name_Archivo.get(i));
-            ((ArchivosViewHolder)viewHolder).txtUbicacion_Archivo.setText(""+ArchivosUris.get(i));
+//            ((ArchivosViewHolder)viewHolder).txtUbicacion_Archivo.setText(""+ArchivosUris.get(i));
             ((ArchivosViewHolder)viewHolder).myCheckBox_Archivos.setChecked(archivoChecked.get(i));
         }
 
@@ -61,7 +61,7 @@ public class ArchivosAdapter extends RecyclerView.Adapter{
             ((ArchivosViewHolder)viewHolder).img_Archivos.setImageResource(R.drawable.ic_keyboard_voice_black_24dp);
             ((ArchivosViewHolder)viewHolder).txType_Archivo.setText(""+Type_Archivo.get(i));
             ((ArchivosViewHolder)viewHolder).txName_Archivo.setText(""+Name_Archivo.get(i));
-            ((ArchivosViewHolder)viewHolder).txtUbicacion_Archivo.setText(""+ArchivosUris.get(i));
+//            ((ArchivosViewHolder)viewHolder).txtUbicacion_Archivo.setText(""+ArchivosUris.get(i));
             ((ArchivosViewHolder)viewHolder).myCheckBox_Archivos.setChecked(archivoChecked.get(i));
         }
 
@@ -69,7 +69,7 @@ public class ArchivosAdapter extends RecyclerView.Adapter{
             ((ArchivosViewHolder)viewHolder).img_Archivos.setImageResource(R.drawable.ic_insert_drive_file_black_24dp);
             ((ArchivosViewHolder)viewHolder).txType_Archivo.setText(""+Type_Archivo.get(i));
             ((ArchivosViewHolder)viewHolder).txName_Archivo.setText(""+Name_Archivo.get(i));
-            ((ArchivosViewHolder)viewHolder).txtUbicacion_Archivo.setText(""+ArchivosUris.get(i));
+//            ((ArchivosViewHolder)viewHolder).txtUbicacion_Archivo.setText(""+ArchivosUris.get(i));
             ((ArchivosViewHolder)viewHolder).myCheckBox_Archivos.setChecked(archivoChecked.get(i));
 
         }
@@ -77,7 +77,7 @@ public class ArchivosAdapter extends RecyclerView.Adapter{
             ((ArchivosViewHolder)viewHolder).img_Archivos.setImageResource(R.drawable.ic_picture_as_pdf_black_24dp);
             ((ArchivosViewHolder)viewHolder).txType_Archivo.setText(""+Type_Archivo.get(i));
             ((ArchivosViewHolder)viewHolder).txName_Archivo.setText(""+Name_Archivo.get(i));
-            ((ArchivosViewHolder)viewHolder).txtUbicacion_Archivo.setText(""+ArchivosUris.get(i));
+//            ((ArchivosViewHolder)viewHolder).txtUbicacion_Archivo.setText(""+ArchivosUris.get(i));
             ((ArchivosViewHolder)viewHolder).myCheckBox_Archivos.setChecked(archivoChecked.get(i));
         }
 
@@ -117,7 +117,7 @@ public class ArchivosAdapter extends RecyclerView.Adapter{
             this.img_Archivos = itemView.findViewById(R.id.img_Archivos);
             this.txType_Archivo = itemView.findViewById(R.id.txType_Archivo);
             this.txName_Archivo = itemView.findViewById(R.id.txName_Archivo);
-            this.txtUbicacion_Archivo = itemView.findViewById(R.id.txtUbicacion_Archivo);
+//            this.txtUbicacion_Archivo = itemView.findViewById(R.id.txtUbicacion_Archivo);
             this.myCheckBox_Archivos = itemView.findViewById(R.id.myCheckBox_Archivos);
 
             myCheckBox_Archivos.setOnClickListener(new View.OnClickListener() {

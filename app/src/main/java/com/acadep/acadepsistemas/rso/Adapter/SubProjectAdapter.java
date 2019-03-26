@@ -13,8 +13,6 @@ import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.firestore.DocumentSnapshot;
 
-import java.util.ArrayList;
-
 public class SubProjectAdapter extends FirestoreRecyclerAdapter<SubProject, SubProjectAdapter.SubProjectViewHolder>{
     private OnItemClickListener listener;
 

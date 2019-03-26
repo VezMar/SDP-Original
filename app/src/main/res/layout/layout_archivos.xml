@@ -34,13 +34,10 @@
                 android:id="@+id/txName_Archivo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Nombre del archivo" />
+                android:text="Nombre del archivo"
+                android:textSize="20dp"
+                android:textStyle="bold"/>
 
-            <TextView
-                android:id="@+id/txtUbicacion_Archivo"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Ubicacion del archivo" />
         </LinearLayout>
     </LinearLayout>
 

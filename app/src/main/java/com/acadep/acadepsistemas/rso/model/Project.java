@@ -1,7 +1,5 @@
 package com.acadep.acadepsistemas.rso.model;
 
-import java.util.ArrayList;
-
 public class Project {
 
     private boolean active;

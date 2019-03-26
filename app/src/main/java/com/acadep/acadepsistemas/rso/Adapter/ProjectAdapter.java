@@ -28,19 +28,18 @@ public class ProjectAdapter extends FirestoreRecyclerAdapter<Project, ProjectAda
 
     }
 
-    @Override
-    protected void onBindViewHolder(@NonNull ProjectViewHolder holder, int position, @NonNull Project project) {
-
-
-//        holder.txtProjectDescription.setText(project.getDescription());
-        holder.txtProjectName.setText(project.getTitle());
-    }
-
     @NonNull
     @Override
     public ProjectViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.row_project, viewGroup, false);
         return new ProjectViewHolder(v);
+    }
+
+    @Override
+    protected void onBindViewHolder(@NonNull ProjectViewHolder holder, int position, @NonNull Project project) {
+
+//        holder.txtProjectDescription.setText(project.getDescription());
+        holder.txtProjectName.setText(project.getTitle());
     }
 
 

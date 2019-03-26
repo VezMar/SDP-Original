@@ -10,7 +10,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.acadep.acadepsistemas.rso.Adapter.ProjectAdapter;
 import com.acadep.acadepsistemas.rso.Adapter.SubProjectAdapter;
 import com.acadep.acadepsistemas.rso.R;
 import com.acadep.acadepsistemas.rso.model.SubProject;

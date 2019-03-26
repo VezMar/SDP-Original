@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="16dp"
+    android:paddingTop="16dp"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Subproyecto: "
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="#000"/>
+
+            <TextView
+                android:id="@+id/txt_SubProyecto"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="SubProyectos"
+                android:textSize="20sp"
+                android:textColor="#000"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Actividad: "
+                android:textSize="15dp"
+                android:textStyle="bold"
+                android:textColor="#000"/>
+
+            <TextView
+                android:id="@+id/txtAct"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Seleccione una Actividad"
+                android:textSize="15dp"
+                android:textColor="#000"
+                android:layout_below="@id/txt_SubProyecto"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Tarea: "
+                android:textSize="15dp"
+                android:textStyle="bold"
+                android:textColor="#000"/>
+
+            <TextView
+                android:id="@+id/txtEve"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Seleccione una Actividad"
+                android:textSize="15dp"
+                android:textColor="#000"
+                android:layout_below="@id/txt_SubProyecto"/>
+
+        </LinearLayout>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler_types"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="5dp"
+            android:layout_below="@id/txt_SubProyecto"
+            >
+        </android.support.v7.widget.RecyclerView>
+    </LinearLayout>
+</RelativeLayout>

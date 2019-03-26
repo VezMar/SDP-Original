@@ -70,6 +70,7 @@ public class ActivityFragment extends Fragment {
         mReference_activity = BDFireStore.collection("activities")
                 .whereEqualTo("users."+mAuth.getUid(), true)
                 .whereEqualTo("project_id", project_id);
+//                .orderBy("start", Query.Direction.ASCENDING);
 //        mReference_activity = BDFireStore.collection("projects");
 
         mReference_activity.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {

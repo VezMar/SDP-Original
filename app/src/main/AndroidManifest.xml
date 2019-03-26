@@ -21,7 +21,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".Clases.Login"
+            android:name="com.acadep.acadepsistemas.rso.Clases.Login"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme">
             <intent-filter>
@@ -31,25 +31,25 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".Clases.MainActivity"
+            android:name="com.acadep.acadepsistemas.rso.Clases.MainActivity"
             android:label="RSO"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".Clases.SupervisionActivity"
+            android:name="com.acadep.acadepsistemas.rso.Clases.SupervisionActivity"
             android:label="Evidencia"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".Clases.ExtraActivity" />
+        <activity android:name="com.acadep.acadepsistemas.rso.Clases.ExtraActivity" />
 
-        <service android:name=".Notificaciones.MiFirebaseMessagingService">
+        <service android:name="com.acadep.acadepsistemas.rso.Notificaciones.MiFirebaseMessagingService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
 
-        <activity android:name=".Clases.RecuperacionContrasena" />
+        <activity android:name="com.acadep.acadepsistemas.rso.Clases.RecuperacionContrasena" />
         <activity
-            android:name=".Clases.Prueba.RecyclerTest"
+            android:name="com.acadep.acadepsistemas.rso.Clases.Prueba.RecyclerTest"
             android:screenOrientation="portrait" />
 
         <provider
@@ -64,18 +64,18 @@
                 tools:replace="android:resource" />
         </provider>
 
-        <activity android:name=".Clases.Prueba.MaterialsCheckList" />
-        <activity android:name=".Clases.WebViewActivity" />
+        <activity android:name="com.acadep.acadepsistemas.rso.Clases.Prueba.MaterialsCheckList" />
+        <activity android:name="com.acadep.acadepsistemas.rso.Clases.WebViewActivity" />
         <activity
-            android:name=".Clases.ExtraordinaryActivity"
+            android:name="com.acadep.acadepsistemas.rso.Clases.ExtraordinaryActivity"
             android:label="Extraordinario"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".Clases.EvidenceActivity"
+            android:name="com.acadep.acadepsistemas.rso.Clases.EvidenceActivity"
             android:label="Evidencia"
             android:screenOrientation="portrait"
             />
-        <activity android:name=".Clases.LoginActivity"></activity>
+        <activity android:name="com.acadep.acadepsistemas.rso.Clases.LoginActivity"></activity>
     </application>
 
 </manifest>
