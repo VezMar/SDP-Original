@@ -29,8 +29,11 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.format.Time;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -328,9 +331,9 @@ public class EvidenceActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_evidence);
 
-
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+
 
 //        OnFragmentInteractionListener fragmentInteractionListener;
 //        fragmentInteractionListener.MapDialogFragment();
@@ -341,6 +344,8 @@ public class EvidenceActivity extends AppCompatActivity {
         ChequeoConfiguration();
         ChequeoDeVariables();
         actionButton_Enviar = findViewById(R.id.fab_action_enviar);
+
+//        setSupportActionBar(toolbar);
 
 //        prgsBar = (ProgressBar) findViewById(R.id.prgsbar);
 //        prgsBar.setVisibility(View.INVISIBLE);
@@ -548,6 +553,32 @@ public class EvidenceActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.app_bar_menu_evidence, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+//        if (item == R.id.action_info) {
+//            return true;
+//        }
+        AlertDialog.Builder builder = new AlertDialog.Builder(EvidenceActivity.this);
+        builder.setTitle("Ayuda");
+        builder.setMessage(""+description);
+        builder.setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+        builder.setIcon(R.drawable.ic_warning_black_24dp);
+        builder.create().show();
+        return super.onOptionsItemSelected(item);
+    }
 
     private void Subirdatos() {
         created_at_funct();

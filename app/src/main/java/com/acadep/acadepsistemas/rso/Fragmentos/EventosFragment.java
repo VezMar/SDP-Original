@@ -99,9 +99,8 @@ public class EventosFragment extends Fragment  {
             project_title = getArguments().getString("project_title");
             activity_title = getArguments().getString("activity_title");
             project_id = getArguments().getString("project_id");
-
-
         }
+
     }
 
 

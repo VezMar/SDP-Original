@@ -7,7 +7,7 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
 
     <!-- <uses-feature -->
     <!-- android:name="android.hardware.camera2" -->
@@ -21,7 +21,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name="com.acadep.acadepsistemas.rso.Clases.Login"
+            android:name=".Clases.Login"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme">
             <intent-filter>
@@ -31,25 +31,25 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.acadep.acadepsistemas.rso.Clases.MainActivity"
+            android:name=".Clases.MainActivity"
             android:label="RSO"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name="com.acadep.acadepsistemas.rso.Clases.SupervisionActivity"
+            android:name=".Clases.SupervisionActivity"
             android:label="Evidencia"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name="com.acadep.acadepsistemas.rso.Clases.ExtraActivity" />
+        <activity android:name=".Clases.ExtraActivity" />
 
-        <service android:name="com.acadep.acadepsistemas.rso.Notificaciones.MiFirebaseMessagingService">
+        <service android:name=".Notificaciones.MiFirebaseMessagingService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
 
-        <activity android:name="com.acadep.acadepsistemas.rso.Clases.RecuperacionContrasena" />
+        <activity android:name=".Clases.RecuperacionContrasena" />
         <activity
-            android:name="com.acadep.acadepsistemas.rso.Clases.Prueba.RecyclerTest"
+            android:name=".Clases.Prueba.RecyclerTest"
             android:screenOrientation="portrait" />
 
         <provider
@@ -64,18 +64,21 @@
                 tools:replace="android:resource" />
         </provider>
 
-        <activity android:name="com.acadep.acadepsistemas.rso.Clases.Prueba.MaterialsCheckList" />
-        <activity android:name="com.acadep.acadepsistemas.rso.Clases.WebViewActivity" />
+        <activity android:name=".Clases.Prueba.MaterialsCheckList" />
+        <activity android:name=".Clases.WebViewActivity" />
         <activity
-            android:name="com.acadep.acadepsistemas.rso.Clases.ExtraordinaryActivity"
+            android:name=".Clases.ExtraordinaryActivity"
             android:label="Extraordinario"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name="com.acadep.acadepsistemas.rso.Clases.EvidenceActivity"
+            android:name=".Clases.EvidenceActivity"
             android:label="Evidencia"
-            android:screenOrientation="portrait"
-            />
-        <activity android:name="com.acadep.acadepsistemas.rso.Clases.LoginActivity"></activity>
+            android:screenOrientation="portrait" />
+        <activity android:name=".Clases.LoginActivity" />
+        <activity
+            android:name=".Clases.Prueba.pruebaalgo"
+            android:label="@string/title_activity_pruebaalgo"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

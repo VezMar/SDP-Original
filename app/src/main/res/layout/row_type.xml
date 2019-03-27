@@ -12,24 +12,43 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
         android:id="@+id/linearLayout"
-        android:background="#2f63f2">
+        android:background="#2f63f2"
+        android:gravity="center">
 
-        <TextView
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:id="@+id/txtStatus"
+        <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Inicio"
-            android:textStyle="bold"
-            android:textSize="30dp"
-            android:textColor="#ffffff"
-            />
+            android:layout_height="wrap_content">
+            <TextView
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:id="@+id/txtStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Inicio"
+                android:textStyle="bold"
+                android:textSize="30dp"
+                android:textColor="#ffffff"/>
+        </LinearLayout>
+
+        <!--<LinearLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:gravity="right"-->
+            <!--android:layout_marginRight="10dp">-->
+            <!--<TextView-->
+                <!--android:layout_width="30dp"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="i"-->
+                <!--android:background="@drawable/circlebackgroundblue"-->
+                <!--android:textSize="30dp"-->
+                <!--android:gravity="center"-->
+                <!--android:textColor="#000"/>-->
+        <!--</LinearLayout>-->
 
     </LinearLayout>
+
 
 </android.support.v7.widget.CardView>

@@ -39,5 +39,6 @@
     <string name="title_multimedia">Multimedia</string>
     <string name="title_observaciones">Observaciones</string>
     <string name="title_archivos">Archivos</string>
+    <string name="title_activity_pruebaalgo">pruebaalgo</string>
 
 </resources>
