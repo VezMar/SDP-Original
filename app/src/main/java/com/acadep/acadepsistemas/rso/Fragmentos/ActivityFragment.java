@@ -118,8 +118,8 @@ public class ActivityFragment extends Fragment {
 
                 getActivity().getSupportFragmentManager()
                         .beginTransaction()
-                        .replace(R.id.Contenedor, mifragment)
-                        .addToBackStack("main")
+                        .replace(R.id.Contenedor, mifragment, "Types")
+                        .addToBackStack(null)
                         .commit();
             }
         });

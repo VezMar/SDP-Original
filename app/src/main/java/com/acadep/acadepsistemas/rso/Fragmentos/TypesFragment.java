@@ -15,16 +15,23 @@ import android.widget.Toast;
 
 import com.acadep.acadepsistemas.rso.Adapter.TypesAdapter;
 import com.acadep.acadepsistemas.rso.Clases.EvidenceActivity;
+import com.acadep.acadepsistemas.rso.Clases.MainActivity;
 import com.acadep.acadepsistemas.rso.R;
 import com.acadep.acadepsistemas.rso.model.Configuration;
 import com.acadep.acadepsistemas.rso.model.Event_types;
+import com.acadep.acadepsistemas.rso.model.Evento;
 import com.acadep.acadepsistemas.rso.model.Total;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,6 +79,7 @@ public class TypesFragment extends Fragment {
 
     private ArrayList<String> mText = new ArrayList<>();
     private ArrayList<String> mStatus = new ArrayList<>();
+    private ArrayList<String> mType = new ArrayList<>();
 
 
     static RecyclerView mRecyclerViewFiles;
@@ -80,6 +88,8 @@ public class TypesFragment extends Fragment {
 
 
     FirebaseFirestore BDFireStore = FirebaseFirestore.getInstance();
+    Query mQuery;
+    DocumentReference docRef;
 
     private List<Event_types> event_types;
     private static boolean Tbefore;
@@ -91,6 +101,7 @@ public class TypesFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
 
+//        Toast.makeText(getContext(), "Nuevo", Toast.LENGTH_SHORT).show();
 
         if (getArguments()!=null){
             activity_id = getArguments().getString("activity_id");
@@ -121,16 +132,8 @@ public class TypesFragment extends Fragment {
            during_complete = getArguments().getBoolean("during_complete");
            before_complete = getArguments().getBoolean("before_complete");
 
-
-
-
-
-
-
-
-
-
         }
+
     }
 
     @Nullable
@@ -146,10 +149,74 @@ public class TypesFragment extends Fragment {
         txtEve.setText(""+event_title);
 
         initConfiguration(view);
+        initEventListener();
 
 
         return view;
     }
+
+    private void initEventListener() {
+//        BDFireStore.collection("events").document(""+idevent)
+        docRef = BDFireStore.collection("events").document("" + idevent);
+
+        docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(@javax.annotation.Nullable DocumentSnapshot documentSnapshot, @javax.annotation.Nullable FirebaseFirestoreException e) {
+                Evento evento = documentSnapshot.toObject(Evento.class);
+
+//                Toast.makeText(getContext(), ""+mText.size(), Toast.LENGTH_SHORT).show();
+                before_complete = evento.isBefore_complete();
+                during_complete = evento.isDuring_complete();
+
+
+
+                if (mStatus.size()>0) {
+                    if (Tbefore) {
+                        if (before_complete) {
+                            mStatus.set(0, "realizado");
+                            mType.set(0, "Realizado");
+                            mAdapterFiles.notifyItemChanged(0);
+                        } else {
+                            mStatus.set(0, "activo");
+                            mType.set(0, "Activo");
+                            mAdapterFiles.notifyItemChanged(0);
+                        }
+                    }
+
+                    if (Tduring) {
+                        if (during_complete && before_complete) {
+                            mStatus.set(mStatus.size()-2, "realizado");
+                            mType.set(mStatus.size()-2, "Realizado");
+                            mAdapterFiles.notifyItemChanged(1);
+                        } else if (before_complete && !during_complete) {
+                            mStatus.set(mStatus.size()-2, "activo");
+                            mType.set(mStatus.size()-2, "Activo");
+                            mAdapterFiles.notifyItemChanged(1);
+                        } else if (!before_complete) {
+                            mStatus.set(mStatus.size()-2, "inactivo");
+                            mType.set(mStatus.size()-2, "Inactivo");
+                            mAdapterFiles.notifyItemChanged(1);
+                        }
+                    }
+
+                    if (Tafter) {
+                        if (before_complete && during_complete){
+                            mStatus.set(mStatus.size()-1, "activo");
+                            mType.set(mStatus.size()-1, "Activo");
+                            mAdapterFiles.notifyItemChanged(2);
+                        }else if (!before_complete || !during_complete){
+                            mStatus.set(mStatus.size()-1, "inactivo");
+                            mType.set(mStatus.size()-1, "Inactivo");
+                            mAdapterFiles.notifyItemChanged(2);
+                        }
+                    }
+                }
+
+
+            }
+        });
+    }
+
 
     private void initConfiguration(final View view) {
 
@@ -171,35 +238,64 @@ public class TypesFragment extends Fragment {
                         Tduring = event_types.get(i).isDuring();
                         Tafter = event_types.get(i).isAfter();
 
+                        if (!Tbefore){
+                            before_complete=true;
+                            BDFireStore.collection("events").document(""+idevent).update("before_complete", before_complete);
+                        }
+
+                        if (!Tduring){
+                            during_complete=true;
+                            BDFireStore.collection("events").document(""+idevent).update("during_complete", during_complete);
+                        }
+
                         if (Tbefore){
+                            mText.add("Inicio");
                             if (before_complete){
                                 mStatus.add("realizado");
+                                mType.add("Realizado");
                             }else{
                                 mStatus.add("activo");
+                                mType.add("Activo");
                             }
-                            mText.add("Inicio");
                         }
 
                         if (Tduring){
                             mText.add("Ejecución");
                             if (during_complete && before_complete){
                                 mStatus.add("realizado");
+                                mType.add("Realizado");
+
                             }else if (before_complete && !during_complete){
                                 mStatus.add("activo");
+                                mType.add("Activo");
                             }else if (!before_complete){
                                 mStatus.add("inactivo");
+                                mType.add("Inactivo");
                             }
                         }
 
-                        if (Tafter == true){
+                        if (Tafter){
                             mText.add("Termino");
-                            if (before_complete=true && during_complete==true){
+                            if (before_complete && during_complete){
                                 mStatus.add("activo");
-                            }else if (before_complete==true && during_complete==false){
+                                mType.add("Activo");
+                            }else if (!before_complete || !during_complete){
                                 mStatus.add("inactivo");
-                            }else if (before_complete==false && during_complete==false){
-                                mStatus.add("inactivo");
+                                mType.add("Inactivo");
                             }
+//                            if (before_complete && during_complete){
+//                                mStatus.add("activo");
+//                                mType.add("Activo");
+//                            }else if (before_complete && !during_complete){
+//                                mStatus.add("inactivo");
+//                                mType.add("Inactivo");
+//                            }else if (!before_complete && during_complete){
+//                                mStatus.add("inactivo");
+//                                mType.add("Inactivo");
+//                            }else if (!before_complete && !during_complete){
+//                                mStatus.add("inactivo");
+//                                mType.add("Inactivo");
+//                            }
                         }
 
 
@@ -211,6 +307,7 @@ public class TypesFragment extends Fragment {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 initRecyclerView(view);
+
             }
         });
     }
@@ -219,10 +316,13 @@ public class TypesFragment extends Fragment {
         mRecyclerViewFiles = view.findViewById(R.id.recycler_types);
         mLayaoutManagerFiles = new LinearLayoutManager(getContext());
 
-        mAdapterFiles = new TypesAdapter(getContext(), mText, mStatus, new TypesAdapter.OnItemClickListener() {
+        mAdapterFiles = new TypesAdapter(getContext(), mText, mStatus, mType, new TypesAdapter.OnItemClickListener() {
             @Override
             public void OnItemClick(String mStatus, int adapterPosition) {
                 if (mStatus.equals("activo")){
+
+//                    getActivity().getSupportFragmentManager().beginTransaction().remove(new TypesFragment()).commit();
+
                     Intent intent = new Intent(getActivity(), EvidenceActivity.class);
 
                     intent.putExtra("idEvento", event_id);
@@ -247,6 +347,7 @@ public class TypesFragment extends Fragment {
                     intent.putExtra("unit", unit);
 
                     startActivity(intent);
+
 
                 }else if (mStatus.equals("realizado")){
                     Toast.makeText(getContext(), "Ya has realizado esta etapa", Toast.LENGTH_SHORT).show();

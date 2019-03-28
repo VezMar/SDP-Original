@@ -66,15 +66,30 @@
             </LinearLayout>
         </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="10dp"
+            >
+
         <TextView
             android:id="@+id/txtEventosPendientes"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignStart="@+id/recycler"
-            android:layout_alignParentTop="true"
+            android:gravity="top"
             android:layout_marginTop="10dp"
             android:text="Tienes # Eventos pendientes" />
 
+            <CheckBox
+                android:id="@+id/checkbox_Order"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Recientes"
+                android:layout_gravity="right"
+                android:layout_marginLeft="20dp"/>
+
+        </LinearLayout>
         <!--<Spinner-->
             <!--android:id="@+id/SpnProyectos"-->
             <!--android:layout_width="match_parent"-->

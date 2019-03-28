@@ -1,6 +1,7 @@
 package com.acadep.acadepsistemas.rso.Clases;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -43,6 +44,7 @@ import android.widget.Toast;
 import com.acadep.acadepsistemas.rso.Clases.fragmentosEvidence.ArchivosFragment;
 import com.acadep.acadepsistemas.rso.Clases.fragmentosEvidence.MultimediaFragment;
 import com.acadep.acadepsistemas.rso.Clases.fragmentosEvidence.ObservacionesFragment;
+import com.acadep.acadepsistemas.rso.Fragmentos.EventosFragment;
 import com.acadep.acadepsistemas.rso.Fragmentos.ExtraFragment;
 import com.acadep.acadepsistemas.rso.R;
 import com.acadep.acadepsistemas.rso.model.Configuration;
@@ -135,6 +137,11 @@ public class EvidenceActivity extends AppCompatActivity {
    private static String description;
    private static String title_event;
    private static ArrayList<String> tools;
+
+   private static String project_id;
+   private static String project_title;
+   private static String activity_id;
+   private static String activity_title;
 
    private static int ava;
    private static int avanced;
@@ -414,13 +421,20 @@ public class EvidenceActivity extends AppCompatActivity {
                                                         before_complete = true;
 
                                                         dialog.dismiss();
-                                                        if (checked_NoAplica == true) {
-                                                            if (contUris == 0) {
-                                                                Subirdatos();
-                                                            } else {
-                                                                uploadAllFiles();
-                                                            }
-                                                        } else {
+//                                                        if (checked_NoAplica == true) {
+//                                                            if (contUris == 0) {
+//                                                                Subirdatos();
+//                                                            } else {
+//                                                                uploadAllFiles();
+//                                                            }
+//                                                        } else {
+//                                                            uploadAllImages();
+//                                                            uploadAllFiles();
+//                                                        }
+
+                                                        if (contUris == 0 && contImg == 0) {
+                                                            Subirdatos();
+                                                        }else{
                                                             uploadAllImages();
                                                             uploadAllFiles();
                                                         }
@@ -454,13 +468,19 @@ public class EvidenceActivity extends AppCompatActivity {
                                                         BDFireStore.collection("events").document(idevent).update("ava", ava);
 
                                                         dialog.dismiss();
-                                                        if (checked_NoAplica == true) {
-                                                            if (contUris == 0) {
-                                                                Subirdatos();
-                                                            } else {
-                                                                uploadAllFiles();
-                                                            }
-                                                        } else {
+//                                                        if (checked_NoAplica == true) {
+//                                                            if (contUris == 0) {
+//                                                                Subirdatos();
+//                                                            } else {
+//                                                                uploadAllFiles();
+//                                                            }
+//                                                        } else {
+//                                                            uploadAllImages();
+//                                                            uploadAllFiles();
+//                                                        }
+                                                        if (contUris == 0 && contImg == 0) {
+                                                            Subirdatos();
+                                                        }else{
                                                             uploadAllImages();
                                                             uploadAllFiles();
                                                         }
@@ -482,13 +502,19 @@ public class EvidenceActivity extends AppCompatActivity {
                                                         edObserv = "";
 
                                                         dialog.dismiss();
-                                                        if (checked_NoAplica == true) {
-                                                            if (contUris == 0) {
-                                                                Subirdatos();
-                                                            } else {
-                                                                uploadAllFiles();
-                                                            }
-                                                        } else {
+//                                                        if (checked_NoAplica == true) {
+//                                                            if (contUris == 0) {
+//                                                                Subirdatos();
+//                                                            } else {
+//                                                                uploadAllFiles();
+//                                                            }
+//                                                        } else {
+//                                                            uploadAllImages();
+//                                                            uploadAllFiles();
+//                                                        }
+                                                        if (contUris == 0 && contImg == 0) {
+                                                            Subirdatos();
+                                                        }else{
                                                             uploadAllImages();
                                                             uploadAllFiles();
                                                         }
@@ -597,6 +623,7 @@ public class EvidenceActivity extends AppCompatActivity {
         total.setUnit(unit);
         Data data = new Data(ava, created_at, Observation, header, total, false , user, ref_event, Lat, Lng, multimedia, files);
         BDFireStore.collection("evidence").document(uuids).set(data, SetOptions.merge()).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @SuppressLint("ResourceType")
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 Toast.makeText(getApplicationContext(), "Información subida exitosamente", Toast.LENGTH_SHORT  ). show();
@@ -606,9 +633,30 @@ public class EvidenceActivity extends AppCompatActivity {
                 BorrarFiles();
                 BorrarImagenes();
 
+                Fragment mifragment = null;
+                mifragment = new EventosFragment();
+//
+
+                Bundle bundle = new Bundle();
+                bundle.putString("activity_id", activity_id);
+                bundle.putString("activity_title", activity_title);
+                bundle.putString("project_id", project_id);
+                bundle.putString("project_title", project_title);
+
+                mifragment.setArguments(bundle);
                 if (before_complete==true && during_complete==false){
 
+//                    getSupportFragmentManager()
+//                            .beginTransaction()
+//                            .replace(R.id.contenedor_Evidence, mifragment)
+//                            .addToBackStack("main")
+//                            .commit();
                     EvidenceActivity.this.finish();
+
+
+
+
+
                     estado = "Tarea en curso";
 //                    txtEstado.setText("Evidencia: Durante");
 //                    txtAvance.setVisibility(View.VISIBLE);
@@ -616,7 +664,14 @@ public class EvidenceActivity extends AppCompatActivity {
 //                    txtTotal.setVisibility(View.VISIBLE);
 //                    txtAyuda.setVisibility(View.VISIBLE);
                 }else if (during_complete==true || ava ==number){
+
                     EvidenceActivity.this.finish();
+
+//                    getSupportFragmentManager()
+//                            .beginTransaction()
+//                            .replace(R.id.contenedor_Evidence, mifragment)
+//                            .addToBackStack("main")
+//                            .commit();
 //                    txtAvance.setVisibility(View.INVISIBLE);
 //                    edpercentage.setVisibility(View.INVISIBLE);
 //                    txtTotal.setVisibility(View.INVISIBLE);
@@ -1050,6 +1105,11 @@ public class EvidenceActivity extends AppCompatActivity {
         unit = extras.getString("unit");
         during_complete = extras.getBoolean("during_complete");
         before_complete = extras.getBoolean("before_complete");
+
+        activity_id   = extras.getString( "activity_id"   );
+        project_title = extras.getString( "project_title" );
+        project_id    = extras.getString( "project_id"    );
+        activity_title= extras.getString( "activity_title");
         //active=false;
 
         title_event = nameEvent;

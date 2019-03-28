@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,13 +25,16 @@ public class TypesAdapter extends RecyclerView.Adapter{
     private Context mContext;
     private ArrayList<String> mText;
     private ArrayList<String> mStatus;
+    private ArrayList<String> mType;
+
 
     private OnItemClickListener listener;
 
-    public TypesAdapter(Context mContext, ArrayList<String> mText, ArrayList<String> mStatus, OnItemClickListener listener) {
+    public TypesAdapter(Context mContext, ArrayList<String> mText, ArrayList<String> mStatus, ArrayList<String> mType, OnItemClickListener listener) {
         this.mContext = mContext;
         this.mText = mText;
         this.mStatus = mStatus;
+        this.mType = mType;
         this.listener = listener;
     }
 
@@ -43,21 +47,26 @@ public class TypesAdapter extends RecyclerView.Adapter{
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int position) {
+        Log.i("algo", mText.get(position));
         ((TypesViewHolder) viewHolder).txtStatus.setText(mText.get(position));
+        ((TypesViewHolder) viewHolder).txtType.setText(mType.get(position));
+
+
 
         if (mStatus.get(position).equals("activo")){
-            ((TypesViewHolder) viewHolder).linearLayout.setBackgroundColor(android.graphics.Color.parseColor("#2f63f2"));
+            ((TypesViewHolder) viewHolder).linearLayout.setBackgroundColor(android.graphics.Color.parseColor("#b42f63f2"));
         }
 
         if (mStatus.get(position).equals("inactivo")){
-            ((TypesViewHolder) viewHolder).linearLayout.setBackgroundColor(android.graphics.Color.parseColor("#7c7c7c"));
+            ((TypesViewHolder) viewHolder).linearLayout.setBackgroundColor(android.graphics.Color.parseColor("#b5b5ad"));
         }
 
         if (mStatus.get(position).equals("realizado")){
-            ((TypesViewHolder) viewHolder).linearLayout.setBackgroundColor(android.graphics.Color.parseColor("#00ff00"));
+            ((TypesViewHolder) viewHolder).linearLayout.setBackgroundColor(android.graphics.Color.parseColor("#e2ffc7"));
         }
 
         ((TypesViewHolder) viewHolder).bind(mStatus.get(position), listener);
+
 
     }
 
@@ -71,11 +80,13 @@ public class TypesAdapter extends RecyclerView.Adapter{
 
         LinearLayout linearLayout;
         TextView txtStatus;
+        TextView txtType;
         public TypesViewHolder(@NonNull View itemView) {
             super(itemView);
 
             this.linearLayout = itemView.findViewById(R.id.linearLayout);
             this.txtStatus = itemView.findViewById(R.id.txtStatus);
+            this.txtType = itemView.findViewById(R.id.txtType);
 
         }
 

@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.TextView;
 
 import com.acadep.acadepsistemas.rso.Adapter.EventoAdapter;
@@ -84,6 +85,8 @@ public class EventosFragment extends Fragment  {
     private TextView txt_SubProyecto;
     private TextView txtAct;
 
+    private CheckBox checkbox_Order;
+
     ArrayList<Evento> list;
     com.acadep.acadepsistemas.rso.Adapter.Adapter adapter;
     public EventosFragment() {
@@ -124,6 +127,8 @@ public class EventosFragment extends Fragment  {
         txtAct = view.findViewById(R.id.txtAct);
             txtAct.setText(""+activity_title);
 
+        checkbox_Order = view.findViewById(R.id.checkbox_Order);
+
         FirebaseUser user = mAuth.getCurrentUser();
         uidUserGlobal = user.getUid();
         contEventos=0;
@@ -132,7 +137,16 @@ public class EventosFragment extends Fragment  {
         setUpRecyclerView();
 
 
-
+        checkbox_Order.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (checkbox_Order.isChecked()){
+                    checkbox_Order.setText("Antiguos");
+                }else{
+                    checkbox_Order.setText("Recientes");
+                }
+            }
+        });
         mDatabase = FirebaseDatabase.getInstance().getReference().child("Eventos");
 
         return view;
@@ -146,12 +160,20 @@ public class EventosFragment extends Fragment  {
 //                        .orderBy("subproject_name", Query.Direction.ASCENDING)
 //                            .orderBy("activity_name", Query.Direction.ASCENDING);
 
-
-        mQuery = BDFireStore.collection("events")
-                .whereEqualTo("user_id", mAuth.getUid())
+        if (checkbox_Order.isChecked()){
+            mQuery = BDFireStore.collection("events")
+                    .whereEqualTo("user_id", mAuth.getUid())
                     .whereEqualTo("activity_id", activity_id)
-                        .whereEqualTo("active", true)
-                            .orderBy("start");
+                    .whereEqualTo("active", true)
+                    .orderBy("start", Query.Direction.DESCENDING);
+        }else{
+            mQuery = BDFireStore.collection("events")
+                    .whereEqualTo("user_id", mAuth.getUid())
+                    .whereEqualTo("activity_id", activity_id)
+                    .whereEqualTo("active", true)
+                    .orderBy("start", Query.Direction.ASCENDING);
+        }
+
 
 
         mQuery.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -252,6 +274,11 @@ public class EventosFragment extends Fragment  {
                         .replace(R.id.Contenedor, mifragment)
                         .addToBackStack("main")
                         .commit();
+
+//                getActivity().getSupportFragmentManager()
+//                        .beginTransaction()
+//                        .replace(R.id.Contenedor, mifragment)
+//                        .commit();
 
 
 

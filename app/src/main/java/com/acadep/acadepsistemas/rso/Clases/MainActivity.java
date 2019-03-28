@@ -219,12 +219,18 @@ public class MainActivity extends AppCompatActivity
 //        }
         int count = getFragmentManager().getBackStackEntryCount();
 
-        if (count == 0) {
+//        if (getSupportFragmentManager().getBackStackEntryCount()==3){
+//            super.onBackPressed();
+//        }else
+            if (count == 0) {
             super.onBackPressed();
+
+//            Toast.makeText(this, ""+, Toast.LENGTH_SHORT).show();
             //additional code
         } else {
             getFragmentManager().popBackStack();
         }
+//        Toast.makeText(this, "" +count, Toast.LENGTH_SHORT).show();
     }
 
     @Override
