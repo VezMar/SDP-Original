@@ -151,6 +151,7 @@ public class MultimediaFragment extends Fragment {
         initRecyclerView(view);
 
         txtEstado = (TextView) view.findViewById(R.id.txtEstado);
+//        txtEstado.setVisibility(View.INVISIBLE);
         floatingActionsMenu = view.findViewById(R.id.FloatingActionMenuPrincipal);
         actionButton_Take_photo = view.findViewById(R.id.fab_action_1);
         actionButton_Take_video = view.findViewById(R.id.fab_action_2);
@@ -263,17 +264,17 @@ public class MultimediaFragment extends Fragment {
     private void ChequeoDeVariables() {
         if(Tbefore==true && before_complete == false){
 //            ava = 0;
-            txtEstado.setText("Inicio de la tarea");
+//            txtEstado.setText("Inicio de la tarea");
             estado = "before";
             EvidenceActivity.setEstado("before");
         }else {
             if (Tduring == true && during_complete==false){
-                txtEstado.setText("Durante la tarea");
+//                txtEstado.setText("Durante la tarea");
                 estado = "during";
                 EvidenceActivity.setEstado("during");
             }else {
                 if (Tafter == true && during_complete == true) {
-                    txtEstado.setText("Después de la tarea");
+//                    txtEstado.setText("Después de la tarea");
                     estado = "after";
                     EvidenceActivity.setEstado("after");
                 }

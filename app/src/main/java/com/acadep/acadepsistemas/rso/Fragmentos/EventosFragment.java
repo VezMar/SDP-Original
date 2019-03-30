@@ -127,7 +127,7 @@ public class EventosFragment extends Fragment  {
         txtAct = view.findViewById(R.id.txtAct);
             txtAct.setText(""+activity_title);
 
-        checkbox_Order = view.findViewById(R.id.checkbox_Order);
+//        checkbox_Order = view.findViewById(R.id.checkbox_Order);
 
         FirebaseUser user = mAuth.getCurrentUser();
         uidUserGlobal = user.getUid();
@@ -137,16 +137,16 @@ public class EventosFragment extends Fragment  {
         setUpRecyclerView();
 
 
-        checkbox_Order.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (checkbox_Order.isChecked()){
-                    checkbox_Order.setText("Antiguos");
-                }else{
-                    checkbox_Order.setText("Recientes");
-                }
-            }
-        });
+//        checkbox_Order.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if (checkbox_Order.isChecked()){
+//                    checkbox_Order.setText("Antiguos");
+//                }else{
+//                    checkbox_Order.setText("Recientes");
+//                }
+//            }
+//        });
         mDatabase = FirebaseDatabase.getInstance().getReference().child("Eventos");
 
         return view;
@@ -160,19 +160,19 @@ public class EventosFragment extends Fragment  {
 //                        .orderBy("subproject_name", Query.Direction.ASCENDING)
 //                            .orderBy("activity_name", Query.Direction.ASCENDING);
 
-        if (checkbox_Order.isChecked()){
-            mQuery = BDFireStore.collection("events")
-                    .whereEqualTo("user_id", mAuth.getUid())
-                    .whereEqualTo("activity_id", activity_id)
-                    .whereEqualTo("active", true)
-                    .orderBy("start", Query.Direction.DESCENDING);
-        }else{
-            mQuery = BDFireStore.collection("events")
-                    .whereEqualTo("user_id", mAuth.getUid())
-                    .whereEqualTo("activity_id", activity_id)
-                    .whereEqualTo("active", true)
-                    .orderBy("start", Query.Direction.ASCENDING);
-        }
+//        if (checkbox_Order.isChecked()){
+//            mQuery = BDFireStore.collection("events")
+//                    .whereEqualTo("user_id", mAuth.getUid())
+//                    .whereEqualTo("activity_id", activity_id)
+//                    .whereEqualTo("active", true)
+//                    .orderBy("start", Query.Direction.DESCENDING);
+//        }else{
+//        }
+        mQuery = BDFireStore.collection("events")
+                .whereEqualTo("user_id", mAuth.getUid())
+                .whereEqualTo("activity_id", activity_id)
+                .whereEqualTo("active", true)
+                .orderBy("start", Query.Direction.ASCENDING);
 
 
 

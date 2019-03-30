@@ -37,6 +37,10 @@
         app:fab_size="mini"
         app:fab_label="Enviar"
         app:fab_labelStyle="@style/customfab"
+        android:elevation="11dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginRight="5dp"
+
         />
 
     <!--<com.github.clans.fab.FloatingActionButton-->

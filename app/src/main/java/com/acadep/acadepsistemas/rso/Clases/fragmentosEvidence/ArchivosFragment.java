@@ -141,6 +141,7 @@ public class ArchivosFragment extends Fragment {
         initRecyclerViewFiles(view);
 
         txtEstado = (TextView) view.findViewById(R.id.txtEstado);
+//        txtEstado.setVisibility(View.INVISIBLE);
         floatingActionsMenu = view.findViewById(R.id.FloatingActionMenuPrincipal);
         actionButton_Upload_PDF   = view.findViewById(R.id.fab_action_3);
         actionButton_Upload_Docx  = view.findViewById(R.id.fab_action_4);
@@ -282,17 +283,17 @@ public class ArchivosFragment extends Fragment {
     private void ChequeoDeVariables() {
         if(Tbefore==true && before_complete == false){
 //            ava = 0;
-            txtEstado.setText("Inicio de la tarea");
+//            txtEstado.setText("Inicio de la tarea");
             estado = "before";
             EvidenceActivity.setEstado("before");
         }else {
             if (Tduring == true && during_complete==false){
-                txtEstado.setText("Durante la tarea");
+//                txtEstado.setText("Durante la tarea");
                 estado = "during";
                 EvidenceActivity.setEstado("during");
             }else {
                 if (Tafter == true && during_complete == true) {
-                    txtEstado.setText("Después de la tarea");
+//                    txtEstado.setText("Después de la tarea");
                     estado = "after";
                     EvidenceActivity.setEstado("after");
                 }

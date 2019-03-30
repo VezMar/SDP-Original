@@ -104,7 +104,7 @@ public class ObservacionesFragment extends Fragment {
         txtAvance = (TextView) view.findViewById(R.id.txtAvance);
         txtTotal = (TextView) view.findViewById(R.id.txtTotal);
 
-        txtEstado = (TextView) view.findViewById(R.id.txtEstado);
+//        txtEstado = (TextView) view.findViewById(R.id.txtEstado);
         txtAyuda = view.findViewById(R.id.txtAyuda);
 
         edObserv.setText("" + evidenceActivity.getEdObserv());
@@ -199,7 +199,7 @@ public class ObservacionesFragment extends Fragment {
             txtAyuda.setVisibility(View.INVISIBLE);
 
             ava = 0;
-            txtEstado.setText("Inicio de la tarea");
+//            txtEstado.setText("Inicio de la tarea");
             estado = "before";
             EvidenceActivity.setEstado("before");
         }else {
@@ -209,7 +209,7 @@ public class ObservacionesFragment extends Fragment {
                 txtTotal.setVisibility(View.VISIBLE);
                 txtAyuda.setVisibility(View.VISIBLE);
 
-                txtEstado.setText("Durante la tarea");
+//                txtEstado.setText("Durante la tarea");
                 estado = "during";
                 EvidenceActivity.setEstado("during");
             }else {
@@ -219,7 +219,7 @@ public class ObservacionesFragment extends Fragment {
                     txtTotal.setVisibility(View.INVISIBLE);
                     txtAyuda.setVisibility(View.INVISIBLE);
 
-                    txtEstado.setText("Después de la tarea");
+//                    txtEstado.setText("Después de la tarea");
                     estado = "after";
                     EvidenceActivity.setEstado("after");
                 }

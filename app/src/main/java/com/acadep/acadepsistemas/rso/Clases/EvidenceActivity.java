@@ -546,10 +546,10 @@ public class EvidenceActivity extends AppCompatActivity {
 
                                         }
                                     } else {
-                                        Toast.makeText(getApplicationContext(), "El avance no puede ser mayor al 100%", Toast.LENGTH_LONG).show();
+                                        Toast.makeText(getApplicationContext(), "El total avanzado no puede ser mayor al 100%", Toast.LENGTH_LONG).show();
                                     }
                                 } else {
-                                    Toast.makeText(getApplicationContext(), "El avance no puede ser menor al anterior", Toast.LENGTH_LONG).show();
+                                    Toast.makeText(getApplicationContext(), "El total avanzado no puede ser menor al anterior", Toast.LENGTH_LONG).show();
                                 }
                             } else {
                                 Toast.makeText(getApplicationContext(), "No puede subir multimedia si ha seleccionado <<No aplica>>", Toast.LENGTH_SHORT).show();
@@ -558,10 +558,10 @@ public class EvidenceActivity extends AppCompatActivity {
                             Toast.makeText(getApplicationContext(), "El número mínimo de fotos para poder enviar es " + min_photos, Toast.LENGTH_SHORT).show();
                         }
                     } else {
-                        Toast.makeText(getApplicationContext(), "El texto es necesario para poder enviar", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "Las observaciones son necesarias para poder enviar", Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    Toast.makeText(getApplicationContext(), "El avance es necesario para poder enviar", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "El total que has avanzado es necesario para poder enviar", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -592,17 +592,21 @@ public class EvidenceActivity extends AppCompatActivity {
 //        if (item == R.id.action_info) {
 //            return true;
 //        }
-        AlertDialog.Builder builder = new AlertDialog.Builder(EvidenceActivity.this);
-        builder.setTitle("Ayuda");
-        builder.setMessage(""+description);
-        builder.setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
 
-            }
-        });
-        builder.setIcon(R.drawable.ic_warning_black_24dp);
-        builder.create().show();
+        if(!description.equals("")) {
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(EvidenceActivity.this);
+            builder.setTitle("Ayuda");
+            builder.setMessage("" + description);
+            builder.setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+
+                }
+            });
+            builder.setIcon(R.drawable.ic_warning_black_24dp);
+            builder.create().show();
+        }
         return super.onOptionsItemSelected(item);
     }
 
