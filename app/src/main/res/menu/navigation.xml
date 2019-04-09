@@ -2,11 +2,6 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
 
-    <item
-        android:id="@+id/navigation_observaciones"
-        android:icon="@drawable/ic_text_fields_black_24dp"
-        android:title="@string/title_observaciones"/>
-
 
     <item
         android:id="@+id/navigation_multmedia"
@@ -17,5 +12,11 @@
         android:id="@+id/navigation_archivos"
         android:icon="@drawable/ic_attach_file_black_24dp"
         android:title="@string/title_archivos"/>
+
+    <item
+        android:id="@+id/navigation_observaciones"
+        android:icon="@drawable/ic_text_fields_black_24dp"
+        android:title="@string/title_observaciones"/>
+
 
 </menu>
