@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.acadep.acadepsistemas.rsoencuel">
+    package="com.acadep.acadepsistemas.rso">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -21,7 +21,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name="com.acadep.acadepsistemas.rsoencuel.Clases.Login"
+            android:name="com.acadep.acadepsistemas.rso.Clases.Login"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme">
             <intent-filter>
@@ -31,30 +31,30 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.acadep.acadepsistemas.rsoencuel.Clases.MainActivity"
+            android:name="com.acadep.acadepsistemas.rso.Clases.MainActivity"
             android:label="RSO"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name="com.acadep.acadepsistemas.rsoencuel.Clases.SupervisionActivity"
+            android:name="com.acadep.acadepsistemas.rso.Clases.SupervisionActivity"
             android:label="Evidencia"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name="com.acadep.acadepsistemas.rsoencuel.Clases.ExtraActivity" />
+        <activity android:name="com.acadep.acadepsistemas.rso.Clases.ExtraActivity" />
 
-        <service android:name="com.acadep.acadepsistemas.rsoencuel.Notificaciones.MiFirebaseMessagingService">
+        <service android:name="com.acadep.acadepsistemas.rso.Notificaciones.MiFirebaseMessagingService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
 
-        <activity android:name="com.acadep.acadepsistemas.rsoencuel.Clases.RecuperacionContrasena" />
+        <activity android:name="com.acadep.acadepsistemas.rso.Clases.RecuperacionContrasena" />
         <activity
-            android:name="com.acadep.acadepsistemas.rsoencuel.Clases.Prueba.RecyclerTest"
+            android:name="com.acadep.acadepsistemas.rso.Clases.Prueba.RecyclerTest"
             android:screenOrientation="portrait" />
 
         <provider
             android:name="android.support.v4.content.FileProvider"
-            android:authorities="com.acadep.acadepsistemas.rsoencuel.fileprovider"
+            android:authorities="com.acadep.acadepsistemas.rso.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true"
             tools:replace="android:authorities">
@@ -64,20 +64,20 @@
                 tools:replace="android:resource" />
         </provider>
 
-        <activity android:name="com.acadep.acadepsistemas.rsoencuel.Clases.Prueba.MaterialsCheckList" />
-        <activity android:name="com.acadep.acadepsistemas.rsoencuel.Clases.WebViewActivity" />
+        <activity android:name="com.acadep.acadepsistemas.rso.Clases.Prueba.MaterialsCheckList" />
+        <activity android:name="com.acadep.acadepsistemas.rso.Clases.WebViewActivity" />
         <activity
-            android:name="com.acadep.acadepsistemas.rsoencuel.Clases.ExtraordinaryActivity"
+            android:name="com.acadep.acadepsistemas.rso.Clases.ExtraordinaryActivity"
             android:label="Extraordinario"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name="com.acadep.acadepsistemas.rsoencuel.Clases.EvidenceActivity"
+            android:name="com.acadep.acadepsistemas.rso.Clases.EvidenceActivity"
             android:label="Evidencia"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"/>
-        <activity android:name="com.acadep.acadepsistemas.rsoencuel.Clases.LoginActivity" />
+        <activity android:name="com.acadep.acadepsistemas.rso.Clases.LoginActivity" />
         <activity
-            android:name="com.acadep.acadepsistemas.rsoencuel.Clases.Prueba.pruebaalgo"
+            android:name="com.acadep.acadepsistemas.rso.Clases.Prueba.pruebaalgo"
             android:label="@string/title_activity_pruebaalgo"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>

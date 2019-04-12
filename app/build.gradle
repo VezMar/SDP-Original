@@ -18,11 +18,11 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 28
     defaultConfig {
-        applicationId "com.acadep.acadepsistemas.rsoencuel"
+        applicationId "com.acadep.acadepsistemas.rso"
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 24
-        versionName "2.4"
+        versionCode 27
+        versionName "2.7"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         manifestPlaceholders = [onesignal_app_id               : "a0f6884c-8ccf-4e51-9c1a-ba4b73c933c4",
                                 // Project number pulled from dashboard, local value is ignored.
@@ -109,6 +109,7 @@ dependencies {
     implementation 'com.github.clans:fab:1.6.4'
 
     implementation 'com.github.karanchuri:PermissionManager:0.1.0'
+    implementation 'android.arch.navigation:navigation-fragment:1.0.0'
 
 
 }
