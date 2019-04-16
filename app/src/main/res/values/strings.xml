@@ -40,5 +40,6 @@
     <string name="title_observaciones">Observaciones</string>
     <string name="title_archivos">Archivos</string>
     <string name="title_activity_pruebaalgo">pruebaalgo</string>
+    <string name="title_activity_extra_evidence">ExtraEvidenceActivity</string>
 
 </resources>

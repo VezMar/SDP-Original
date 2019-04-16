@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.acadep.acadepsistemas.rso.Clases.EvidenceActivity;
 import com.acadep.acadepsistemas.rso.R;
@@ -50,6 +51,8 @@ public class ObservacionesFragment extends Fragment {
     static boolean Tafter;
 
     static  String estado = "before";
+
+    private static boolean extraordinary = false;
     // Datos del evento
 //---------------------------------------------------------------
 
@@ -88,6 +91,7 @@ public class ObservacionesFragment extends Fragment {
             Tafter = getArguments().getBoolean("Tafter");
 
             estado = getArguments().getString("estado");
+            extraordinary = getArguments().getBoolean("extraordinary");
         }
 
 
@@ -111,9 +115,19 @@ public class ObservacionesFragment extends Fragment {
 
         card = view.findViewById(R.id.ln1);
 
-        if (before_complete && !during_complete){
-            card.setVisibility(View.VISIBLE);
+
+        if (extraordinary){
+            card.setVisibility(View.INVISIBLE);
+//            Toast.makeText(getContext(), "1", Toast.LENGTH_SHORT).show();
+        }else if (before_complete && !during_complete) {
+                card.setVisibility(View.VISIBLE);
+//            Toast.makeText(getContext(), "2", Toast.LENGTH_SHORT).show();
+        }else{
+            card.setVisibility(View.INVISIBLE);
+//            Toast.makeText(getContext(), "3", Toast.LENGTH_SHORT).show();
         }
+
+
 
 //        txtEstado = (TextView) view.findViewById(R.id.txtEstado);
         txtAyuda = view.findViewById(R.id.txtAyuda);
@@ -203,39 +217,43 @@ public class ObservacionesFragment extends Fragment {
 //    }
 
     private void ChequeoDeVariables() {
-        if(Tbefore==true && before_complete == false){
-            txtAvance.setVisibility(View.INVISIBLE);
-            edpercentage.setVisibility(View.INVISIBLE);
-            txtTotal.setVisibility(View.INVISIBLE);
-            txtAyuda.setVisibility(View.INVISIBLE);
+        if (extraordinary){
             card.setVisibility(View.INVISIBLE);
+        }else{
+            if(Tbefore==true && before_complete == false){
+                txtAvance.setVisibility(View.INVISIBLE);
+                edpercentage.setVisibility(View.INVISIBLE);
+                txtTotal.setVisibility(View.INVISIBLE);
+                txtAyuda.setVisibility(View.INVISIBLE);
+                card.setVisibility(View.INVISIBLE);
 
-            ava = 0;
-//            txtEstado.setText("Inicio de la tarea");
-            estado = "before";
-            EvidenceActivity.setEstado("before");
-        }else {
-            if (Tduring == true && during_complete==false){
-                txtAvance.setVisibility(View.VISIBLE);
-                edpercentage.setVisibility(View.VISIBLE);
-                txtTotal.setVisibility(View.VISIBLE);
-                txtAyuda.setVisibility(View.VISIBLE);
-                card.setVisibility(View.VISIBLE);
-//                txtEstado.setText("Durante la tarea");
-                estado = "during";
-                EvidenceActivity.setEstado("during");
+                ava = 0;
+    //            txtEstado.setText("Inicio de la tarea");
+                estado = "before";
+                EvidenceActivity.setEstado("before");
             }else {
-                if (Tafter == true && during_complete == true) {
-                    txtAvance.setVisibility(View.INVISIBLE);
-                    edpercentage.setVisibility(View.INVISIBLE);
-                    txtTotal.setVisibility(View.INVISIBLE);
-                    txtAyuda.setVisibility(View.INVISIBLE);
-                    card.setVisibility(View.INVISIBLE);
-//                    txtEstado.setText("Después de la tarea");
-                    estado = "after";
-                    EvidenceActivity.setEstado("after");
+                if (Tduring == true && during_complete == false) {
+                    txtAvance.setVisibility(View.VISIBLE);
+                    edpercentage.setVisibility(View.VISIBLE);
+                    txtTotal.setVisibility(View.VISIBLE);
+                    txtAyuda.setVisibility(View.VISIBLE);
+                    card.setVisibility(View.VISIBLE);
+    //                txtEstado.setText("Durante la tarea");
+                    estado = "during";
+                    EvidenceActivity.setEstado("during");
+                } else {
+                    if (Tafter == true && during_complete == true) {
+                        txtAvance.setVisibility(View.INVISIBLE);
+                        edpercentage.setVisibility(View.INVISIBLE);
+                        txtTotal.setVisibility(View.INVISIBLE);
+                        txtAyuda.setVisibility(View.INVISIBLE);
+                        card.setVisibility(View.INVISIBLE);
+    //                    txtEstado.setText("Después de la tarea");
+                        estado = "after";
+                        EvidenceActivity.setEstado("after");
+                    }
                 }
-            }
+        }
         }
     }
 

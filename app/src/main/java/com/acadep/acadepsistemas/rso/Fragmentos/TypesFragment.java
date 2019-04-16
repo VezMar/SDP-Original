@@ -339,6 +339,10 @@ public class TypesFragment extends Fragment {
 
                     Intent intent = new Intent(getActivity(), EvidenceActivity.class);
 
+
+
+                    intent.putExtra("extraordinary", false);
+
                     intent.putExtra("idEvento", event_id);
                     intent.putExtra("actividad", actividad);
                     intent.putExtra("nameEvent", nameEvent);

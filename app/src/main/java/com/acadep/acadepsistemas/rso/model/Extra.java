@@ -7,6 +7,7 @@ public class Extra {
     String created_at;
     String description;
     String header;
+    String event_id;
     String activity_id;
     private double Lat;
     private double Lng;
@@ -17,15 +18,24 @@ public class Extra {
     public Extra() {
     }
 
-    public Extra(String created_at, String description, String header, String activity_id, double lat, double lng, List<Foto> multimedia, List<Files> files) {
+    public Extra(String created_at, String description, String header, String event_id, String activity_id, double lat, double lng, List<Foto> multimedia, List<Files> files) {
         this.created_at = created_at;
         this.description = description;
         this.header = header;
+        this.event_id = event_id;
         this.activity_id = activity_id;
         Lat = lat;
         Lng = lng;
         this.multimedia = multimedia;
         this.files = files;
+    }
+
+    public String getEvent_id() {
+        return event_id;
+    }
+
+    public void setEvent_id(String event_id) {
+        this.event_id = event_id;
     }
 
     public List<Files> getFiles() {

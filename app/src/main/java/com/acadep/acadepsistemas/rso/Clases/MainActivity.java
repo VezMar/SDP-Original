@@ -1,11 +1,14 @@
 package com.acadep.acadepsistemas.rso.Clases;
 
 import android.annotation.SuppressLint;
+import android.app.ActionBar;
 import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -73,8 +76,11 @@ public class MainActivity extends AppCompatActivity
                 .unsubscribeWhenNotificationsAreDisabled(true)
                 .init();
         setContentView(R.layout.activity_main);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+
 
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         headerView = navigationView.getHeaderView(0);
@@ -228,6 +234,8 @@ public class MainActivity extends AppCompatActivity
 //            super.onBackPressed();
 //        }else
             if (count == 0) {
+                getSupportActionBar().setTitle("RSO");
+                getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.rgb(21, 101, 192)));
             super.onBackPressed();
 
 //            Toast.makeText(this, ""+, Toast.LENGTH_SHORT).show();

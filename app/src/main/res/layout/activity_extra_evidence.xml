@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:fab="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Clases.ExtraEvidenceActivity">
+
+    <com.github.clans.fab.FloatingActionButton
+        android:id="@+id/fab_action_enviar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
+        android:src="@drawable/ic_send_black_24dp"
+        fab:fab_colorNormal="#1c8915"
+        fab:fab_colorPressed="#1ba912"
+        app:fab_size="mini"
+        app:fab_label="Enviar"
+        app:fab_labelStyle="@style/customfab"
+        android:elevation="11dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginRight="5dp"
+
+        />
+
+    <RelativeLayout
+        android:id="@+id/contenedor_Extra_Evidence"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/navigation"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp">
+        <!--<ProgressBar-->
+        <!--android:id="@+id/ProgressBar"-->
+        <!--android:layout_width="100dp"-->
+        <!--android:layout_height="100dp"-->
+        <!--android:layout_centerHorizontal="true"-->
+        <!--android:layout_centerVertical="true"/>-->
+    </RelativeLayout>
+
+    <android.support.design.widget.BottomNavigationView
+        android:id="@+id/navigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?android:attr/windowBackground"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        app:menu="@menu/navigation" />
+
+</RelativeLayout>

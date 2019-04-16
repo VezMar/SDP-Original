@@ -1,11 +1,18 @@
 package com.acadep.acadepsistemas.rso.Fragmentos;
 
 
+import android.app.ActionBar;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -13,9 +20,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+import android.widget.Toolbar;
 
 import com.acadep.acadepsistemas.rso.Adapter.EventoAdapter;
+import com.acadep.acadepsistemas.rso.Clases.EvidenceActivity;
+import com.acadep.acadepsistemas.rso.Clases.MainActivity;
 import com.acadep.acadepsistemas.rso.R;
 import com.acadep.acadepsistemas.rso.model.Evento;
 import com.acadep.acadepsistemas.rso.model.Recursos;
@@ -71,6 +83,8 @@ public class EventosFragment extends Fragment  {
 
     static ArrayList<String> arrayString = new ArrayList<String>();
 
+    private static RelativeLayout relativeLayout;
+    private boolean extraordinary = false;
 
     private String project_title;
     private String project_id;
@@ -79,6 +93,7 @@ public class EventosFragment extends Fragment  {
     private String event_id;
     private String event_title;
 
+    private com.github.clans.fab.FloatingActionButton actionButton_Exraordinary;
 
     private TextView txt_SubProyecto;
     private TextView txtAct;
@@ -87,6 +102,9 @@ public class EventosFragment extends Fragment  {
 
     ArrayList<Evento> list;
     com.acadep.acadepsistemas.rso.Adapter.Adapter adapter;
+
+    Toolbar toolbar ;
+
     public EventosFragment() {
         // Required empty public constructor
     }
@@ -112,8 +130,13 @@ public class EventosFragment extends Fragment  {
 
         EventosPendientes = (TextView) view.findViewById(R.id.txtEventosPendientes);
 
-        FragmentTransaction fragmentTransaction1 = getFragmentManager().beginTransaction();
+//        FragmentTransaction fragmentTransaction1 = getFragmentManager().beginTransaction();
 
+
+//        toolbar.setBackgroundColor(Color.rgb(0,0,0));
+
+
+        relativeLayout = view.findViewById(R.id.Content_Eventos);
         //fragmentTransaction1.add(R.id.fragment_container, new SupervisionFragment());
         rv = (RecyclerView) view.findViewById(R.id.recycler);
         rv.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -130,6 +153,9 @@ public class EventosFragment extends Fragment  {
         FirebaseUser user = mAuth.getCurrentUser();
         uidUserGlobal = user.getUid();
         contEventos=0;
+
+        actionButton_Exraordinary = view.findViewById(R.id.fab_action_extraordinary);
+
         chequeoDevariables();
 
         setUpRecyclerView();
@@ -146,6 +172,40 @@ public class EventosFragment extends Fragment  {
 //            }
 //        });
         mDatabase = FirebaseDatabase.getInstance().getReference().child("Eventos");
+
+        actionButton_Exraordinary.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (extraordinary){
+//                    relativeLayout.setBackgroundColor(Color.rgb(255, 255, 255));
+                    ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("RSO");
+                    ((AppCompatActivity) getActivity()).getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.rgb(21, 101, 192)));
+                    extraordinary=false;
+                }else {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                    builder.setMessage("¿Desea crear un extraordinario?")
+                            .setCancelable(false)
+                            .setPositiveButton("Si", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+//                                    relativeLayout.setBackgroundColor(Color.rgb(255, 128, 0));
+                                    ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Extraordinario");
+                                    ((AppCompatActivity) getActivity()).getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.RED));
+                                    extraordinary = true;
+                                    Toast.makeText(getContext(), "Seleccione una tarea para crear el extraordinario", Toast.LENGTH_LONG).show();
+                                }
+                            }).setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                        }
+                    });
+
+                    AlertDialog alert = builder.create();
+                    alert.show();
+                }
+            }
+        });
 
         return view;
     }
@@ -231,48 +291,79 @@ public class EventosFragment extends Fragment  {
                 String deleted = evento.getDeleted();
                 activeStatus = evento.isActive();
 
+                if (extraordinary){
+//                    Intent intent = new Intent(getActivity(), SupervisionActivity.class);
+                    Intent intent = new Intent(getActivity(), EvidenceActivity.class);
 
-                Fragment mifragment = null;
-                mifragment = new TypesFragment();
+                    intent.putExtra("idEvento", idEvento);
+                    intent.putExtra("actividad", actividad);
+                    intent.putExtra("nameEvent", nameEvent);
+                    intent.putExtra("user_id", user_id);
+                    intent.putExtra("start", start);
+                    intent.putExtra("end", end);
+                    intent.putExtra("title_event", title);
+                    intent.putExtra("description", description);
+                    intent.putExtra("deleted", deleted);
+                    intent.putExtra("ava", ava);
+                    intent.putExtra("during_complete", true);
+                    intent.putExtra("before_complete", true);
+
+                    intent.putExtra("activity_id",activity_id);
+                    intent.putExtra("project_title",project_title);
+                    intent.putExtra("project_id",project_id);
+                    intent.putExtra("activity_title",activity_title);
+
+                    intent.putExtra("extraordinary", extraordinary);
+
+                    intent.putExtra("number", number);
+                    intent.putExtra("unit", unit);
+
+
+                    startActivity(intent);
+
+                }else {
+
+                    Fragment mifragment = null;
+                    mifragment = new TypesFragment();
 //
-                Bundle bundle = new Bundle();
-                bundle.putString( "activity_id", activity_id);
-                bundle.putString( "activity_title", activity_title);
-                bundle.putString( "project_id", project_id);
-                bundle.putString( "project_title", project_title);
-                bundle.putString( "event_id", idEvento);
-                bundle.putString( "event_title", title);
-                bundle.putString( "actividad", actividad);
-                bundle.putBoolean("during_complete",during_complete);
-                bundle.putBoolean("before_complete",before_complete );
-                bundle.putString( "idEvento", idEvento);
-                bundle.putString( "actividad", actividad);
-                bundle.putString( "nameEvent", nameEvent);
-                bundle.putString( "user_id", user_id);
-                bundle.putString( "start", start);
-                bundle.putString( "end", end);
-                bundle.putString( "title", title);
-                bundle.putString( "description", description);
-                bundle.putString( "deleted", deleted);
-                bundle.putInt(    "ava", ava);
+                    Bundle bundle = new Bundle();
+                    bundle.putString("activity_id", activity_id);
+                    bundle.putString("activity_title", activity_title);
+                    bundle.putString("project_id", project_id);
+                    bundle.putString("project_title", project_title);
+                    bundle.putString("event_id", idEvento);
+                    bundle.putString("event_title", title);
+                    bundle.putString("actividad", actividad);
+                    bundle.putBoolean("during_complete", during_complete);
+                    bundle.putBoolean("before_complete", before_complete);
+                    bundle.putString("idEvento", idEvento);
+                    bundle.putString("actividad", actividad);
+                    bundle.putString("nameEvent", nameEvent);
+                    bundle.putString("user_id", user_id);
+                    bundle.putString("start", start);
+                    bundle.putString("end", end);
+                    bundle.putString("title", title);
+                    bundle.putString("description", description);
+                    bundle.putString("deleted", deleted);
+                    bundle.putInt("ava", ava);
 
-                bundle.putString( "activity_id",activity_id);
-                bundle.putString( "project_title",project_title);
-                bundle.putString( "project_id",project_id);
-                bundle.putString( "activity_title",activity_title);
+                    bundle.putString("activity_id", activity_id);
+                    bundle.putString("project_title", project_title);
+                    bundle.putString("project_id", project_id);
+                    bundle.putString("activity_title", activity_title);
 
-                bundle.putInt(    "number", number);
-                bundle.putString( "unit", unit);
+                    bundle.putInt("number", number);
+                    bundle.putString("unit", unit);
 
 
-                mifragment.setArguments(bundle);
+                    mifragment.setArguments(bundle);
 
-                getActivity().getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.Contenedor, mifragment)
-                        .addToBackStack("main")
-                        .commit();
-
+                    getActivity().getSupportFragmentManager()
+                            .beginTransaction()
+                            .replace(R.id.Contenedor, mifragment)
+                            .addToBackStack("main")
+                            .commit();
+                }
 //                getActivity().getSupportFragmentManager()
 //                        .beginTransaction()
 //                        .replace(R.id.Contenedor, mifragment)
@@ -306,7 +397,7 @@ public class EventosFragment extends Fragment  {
 //
 //
 //                    startActivity(intent);
-                    //Toast.makeText(getContext(), "Supervision", Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(getContext(), "Supervision", Toast.LENGTH_SHORT).show();
 //                    StyleableToast.makeText(getContext(), ""+actividad, Toast.LENGTH_SHORT, R.style.sucessToast).show();
 
 

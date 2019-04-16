@@ -1510,7 +1510,7 @@ public class ExtraordinaryActivity extends AppCompatActivity
     private void Subirdatos() {
         created_at_funct();
 
-        Extra extra = new Extra(created_at, Observation, "extra", activity_id, Lat, Lng, multimedia, files);
+        Extra extra = new Extra(created_at, Observation, "extra",idevent, activity_id, Lat, Lng, multimedia, files);
         BDFireStore.collection("extra").document(u).set(extra, SetOptions.merge()).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {

@@ -14,6 +14,8 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -52,6 +54,7 @@ import com.acadep.acadepsistemas.rso.model.Configuration;
 import com.acadep.acadepsistemas.rso.model.Data;
 import com.acadep.acadepsistemas.rso.model.Event_types;
 import com.acadep.acadepsistemas.rso.model.Evento;
+import com.acadep.acadepsistemas.rso.model.Extra;
 import com.acadep.acadepsistemas.rso.model.Files;
 import com.acadep.acadepsistemas.rso.model.Foto;
 import com.acadep.acadepsistemas.rso.model.Ref_event;
@@ -67,6 +70,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -99,7 +103,7 @@ public class EvidenceActivity extends AppCompatActivity {
     public EvidenceActivity() {
     }
 
-    public EvidenceActivity(String idevent, Query mQuery, ProgressDialog progressDialog, TextView txtAvance, TextView txtTotal, FloatingActionButton actionButton_Enviar, TextView txtEstado, FirebaseFirestore BDFireStore, FirebaseAuth mAuth, FirebaseStorage storage, StorageReference storageReference, FirebaseDatabase dbRef, List<Event_types> event_types, boolean tbefore, boolean tduring, boolean tafter, boolean during_complete, boolean before_complete, int max_photos, int min_photos, BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener) {
+    public EvidenceActivity(String idevent, Query mQuery, ProgressDialog progressDialog, TextView txtAvance, TextView txtTotal, FloatingActionButton actionButton_Enviar, TextView txtEstado, FirebaseFirestore BDFireStore, FirebaseAuth mAuth, FirebaseStorage storage, StorageReference storageReference, FirebaseDatabase dbRef, List<Event_types> event_types, boolean tbefore, boolean tduring, boolean tafter, boolean during_complete, boolean before_complete, int max_photos, int min_photos, BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener, boolean extraordinary) {
         this.idevent = idevent;
         this.mQuery = mQuery;
         this.progressDialog = progressDialog;
@@ -121,6 +125,7 @@ public class EvidenceActivity extends AppCompatActivity {
         this.max_photos = max_photos;
         this.min_photos = min_photos;
         this.mOnNavigationItemSelectedListener = mOnNavigationItemSelectedListener;
+        extraordinary = extraordinary;
     }
 
     //---------------------------------------------------------------
@@ -128,6 +133,7 @@ public class EvidenceActivity extends AppCompatActivity {
     private static final String TEMPORAL_DATA = "data_temp" ;
     // Datos del evento
 
+   private boolean extraordinary = false;
    private  String idevent;
    private static String nameEvent;
    private static String user_id;
@@ -149,7 +155,7 @@ public class EvidenceActivity extends AppCompatActivity {
    private static int ava;
    private static int avanced;
 
-
+    static String u;
    private static int number;
    private static String unit;
    private static String deleted;
@@ -295,6 +301,9 @@ public class EvidenceActivity extends AppCompatActivity {
             if(FragmentoSeleccionado==true){
 
                 Bundle bundle = new Bundle();
+
+                bundle.putBoolean("extraordinary", extraordinary);
+
                 bundle.putString("idEvento", idevent);
                 bundle.putString("nameEvent",nameEvent);
                 bundle.putString("actividad",actividad);
@@ -367,61 +376,92 @@ public class EvidenceActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
+                if (extraordinary) {
+                        Observation = "" + EvidenceActivity.getEdObserv();
+                        if (!Observation.equals("")) {
+                            final AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
+                            builder.setTitle("Confirmación");
+                            builder.setMessage("¿Está seguro de enviar? \n\n" + "Enviará " + contImg + " de " + max_photos + " elementos disponibles");
+                            Toast.makeText(getApplicationContext(), "!Una vez realizada esta acción no se puede revertir!", Toast.LENGTH_LONG).show();
 
-                checked_NoAplica = EvidenceActivity.isChecked_NoAplica();
-                final String advanceed = String.valueOf(edpercentage);
-                if (!advanceed.equals("")) {
-                    Observation = "" + EvidenceActivity.getEdObserv();
-                    if (!Observation.equals("")) {
-                        if (contImg >= min_photos || checked_NoAplica == true) {
-                            if (checked_NoAplica == true && contImg == 0 || checked_NoAplica == false && contImg >= min_photos) {
-                                avanced = EvidenceActivity.getAvanced();
-                                ava = EvidenceActivity.getAva();
-                                if (ava <= avanced) {
-                                    if (avanced <= number) {
-                                        if (contImg > max_photos) {
-                                            Toast.makeText(getApplicationContext(), "El maximo de fotos es " + max_photos + " usted ha superado esa cantidad por " + (contImg - max_photos), Toast.LENGTH_SHORT).show();
-                                        } else {
+                            builder.setPositiveButton("Si", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+
+                                    if (contUris == 0 && contImg == 0) {
+                                        Subirdatos();
+                                    } else {
+                                        uploadAllImages();
+                                        uploadAllFiles();
+                                    }
+
+                                }
+                            });
+                            builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+
+                                }
+                            });
+                            builder.create();
+                            builder.show();
+                        }else{
+                            Toast.makeText(EvidenceActivity.this, "El texto es necesario para poder enviar", Toast.LENGTH_SHORT).show();
+                        }
+
+                } else {
+                    checked_NoAplica = EvidenceActivity.isChecked_NoAplica();
+                    final String advanceed = String.valueOf(edpercentage);
+                    if (!advanceed.equals("")) {
+                        Observation = "" + EvidenceActivity.getEdObserv();
+                        if (!Observation.equals("")) {
+                            if (contImg >= min_photos || checked_NoAplica == true) {
+                                if (checked_NoAplica == true && contImg == 0 || checked_NoAplica == false && contImg >= min_photos) {
+                                    avanced = EvidenceActivity.getAvanced();
+                                    ava = EvidenceActivity.getAva();
+                                    if (ava <= avanced) {
+                                        if (avanced <= number) {
+                                            if (contImg > max_photos) {
+                                                Toast.makeText(getApplicationContext(), "El maximo de fotos es " + max_photos + " usted ha superado esa cantidad por " + (contImg - max_photos), Toast.LENGTH_SHORT).show();
+                                            } else {
 
 //                                            progressDialog= new ProgressDialog(EvidenceActivity.this);
 //                                            progressDialog.setProgress(ProgressDialog.STYLE_SPINNER);
 //                                            progressDialog.setTitle("Procesando...");
 //                                            progressDialog.show();
 
-                                            final AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
-                                            builder.setTitle("Confirmación");
-                                            builder.setMessage("¿Está seguro de enviar? \n\n" + "Enviará " + contImg + " de " + max_photos + " elementos disponibles");
-                                            Toast.makeText(getApplicationContext(), "!Una vez realizada esta acción no se puede revertir!", Toast.LENGTH_LONG).show();
+                                                final AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
+                                                builder.setTitle("Confirmación");
+                                                builder.setMessage("¿Está seguro de enviar? \n\n" + "Enviará " + contImg + " de " + max_photos + " elementos disponibles");
+                                                Toast.makeText(getApplicationContext(), "!Una vez realizada esta acción no se puede revertir!", Toast.LENGTH_LONG).show();
 
-                                            // builder.setCancelable(false);
-                                            builder.setPositiveButton("Si", new DialogInterface.OnClickListener() {
-                                                @Override
-                                                public void onClick(DialogInterface dialog, int which) {
-
-
+                                                // builder.setCancelable(false);
+                                                builder.setPositiveButton("Si", new DialogInterface.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(DialogInterface dialog, int which) {
 
 
-                                                    ref_event.setId(idevent);
-                                                    ref_event.setName(title_event);
+                                                        ref_event.setId(idevent);
+                                                        ref_event.setName(title_event);
 
 
-                                                    Toast.makeText(getApplicationContext(), "Procesando...", Toast.LENGTH_LONG).show();
+                                                        Toast.makeText(getApplicationContext(), "Procesando...", Toast.LENGTH_LONG).show();
 
-                                                    if ((estado).equals("before")) {
+                                                        if ((estado).equals("before")) {
 //                                                        progressDialog.hide();
 
-                                                        boolean before = true;
+                                                            boolean before = true;
 
 
-                                                        header = "before";
-                                                        UUID uuid = UUID.randomUUID();
-                                                        uuids = "" + uuid;
+                                                            header = "before";
+                                                            UUID uuid = UUID.randomUUID();
+                                                            uuids = "" + uuid;
 
 
-                                                        BDFireStore.collection("events").document(idevent).update("before_complete", true);
-                                                        before_complete = true;
+                                                            BDFireStore.collection("events").document(idevent).update("before_complete", true);
+                                                            before_complete = true;
 
-                                                        dialog.dismiss();
+                                                            dialog.dismiss();
 //                                                        if (checked_NoAplica == true) {
 //                                                            if (contUris == 0) {
 //                                                                Subirdatos();
@@ -433,42 +473,42 @@ public class EvidenceActivity extends AppCompatActivity {
 //                                                            uploadAllFiles();
 //                                                        }
 
-                                                        if (contUris == 0 && contImg == 0) {
-                                                            Subirdatos();
-                                                        }else{
-                                                            uploadAllImages();
-                                                            uploadAllFiles();
+                                                            if (contUris == 0 && contImg == 0) {
+                                                                Subirdatos();
+                                                            } else {
+                                                                uploadAllImages();
+                                                                uploadAllFiles();
+                                                            }
+
+
+                                                            BDFireStore.collection("events").document(idevent).update("color", "#3498db");
+
+                                                            //                                                BDFireStore.collection("events").document(idevent).update("ava", 1);
+
+                                                            //Toast.makeText(getApplicationContext(), "Datos ingresados", Toast.LENGTH_SHORT).show();
+
+
                                                         }
 
-
-                                                        BDFireStore.collection("events").document(idevent).update("color", "#3498db");
-
-                                                        //                                                BDFireStore.collection("events").document(idevent).update("ava", 1);
-
-                                                        //Toast.makeText(getApplicationContext(), "Datos ingresados", Toast.LENGTH_SHORT).show();
-
-
-                                                    }
-
-                                                    if ((estado).equals("during")) {
+                                                        if ((estado).equals("during")) {
 //                                                        progressDialog.hide();
 
-                                                        ava = EvidenceActivity.getAvanced();
+                                                            ava = EvidenceActivity.getAvanced();
 
-                                                        boolean during = true;
+                                                            boolean during = true;
 
-                                                        header = "during";
-                                                        UUID uuid = UUID.randomUUID();
-                                                        uuids = "" + uuid;
+                                                            header = "during";
+                                                            UUID uuid = UUID.randomUUID();
+                                                            uuids = "" + uuid;
 
-                                                        if (ava == number) {
-                                                            BDFireStore.collection("events").document(idevent).update("during_complete", true);
-                                                            during_complete = true;
-                                                        }
+                                                            if (ava == number) {
+                                                                BDFireStore.collection("events").document(idevent).update("during_complete", true);
+                                                                during_complete = true;
+                                                            }
 
-                                                        BDFireStore.collection("events").document(idevent).update("ava", ava);
+                                                            BDFireStore.collection("events").document(idevent).update("ava", ava);
 
-                                                        dialog.dismiss();
+                                                            dialog.dismiss();
 //                                                        if (checked_NoAplica == true) {
 //                                                            if (contUris == 0) {
 //                                                                Subirdatos();
@@ -479,30 +519,30 @@ public class EvidenceActivity extends AppCompatActivity {
 //                                                            uploadAllImages();
 //                                                            uploadAllFiles();
 //                                                        }
-                                                        if (contUris == 0 && contImg == 0) {
-                                                            Subirdatos();
-                                                        }else{
-                                                            uploadAllImages();
-                                                            uploadAllFiles();
+                                                            if (contUris == 0 && contImg == 0) {
+                                                                Subirdatos();
+                                                            } else {
+                                                                uploadAllImages();
+                                                                uploadAllFiles();
+                                                            }
+
                                                         }
 
-                                                    }
-
-                                                    if ((estado).equals("after")) {
+                                                        if ((estado).equals("after")) {
 //                                                        progressDialog.hide();
-                                                        boolean after = true;
+                                                            boolean after = true;
 
-                                                        header = "after";
-                                                        UUID uuid = UUID.randomUUID();
-                                                        uuids = "" + uuid;
+                                                            header = "after";
+                                                            UUID uuid = UUID.randomUUID();
+                                                            uuids = "" + uuid;
 
-                                                        //                                            Toast.makeText(getApplicationContext(), "Datos ingresados", Toast.LENGTH_LONG ).show();
+                                                            //                                            Toast.makeText(getApplicationContext(), "Datos ingresados", Toast.LENGTH_LONG ).show();
 
-                                                        ava = number;
+                                                            ava = number;
 
-                                                        edObserv = "";
+                                                            edObserv = "";
 
-                                                        dialog.dismiss();
+                                                            dialog.dismiss();
 //                                                        if (checked_NoAplica == true) {
 //                                                            if (contUris == 0) {
 //                                                                Subirdatos();
@@ -513,56 +553,55 @@ public class EvidenceActivity extends AppCompatActivity {
 //                                                            uploadAllImages();
 //                                                            uploadAllFiles();
 //                                                        }
-                                                        if (contUris == 0 && contImg == 0) {
-                                                            Subirdatos();
-                                                        }else{
-                                                            uploadAllImages();
-                                                            uploadAllFiles();
-                                                        }
+                                                            if (contUris == 0 && contImg == 0) {
+                                                                Subirdatos();
+                                                            } else {
+                                                                uploadAllImages();
+                                                                uploadAllFiles();
+                                                            }
 
-                                                        if (ava == number) {
-                                                            BDFireStore.collection("events").document(idevent).update("active", false);
+                                                            if (ava == number) {
+                                                                BDFireStore.collection("events").document(idevent).update("active", false);
+                                                            }
+                                                            BDFireStore.collection("events").document(idevent).update("ava", ava);
+
+
                                                         }
-                                                        BDFireStore.collection("events").document(idevent).update("ava", ava);
 
 
                                                     }
+                                                });
 
 
-                                                }
-                                            });
-
-
-                                            builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-                                                @Override
-                                                public void onClick(DialogInterface dialog, int which) {
+                                                builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(DialogInterface dialog, int which) {
 //                                                    progressDialog.hide();
-                                                }
-                                            });
-                                            builder.create();
-                                            builder.show();
+                                                    }
+                                                });
+                                                builder.create();
+                                                builder.show();
 
 
-
-
+                                            }
+                                        } else {
+                                            Toast.makeText(getApplicationContext(), "El total avanzado no puede ser mayor al 100%", Toast.LENGTH_LONG).show();
                                         }
                                     } else {
-                                        Toast.makeText(getApplicationContext(), "El total avanzado no puede ser mayor al 100%", Toast.LENGTH_LONG).show();
+                                        Toast.makeText(getApplicationContext(), "El total avanzado no puede ser menor al anterior", Toast.LENGTH_LONG).show();
                                     }
                                 } else {
-                                    Toast.makeText(getApplicationContext(), "El total avanzado no puede ser menor al anterior", Toast.LENGTH_LONG).show();
+                                    Toast.makeText(getApplicationContext(), "No puede subir multimedia si ha seleccionado <<No aplica>>", Toast.LENGTH_LONG).show();
                                 }
                             } else {
-                                Toast.makeText(getApplicationContext(), "No puede subir multimedia si ha seleccionado <<No aplica>>", Toast.LENGTH_LONG).show();
+                                Toast.makeText(getApplicationContext(), "El número mínimo de fotos para poder enviar es " + min_photos, Toast.LENGTH_LONG).show();
                             }
                         } else {
-                            Toast.makeText(getApplicationContext(), "El número mínimo de fotos para poder enviar es " + min_photos, Toast.LENGTH_LONG).show();
+                            Toast.makeText(getApplicationContext(), "Las observaciones son necesarias para poder enviar", Toast.LENGTH_LONG).show();
                         }
                     } else {
-                        Toast.makeText(getApplicationContext(), "Las observaciones son necesarias para poder enviar", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), "El total que has avanzado es necesario para poder enviar", Toast.LENGTH_LONG).show();
                     }
-                } else {
-                    Toast.makeText(getApplicationContext(), "El total que has avanzado es necesario para poder enviar", Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -612,69 +651,94 @@ public class EvidenceActivity extends AppCompatActivity {
     }
 
     private void Subirdatos() {
-        created_at_funct();
 
-        User user = new User();
-        user.setId(mAuth.getUid());
-        user.setName(username);
+        if (extraordinary){
+            UUID uuid = UUID.randomUUID();
+            u = ""+uuid;
+            created_at_funct();
+            if (idevent!=null) {
+                Extra extra = new Extra(created_at, Observation, "extra", idevent, activity_id, Lat, Lng, multimedia, files);
+                BDFireStore.collection("extra").document(u).set(extra, SetOptions.merge());
+            }else{
+                Extra extra = new Extra(created_at, Observation, "extra", "null", activity_id, Lat, Lng, multimedia, files);
+                BDFireStore.collection("extra").document(u).set(extra, SetOptions.merge());
+            }
 
-        checked_NoAplica = false;
+            BorrarFiles();
+            BorrarImagenes();
 
-        files = EvidenceActivity.getFiles();
+
+            SharedPreferences.Editor editor = getSharedPreferences("Ext_" + idevent, MODE_PRIVATE).edit();
+            editor.clear().commit();
+
+
+            EvidenceActivity.this.finish();
+
+
+        }else {
+            created_at_funct();
+
+            User user = new User();
+            user.setId(mAuth.getUid());
+            user.setName(username);
+
+            checked_NoAplica = false;
+
+            files = EvidenceActivity.getFiles();
 
 //        ava = EvidenceActivity.getAvanced();
-        Total total = new Total();
-        total.setNumber(number);
-        total.setUnit(unit);
-        Data data = new Data(ava, created_at, Observation, header, total, false , user, ref_event, Lat, Lng, multimedia, files);
-        BDFireStore.collection("evidence").document(uuids).set(data, SetOptions.merge()).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @SuppressLint("ResourceType")
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                Toast.makeText(getApplicationContext(), "Información subida exitosamente", Toast.LENGTH_SHORT  ). show();
-                edObserv= "";
+            Total total = new Total();
+            total.setNumber(number);
+            total.setUnit(unit);
+            Data data = new Data(ava, created_at, Observation, header, total, false, user, ref_event, Lat, Lng, multimedia, files);
+            BDFireStore.collection("evidence").document(uuids).set(data, SetOptions.merge()).addOnCompleteListener(new OnCompleteListener<Void>() {
+                @SuppressLint("ResourceType")
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    Toast.makeText(getApplicationContext(), "Información subida exitosamente", Toast.LENGTH_SHORT).show();
+                    edObserv = "";
 
-                SharedPreferences.Editor editor = getSharedPreferences(""+idevent, MODE_PRIVATE).edit();
-                editor.clear().commit();
 
-                EventoTerminado();
-                ChequeoDeVariables();
-                BorrarFiles();
-                BorrarImagenes();
+                        SharedPreferences.Editor editor = getSharedPreferences("" + idevent, MODE_PRIVATE).edit();
+                        editor.clear().commit();
+                        EventoTerminado();
 
-                Fragment mifragment = null;
-                mifragment = new EventosFragment();
+
+
+                    ChequeoDeVariables();
+                    BorrarFiles();
+                    BorrarImagenes();
+
+                    Fragment mifragment = null;
+                    mifragment = new EventosFragment();
 //
 
-                Bundle bundle = new Bundle();
-                bundle.putString("activity_id", activity_id);
-                bundle.putString("activity_title", activity_title);
-                bundle.putString("project_id", project_id);
-                bundle.putString("project_title", project_title);
+                    Bundle bundle = new Bundle();
+                    bundle.putString("activity_id", activity_id);
+                    bundle.putString("activity_title", activity_title);
+                    bundle.putString("project_id", project_id);
+                    bundle.putString("project_title", project_title);
 
-                mifragment.setArguments(bundle);
-                if (before_complete==true && during_complete==false){
+                    mifragment.setArguments(bundle);
+                    if (before_complete == true && during_complete == false) {
 
 //                    getSupportFragmentManager()
 //                            .beginTransaction()
 //                            .replace(R.id.contenedor_Evidence, mifragment)
 //                            .addToBackStack("main")
 //                            .commit();
-                    EvidenceActivity.this.finish();
+                        EvidenceActivity.this.finish();
 
 
-
-
-
-                    estado = "Tarea en curso";
+                        estado = "Tarea en curso";
 //                    txtEstado.setText("Evidencia: Durante");
 //                    txtAvance.setVisibility(View.VISIBLE);
 //                    edpercentage.setVisibility(View.VISIBLE);
 //                    txtTotal.setVisibility(View.VISIBLE);
 //                    txtAyuda.setVisibility(View.VISIBLE);
-                }else if (during_complete==true || ava ==number){
+                    } else if (during_complete == true || ava == number) {
 
-                    EvidenceActivity.this.finish();
+                        EvidenceActivity.this.finish();
 
 //                    getSupportFragmentManager()
 //                            .beginTransaction()
@@ -685,12 +749,12 @@ public class EvidenceActivity extends AppCompatActivity {
 //                    edpercentage.setVisibility(View.INVISIBLE);
 //                    txtTotal.setVisibility(View.INVISIBLE);
 //                    txtAyuda.setVisibility(View.INVISIBLE);
-                    estado = "after";
+                        estado = "after";
 //                    txtEstado.setText("Fin de la tarea");
+                    }
                 }
-            }
-        });
-
+            });
+        }
     }
 
     private void created_at_funct() {
@@ -705,7 +769,8 @@ public class EvidenceActivity extends AppCompatActivity {
             mes = "0" + mes;
         }
 
-        String dia = "" + calendar.get(Calendar.DAY_OF_MONTH);
+
+        String dia = "" + calendar.get(Calendar.MONTH);
         if (dia.length() == 1) {
             dia = "0" + dia;
         }
@@ -1097,6 +1162,13 @@ public class EvidenceActivity extends AppCompatActivity {
         checkPermissions();
 
         Bundle extras = getIntent().getExtras();
+
+        extraordinary = extras.getBoolean("extraordinary");
+        if (extraordinary){
+            getSupportActionBar().setTitle("Extraordinario");
+            getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.RED));
+        }
+
         idevent = extras.getString("idEvento");
         nameEvent = extras.getString("nameEvent");
         actividad = extras.getString("actividad");
@@ -1131,78 +1203,146 @@ public class EvidenceActivity extends AppCompatActivity {
         EvidenceActivity.setDuring_complete(during_complete);
         EvidenceActivity.setBefore_complete(before_complete);
 
-        SharedPreferences prefs = getSharedPreferences(""+idevent, MODE_PRIVATE);
-        contImg = prefs.getInt("contImg", 0);
-        contUris = prefs.getInt("contUris", 0);
+        if (extraordinary){
+            Toast.makeText(this, "Evento extraordinario", Toast.LENGTH_SHORT).show();
+            SharedPreferences prefs = getSharedPreferences("Ext_" + idevent, MODE_PRIVATE);
+            contImg = prefs.getInt("contImg", 0);
+            contUris = prefs.getInt("contUris", 0);
 
 
-        edObserv = prefs.getString("edObserv", "");
-        if (contImg!= 0){
-            for (int i=0; i<contImg; i++) {
-                Foto photo = new Foto();
-                photo.setType(prefs.getString("type" + i, "0"));
-                photo.setSrc(prefs.getString("src" + i, "0"));
-                photo.getUbication().setLng(Double.valueOf(prefs.getString("lng" + i, "0")));
-                photo.getUbication().setLat(Double.valueOf(prefs.getString("lat" + i, "0")));
-                photo.setCreated_at(prefs.getString("created_at" + i, "0"));
+            edObserv = prefs.getString("edObserv", "");
+            if (contImg != 0) {
+                for (int i = 0; i < contImg; i++) {
+                    Foto photo = new Foto();
+                    photo.setType(prefs.getString("type" + i, "0"));
+                    photo.setSrc(prefs.getString("src" + i, "0"));
+                    photo.getUbication().setLng(Double.valueOf(prefs.getString("lng" + i, "0")));
+                    photo.getUbication().setLat(Double.valueOf(prefs.getString("lat" + i, "0")));
+                    photo.setCreated_at(prefs.getString("created_at" + i, "0"));
 
 
-                if (photo.getType().equals("image")){
-                    Bitmap bitmap = BitmapFactory.decodeFile(photo.getSrc());
-                    Uri uri = Uri.fromFile(new File(photo.getSrc()));
 
-                    ListVideos.add( uri);
-                    mTypeAdapter.add( "Photo");
-                    mItemChecked.add( false);
-                    mImageBitmap.add( bitmap);
-                    multimedia.add( photo);
-                }
+                    if (photo.getType().equals("image")) {
+                        Bitmap bitmap = BitmapFactory.decodeFile(photo.getSrc());
+                        Uri uri = Uri.fromFile(new File(photo.getSrc()));
 
-                if (photo.getType().equals("gallery")){
-//                    Bitmap bitmap = null;
-//                    try {
-//                        bitmap = MediaStore.Images.Media.getBitmap(EvidenceActivity.this.getContentResolver(), Uri.fromFile(new File(photo.getSrc())));
-//                    } catch (IOException e) {
-//                        e.printStackTrace();
-//                    }
-                    Bitmap bitmap = BitmapFactory.decodeFile(photo.getSrc());
-                    Uri uri = Uri.fromFile(new File(photo.getSrc()));
+                        ListVideos.add(uri);
+                        mTypeAdapter.add("Photo");
+                        mItemChecked.add(false);
+                        mImageBitmap.add(bitmap);
+                        multimedia.add(photo);
+                    }
 
-                    ListVideos.add( uri);
-                    mTypeAdapter.add( "Photo");
-                    mItemChecked.add( false);
-                    mImageBitmap.add( bitmap);
-                    multimedia.add( photo);
-                }
+                    if (photo.getType().equals("gallery")) {
+                        Bitmap bitmap = BitmapFactory.decodeFile(photo.getSrc());
+                        Uri uri = Uri.fromFile(new File(photo.getSrc()));
 
-                if (photo.getType().equals("video")){
-                    Bitmap icon = BitmapFactory.decodeResource(EvidenceActivity.this.getResources(),
-                            R.drawable.reproductor_multimedia);
+                        ListVideos.add(uri);
+                        mTypeAdapter.add("Photo");
+                        mItemChecked.add(false);
+                        mImageBitmap.add(bitmap);
+                        multimedia.add(photo);
+                    }
 
-                    Uri uri = Uri.fromFile(new File(photo.getSrc()));
-                    ListVideos.add(uri);
-                    mTypeAdapter.add( "Video");
-                    mItemChecked.add( false);
-                    mImageBitmap.add( icon);
-                    multimedia.add( photo);
+                    if (photo.getType().equals("video")) {
+                        Bitmap icon = BitmapFactory.decodeResource(EvidenceActivity.this.getResources(),
+                                R.drawable.reproductor_multimedia);
+
+                        Uri uri = Uri.fromFile(new File(photo.getSrc()));
+                        ListVideos.add(uri);
+                        mTypeAdapter.add("Video");
+                        mItemChecked.add(false);
+                        mImageBitmap.add(icon);
+                        multimedia.add(photo);
+                    }
                 }
             }
-        }
 
-        if (contUris!=0){
-            for (int i=0; i<contUris; i++){
-                Files file = new Files();
-                file.setType(prefs.getString("f_type" + i, "0"));
-                file.setSrc(prefs.getString("f_src" + i, "0"));
-                file.setName(prefs.getString("f_name" + i, "0"));
-                file.setCreated_at(prefs.getString("f_created_at" + i, "0"));
+            if (contUris != 0) {
+                for (int i = 0; i < contUris; i++) {
+                    Files file = new Files();
+                    file.setType(prefs.getString("f_type" + i, "0"));
+                    file.setSrc(prefs.getString("f_src" + i, "0"));
+                    file.setName(prefs.getString("f_name" + i, "0"));
+                    file.setCreated_at(prefs.getString("f_created_at" + i, "0"));
 
-                ArchivosUris.add(Uri.fromFile(new File(file.getSrc())));
-                Type_Archivo.add(file.getType());
-                Name_Archivo.add(file.getName());
-                archivoChecked.add(false);
-                files.add(file);
+                    ArchivosUris.add(Uri.fromFile(new File(file.getSrc())));
+                    Type_Archivo.add(file.getType());
+                    Name_Archivo.add(file.getName());
+                    archivoChecked.add(false);
+                    files.add(file);
 
+                }
+            }
+        }else {
+
+            SharedPreferences prefs = getSharedPreferences("" + idevent, MODE_PRIVATE);
+            contImg = prefs.getInt("contImg", 0);
+            contUris = prefs.getInt("contUris", 0);
+
+
+            edObserv = prefs.getString("edObserv", "");
+            if (contImg != 0) {
+                for (int i = 0; i < contImg; i++) {
+                    Foto photo = new Foto();
+                    photo.setType(prefs.getString("type" + i, "0"));
+                    photo.setSrc(prefs.getString("src" + i, "0"));
+                    photo.getUbication().setLng(Double.valueOf(prefs.getString("lng" + i, "0")));
+                    photo.getUbication().setLat(Double.valueOf(prefs.getString("lat" + i, "0")));
+                    photo.setCreated_at(prefs.getString("created_at" + i, "0"));
+
+
+                    if (photo.getType().equals("image")) {
+                        Bitmap bitmap = BitmapFactory.decodeFile(photo.getSrc());
+                        Uri uri = Uri.fromFile(new File(photo.getSrc()));
+
+                        ListVideos.add(uri);
+                        mTypeAdapter.add("Photo");
+                        mItemChecked.add(false);
+                        mImageBitmap.add(bitmap);
+                        multimedia.add(photo);
+                    }
+
+                    if (photo.getType().equals("gallery")) {
+                        Bitmap bitmap = BitmapFactory.decodeFile(photo.getSrc());
+                        Uri uri = Uri.fromFile(new File(photo.getSrc()));
+
+                        ListVideos.add(uri);
+                        mTypeAdapter.add("Photo");
+                        mItemChecked.add(false);
+                        mImageBitmap.add(bitmap);
+                        multimedia.add(photo);
+                    }
+
+                    if (photo.getType().equals("video")) {
+                        Bitmap icon = BitmapFactory.decodeResource(EvidenceActivity.this.getResources(),
+                                R.drawable.reproductor_multimedia);
+
+                        Uri uri = Uri.fromFile(new File(photo.getSrc()));
+                        ListVideos.add(uri);
+                        mTypeAdapter.add("Video");
+                        mItemChecked.add(false);
+                        mImageBitmap.add(icon);
+                        multimedia.add(photo);
+                    }
+                }
+            }
+
+            if (contUris != 0) {
+                for (int i = 0; i < contUris; i++) {
+                    Files file = new Files();
+                    file.setType(prefs.getString("f_type" + i, "0"));
+                    file.setSrc(prefs.getString("f_src" + i, "0"));
+                    file.setName(prefs.getString("f_name" + i, "0"));
+                    file.setCreated_at(prefs.getString("f_created_at" + i, "0"));
+
+                    ArchivosUris.add(Uri.fromFile(new File(file.getSrc())));
+                    Type_Archivo.add(file.getType());
+                    Name_Archivo.add(file.getName());
+                    archivoChecked.add(false);
+                    files.add(file);
+
+                }
             }
         }
 
@@ -1264,6 +1404,7 @@ public class EvidenceActivity extends AppCompatActivity {
                 mifragment = new ObservacionesFragment();
 
                 Bundle bundle = new Bundle();
+                bundle.putBoolean("extraordinary", extraordinary);
                 bundle.putString("idEvento", idevent);
                 bundle.putString("nameEvent",nameEvent);
                 bundle.putString("actividad",actividad);
@@ -1515,6 +1656,10 @@ public class EvidenceActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+//        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+//        DatabaseReference myRef = database.getReference("Usuario").child(user.getUid());
+////        DatabaseReference myRef = database.getReference("Usuario").child(user.getEmail());
+//        myRef.child("hola").setValue("holis");
 
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setMessage("¿Estás seguro de salir?")
@@ -1523,65 +1668,134 @@ public class EvidenceActivity extends AppCompatActivity {
                         public void onClick(DialogInterface dialog, int id) {
                             Context context = getApplicationContext();
 //                            SharedPreferences sharedPreferences = getPreferences(MODE_PRIVATE);
-                            SharedPreferences.Editor editor = getSharedPreferences(""+idevent, MODE_PRIVATE).edit();
-                            SharedPreferences prefs = getSharedPreferences(""+idevent, MODE_PRIVATE);
 
-                            editor.putInt("contImg", contImg);
-                            editor.putInt("contUris", contUris);
-                            editor.putString("edObserv",edObserv);
-                            if (contImg!=0) {
-                                for (int i = 0; i < contImg; i++) {
-                                    String src = multimedia.get(i).getSrc();
-                                    String lat = String.valueOf(multimedia.get(i).getUbication().getLat());
-                                    String lng = String.valueOf(multimedia.get(i).getUbication().getLng());
-                                    String created_at = multimedia.get(i).getCreated_at();
-                                    String type = multimedia.get(i).getType();
-
-                                    editor.putString("type"+i, type);
-                                    editor.putString("src"+i, src);
-                                    editor.putString("lng"+i, lat);
-                                    editor.putString("lat"+i, lng);
-                                    editor.putString("created_at"+i, created_at);
+                            if (extraordinary){
+                                SharedPreferences.Editor editor = getSharedPreferences("Ext_" + idevent, MODE_PRIVATE).edit();
+                                SharedPreferences prefs = getSharedPreferences("Ext_" + idevent, MODE_PRIVATE);
 
 
-                                }
+                                editor.putInt("contImg", contImg);
+                                editor.putInt("contUris", contUris);
+                                editor.putString("edObserv", edObserv);
+                                if (contImg != 0) {
+                                    for (int i = 0; i < contImg; i++) {
+                                        String src = multimedia.get(i).getSrc();
+                                        String lat = String.valueOf(multimedia.get(i).getUbication().getLat());
+                                        String lng = String.valueOf(multimedia.get(i).getUbication().getLng());
+                                        String created_at = multimedia.get(i).getCreated_at();
+                                        String type = multimedia.get(i).getType();
 
-                            }else{
-                                if (prefs.getInt("contImg",0)!=0) {
-                                    for (int i = 0; i < prefs.getInt("contImg", 0); i++) {
-                                        editor.remove("type" + i);
-                                        editor.remove("src" + i);
-                                        editor.remove("lng" + i);
-                                        editor.remove("lat" + i);
-                                        editor.remove("created_at" + i);
+                                        editor.putString("type" + i, type);
+                                        editor.putString("src" + i, src);
+                                        editor.putString("lng" + i, lat);
+                                        editor.putString("lat" + i, lng);
+                                        editor.putString("created_at" + i, created_at);
+
+
+                                    }
+
+                                } else {
+                                    if (prefs.getInt("contImg", 0) != 0) {
+                                        for (int i = 0; i < prefs.getInt("contImg", 0); i++) {
+                                            editor.remove("type" + i);
+                                            editor.remove("src" + i);
+                                            editor.remove("lng" + i);
+                                            editor.remove("lat" + i);
+                                            editor.remove("created_at" + i);
+                                        }
                                     }
                                 }
-                            }
 
-                            if (contUris!=0){
-                                for (int i=0; i<contUris; i++){
-                                    String src = files.get(i).getSrc();
-                                    String name = files.get(i).getName();
-                                    String created_at = files.get(i).getCreated_at();
-                                    String type = files.get(i).getType();
+                                if (contUris != 0) {
+                                    for (int i = 0; i < contUris; i++) {
+                                        String src = files.get(i).getSrc();
+                                        String name = files.get(i).getName();
+                                        String created_at = files.get(i).getCreated_at();
+                                        String type = files.get(i).getType();
 
-                                    editor.putString("f_type"+i, type);
-                                    editor.putString("f_src"+i, src);
-                                    editor.putString("f_name"+i, name);
-                                    editor.putString("f_created_at"+i, created_at);
+                                        editor.putString("f_type" + i, type);
+                                        editor.putString("f_src" + i, src);
+                                        editor.putString("f_name" + i, name);
+                                        editor.putString("f_created_at" + i, created_at);
 
-                                }
-                            }else{
-                                if (prefs.getInt("contUris",0)!=0) {
-                                    for (int i = 0; i < prefs.getInt("contImg", 0); i++) {
-                                        editor.remove("f_type" + i);
-                                        editor.remove("f_src" + i);
-                                        editor.remove("f_name"+i);
-                                        editor.remove("f_created_at" + i);
+                                    }
+                                } else {
+                                    if (prefs.getInt("contUris", 0) != 0) {
+                                        for (int i = 0; i < prefs.getInt("contImg", 0); i++) {
+                                            editor.remove("f_type" + i);
+                                            editor.remove("f_src" + i);
+                                            editor.remove("f_name" + i);
+                                            editor.remove("f_created_at" + i);
+                                        }
                                     }
                                 }
+
+                                editor.commit();
+                            }else {
+                                SharedPreferences.Editor editor = getSharedPreferences("" + idevent, MODE_PRIVATE).edit();
+                                SharedPreferences prefs = getSharedPreferences("" + idevent, MODE_PRIVATE);
+
+
+                                editor.putInt("contImg", contImg);
+                                editor.putInt("contUris", contUris);
+                                editor.putString("edObserv", edObserv);
+                                if (contImg != 0) {
+                                    for (int i = 0; i < contImg; i++) {
+                                        String src = multimedia.get(i).getSrc();
+                                        String lat = String.valueOf(multimedia.get(i).getUbication().getLat());
+                                        String lng = String.valueOf(multimedia.get(i).getUbication().getLng());
+                                        String created_at = multimedia.get(i).getCreated_at();
+                                        String type = multimedia.get(i).getType();
+
+                                        editor.putString("type" + i, type);
+                                        editor.putString("src" + i, src);
+                                        editor.putString("lng" + i, lat);
+                                        editor.putString("lat" + i, lng);
+                                        editor.putString("created_at" + i, created_at);
+
+
+                                    }
+
+                                } else {
+                                    if (prefs.getInt("contImg", 0) != 0) {
+                                        for (int i = 0; i < prefs.getInt("contImg", 0); i++) {
+                                            editor.remove("type" + i);
+                                            editor.remove("src" + i);
+                                            editor.remove("lng" + i);
+                                            editor.remove("lat" + i);
+                                            editor.remove("created_at" + i);
+                                        }
+                                    }
+                                }
+
+                                if (contUris != 0) {
+                                    for (int i = 0; i < contUris; i++) {
+                                        String src = files.get(i).getSrc();
+                                        String name = files.get(i).getName();
+                                        String created_at = files.get(i).getCreated_at();
+                                        String type = files.get(i).getType();
+
+                                        editor.putString("f_type" + i, type);
+                                        editor.putString("f_src" + i, src);
+                                        editor.putString("f_name" + i, name);
+                                        editor.putString("f_created_at" + i, created_at);
+
+                                    }
+                                } else {
+                                    if (prefs.getInt("contUris", 0) != 0) {
+                                        for (int i = 0; i < prefs.getInt("contImg", 0); i++) {
+                                            editor.remove("f_type" + i);
+                                            editor.remove("f_src" + i);
+                                            editor.remove("f_name" + i);
+                                            editor.remove("f_created_at" + i);
+                                        }
+                                    }
+                                }
+
+                                editor.commit();
+
                             }
-                            editor.commit();
+
 
                             BorrarImagenes();
                             BorrarFiles();
@@ -2268,5 +2482,13 @@ public class EvidenceActivity extends AppCompatActivity {
 
     public void setmOnNavigationItemSelectedListener(BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener) {
         this.mOnNavigationItemSelectedListener = mOnNavigationItemSelectedListener;
+    }
+
+    public boolean isExtraordinary() {
+        return extraordinary;
+    }
+
+    public void setExtraordinary(boolean extraordinary) {
+        this.extraordinary = extraordinary;
     }
 }

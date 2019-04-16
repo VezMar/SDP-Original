@@ -942,7 +942,7 @@ public class ExtraActivity extends AppCompatActivity {
     private void Subirdatos() {
 
         created_at_funct();
-        Extra extra = new Extra(created_at, Observation, "extra", activity_id, Lat, Lng, multimedia, files);
+        Extra extra = new Extra(created_at, Observation,idevent, "extra", activity_id, Lat, Lng, multimedia, files);
         BDFireStore.collection("extra").document(u).set(extra, SetOptions.merge());
     }
 
