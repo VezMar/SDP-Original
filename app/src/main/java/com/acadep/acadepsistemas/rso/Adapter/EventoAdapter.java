@@ -1,8 +1,11 @@
 package com.acadep.acadepsistemas.rso.Adapter;
 
+import android.graphics.Color;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.text.format.Time;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +19,8 @@ import com.google.firebase.firestore.DocumentSnapshot;
 
 import org.joda.time.DateTime;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -27,7 +32,7 @@ public class EventoAdapter extends FirestoreRecyclerAdapter<Evento, EventoAdapte
 
 //    static Date start, end;
     static Date firstDate, secondDate;
-    static String start, end;
+    static String start, end , hrStart, hrEnd;
     /**
      * Create a new RecyclerView adapter that listens to a Firestore Query.  See {@link
      * FirestoreRecyclerOptions} for configuration options.
@@ -44,60 +49,76 @@ public class EventoAdapter extends FirestoreRecyclerAdapter<Evento, EventoAdapte
     @Override
     protected void onBindViewHolder(@NonNull EventoHolder holder, int position, @NonNull Evento evento) {
 
-        Calendar calendar = new GregorianCalendar();
-        DateTime dateTime = new DateTime();
 
-//        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy", Locale.ENGLISH);
-////        Date firstDate = null;
-//        try {
-//            firstDate = sdf.parse(calendar.get(Calendar.YEAR) + "-" + dateTime.getMonthOfYear() + "-" + calendar.get(Calendar.DAY_OF_MONTH));
-//        } catch (ParseException e) {
-//            e.printStackTrace();
-//        }
-//
-////        Date secondDate = null;
-//        try {
-//            secondDate = sdf.parse(evento.getEnd().substring(0,10));
-//        } catch (ParseException e) {
-//            e.printStackTrace();
-//        }
-//
-//        long diffInMillies = Math.abs(secondDate.getTime() - firstDate.getTime());
-//        Log.i("Prueba horas: ", ""+diffInMillies);
-//        long diff = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
-//        Log.i("Prueba horas: ", ""+diff);
 
-//        String string = evento.getEnd();
-//        SimpleDateFormat format = new SimpleDateFormat("MMMM d, yyyy", Locale.ENGLISH);
-//        Date date = null;
-//        try {
-//            date = format.parse(string);
-//            holder.txtview_end.setText(""+date);
-//        } catch (ParseException e) {
-//            e.printStackTrace();
-//        }
-//        System.out.println(date); // Sat Jan 02 00:00:00 GMT 2010
-//
-//
-//        LocalDateTime timeNow = LocalDateTime.now();
-//
-//        int mni = evento.getEnd().length();
-//        LocalDateTime timeEnd = LocalDateTime.parse(evento.getEnd().substring(0, (mni-1)));
-//
-//        Period p = new Period(timeNow, timeEnd);
-//        long hours = p.getHours();
-//        long minutes = p.getMinutes();
-//
-//        String formato = String.format("%%0%dd", 2);
 
-//        return Long.toString(hours)+":"+String.format(formato, minutes);
-//
-//        Log.i("Prueba horas as1: ", Long.toString(hours)+":"+String.format(formato, minutes));
-//        Log.i("Prueba horas as2: ", ""+timeNow);
-//        Log.i("Prueba horas as3: ", ""+timeEnd);
+        if (evento.getType()!=null) {
+            if (evento.getType().equals("additional")) {
+                holder.txtTarea.setText("adicional:");
+//                holder.card_Event.setBackgroundColor(Color.rgb(0, 196, 255));
+            }
+        }
+
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd H:m");
+        SimpleDateFormat dateFormatNow = new SimpleDateFormat("hh: mm: ss a dd-MMM-aaaa");
+
         start = evento.getStart().substring(0,10);
-        holder.txtview_start.setText(""+start);
+        hrStart = evento.getStart().substring(11, evento.getStart().toString().length());
+
         end = evento.getEnd().substring(0,10);
+        hrEnd = evento.getEnd().substring(11, evento.getEnd().toString().length());
+
+
+        try {
+            firstDate = dateFormat.parse( start+ " " + hrStart);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            secondDate = dateFormat.parse( end+ " " + hrEnd);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+
+//        try {
+//            firstDate = dateFormatNow.parse(String.valueOf(new Date()));
+//        } catch (ParseException e) {
+//            e.printStackTrace();
+//        }
+        Date Fecha = new Date();
+        firstDate = new Date();
+
+        int diferencia=(int) ((secondDate.getTime()-firstDate.getTime())/1000);
+
+        int dias=0;
+        int horas=0;
+        int minutos=0;
+        if(diferencia>86400) {
+            dias=(int)Math.floor(diferencia/86400);
+            diferencia=diferencia-(dias*86400);
+        }
+        if(diferencia>3600) {
+            horas=(int)Math.floor(diferencia/3600);
+            diferencia=diferencia-(horas*3600);
+        }
+        if(diferencia>60) {
+            minutos=(int)Math.floor(diferencia/60);
+            diferencia=diferencia-(minutos*60);
+        }
+
+//        Log.i("Hora-restante", "Hay "+dias+" dias, "+horas+" horas, "+minutos+" minutos y "+diferencia+" segundos de diferencia");
+
+//        holder.txtRest.setText(dias+"d- "+horas+"h- "+ minutos+"m");
+        if(dias>=0 && horas>=0 && minutos>0){
+            holder.txtTRestante.setText("Tiempo Restante: " +dias+"d - "+horas+"h - "+ minutos+"m");
+        }else{
+            holder.txtTRestante.setText("Sin Tiempo Restante, tarea con retraso");
+        }
+
+        holder.txtview_start.setText(""+start);
         holder.txtview_end.setText(""+end);
 
 
@@ -122,7 +143,10 @@ public class EventoAdapter extends FirestoreRecyclerAdapter<Evento, EventoAdapte
 
         TextView txtview_actividad, txtview_trabajador,txtview_uid;
         TextView txtview_name, txtview_start, txtview_end, txtview_active, txtview_subProyecto, txtview_activity;
-        TextView txtDescripcion, txtHrs;
+        TextView txtDescripcion, txtRest;
+        TextView txtTarea;
+        TextView txtTRestante;
+        CardView card_Event;
 
         public EventoHolder(@NonNull View itemView) {
             super(itemView);
@@ -132,11 +156,15 @@ public class EventoAdapter extends FirestoreRecyclerAdapter<Evento, EventoAdapte
             txtview_name = (TextView) itemView.findViewById(R.id.txtview_name);
             txtview_start = (TextView) itemView.findViewById(R.id.txtview_start);
             txtview_end = (TextView) itemView.findViewById(R.id.txtview_end);
+            txtTarea = (TextView) itemView.findViewById(R.id.txtTarea);
+
+            card_Event = itemView.findViewById(R.id.card_Event);
 
 //            txtview_subProyecto  = (TextView) itemView.findViewById(R.id.txtview_subProyecto);
 //            txtview_activity  = (TextView) itemView.findViewById(R.id.txtview_activity);
 
-            txtHrs = (TextView) itemView.findViewById(R.id.txtHrs);
+//            txtRest = (TextView) itemView.findViewById(R.id.txtRest);
+            txtTRestante = (TextView) itemView.findViewById(R.id.txtTRestante);
             //txtDescripcion = (TextView) itemView.findViewById(R.id.txtDescripcion);
             //txtview_active = (TextView) itemView.findViewById(R.id.txtview_active);
             // txtview_uid = (TextView) itemView.findViewById(R.id.txtview_uid);

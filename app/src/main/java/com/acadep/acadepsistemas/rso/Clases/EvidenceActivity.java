@@ -24,7 +24,6 @@ import android.location.LocationManager;
 import android.location.LocationProvider;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -70,7 +69,6 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -91,6 +89,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
@@ -372,10 +371,13 @@ public class EvidenceActivity extends AppCompatActivity {
 //                .replace(R.id.contenedor_Evidence, mifragment)
 //                .commit();
 
+
+
         actionButton_Enviar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
+                Toast.makeText(EvidenceActivity.this, ""+extraordinary, Toast.LENGTH_SHORT).show();
                 if (extraordinary) {
                         Observation = "" + EvidenceActivity.getEdObserv();
                         if (!Observation.equals("")) {
@@ -644,7 +646,7 @@ public class EvidenceActivity extends AppCompatActivity {
 
                 }
             });
-            builder.setIcon(R.drawable.ic_warning_black_24dp);
+//            builder.setIcon(R.drawable.ic_warning_black_24dp);
             builder.create().show();
         }
         return super.onOptionsItemSelected(item);
@@ -656,13 +658,17 @@ public class EvidenceActivity extends AppCompatActivity {
             UUID uuid = UUID.randomUUID();
             u = ""+uuid;
             created_at_funct();
-            if (idevent!=null) {
-                Extra extra = new Extra(created_at, Observation, "extra", idevent, activity_id, Lat, Lng, multimedia, files);
-                BDFireStore.collection("extra").document(u).set(extra, SetOptions.merge());
-            }else{
-                Extra extra = new Extra(created_at, Observation, "extra", "null", activity_id, Lat, Lng, multimedia, files);
-                BDFireStore.collection("extra").document(u).set(extra, SetOptions.merge());
-            }
+
+//            if (idevent!=null) {
+//                Extra extra = new Extra(created_at, Observation, "extra", idevent, activity_id, Lat, Lng, multimedia, files);
+//                BDFireStore.collection("extra").document(u).set(extra, SetOptions.merge());
+//            }else{
+//                Extra extra = new Extra(created_at, Observation, "extra", "null", activity_id, Lat, Lng, multimedia, files);
+//                BDFireStore.collection("extra").document(u).set(extra, SetOptions.merge());
+//            }
+
+            Extra extra = new Extra(created_at, Observation, "extra", idevent, activity_id, Lat, Lng, multimedia, files);
+            BDFireStore.collection("extra").document(u).set(extra, SetOptions.merge());
 
             BorrarFiles();
             BorrarImagenes();
@@ -670,7 +676,7 @@ public class EvidenceActivity extends AppCompatActivity {
 
             SharedPreferences.Editor editor = getSharedPreferences("Ext_" + idevent, MODE_PRIVATE).edit();
             editor.clear().commit();
-
+            Toast.makeText(getApplicationContext(), "Información subida exitosamente", Toast.LENGTH_SHORT).show();
 
             EvidenceActivity.this.finish();
 
@@ -769,8 +775,7 @@ public class EvidenceActivity extends AppCompatActivity {
             mes = "0" + mes;
         }
 
-
-        String dia = "" + calendar.get(Calendar.MONTH);
+        String dia = "" + calendar.get(Calendar.DAY_OF_MONTH);
         if (dia.length() == 1) {
             dia = "0" + dia;
         }
@@ -1014,12 +1019,12 @@ public class EvidenceActivity extends AppCompatActivity {
 
 
         PerFile = files.get(i);
-        PerFile.setName( Name);
-        PerFile.setName(ArchivoUri.getPath());
+//        PerFile.setName( Name);
+//        PerFile.setName(ArchivoUri.getPath());
         files.set(i,PerFile);
         PerFile = new Files();
 
-
+        Log.i("ArchivoUri", ""+ArchivoUri);
         final String fileName= "Archivo" + UUID.randomUUID().toString();
         final StorageReference srtreference = storage.getReference();
         srtreference.child("files").child("Evidence").child(fileName).putFile(ArchivoUri)
@@ -1222,6 +1227,7 @@ public class EvidenceActivity extends AppCompatActivity {
 
 
 
+
                     if (photo.getType().equals("image")) {
                         Bitmap bitmap = BitmapFactory.decodeFile(photo.getSrc());
                         Uri uri = Uri.fromFile(new File(photo.getSrc()));
@@ -1291,6 +1297,7 @@ public class EvidenceActivity extends AppCompatActivity {
                     photo.getUbication().setLat(Double.valueOf(prefs.getString("lat" + i, "0")));
                     photo.setCreated_at(prefs.getString("created_at" + i, "0"));
 
+                    Log.i("Uris", "photo-srccccc"+photo.getSrc());
 
                     if (photo.getType().equals("image")) {
                         Bitmap bitmap = BitmapFactory.decodeFile(photo.getSrc());
@@ -1335,6 +1342,8 @@ public class EvidenceActivity extends AppCompatActivity {
                     file.setSrc(prefs.getString("f_src" + i, "0"));
                     file.setName(prefs.getString("f_name" + i, "0"));
                     file.setCreated_at(prefs.getString("f_created_at" + i, "0"));
+
+                    Log.i("Datos", "Recibirdatos - "+file.getSrc());
 
                     ArchivosUris.add(Uri.fromFile(new File(file.getSrc())));
                     Type_Archivo.add(file.getType());

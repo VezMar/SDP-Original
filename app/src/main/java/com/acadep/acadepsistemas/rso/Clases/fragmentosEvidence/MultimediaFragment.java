@@ -529,6 +529,8 @@ public class MultimediaFragment extends Fragment {
             addImage( Uri.fromFile(new File(filePath)), 0, "Photo", Bitnew);
 //            ListVideos.add(0, Uri.fromFile(new File(filePath)));
 
+            Log.i("Uris", "filepath = "+filePath);
+
             GuardarInformacionImagenes(1);
 
 
@@ -565,18 +567,27 @@ public class MultimediaFragment extends Fragment {
 
             realPath = ImageFilePath.getPath(getContext(), data.getData());
 
+//            Bitmap bitmap = null;
+//            try {
+//                bitmap = MediaStore.Images.Media.getBitmap(this.getActivity().getContentResolver(), imageUri);
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//            double heightd = bitmap.getHeight()*.1720430107526882;
+//            float heightf =  (float)heightd;
+//            Bitmap Bitnew = redimensionarImagenMaximo(bitmap, 512 ,  heightf);
+
             Bitmap bitmap = null;
             try {
-                bitmap = MediaStore.Images.Media.getBitmap(this.getActivity().getContentResolver(), imageUri);
+                bitmap = MediaStore.Images.Media.getBitmap(getContext().getContentResolver(), imageUri);
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            double heightd = bitmap.getHeight()*.1720430107526882;
-            float heightf =  (float)heightd;
-            Bitmap Bitnew = redimensionarImagenMaximo(bitmap, 512 ,  heightf);
+
             contImg++;
 
-            addImage(Uri.fromFile(new File(realPath)), 0, "Photo", Bitnew);
+
+            addImage(Uri.fromFile(new File(realPath)), 0, "Photo", bitmap);
 
 
             GuardarInformacionImagenes(2);

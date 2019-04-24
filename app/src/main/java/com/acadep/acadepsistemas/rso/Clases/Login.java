@@ -34,7 +34,7 @@ public class Login extends AppCompatActivity {
 
     TextView txtPsd, txtUser, txtForgotPsw, txtPoliticasPrivacidad;
 
-    Button btnLogin,btnRegistrar,btnMostrar;
+    Button btnLogin, btnRegistrar,btnMostrar;
     ProgressBar prgsBar;
 
     public String rolesUser;
@@ -122,25 +122,6 @@ public class Login extends AppCompatActivity {
                                 map();
                             }else{
                                 hideLoading();
-//                                StyleableToast.makeText(Login.this, "Descargue la nueva versión para poder continuar" , Toast.LENGTH_LONG, R.style.warningToastMiddle).show();
-//                                AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
-//                                builder.setTitle("¡Nueva versión disponible!");
-//                                builder.setMessage("Descargue la nueva versión para poder continuar");
-//                                builder.setPositiveButton("Ir a la PlayStore", new DialogInterface.OnClickListener() {
-//                                    @Override
-//                                    public void onClick(DialogInterface dialog, int which) {
-//                                        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=com.acadep.acadepsistemas.rso"));
-//                                        startActivity(intent);
-//                                    }
-//                                });
-//                                builder.setNeutralButton("Cancelar", new DialogInterface.OnClickListener() {
-//                                    @Override
-//                                    public void onClick(DialogInterface dialog, int which) {
-//
-//                                    }
-//                                });
-//                                builder.create().show();
-
                                 AlertDialog.Builder builder = new AlertDialog.Builder(Login.this);
                                 builder.setTitle("¡Nueva versión disponible!");
                                 builder.setMessage("Descargue la nueva versión para poder continuar");

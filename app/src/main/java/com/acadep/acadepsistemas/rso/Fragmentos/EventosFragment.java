@@ -1,7 +1,6 @@
 package com.acadep.acadepsistemas.rso.Fragmentos;
 
 
-import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -11,7 +10,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -27,7 +25,6 @@ import android.widget.Toolbar;
 
 import com.acadep.acadepsistemas.rso.Adapter.EventoAdapter;
 import com.acadep.acadepsistemas.rso.Clases.EvidenceActivity;
-import com.acadep.acadepsistemas.rso.Clases.MainActivity;
 import com.acadep.acadepsistemas.rso.R;
 import com.acadep.acadepsistemas.rso.model.Evento;
 import com.acadep.acadepsistemas.rso.model.Recursos;

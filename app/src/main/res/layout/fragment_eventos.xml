@@ -126,15 +126,15 @@
         android:id="@+id/fab_action_extraordinary"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
         android:src="@drawable/ic_report_black_24dp"
         fab:fab_colorNormal="#E41A0C"
         fab:fab_colorPressed="#ff1600"
-        app:fab_size="normal"
+        app:fab_size="mini"
         app:fab_label="Borrar Seleccionados"
-        android:layout_marginBottom="10dp"
         android:overScrollMode="always"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+
         />
 
 

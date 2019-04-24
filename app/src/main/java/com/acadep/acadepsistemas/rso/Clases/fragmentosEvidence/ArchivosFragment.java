@@ -2,6 +2,7 @@ package com.acadep.acadepsistemas.rso.Clases.fragmentosEvidence;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.content.ContentUris;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -10,7 +11,11 @@ import android.database.Cursor;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.DocumentsContract;
+import android.provider.MediaStore;
 import android.provider.OpenableColumns;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
@@ -29,7 +34,6 @@ import android.widget.Toast;
 import com.acadep.acadepsistemas.rso.Adapter.ArchivosAdapter;
 import com.acadep.acadepsistemas.rso.Clases.EvidenceActivity;
 import com.acadep.acadepsistemas.rso.R;
-import com.acadep.acadepsistemas.rso.Utility.ImageFilePath;
 import com.acadep.acadepsistemas.rso.model.Files;
 import com.acadep.acadepsistemas.rso.model.Ubication;
 import com.acadep.acadepsistemas.rso.model.datetime;
@@ -59,12 +63,12 @@ public class ArchivosFragment extends Fragment {
     static List<Uri> ArchivosUris = new ArrayList<>();
     static List<String> Type_Archivo = new ArrayList<>();
     static List<String> Name_Archivo = new ArrayList<>();
-    static ArrayList<Boolean> archivoChecked= new ArrayList<>();
+    static ArrayList<Boolean> archivoChecked = new ArrayList<>();
 
     static List<Files> files = new ArrayList<>();
 
     public static final int MULTIPLE_PERMISSIONS = 10;
-    String[] permissions= new String[]{
+    String[] permissions = new String[]{
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
             Manifest.permission.CAMERA,
             Manifest.permission.ACCESS_COARSE_LOCATION,
@@ -83,7 +87,6 @@ public class ArchivosFragment extends Fragment {
 
     static int contUris = 0;
     static int restUris = 9;
-
 
 
     static RecyclerView mRecyclerViewFiles;
@@ -107,9 +110,8 @@ public class ArchivosFragment extends Fragment {
     static boolean Tduring;
     static boolean Tafter;
 
-    static  String estado = "before";
+    static String estado = "before";
     TextView txtEstado;
-
 
 
     @Override
@@ -126,12 +128,12 @@ public class ArchivosFragment extends Fragment {
 
         estado = EvidenceActivity.getEstado();
 
-       ArchivosUris    = EvidenceActivity.getArchivosUris();
-       Type_Archivo    = EvidenceActivity.getType_Archivo();
-       Name_Archivo    = EvidenceActivity.getName_Archivo();
-       archivoChecked  = EvidenceActivity.getArchivoChecked();
-       files           = EvidenceActivity.getFiles();
-       contUris        = EvidenceActivity.getContUris();
+        ArchivosUris = EvidenceActivity.getArchivosUris();
+        Type_Archivo = EvidenceActivity.getType_Archivo();
+        Name_Archivo = EvidenceActivity.getName_Archivo();
+        archivoChecked = EvidenceActivity.getArchivoChecked();
+        files = EvidenceActivity.getFiles();
+        contUris = EvidenceActivity.getContUris();
     }
 
     @Override
@@ -144,8 +146,8 @@ public class ArchivosFragment extends Fragment {
         txtEstado = (TextView) view.findViewById(R.id.txtEstado);
 //        txtEstado.setVisibility(View.INVISIBLE);
         floatingActionsMenu = view.findViewById(R.id.FloatingActionMenuPrincipal);
-        actionButton_Upload_PDF   = view.findViewById(R.id.fab_action_3);
-        actionButton_Upload_Docx  = view.findViewById(R.id.fab_action_4);
+        actionButton_Upload_PDF = view.findViewById(R.id.fab_action_3);
+        actionButton_Upload_Docx = view.findViewById(R.id.fab_action_4);
         actionButton_Upload_Video = view.findViewById(R.id.fab_action_5);
         actionButton_Upload_Audio = view.findViewById(R.id.fab_action_6);
         actionButton_Borrar_Seleccionados = view.findViewById(R.id.fab_action_2_1);
@@ -221,11 +223,11 @@ public class ArchivosFragment extends Fragment {
 //                            }
 //                        }
 //
-                        for (int i=(ArchivosUris.size()-1); 0<=i ;i--){
-                            if (archivoChecked.get(i)==true){
+                        for (int i = (ArchivosUris.size() - 1); 0 <= i; i--) {
+                            if (archivoChecked.get(i) == true) {
                                 deleteFile(i);
                                 Log.i("mArchivoChecked - ", "Borrado" + i);
-                            }else{
+                            } else {
                                 Log.i("mArchivoChecked - ", "Es false" + i);
                             }
                         }
@@ -263,7 +265,7 @@ public class ArchivosFragment extends Fragment {
 //        return true;
 //    }
 
-    private void initRecyclerViewFiles(View view){
+    private void initRecyclerViewFiles(View view) {
 
 //        for (int i=0; i<archivoChecked.size(); i++){
 //            Log.i("asdasdasdasdasd", String.valueOf(archivoChecked.get(0)));
@@ -282,17 +284,17 @@ public class ArchivosFragment extends Fragment {
     }
 
     private void ChequeoDeVariables() {
-        if(Tbefore==true && before_complete == false){
+        if (Tbefore == true && before_complete == false) {
 //            ava = 0;
 //            txtEstado.setText("Inicio de la tarea");
             estado = "before";
             EvidenceActivity.setEstado("before");
-        }else {
-            if (Tduring == true && during_complete==false){
+        } else {
+            if (Tduring == true && during_complete == false) {
 //                txtEstado.setText("Durante la tarea");
                 estado = "during";
                 EvidenceActivity.setEstado("during");
-            }else {
+            } else {
                 if (Tafter == true && during_complete == true) {
 //                    txtEstado.setText("Después de la tarea");
                     estado = "after";
@@ -302,14 +304,18 @@ public class ArchivosFragment extends Fragment {
         }
     }
 
-    private void GuardarInformacionArchivos() {
+    private void GuardarInformacionArchivos(String type, String name, String realpath) {
         locationStart();
         created_at_funct();
 
         PerFile.setCreated_at(created_at);
-        files.add(0,PerFile);
+        PerFile.setType(type);
+//        PerFile.setSrc(""+uri);
+//        PerFile.setSrc(""+uri.getPath());
+        PerFile.setSrc("" + realpath);
+        PerFile.setName("" + name);
 
-        evidenceActivity.setFiles(files);
+        files.add(0, PerFile);
 
         PerFile = new Files();
 
@@ -331,27 +337,29 @@ public class ArchivosFragment extends Fragment {
         if (dia.length() == 1) {
             dia = "0" + dia;
         }
-        Fecha =   calendar.get(Calendar.YEAR) + "-" + mes + "-" + dia;
+        Fecha = calendar.get(Calendar.YEAR) + "-" + mes + "-" + dia;
 
-        String minute = ""+calendar.get(Calendar.MINUTE);
-        if (minute.length()==1){
-            minute = "0"+minute;
+        String minute = "" + calendar.get(Calendar.MINUTE);
+        if (minute.length() == 1) {
+            minute = "0" + minute;
         }
 
-        String hora = ""+calendar.get(Calendar.HOUR);
-        if (hora.length()==1){
-            hora = "0"+hora;
+        String hora = "" + calendar.get(Calendar.HOUR);
+        if (hora.length() == 1) {
+            hora = "0" + hora;
         }
 
-        Hora = hora +":" + minute;
+        Hora = hora + ":" + minute;
 
-        created_at = Fecha + "T" +Hora;
+        created_at = Fecha + "T" + Hora;
 
     }
 
     private void selectPDF() {
         Intent intent = new Intent();
         intent.setType("application/pdf");
+        String paths = getContext().getFilesDir().getAbsolutePath();
+        Log.i("Datos", "asdasdasd - " + paths);
         intent.setAction(intent.ACTION_GET_CONTENT);
         startActivityForResult(intent, 86);
     }
@@ -382,148 +390,138 @@ public class ArchivosFragment extends Fragment {
         super.onActivityResult(requestCode, resultCode, data);
 
 
-        if (requestCode==86 && resultCode==RESULT_OK && data!=null) {
-            if(contUris>9){
-                Toast.makeText(getContext(), "Limite de archivos alcanzado", Toast.LENGTH_LONG ).show();
-            }else {
-                GuardarInformacionArchivos();
-                realPath = ImageFilePath.getPath(getContext(), data.getData());
+        if (requestCode == 86 && resultCode == RESULT_OK && data != null) {
+            if (contUris > 9) {
+                Toast.makeText(getContext(), "Limite de archivos alcanzado", Toast.LENGTH_LONG).show();
+            } else {
 
+                realPath = getPathFromUri(getContext(), data.getData());
+                if (realPath==null || realPath=="null"){
+                    Toast.makeText(getContext(), "El archivo que intenta subir no se encuentra en el dispositivo, porfavor descarguelo e intente de nuevo", Toast.LENGTH_LONG).show();
+                }else{
 
-                PerFile = files.get(0);
-                PerFile.setType("PDF");
-                PerFile.setSrc("" + realPath);
-                files.set(0, PerFile);
-                PerFile = new Files();
-                Type_Archivo.add(0, "PDF");
+                    contUris++;
+                    addFile(data, 0, "PDF");
+                }
 
-                SelecUri(data);
-                addFile(data);
-                contUris++;
-
-                evidenceActivity.setContUris(contUris);
             }
             //Toast.makeText(getApplicationContext(),"Tu archivo se ha guardado exitosamente",Toast.LENGTH_SHORT).show();
-        }else if (requestCode==87 && resultCode==RESULT_OK && data!=null) {
-            if(contUris>9){
-                Toast.makeText(getContext(), "Limite de archivos alcanzado", Toast.LENGTH_LONG ).show();
-            }else {
-                GuardarInformacionArchivos();
-                realPath = ImageFilePath.getPath(getContext(), data.getData());
+        } else if (requestCode == 87 && resultCode == RESULT_OK && data != null) {
+            if (contUris > 9) {
+                Toast.makeText(getContext(), "Limite de archivos alcanzado", Toast.LENGTH_LONG).show();
+            } else {
+                realPath = getPathFromUri(getContext(), data.getData());
+                if (realPath==null || realPath=="null"){
+                    Toast.makeText(getContext(), "El archivo que intenta subir no se encuentra en el dispositivo, porfavor descarguelo e intente de nuevo", Toast.LENGTH_LONG).show();
+                }else{
 
-                PerFile = files.get(0);
-                PerFile.setType("Video");
-                PerFile.setSrc(""+realPath);
-                files.set(0,PerFile);
-                PerFile = new Files();
-
-                Type_Archivo.add(0, "Video");
-
-                SelecUri(data);
-                addFile(data);
-                contUris++;
-                evidenceActivity.setContUris(contUris);
-            }
-            //Toast.makeText(getApplicationContext(),"Tu archivo se ha guardado exitosamente",Toast.LENGTH_SHORT).show();
-        } if (requestCode==88 && resultCode==RESULT_OK && data!=null) {
-            if(contUris>9){
-                Toast.makeText(getContext(), "Limite de archivos alcanzado", Toast.LENGTH_LONG ).show();
-            }else {
-                GuardarInformacionArchivos();
-                realPath = ImageFilePath.getPath(getContext(), data.getData());
-
-
-                PerFile = files.get(0);
-                PerFile.setType("Audio");
-                PerFile.setSrc("" + realPath);
-                files.set(0, PerFile);
-                PerFile = new Files();
-
-                SelecUri(data);
-                addFile(data);
-                contUris++;
-                evidenceActivity.setContUris(contUris);
+                    contUris++;
+                    addFile(data, 0, "Video");
+                }
             }
             //Toast.makeText(getApplicationContext(),"Tu archivo se ha guardado exitosamente",Toast.LENGTH_SHORT).show();
         }
-        if (requestCode==89 && resultCode==RESULT_OK && data!=null) {
-            if(contUris>9){
-                Toast.makeText(getContext(), "Limite de archivos alcanzado", Toast.LENGTH_LONG ).show();
-            }else {
-                GuardarInformacionArchivos();
-                realPath = ImageFilePath.getPath(getContext(), data.getData());
+        if (requestCode == 88 && resultCode == RESULT_OK && data != null) {
+            if (contUris > 9) {
+                Toast.makeText(getContext(), "Limite de archivos alcanzado", Toast.LENGTH_LONG).show();
+            } else {
+                realPath = getPathFromUri(getContext(), data.getData());
+                if (realPath==null || realPath=="null"){
+                    Toast.makeText(getContext(), "El archivo que intenta subir no se encuentra en el dispositivo, porfavor descarguelo e intente de nuevo", Toast.LENGTH_LONG).show();
+                }else{
 
+                    contUris++;
+                    addFile(data, 0, "Audio");
+                }
+            }
+            //Toast.makeText(getApplicationContext(),"Tu archivo se ha guardado exitosamente",Toast.LENGTH_SHORT).show();
+        }
+        if (requestCode == 89 && resultCode == RESULT_OK && data != null) {
+            if (contUris > 9) {
+                Toast.makeText(getContext(), "Limite de archivos alcanzado", Toast.LENGTH_LONG).show();
+            } else {
+                realPath = getPathFromUri(getContext(), data.getData());
+                if (realPath==null || realPath=="null"){
+                    Toast.makeText(getContext(), "El archivo que intenta subir no se encuentra en el dispositivo, porfavor descarguelo e intente de nuevo", Toast.LENGTH_LONG).show();
+                }else{
 
-                PerFile = files.get(0);
-                PerFile.setType("Docx");
-                PerFile.setSrc(""+realPath);
-                files.set(0,PerFile);
-                PerFile = new Files();
-
-                Type_Archivo.add(0, "Docx");
-
-                SelecUri(data);
-                addFile(data);
-                contUris++;
-                evidenceActivity.setContUris(contUris);
+                    contUris++;
+                    addFile(data, 0, "Docx");
+                }
             }
             // Toast.makeText(getApplicationContext(),"Tu archivo se ha guardado exitosamente",Toast.LENGTH_SHORT).show();
         }
     }
 
     private void SelecUri(Intent data) {
-        if(contUris<10){
-            ArchivosUris.add(0, data.getData());
+        if (contUris < 10) {
+//            ArchivosUris.add(0, data.getData());
+//            ArchivosUris.add(0, Uri.fromFile(new File(realPath)));
+            data.getData();
+            Uri.fromFile(new File(realPath));
             evidenceActivity.setArchivosUris(ArchivosUris);
-            Toast.makeText(getContext(), "Archivo agregado con exito \nPuede subir " + (restUris-contUris) + " más", Toast.LENGTH_LONG ).show();
+            Toast.makeText(getContext(), "Archivo agregado con exito \nPuede subir " + (restUris - contUris) + " más", Toast.LENGTH_LONG).show();
 
-        }else{
-            Toast.makeText(getContext(), "Limite de archivos alcanzado", Toast.LENGTH_LONG ).show();
+        } else {
+            Toast.makeText(getContext(), "Limite de archivos alcanzado", Toast.LENGTH_LONG).show();
         }
     }
 
-    private void addFile(Intent data){
+    private void addFile(Intent data, int i, String type) {
 
         Uri uri = data.getData();
+
+
         String uriString = uri.toString();
         File file = new File(uriString);
-        String displayname=null;
-        if (uriString.startsWith("content://"))
-        {
-            Cursor cursor= null;
-            try{
+        String displayname = null;
+        if (uriString.startsWith("content://")) {
+            Cursor cursor = null;
+            try {
                 cursor = getActivity().getApplicationContext().getContentResolver().query(uri, null, null, null, null);
-                if (cursor!=null && cursor.moveToFirst()){
+                if (cursor != null && cursor.moveToFirst()) {
                     displayname = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
+
+                    Log.i("display", "" + displayname);
                 }
-            }finally {
+            } finally {
                 cursor.close();
             }
-        }else if (uriString.startsWith("file://")){
+        } else if (uriString.startsWith("file://")) {
             displayname = file.getName();
         }
 
 
+//        String path = uri.toString(); // "file:///mnt/sdcard/FileName.mp3"
+//        try {
+//            File filez = new File(new URI(path));
+//            Log.i("display", ""+filez);
+//        } catch (URISyntaxException e) {
+//            e.printStackTrace();
+//        }
+
+
+        GuardarInformacionArchivos(type, displayname, "" + realPath);
+
 //        File filename = new File(ArchivosUris.get(0).getPath());
+        ArchivosUris.add(0, uri);
+        Type_Archivo.add(0, type);
         Name_Archivo.add(0, displayname);
         archivoChecked.add(0, false);
+
         mAdapterFiles.notifyItemInserted(0);
         mLayaoutManagerFiles.scrollToPosition(0);
 
-        PerFile = files.get(0);
-        PerFile.setName(displayname);
-        files.set(0, PerFile);
-        PerFile = new Files();
 
         EvidenceActivity.setArchivosUris(ArchivosUris);
-        EvidenceActivity.setName_Archivo(Name_Archivo);
         EvidenceActivity.setType_Archivo(Type_Archivo);
+        EvidenceActivity.setName_Archivo(Name_Archivo);
         EvidenceActivity.setArchivoChecked(archivoChecked);
         EvidenceActivity.setFiles(files);
         EvidenceActivity.setContUris(contUris);
     }
 
-    private void deleteFile(int position){
+    private void deleteFile(int position) {
         ArchivosUris.remove(position);
         Name_Archivo.remove(position);
         Type_Archivo.remove(position);
@@ -562,4 +560,127 @@ public class ArchivosFragment extends Fragment {
         //txtHora.setText(created_at.substring(10, 15));
     }
 
+    public static String getPathFromUri(final Context context, final Uri uri) {
+
+        final boolean isKitKat = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT;
+
+        // DocumentProvider
+        if (isKitKat && DocumentsContract.isDocumentUri(context, uri)) {
+            // ExternalStorageProvider
+            if (isExternalStorageDocument(uri)) {
+                final String docId = DocumentsContract.getDocumentId(uri);
+                final String[] split = docId.split(":");
+                final String type = split[0];
+
+                if ("primary".equalsIgnoreCase(type)) {
+                    return Environment.getExternalStorageDirectory() + "/" + split[1];
+                }
+
+                // TODO handle non-primary volumes
+            }
+            // DownloadsProvider
+            else if (isDownloadsDocument(uri)) {
+
+                final String id = DocumentsContract.getDocumentId(uri);
+                final Uri contentUri = ContentUris.withAppendedId(
+                        Uri.parse("content://downloads/public_downloads"), Long.valueOf(id));
+
+                return getDataColumn(context, contentUri, null, null);
+            }
+            // MediaProvider
+            else if (isMediaDocument(uri)) {
+                final String docId = DocumentsContract.getDocumentId(uri);
+                final String[] split = docId.split(":");
+                final String type = split[0];
+
+                Uri contentUri = null;
+                if ("image".equals(type)) {
+                    contentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+                } else if ("video".equals(type)) {
+                    contentUri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
+                } else if ("audio".equals(type)) {
+                    contentUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+                }
+
+                final String selection = "_id=?";
+                final String[] selectionArgs = new String[]{
+                        split[1]
+                };
+
+                return getDataColumn(context, contentUri, selection, selectionArgs);
+            }
+        }
+        // MediaStore (and general)
+        else if ("content".equalsIgnoreCase(uri.getScheme())) {
+
+            // Return the remote address
+            if (isGooglePhotosUri(uri))
+                return uri.getLastPathSegment();
+
+            return getDataColumn(context, uri, null, null);
+        }
+        // File
+        else if ("file".equalsIgnoreCase(uri.getScheme())) {
+            return uri.getPath();
+        }
+
+        return null;
+
+    }
+
+    public static String getDataColumn(Context context, Uri uri, String selection,
+                                       String[] selectionArgs) {
+
+        Cursor cursor = null;
+        final String column = "_data";
+        final String[] projection = {
+                column
+        };
+
+        try {
+            cursor = context.getContentResolver().query(uri, projection, selection, selectionArgs,
+                    null);
+            if (cursor != null && cursor.moveToFirst()) {
+                final int index = cursor.getColumnIndexOrThrow(column);
+                return cursor.getString(index);
+            }
+        } finally {
+            if (cursor != null)
+                cursor.close();
+        }
+        return null;
+    }
+
+
+    /**
+     * @param uri The Uri to check.
+     * @return Whether the Uri authority is ExternalStorageProvider.
+     */
+    public static boolean isExternalStorageDocument(Uri uri) {
+        return "com.android.externalstorage.documents".equals(uri.getAuthority());
+    }
+
+    /**
+     * @param uri The Uri to check.
+     * @return Whether the Uri authority is DownloadsProvider.
+     */
+    public static boolean isDownloadsDocument(Uri uri) {
+        return "com.android.providers.downloads.documents".equals(uri.getAuthority());
+    }
+
+    /**
+     * @param uri The Uri to check.
+     * @return Whether the Uri authority is MediaProvider.
+     */
+    public static boolean isMediaDocument(Uri uri) {
+        return "com.android.providers.media.documents".equals(uri.getAuthority());
+    }
+
+    /**
+     * @param uri The Uri to check.
+     * @return Whether the Uri authority is Google Photos.
+     */
+    public static boolean isGooglePhotosUri(Uri uri) {
+        return "com.google.android.apps.photos.content".equals(uri.getAuthority());
+    }
 }
